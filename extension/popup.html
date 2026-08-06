@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Momentum Tracker</title>
+<style>
+  /* ==========================================================================
+     Two panels: insights on the left, the captured job on the right. A Chrome
+     popup is capped near 800x600, so the width is fixed and the two columns
+     scroll independently rather than the whole sheet growing.
+     ========================================================================== */
+  :root {
+    --ink: #171A2B; --ink-soft: #6B6F85; --faint: #9AA0AE;
+    --line: #ECEDF3; --card: #fff; --bg: #F6F7FB;
+    --accent: #4F46E5; --accent-soft: #EEF0FE;
+    --green: #16A34A; --amber: #D97706;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; width: 780px; overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    font-size: 13px; color: var(--ink); background: var(--bg);
+  }
+  .hidden { display: none !important; }
+
+  #view-login { padding: 28px; width: 360px; }
+  #view-login h2 { margin: 0 0 4px; font-size: 16px; }
+  #view-login p { margin: 0 0 16px; font-size: 12px; color: var(--ink-soft); }
+  #view-login input {
+    width: 100%; height: 38px; margin-bottom: 8px; padding: 0 11px;
+    border: 1px solid var(--line); border-radius: 9px; font-size: 13px; font-family: inherit;
+  }
+
+  .shell { display: flex; gap: 12px; padding: 12px; height: 596px; }
+  .panel { background: var(--card); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+  .panel-l { width: 292px; flex-shrink: 0; }
+  .panel-r { flex: 1; min-width: 0; }
+  .scroll { overflow-y: auto; padding: 16px; flex: 1; }
+  .scroll::-webkit-scrollbar { width: 6px; }
+  .scroll::-webkit-scrollbar-thumb { background: #DDE0E8; border-radius: 99px; }
+
+  /* ---- left: insights ---- */
+  .ins-head { display: flex; gap: 11px; align-items: flex-start; padding: 16px 16px 0; }
+  .ins-icon {
+    width: 38px; height: 38px; border-radius: 11px; flex-shrink: 0;
+    background: var(--accent); color: #fff; display: flex; align-items: center;
+    justify-content: center; font-size: 17px;
+  }
+  .ins-head h1 { margin: 0; font-size: 15.5px; font-weight: 700; }
+  .ins-head p { margin: 2px 0 0; font-size: 11.5px; color: var(--ink-soft); line-height: 1.4; }
+  .sec-label {
+    font-size: 10px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase;
+    color: var(--faint); margin: 0 0 9px;
+  }
+  .kw { display: flex; align-items: center; gap: 9px; padding: 9px 11px; border-radius: 10px; margin-bottom: 6px; }
+  .kw-dot { width: 22px; height: 22px; border-radius: 7px; flex-shrink: 0; display: flex;
+            align-items: center; justify-content: center; font-size: 11px; }
+  .kw-name { flex: 1; font-size: 12.5px; font-weight: 600; overflow: hidden;
+             text-overflow: ellipsis; white-space: nowrap; }
+  .kw-n { font-size: 11px; font-weight: 700; color: var(--ink-soft); }
+  .kw-empty { font-size: 11.5px; color: var(--faint); line-height: 1.5; margin: 0; }
+  .divider { height: 1px; background: var(--line); margin: 16px 0; }
+  .step-sub { font-size: 11.5px; color: var(--ink-soft); margin: -4px 0 10px; }
+  .act {
+    display: flex; align-items: center; gap: 11px; width: 100%; text-align: left;
+    padding: 11px; margin-bottom: 8px; border: 1px solid var(--line); border-radius: 12px;
+    background: #fff; cursor: pointer; font-family: inherit;
+    transition: border-color .12s, background .12s;
+  }
+  .act:hover:not(:disabled) { border-color: var(--accent); background: #FCFCFF; }
+  .act:disabled { opacity: .55; cursor: not-allowed; }
+  .act-ico { width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+             display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .act-txt { flex: 1; min-width: 0; }
+  .act-txt b { display: block; font-size: 12.5px; font-weight: 650; }
+  .act-txt span { display: block; font-size: 11px; color: var(--ink-soft); margin-top: 1px; }
+  .act-arrow { color: var(--faint); font-size: 13px; }
+
+  /* ---- right: the job ---- */
+  .job-head { display: flex; gap: 13px; align-items: center; padding: 16px 16px 0; }
+  .job-logo {
+    width: 52px; height: 52px; border-radius: 12px; flex-shrink: 0;
+    background: #F3F4F8; display: flex; align-items: center; justify-content: center;
+    font-size: 17px; font-weight: 800; color: var(--ink-soft); overflow: hidden;
+  }
+  .job-logo img { width: 100%; height: 100%; object-fit: contain; }
+  .job-head h2 { margin: 0; font-size: 17px; font-weight: 700; line-height: 1.25;
+                 overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .job-head .sub { margin: 3px 0 0; font-size: 12px; color: var(--ink-soft);
+                   overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fld { display: flex; align-items: center; gap: 12px; margin-bottom: 11px; }
+  .fld > label { width: 76px; flex-shrink: 0; font-size: 12px; font-weight: 650; color: var(--accent); }
+  .fld-in { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;
+            border: 1px solid var(--line); border-radius: 10px; padding: 0 11px; height: 40px; }
+  .fld-in:focus-within { border-color: var(--accent); }
+  .fld-in i { font-style: normal; color: var(--faint); font-size: 13px; flex-shrink: 0; }
+  .fld-in input {
+    flex: 1; min-width: 0; border: none; outline: none; height: 100%;
+    font-size: 12.5px; font-family: inherit; color: var(--ink); background: transparent;
+  }
+  .fld-in input::placeholder { color: var(--faint); }
+  .fld-in a { color: var(--accent); flex-shrink: 0; text-decoration: none; font-size: 13px; }
+  .desc-label { font-size: 12px; font-weight: 650; color: var(--accent); margin: 16px 0 7px; }
+  .desc-wrap { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  .desc-bar { display: flex; gap: 2px; padding: 6px 8px; border-bottom: 1px solid var(--line); background: #FCFCFE; }
+  .desc-bar button {
+    width: 26px; height: 24px; border: none; background: none; border-radius: 6px;
+    cursor: pointer; color: var(--ink-soft); font-size: 12px; font-family: inherit;
+  }
+  .desc-bar button:hover { background: var(--accent-soft); color: var(--accent); }
+  .desc-bar .sep { width: 1px; background: var(--line); margin: 3px 5px; }
+  #job-description {
+    min-height: 140px; max-height: 200px; overflow-y: auto; padding: 11px 12px;
+    font-size: 12px; line-height: 1.55; outline: none;
+  }
+  #job-description:empty::before { content: attr(data-placeholder); color: var(--faint); }
+
+  .foot { display: flex; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--line); background: #fff; }
+  .board-pick {
+    flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px;
+    border: 1px solid var(--line); border-radius: 12px; padding: 0 11px; height: 44px;
+  }
+  .board-pick i { font-style: normal; color: var(--accent); flex-shrink: 0; }
+  .board-pick select {
+    flex: 1; min-width: 0; border: none; outline: none; background: transparent;
+    font-size: 12.5px; font-family: inherit; font-weight: 600; color: var(--ink); cursor: pointer;
+  }
+  .btn-save {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    min-width: 186px; height: 44px; padding: 0 20px; border: none; border-radius: 12px;
+    background: var(--accent); color: #fff; font-size: 13.5px; font-weight: 650;
+    font-family: inherit; cursor: pointer;
+  }
+  .btn-save:hover:not(:disabled) { filter: brightness(1.07); }
+  .btn-save:disabled { opacity: .6; cursor: not-allowed; }
+
+  .btn { height: 34px; padding: 0 13px; border-radius: 9px; border: 1px solid var(--line);
+         background: #fff; font-size: 12px; font-weight: 600; font-family: inherit; cursor: pointer; }
+  .btn-primary { background: var(--accent); border-color: transparent; color: #fff; }
+  .status { font-size: 11.5px; margin-top: 8px; line-height: 1.45; }
+  .status.ok { color: var(--green); }
+  .status.err { color: #DC2626; }
+  .status.warn { color: var(--amber); }
+  .topbar { display: flex; align-items: center; gap: 8px; padding: 10px 16px 0; }
+  .topbar .who { flex: 1; font-size: 11px; color: var(--faint); overflow: hidden;
+                 text-overflow: ellipsis; white-space: nowrap; }
+  /* Quota + upgrade. The veil sits over the job column rather than replacing
+     the popup, so the capture you were about to make is still visible behind
+     it — the point is to show what you would be saving, not to hide it. */
+  .quota-pill {
+    display: inline-flex; align-items: center; height: 44px; padding: 0 12px;
+    border-radius: 12px; font-size: 11.5px; font-weight: 650; white-space: nowrap;
+    background: #F1F2F7; color: var(--ink-soft); flex-shrink: 0;
+  }
+  .quota-pill.low { background: #FEF3E2; color: #9A5B08; }
+  .quota-pill.out { background: #FEF2F2; color: #B4232A; }
+  .upgrade-veil {
+    position: absolute; inset: 0; z-index: 20; display: flex;
+    align-items: center; justify-content: center; padding: 22px;
+    background: rgba(246,247,251,.82); backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .upgrade-card {
+    width: 100%; max-width: 340px; text-align: center; padding: 24px 22px;
+    background: #fff; border: 1px solid var(--line); border-radius: 18px;
+    box-shadow: 0 22px 54px -26px rgba(23,26,43,.5);
+  }
+  .upgrade-badge {
+    display: inline-block; font-size: 9.5px; font-weight: 800; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--accent); background: var(--accent-soft);
+    border-radius: 999px; padding: 4px 10px; margin-bottom: 12px;
+  }
+  .upgrade-card h3 { margin: 0 0 7px; font-size: 15.5px; font-weight: 700; line-height: 1.3; }
+  .upgrade-card p { margin: 0 0 14px; font-size: 12px; line-height: 1.55; color: var(--ink-soft); }
+  .upgrade-list { list-style: none; margin: 0 0 16px; padding: 0; text-align: left; }
+  .upgrade-list li {
+    position: relative; padding-left: 20px; margin-bottom: 7px;
+    font-size: 12px; color: var(--ink);
+  }
+  .upgrade-list li::before {
+    content: "✓"; position: absolute; left: 0; top: 0;
+    color: var(--green); font-weight: 700; font-size: 11px;
+  }
+  .upgrade-cta { width: 100%; min-width: 0; margin-bottom: 6px; }
+  .upgrade-reset { margin: 10px 0 0 !important; font-size: 10.5px; color: var(--faint); }
+  .panel-r { position: relative; }
+
+  .linkbtn { border: none; background: none; color: var(--accent); font-size: 11px;
+             cursor: pointer; font-family: inherit; padding: 2px 4px; }
+  .mm-mark { width: 26px; height: 26px; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- ============================== LOGIN ============================== -->
+<div id="view-login">
+  <h2 style="display:flex;align-items:center;gap:9px;"><svg class="mm-mark" viewBox="0 0 96 96" aria-hidden="true"><rect width="96" height="96" rx="26" fill="#4F46E5"/><path d="M22 74V30L47 56L70 22" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M54 22H70V38" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Momentum Tracker</h2>
+  <p>Sign in to capture jobs straight from the page you're on.</p>
+  <input type="email" id="login-email" placeholder="you@example.com" autocomplete="username" />
+  <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" />
+  <button class="btn btn-primary" id="login-btn" style="width:100%;height:38px;">Sign in</button>
+  <div id="login-status" class="status"></div>
+  <button class="linkbtn" id="settings-btn" style="margin-top:10px;">Settings</button>
+</div>
+
+<!-- ============================== MAIN ============================== -->
+<div id="view-main" class="hidden">
+  <div class="shell">
+
+    <!-- ---------- left: insights ---------- -->
+    <div class="panel panel-l">
+      <div class="ins-head">
+        <div class="ins-icon"><svg viewBox="0 0 96 96" aria-hidden="true" style="width:22px;height:22px"><path d="M24 72V32L48 56L68 26" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M52 26H70V44" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div style="min-width:0">
+          <h1>Job Insights</h1>
+          <p>Signals pulled from this posting</p>
+        </div>
+      </div>
+      <div class="scroll">
+        <p class="sec-label">Keywords found</p>
+        <div id="keyword-list">
+          <p class="kw-empty">Keywords appear once a job description has been read from the page.</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <p class="sec-label">Your next step</p>
+        <p class="step-sub">Tools to build a stronger application</p>
+
+        <button class="act" id="generate-resume-btn">
+          <span class="act-ico" style="background:#EEF0FE;color:#4F46E5;">📄</span>
+          <span class="act-txt"><b>Generate Tailored CV</b><span>A CV matched to this job</span></span>
+          <span class="act-arrow">›</span>
+        </button>
+        <button class="act" id="generate-cover-letter-btn">
+          <span class="act-ico" style="background:#E7F8EF;color:#16A34A;">✉️</span>
+          <span class="act-txt"><b>Generate Cover Letter</b><span>A personalised letter</span></span>
+          <span class="act-arrow">›</span>
+        </button>
+        <button class="act" id="ats-check-btn">
+          <span class="act-ico" style="background:#FEF3E2;color:#D97706;">🛡️</span>
+          <span class="act-txt"><b>Check ATS Score</b><span>Score your resume for ATS</span></span>
+          <span class="act-arrow">›</span>
+        </button>
+        <button class="act" id="select-resume-btn">
+          <span class="act-ico" style="background:#EEF0FE;color:#4F46E5;">📁</span>
+          <span class="act-txt"><b>Select Existing Resume</b><span>Choose from your saved resumes</span></span>
+          <span class="act-arrow">›</span>
+        </button>
+
+        <div id="resume-picker" class="hidden" style="margin-top:4px;">
+          <select id="resume-select" style="width:100%;height:36px;border:1px solid #ECEDF3;border-radius:9px;padding:0 9px;font-family:inherit;font-size:12px;"></select>
+          <div style="display:flex;gap:10px;margin-top:7px;align-items:center;flex-wrap:wrap;">
+            <button class="linkbtn" id="resume-refresh-btn">Refresh</button>
+            <label style="font-size:11px;display:flex;align-items:center;gap:5px;">
+              <input type="checkbox" id="chk-tailor" checked /> Auto-tailor
+            </label>
+            <label style="font-size:11px;display:flex;align-items:center;gap:5px;">
+              <input type="checkbox" id="chk-cover" checked /> Cover letter
+            </label>
+          </div>
+          <div id="resume-status" class="status"></div>
+        </div>
+
+        <div id="results-section" class="hidden" style="margin-top:10px;">
+          <div id="resume-result" class="hidden status ok">
+            Tailored resume ready — <a id="resume-download-link" href="#" target="_blank">download</a>
+          </div>
+          <div id="cover-letter-result" class="hidden" style="margin-top:8px;">
+            <textarea id="cover-letter-text" rows="5" style="width:100%;border:1px solid #ECEDF3;border-radius:9px;padding:8px;font-family:inherit;font-size:11.5px;"></textarea>
+            <div style="display:flex;gap:6px;margin-top:6px;">
+              <button class="linkbtn" id="copy-cover-letter-btn">Copy</button>
+              <button class="linkbtn" id="download-cover-letter-btn">Download</button>
+            </div>
+          </div>
+          <div id="ai-refine-status" class="status"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- right: the job ---------- -->
+    <div class="panel panel-r">
+      <div class="job-head">
+        <div class="job-logo" id="job-logo">—</div>
+        <div style="min-width:0;flex:1">
+          <h2 id="hdr-role">No job detected</h2>
+          <p class="sub" id="hdr-sub">Open a job posting, then reopen this popup</p>
+        </div>
+      </div>
+      <div class="topbar">
+        <span class="who" id="user-email"></span>
+        <button class="linkbtn" id="settings-btn-main">Settings</button>
+        <button class="linkbtn" id="logout-btn">Log out</button>
+      </div>
+
+      <div class="scroll" style="padding-top:12px;">
+        <div id="job-preview">
+          <div class="fld">
+            <label for="preview-company">Company</label>
+            <div class="fld-in"><i>🏢</i><input id="preview-company" placeholder="Company name" /></div>
+          </div>
+          <div class="fld">
+            <label for="preview-role">Job Title</label>
+            <div class="fld-in"><i>💼</i><input id="preview-role" placeholder="Role title" /></div>
+          </div>
+          <div class="fld">
+            <label for="preview-location">Location</label>
+            <div class="fld-in"><i>📍</i><input id="preview-location" placeholder="(optional)" /></div>
+          </div>
+          <div class="fld">
+            <label for="preview-url">Post Url</label>
+            <div class="fld-in"><i>🔗</i><input id="preview-url" placeholder="Job link" /><a id="preview-url-open" href="#" target="_blank" title="Open">↗</a></div>
+          </div>
+
+          <p class="desc-label">Description</p>
+          <div class="desc-wrap">
+            <div class="desc-bar">
+              <button type="button" data-cmd="bold" title="Bold"><b>B</b></button>
+              <button type="button" data-cmd="italic" title="Italic"><i>I</i></button>
+              <button type="button" data-cmd="underline" title="Underline"><u>U</u></button>
+              <span class="sep"></span>
+              <button type="button" data-cmd="insertUnorderedList" title="Bulleted list">•</button>
+              <button type="button" data-cmd="insertOrderedList" title="Numbered list">1.</button>
+            </div>
+            <div id="job-description" contenteditable="true"
+                 data-placeholder="The job description read from the page appears here — edit it before saving if anything is missing."></div>
+          </div>
+          <div id="scrape-warning" class="status warn"></div>
+          <div id="capture-status" class="status"></div>
+        </div>
+      </div>
+
+      <div class="upgrade-veil hidden" id="upgrade-veil">
+        <div class="upgrade-card">
+          <div class="upgrade-badge">Free plan</div>
+          <h3 id="upgrade-title">You have used all 15 captures this month</h3>
+          <p id="upgrade-sub">Your board, resumes and history stay exactly as they are. Upgrade to keep capturing, or come back when the month resets.</p>
+          <ul class="upgrade-list">
+            <li>Unlimited captures from 60 job sites</li>
+            <li>Unlimited boards and tailored resumes</li>
+            <li>Everything on Free, without the ceiling</li>
+          </ul>
+          <button class="btn-save upgrade-cta" id="upgrade-btn">Upgrade to Pro</button>
+          <button class="linkbtn" id="upgrade-dismiss">Not now</button>
+          <p class="upgrade-reset" id="upgrade-reset"></p>
+        </div>
+      </div>
+
+      <div class="foot">
+        <div class="board-pick">
+          <i>◎</i>
+          <select id="board-select"><option value="">Default board</option></select>
+        </div>
+        <span class="quota-pill hidden" id="quota-pill"></span>
+        <button class="btn-save" id="capture-btn">🔖 Save to Board</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

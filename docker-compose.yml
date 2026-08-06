@@ -1,0 +1,95 @@
+services:
+  # Redis backs the cache for the genuinely expensive work: rendered résumé
+  # PDFs, ATS scores and local-LLM responses (see backend/app/cache.py).
+  #
+  # It is optional on purpose. Nothing here requires it — with REDIS_URL unset,
+  # or Redis simply down, the backend falls back to a bounded in-process cache
+  # and keeps serving. That matters for two reasons: someone cloning this repo
+  # can run the app without standing up extra infrastructure, and a Redis
+  # outage in production degrades latency instead of taking the service down.
+  #
+  # It earns its place the moment you run more than one backend replica: an
+  # in-process cache is per-worker, so each one would warm its own copy of
+  # every rendered PDF. With Redis they share one.
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    # maxmemory + allkeys-lru make this behave as a cache rather than a
+    # database: under pressure it evicts the least recently used key instead of
+    # refusing writes. Without a policy, a full Redis starts erroring on SET,
+    # which is a much worse failure than losing a cached PDF.
+    command: >
+      redis-server
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+      --save ""
+      --appendonly no
+    # No persistence: every value in here is reconstructible by redoing the
+    # work it stands in for, so writing it to disk buys nothing and costs I/O.
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # Points the backend at the Redis service above. Override in .env to use
+      # a managed Redis, or set it empty to force the in-process fallback.
+      REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+    # Host port comes from .env, derived from BACKEND_URL by
+    # generate_frontend_env.py. The container side stays 8000 — that's where
+    # uvicorn binds inside the image, and it has no reason to move.
+    ports:
+      - "${BACKEND_PORT:-8000}:8000"
+    volumes:
+      - ./backend/momentum.db:/app/momentum.db
+      - ./backend/models:/app/models
+    depends_on:
+      redis:
+        # `service_healthy` rather than a bare depends_on: the backend pings
+        # Redis at startup to decide which cache backend to use, and starting
+        # before Redis is accepting connections would silently drop it into the
+        # in-process fallback for the life of the container.
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request;urllib.request.urlopen('http://localhost:8000/api/health').read()\""]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    restart: unless-stopped
+    env_file:
+      - .env
+    # As above: host side from .env (derived from FRONTEND_URL), container side
+    # fixed at 5173 where nginx listens.
+    ports:
+      - "${FRONTEND_PORT:-5173}:5173"
+    # The Dockerfile COPYs frontend/ into the image, so without this mount a
+    # container keeps serving the HTML, CSS and JS from whenever it was last
+    # built — which looks exactly like a fix that never landed.
+    #
+    # Note: nginx.conf is NOT covered by this mount, because it is copied to
+    # /etc/nginx/. Changing it needs `docker compose up -d --build frontend`.
+    volumes:
+      - ./frontend:/app/frontend
+      # The image COPYs .env at build time, so without this mount the startup
+      # regeneration of env.js reads whatever .env looked like when the image
+      # was built — i.e. editing BACKEND_URL and restarting would appear to do
+      # nothing. Read-only: the container regenerates JS from this file, it has
+      # no business writing back to it.
+      - ./.env:/app/.env:ro
+    depends_on:
+      - backend

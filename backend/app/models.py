@@ -1,0 +1,527 @@
+import enum
+
+from sqlalchemy import Index
+from datetime import datetime
+
+from sqlalchemy import (
+    Column, Integer, String, Boolean, Date, DateTime, ForeignKey, Text, Enum,
+    UniqueConstraint,
+)
+from sqlalchemy.orm import relationship
+
+from .database import Base
+
+
+class UserRole(str, enum.Enum):
+    user = "user"
+    admin = "admin"
+
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    name = Column(String(150), nullable=False)
+    password_hash = Column(String(255), nullable=True)  # nullable: Google-only accounts have no password
+    google_sub = Column(String(255), unique=True, nullable=True, index=True)
+    auth_provider = Column(String(20), default="password")  # "password" or "google"
+    role = Column(Enum(UserRole), default=UserRole.user, nullable=False)
+    is_active = Column(Boolean, default=True)
+    # Profile: the photo and the two lines that sit under a name. The photo is
+    # a filename inside uploads/avatars, never a client-supplied path, and it
+    # feeds both the app chrome and the résumé templates that carry a picture.
+    # Billing. Plans live in billing.py; this is only which one applies.
+    plan = Column(String(20), default="free", nullable=False)
+    plan_since = Column(DateTime, nullable=True)
+    avatar_file = Column(String(300), nullable=True)
+    headline = Column(String(200), nullable=True)
+    location = Column(String(120), nullable=True)
+    website = Column(String(200), nullable=True)
+    linkedin = Column(String(200), nullable=True)
+    phone = Column(String(60), nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    habits = relationship("Habit", back_populates="owner", cascade="all, delete-orphan")
+    tasks = relationship("Task", back_populates="owner", cascade="all, delete-orphan")
+    weekly_notes = relationship("WeeklyNote", back_populates="owner", cascade="all, delete-orphan")
+    resumes = relationship("Resume", back_populates="owner", cascade="all, delete-orphan")
+    jobs = relationship("JobApplication", back_populates="owner", cascade="all, delete-orphan")
+    job_boards = relationship("JobBoard", back_populates="owner", cascade="all, delete-orphan")
+    study_blocks = relationship("StudyBlock", back_populates="owner", cascade="all, delete-orphan")
+    telegram_link = relationship("TelegramLink", back_populates="owner", uselist=False,
+                                 cascade="all, delete-orphan")
+    study_sessions = relationship("StudySession", back_populates="owner", cascade="all, delete-orphan")
+
+
+class Habit(Base):
+    __tablename__ = "habits"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    title = Column(String(200), nullable=False)
+    category = Column(String(100), nullable=True)
+    active = Column(Boolean, default=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    owner = relationship("User", back_populates="habits")
+    entries = relationship("HabitEntry", back_populates="habit", cascade="all, delete-orphan")
+
+
+class HabitEntry(Base):
+    __tablename__ = "habit_entries"
+    # Habit history is always read per habit over a window, and the uniqueness
+    # of (habit, date) is a real invariant worth having the database enforce.
+    __table_args__ = (Index("ix_habit_entries_habit_date", "habit_id", "date"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    habit_id = Column(Integer, ForeignKey("habits.id"), nullable=False)
+    date = Column(Date, nullable=False, index=True)
+    completed = Column(Boolean, default=False)
+    completed_at = Column(DateTime, nullable=True)
+
+    habit = relationship("Habit", back_populates="entries")
+
+
+class Task(Base):
+    """One-off tasks/goals tied to a specific day."""
+    __tablename__ = "tasks"
+    # Every task query is "this user, this date range". Two single-column
+    # indexes make the planner pick one and filter the rest by hand; the
+    # composite lets it seek straight to the slice.
+    __table_args__ = (Index("ix_tasks_user_date", "user_id", "date"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    date = Column(Date, nullable=False, index=True)
+    title = Column(String(300), nullable=False)
+    completed = Column(Boolean, default=False)
+    completed_at = Column(DateTime, nullable=True)
+    notes = Column(Text, nullable=True)
+    tags = Column(String(300), nullable=True)  # comma-separated, e.g. "urgent,quick-win"
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    owner = relationship("User", back_populates="tasks")
+
+
+class WeeklyNote(Base):
+    __tablename__ = "weekly_notes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    week_start_date = Column(Date, nullable=False, index=True)
+    focus_text = Column(String(300), default="")
+    reward_text = Column(String(300), default="")
+    affirmation_text = Column(String(300), default="")
+
+    owner = relationship("User", back_populates="weekly_notes")
+
+
+class Resume(Base):
+    __tablename__ = "resumes"
+    __table_args__ = (Index("ix_resumes_user_created", "user_id", "created_at"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    name = Column(String(200), nullable=False)
+    filename = Column(String(300), nullable=True)
+    notes = Column(Text, nullable=True)
+    extracted_text = Column(Text, nullable=True)   # plain text used for ATS matching
+    template_id = Column(String(50), nullable=True)  # set if generated via the Resume Builder
+    builder_data = Column(Text, nullable=True)      # JSON snapshot of the builder form, for re-editing
+    # Set when this resume was produced by "Tailor to job" — it separates the
+    # Base Resumes tab from Job Tailored Resumes, and records which
+    # application it was tailored for.
+    tailored_for_job_id = Column(Integer, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    owner = relationship("User", back_populates="resumes")
+    jobs = relationship("JobApplication", back_populates="resume")
+
+    @property
+    def has_text(self) -> bool:
+        return bool(self.extracted_text and self.extracted_text.strip())
+
+    @property
+    def has_builder_data(self) -> bool:
+        """True for resumes created in the Resume Builder, which keep their
+        structured form data and can therefore be reopened and edited. An
+        uploaded PDF is just a file, so it can't be."""
+        return bool(self.builder_data and self.builder_data.strip())
+
+
+class StudyBlock(Base):
+    """A scheduled study session for a specific day (e.g. 6:00-7:30 'Linear Algebra')."""
+    __tablename__ = "study_blocks"
+    __table_args__ = (Index("ix_study_blocks_user_date", "user_id", "date"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    date = Column(Date, nullable=False, index=True)
+    subject = Column(String(200), nullable=False)
+    start_time = Column(String(5), nullable=False)   # "HH:MM"
+    end_time = Column(String(5), nullable=False)      # "HH:MM"
+    notes = Column(Text, nullable=True)
+    completed = Column(Boolean, default=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    owner = relationship("User", back_populates="study_blocks")
+
+
+class JobStatus(str, enum.Enum):
+    applied = "applied"
+    oa_test = "oa_test"
+    phone_screen = "phone_screen"
+    interview = "interview"
+    offer = "offer"
+    rejected = "rejected"
+    ghosted = "ghosted"
+    withdrawn = "withdrawn"
+
+
+class JobBoard(Base):
+    """A named collection of job applications — lets a person keep separate
+    boards (e.g. "Summer Internships", "New York Search", "Backup Plan")
+    instead of one giant undifferentiated pipeline."""
+    __tablename__ = "job_boards"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    name = Column(String(150), nullable=False)
+    is_default = Column(Boolean, default=False)  # the auto-created board every account starts with
+    position = Column(Integer, default=0)  # display order
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    owner = relationship("User", back_populates="job_boards")
+    jobs = relationship("JobApplication", back_populates="board")
+
+
+class JobApplication(Base):
+    __tablename__ = "job_applications"
+    # The board reads by user and sorts by applied date; the dashboards group
+    # by status. Both are covered here rather than by full scans.
+    __table_args__ = (
+        Index("ix_jobs_user_applied", "user_id", "date_applied"),
+        Index("ix_jobs_user_status", "user_id", "status"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    board_id = Column(Integer, ForeignKey("job_boards.id"), nullable=True, index=True)
+    company_name = Column(String(200), nullable=False)
+    role_title = Column(String(200), nullable=False)
+    job_link = Column(String(500), nullable=True)
+    date_applied = Column(Date, nullable=False)
+    status = Column(Enum(JobStatus), default=JobStatus.applied)
+    resume_id = Column(Integer, ForeignKey("resumes.id"), nullable=True)
+    skills_required = Column(Text, nullable=True)  # comma-separated
+    tags = Column(String(300), nullable=True)  # comma-separated, e.g. "dream-job,remote,backup"
+    salary_range = Column(String(100), nullable=True)
+    location = Column(String(150), nullable=True)
+    source = Column(String(100), nullable=True)
+    notes = Column(Text, nullable=True)
+    next_action_date = Column(Date, nullable=True)
+    job_description = Column(Text, nullable=True)
+    cover_letter = Column(Text, nullable=True)
+    ats_score = Column(Integer, nullable=True)       # 0-100 overall ATS match score
+    ats_breakdown = Column(Text, nullable=True)       # JSON: {keyword_coverage_percent, term_similarity_percent, matched_keywords, missing_keywords}
+    created_at = Column(DateTime, default=datetime.utcnow)
+    color = Column(String(20), nullable=True)  # accent color for the card, e.g. "#E4A335"
+    deadline = Column(Date, nullable=True)      # application/response deadline
+    pipeline_stage = Column(String(60), nullable=True)  # custom kanban column key (falls back to status when null)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    owner = relationship("User", back_populates="jobs")
+    board = relationship("JobBoard", back_populates="jobs")
+    resume = relationship("Resume", back_populates="jobs")
+    activities = relationship("JobActivity", back_populates="job", cascade="all, delete-orphan")
+    contacts = relationship("JobContact", back_populates="job", cascade="all, delete-orphan")
+
+
+class JobActivity(Base):
+    """A single timeline event on an application — logging that you applied,
+    had an interview, received/accepted an offer, added a note, etc. Powers
+    the per-application Activities timeline (image 6) and the aggregate
+    "all applications" activity feed."""
+    __tablename__ = "job_activities"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    job_id = Column(Integer, ForeignKey("job_applications.id"), nullable=False, index=True)
+    kind = Column(String(40), nullable=False)   # applied|interview|offer_received|offer_accepted|offer_declined|note|other|contact|status_change
+    title = Column(String(200), nullable=True)  # short label, e.g. "Phone screen with recruiter"
+    body = Column(Text, nullable=True)          # optional longer detail / note body
+    occurred_at = Column(DateTime, default=datetime.utcnow)  # when the event happened (editable)
+    created_at = Column(DateTime, default=datetime.utcnow)   # when it was logged
+
+    owner = relationship("User")
+    job = relationship("JobApplication", back_populates="activities")
+
+
+class JobContact(Base):
+    """A person attached to an application — recruiter, referrer, hiring
+    manager — with an optional LinkedIn URL (image 4's Contacts / LinkedIn
+    connect facility)."""
+    __tablename__ = "job_contacts"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    job_id = Column(Integer, ForeignKey("job_applications.id"), nullable=False, index=True)
+    name = Column(String(150), nullable=False)
+    role = Column(String(120), nullable=True)          # e.g. "Technical Recruiter"
+    email = Column(String(200), nullable=True)
+    linkedin_url = Column(String(400), nullable=True)
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    owner = relationship("User")
+    job = relationship("JobApplication", back_populates="contacts")
+
+
+# ---------------------------------------------------------------------------
+# Telegram
+#
+# The daily card lives in Telegram, but the truth lives here. Every tap in
+# Telegram writes straight into habit_entries / tasks / study_sessions — the
+# same rows the web app reads — so "ticked in Telegram" and "ticked in the app"
+# are the same fact, not two copies of it that have to be reconciled.
+# ---------------------------------------------------------------------------
+class TelegramLink(Base):
+    """One Telegram chat bound to one account, plus that person's delivery
+    preferences. chat_id is unique so a chat can't be pointed at two accounts,
+    and user_id is unique so an account has exactly one destination."""
+    __tablename__ = "telegram_links"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    chat_id = Column(String(40), nullable=False, unique=True, index=True)
+    telegram_user_id = Column(String(40), nullable=True)
+    username = Column(String(120), nullable=True)      # @handle, may be absent
+    first_name = Column(String(120), nullable=True)
+
+    # Delivery preferences. Times are "HH:MM" in the user's own timezone —
+    # storing UTC here would silently drift for anyone on daylight saving.
+    timezone = Column(String(64), default="UTC", nullable=False)   # IANA name, e.g. "Asia/Kolkata"
+    daily_time = Column(String(5), default="08:00", nullable=False)
+    # Midnight, not 22:00: "close out my day" means the end of the day, and a
+    # recap at 22:00 freezes the card while the evening is still in use.
+    # evening_day_for() maps a recap before 04:00 back onto the day that just
+    # ended, so 00:00 closes today, not the four minutes of tomorrow.
+    evening_time = Column(String(5), default="00:00", nullable=False)
+    # Close the day early once every item is ticked, rather than leaving a
+    # finished card sitting there until midnight.
+    close_when_done = Column(Boolean, default=True)
+    send_evening = Column(Boolean, default=True)
+    carry_over_tasks = Column(Boolean, default=True)   # move unfinished tasks to tomorrow at close of day
+    paused = Column(Boolean, default=False)
+
+    # Which message is "today's card". Kept so a tap can edit that message in
+    # place instead of spamming the chat with a new copy of the list, and so
+    # yesterday's card can have its buttons stripped when the day rolls over.
+    active_message_id = Column(String(40), nullable=True)
+    active_message_date = Column(Date, nullable=True)
+    last_morning_date = Column(Date, nullable=True)    # guards against double-sending
+    last_evening_date = Column(Date, nullable=True)
+
+    linked_at = Column(DateTime, default=datetime.utcnow)
+    last_interaction_at = Column(DateTime, nullable=True)
+
+    owner = relationship("User", back_populates="telegram_link")
+
+
+class TelegramLinkCode(Base):
+    """A short one-time code handed to the browser and typed back in by
+    Telegram as `/start <code>`. It is what proves the person holding the
+    Telegram chat is the person holding the logged-in session; nothing else in
+    the flow ties the two together."""
+    __tablename__ = "telegram_link_codes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    code = Column(String(24), nullable=False, unique=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    expires_at = Column(DateTime, nullable=False)
+    used_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    owner = relationship("User")
+
+
+class StudySession(Base):
+    """Minutes actually studied, as opposed to minutes planned.
+
+    StudyBlock is the plan ("6:00-7:30, Linear Algebra"); this is the record of
+    what happened. Completing a block logs its planned length here, and
+    `/study 45 Maths` logs an unplanned stretch, so the daily total is a single
+    sum over one table either way."""
+    __tablename__ = "study_sessions"
+    __table_args__ = (Index("ix_study_sessions_user_date", "user_id", "date"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    date = Column(Date, nullable=False, index=True)
+    minutes = Column(Integer, nullable=False, default=0)
+    subject = Column(String(200), nullable=True)
+    # Set when this session came from completing a planned block. It makes the
+    # log idempotent: un-ticking a block deletes its session rather than
+    # leaving the minutes behind, and re-ticking doesn't double-count.
+    block_id = Column(Integer, ForeignKey("study_blocks.id"), nullable=True, index=True)
+    source = Column(String(20), default="app")   # app | telegram
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    owner = relationship("User", back_populates="study_sessions")
+
+
+class StudyTimer(Base):
+    """A stopwatch that is currently running.
+
+    Deliberately a separate table from StudySession rather than a nullable
+    `ended_at` on it: a session is a completed fact that the daily total sums
+    over, and a running timer is not one yet. Mixing them would mean every
+    query that adds up minutes had to remember to exclude the row that hasn't
+    finished, and the first one to forget would quietly inflate somebody's day.
+
+    One row per user, enforced by the unique constraint. Two timers at once is
+    not a state anybody wants — it's how you end up double-counting an hour —
+    so starting a second one stops the first.
+
+    started_at is UTC. Elapsed time is a duration, and durations don't care
+    about timezones; only the *date* the session lands on does, which is
+    resolved from the user's own timezone when the timer stops.
+    """
+    __tablename__ = "study_timers"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    # Set when the timer was started from a planned block, so stopping it can
+    # tick that block off and attribute the minutes to it.
+    block_id = Column(Integer, ForeignKey("study_blocks.id"), nullable=True, index=True)
+    subject = Column(String(200), nullable=True)
+    started_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    source = Column(String(20), default="app")   # where it was started from
+    # The chat and message to redraw each minute, when it was started from
+    # Telegram. Null for a timer started in the browser.
+    chat_id = Column(String(40), nullable=True)
+
+
+# ---------------------------------------------------------------------------
+# Job hunt — searching company job boards directly
+# ---------------------------------------------------------------------------
+# Note the existing JobBoard above is something else entirely: a *kanban* board
+# in the application tracker. These tables are about finding openings in the
+# first place, before anything gets applied to.
+
+class CompanyBoard(Base):
+    """One company's job board on one ATS.
+
+    `token` is the company's slug on that platform — the part of the careers
+    URL that identifies it. Seeded from companies.json at first startup and
+    extended by anyone pasting a careers URL.
+
+    user_id is nullable on purpose: a NULL row is part of the shared registry
+    everyone searches, a set row is a company one person added for themselves.
+    """
+    __tablename__ = "company_boards"
+    __table_args__ = (
+        UniqueConstraint("provider", "token", "user_id", name="uq_company_board"),
+        Index("ix_company_boards_active", "active"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=True, index=True)
+    name = Column(String(200), nullable=False)
+    provider = Column(String(30), nullable=False)   # greenhouse | lever | ashby | ...
+    token = Column(String(120), nullable=False)
+    active = Column(Boolean, default=True, nullable=False)
+    # Consecutive *permanent* failures. A board that 404s a few runs in a row
+    # has moved platform or gone private, and continuing to request it every
+    # day forever is how a seed list rots into mostly-dead weight.
+    fail_count = Column(Integer, default=0, nullable=False)
+    last_error = Column(String(200), nullable=True)
+    last_ok_at = Column(DateTime, nullable=True)
+    job_count = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class JobSearch(Base):
+    """What one person is looking for. One row per user — a saved search rather
+    than a query typed each time, because the daily run needs to know what to
+    look for while nobody is at the keyboard."""
+    __tablename__ = "job_searches"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    # Comma-separated: "data engineer, analytics engineer". Any one matching is
+    # a hit — people describe the same job three ways.
+    roles = Column(Text, nullable=True)
+    # Comma-separated country or city names matched against the posting's
+    # location text. Blank means anywhere.
+    locations = Column(Text, nullable=True)
+    remote_only = Column(Boolean, default=False)
+    # Only postings published within this many days. The single most useful
+    # filter in a job hunt: a three-month-old listing is usually filled.
+    since_days = Column(Integer, default=30, nullable=False)
+    exclude = Column(Text, nullable=True)          # words that disqualify a title
+    notify_telegram = Column(Boolean, default=True)
+    auto_daily = Column(Boolean, default=True)
+    last_run_at = Column(DateTime, nullable=True)
+    last_run_new = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class JobHit(Base):
+    """A posting that matched, kept so "new since you last looked" is possible.
+
+    Without storing hits there is no way to tell a fresh opening from one shown
+    yesterday, which is the entire value of a daily run — the alternative is a
+    message every morning listing the same 40 jobs.
+    """
+    __tablename__ = "job_hits"
+    __table_args__ = (
+        UniqueConstraint("user_id", "fingerprint", name="uq_job_hit"),
+        Index("ix_job_hits_user_seen", "user_id", "first_seen_at"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    # provider:token:external_id, or a hash of company+title+location when a
+    # provider gives no stable id. Same posting, same fingerprint, every run.
+    fingerprint = Column(String(120), nullable=False)
+    company = Column(String(200), nullable=False)
+    provider = Column(String(30), nullable=True)
+    title = Column(String(300), nullable=False)
+    url = Column(String(600), nullable=True)
+    location = Column(String(200), nullable=True)
+    department = Column(String(160), nullable=True)
+    employment_type = Column(String(60), nullable=True)
+    remote = Column(Boolean, nullable=True)
+    posted_at = Column(DateTime, nullable=True)
+    description = Column(Text, nullable=True)
+    first_seen_at = Column(DateTime, default=datetime.utcnow, index=True)
+    last_seen_at = Column(DateTime, default=datetime.utcnow)
+    # new | saved | dismissed | applied
+    status = Column(String(20), default="new", nullable=False)
+    notified = Column(Boolean, default=False)
+    # Set when "Track this" turns a hit into a row in the application tracker.
+    application_id = Column(Integer, ForeignKey("job_applications.id"), nullable=True)
+
+
+class ReferralContact(Base):
+    """Somebody who could refer you into a company.
+
+    Separate from JobContact, which hangs off a specific application: this one
+    exists before there is an application, and is what makes a hit at that
+    company worth flagging. Matched to postings by company name.
+    """
+    __tablename__ = "referral_contacts"
+    __table_args__ = (Index("ix_referral_contacts_user", "user_id", "company"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    company = Column(String(200), nullable=False)
+    name = Column(String(200), nullable=False)
+    role = Column(String(200), nullable=True)
+    contact = Column(String(300), nullable=True)     # email, LinkedIn, phone
+    notes = Column(Text, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)

@@ -1,0 +1,36 @@
+# Secrets — .env holds the bot token, the signing key and any database
+# password. .env.example is the version that gets committed: same keys, no
+# values. A token pushed to a public repo is scraped within minutes, and
+# deleting the file later doesn't help — it stays in the history.
+.env
+.env.*
+!.env.example
+backend/.dev_secret_key
+
+# Generated from .env by generate_frontend_env.py — committing these means a
+# stale API base ships to whoever clones next, and it carries GOOGLE_CLIENT_ID.
+frontend/env.js
+extension/config.js
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+
+# Local database and model weights
+*.db
+*.db-wal
+*.db-shm
+backend/models/*.gguf
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
