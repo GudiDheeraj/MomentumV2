@@ -1,0 +1,28 @@
+Summary:
+
+As a Data Engineer, a typical day involves designing, developing, and maintaining comprehensive data solutions that support the generation, collection, and processing of data. This role includes creating efficient data pipelines to facilitate smooth data flow and ensuring the integrity and quality of data throughout its lifecycle. The position also requires implementing processes to extract, transform, and load data, enabling seamless migration and deployment across various systems. Collaboration with different teams to optimize data handling and support organizational data needs is an integral part of daily activities.
+
+Roles & Responsibilities:
+
+* Expected to perform independently and become an SME.
+* Required active participation/contribution in team discussions.
+* Contribute in providing solutions to work related problems.
+* Collaborate with cross-functional teams to understand data requirements and deliver scalable data solutions.
+* Monitor and troubleshoot data pipelines to ensure reliability and performance.
+* Document data processes and workflows to maintain clarity and support knowledge sharing.
+* Assist junior team members in understanding data engineering concepts and best practices.
+
+Professional & Technical Skills:
+
+* Must To Have Skills: Proficiency in Data Engineering.
+* Experience with designing and implementing data pipelines and ETL processes.
+* Strong knowledge of data storage solutions and database management.
+* Familiarity with data quality assurance and validation techniques.
+* Ability to work with large datasets and optimize data workflows.
+* Understanding of cloud-based data platforms and tools.
+
+Additional Information:
+
+* The candidate should have minimum 2 years of experience in Data Engineering.
+* This position is based at our Bengaluru office.
+* A 15 years full time education is required.

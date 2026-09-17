@@ -20,9 +20,7 @@ from fastapi.staticfiles import StaticFiles
 
 from . import models
 from .database import engine
-from .routers import habits, tasks, summary, weekly_notes, resumes, jobs, auth, admin, study, export, ats, resume_builder, chat, search, cover_letter, extension, boards, profile, review, docs, jobhunt, telegram as telegram_router
-
-models.Base.metadata.create_all(bind=engine)
+from .routers import habits, tasks, summary, weekly_notes, resumes, jobs, auth, admin, study, export, ats, resume_builder, chat, search, cover_letter, extension, boards, profile, review, docs, jobhunt, llm_settings, sponsors as sponsors_router, telegram as telegram_router, portfolios, portfolio_designs
 
 
 def _run_lightweight_migrations():
@@ -122,9 +120,6 @@ def _run_lightweight_migrations():
                 print(f"[migration] {table}.{col_name} backfill skipped: {e}")
 
 
-_run_lightweight_migrations()
-
-
 def _seed_job_boards():
     """Load the bundled company list into the shared job-board registry.
 
@@ -145,9 +140,64 @@ def _seed_job_boards():
         print(f"[jobhunt] seed skipped: {e}")
 
 
-_seed_job_boards()
+# ---------------------------------------------------------------------------
+# One-time database preparation.
+#
+# create_all(), the column migrations and the board seed used to be three bare
+# module-level statements. That put them at IMPORT time, where an exception is
+# not an error the server reports — it is the server failing to exist. uvicorn
+# prints "Error loading ASGI app" and the process exits, and because
+# start-backend.bat ended with `goto :eof`, the console window closed and took
+# the traceback with it. From the outside that is exactly "the backend closes
+# by itself".
+#
+# The realistic failure here was never a broken schema, it was contention.
+# SQLite hands one writer the whole file, so a reload that starts a new process
+# while the old one still holds the write lock — or OneDrive holding the file
+# open mid-sync — makes create_all raise OperationalError: database is locked.
+# That clears on its own within a couple of seconds. Retrying costs nothing;
+# refusing to start costs the whole app.
+# ---------------------------------------------------------------------------
+def _prepare_database(attempts: int = 4) -> None:
+    import time
+    from sqlalchemy.exc import OperationalError
+
+    for attempt in range(1, attempts + 1):
+        try:
+            models.Base.metadata.create_all(bind=engine)
+            break
+        except OperationalError as e:
+            locked = "locked" in str(e).lower() or "busy" in str(e).lower()
+            if not locked or attempt == attempts:
+                print(f"[startup] could not create/verify tables: {e}")
+                raise
+            wait = attempt * 2
+            print(f"[startup] database is locked (attempt {attempt}/{attempts}) — "
+                  f"retrying in {wait}s. Another copy of the server is probably "
+                  f"still shutting down.")
+            time.sleep(wait)
+
+    _run_lightweight_migrations()
+    _seed_job_boards()
+
+
+_prepare_database()
 
 app = FastAPI(title="Momentum Tracker API", version="1.0.0")
+
+
+@app.middleware("http")
+async def _llm_scope(request: Request, call_next):
+    """Install a per-request box for the caller's LLM configuration.
+
+    Has to happen here, in the parent context, rather than in the auth
+    dependency: sync dependencies and sync endpoints run as separate threadpool
+    tasks with copied contexts, so a value set in the dependency never reaches
+    the endpoint. A mutable box installed upstream is shared by both copies.
+    """
+    from .ai import remote as _remote
+    _remote.new_request_scope()
+    return await call_next(request)
 
 # CORS origins come from ONE place in .env: FRONTEND_URL, the address the app
 # is actually served from. FRONTEND_ORIGINS only needs setting for the cases
@@ -185,7 +235,12 @@ app.add_middleware(
 # happens on a debounce while typing) to save almost nothing. Starlette skips
 # responses under minimum_size, and PDFs land close enough to that line that
 # it is worth knowing this was considered rather than overlooked.
-app.add_middleware(GZipMiddleware, minimum_size=700, compresslevel=6)
+# compresslevel is 1, not the default 6. On a JSON array of objects, level 1
+# gets within ~10% of level 6's size for roughly a quarter of the CPU, and this
+# app is served over localhost or a LAN where those bytes are free but the
+# per-request CPU is not — the dashboard alone fans out into nine responses
+# that all pass through here before anything paints.
+app.add_middleware(GZipMiddleware, minimum_size=700, compresslevel=1)
 
 @app.middleware("http")
 async def security_headers(request, call_next):
@@ -289,13 +344,17 @@ app.include_router(ats.router)
 app.include_router(review.router)
 app.include_router(docs.router)
 app.include_router(resume_builder.router)
+app.include_router(portfolios.router)
+app.include_router(portfolio_designs.router)
 app.include_router(chat.router)
 app.include_router(search.router)
 app.include_router(cover_letter.router)
 app.include_router(admin.router)
 app.include_router(extension.router)
+app.include_router(sponsors_router.router)
 app.include_router(study.timer_router)
 app.include_router(jobhunt.router)
+app.include_router(llm_settings.router)
 app.include_router(telegram_router.router)
 
 
@@ -339,6 +398,7 @@ if not logging.getLogger().handlers:
         format="%(levelname)s:    %(name)s — %(message)s",
     )
 logging.getLogger("momentum.telegram").setLevel(logging.INFO)
+logging.getLogger("momentum.jobhunt").setLevel(logging.INFO)
 
 
 @app.on_event("startup")
@@ -364,6 +424,96 @@ async def _start_telegram_workers():
         telegram_scheduler.run_scheduler(_telegram_stop), name="telegram-scheduler"))
 
 
+# ---------------------------------------------------------------------------
+# Sponsor-register refresh.
+#
+# GOV.UK republishes the register most weekdays; weekly is frequent enough that
+# an entry is never more than a few days stale, and infrequent enough to be a
+# rounding error in traffic to gov.uk. It shares the Telegram stop-event so
+# shutdown cancels it the same way.
+#
+# The first run is deliberate rather than lazy: without it the very first
+# lookup after install would report "register unavailable", which reads like a
+# broken feature rather than a cold cache.
+# ---------------------------------------------------------------------------
+SPONSOR_SYNC_INTERVAL_SECONDS = 7 * 24 * 60 * 60
+
+
+async def _sponsor_register_worker(stop: asyncio.Event):
+    from datetime import datetime
+    from .database import SessionLocal
+    from . import models as _models, sponsors as _sponsors
+
+    log = logging.getLogger("momentum.sponsors")
+
+    # Startup is the worst possible moment to do this. The browser is already
+    # asking for the dashboard, and a cold register means a ~100k-row download
+    # followed by a bulk insert into the same SQLite file those requests are
+    # reading. Ten seconds is invisible to something that refreshes weekly, and
+    # it keeps a restart from competing with the first page load.
+    try:
+        await asyncio.wait_for(stop.wait(), timeout=10)
+        return                       # asked to stop before the first sync
+    except asyncio.TimeoutError:
+        pass
+
+    while not stop.is_set():
+        try:
+            def _due_and_sync():
+                db = SessionLocal()
+                try:
+                    meta = db.query(_models.SponsorRegisterMeta).first()
+                    if meta and meta.synced_at and meta.org_count:
+                        age = (datetime.utcnow() - meta.synced_at).total_seconds()
+                        if age < SPONSOR_SYNC_INTERVAL_SECONDS:
+                            return None
+                    return _sponsors.sync_register(db)
+                finally:
+                    db.close()
+
+            # Blocking network + bulk insert; off the event loop so it can't
+            # stall request handling for the minute or so the sync takes.
+            result = await asyncio.to_thread(_due_and_sync)
+            if result:
+                log.info("sponsors: register synced — %s organisations", result["org_count"])
+        except Exception as exc:                       # noqa: BLE001
+            # Never fatal. A failed sync leaves the previous copy in place, and
+            # the feature degrades to "register unavailable" at worst.
+            log.warning("sponsors: sync failed (will retry): %s", exc)
+
+        try:
+            await asyncio.wait_for(stop.wait(), timeout=6 * 60 * 60)
+        except asyncio.TimeoutError:
+            pass
+
+
+@app.on_event("startup")
+async def _start_sponsor_worker():
+    _telegram_tasks.append(asyncio.create_task(
+        _sponsor_register_worker(_telegram_stop), name="sponsor-register-sync"))
+
+
+# ---------------------------------------------------------------------------
+# Job board sweep.
+#
+# Its own task rather than a step inside the Telegram scheduler, because that
+# loop only runs when a bot token is configured and the posting cache has to
+# stay current either way: the Job Hunt tab reads the cache whether or not
+# anybody set up Telegram. It shares the same stop event, so shutdown cancels
+# it alongside everything else.
+# ---------------------------------------------------------------------------
+@app.on_event("startup")
+async def _start_jobhunt_sweep_worker():
+    from .jobhunt import scheduler as jobhunt_scheduler
+
+    if not jobhunt_scheduler.is_enabled():
+        logging.getLogger("momentum.jobhunt").info(
+            "jobhunt: sweep OFF (JOBHUNT_SWEEP_ENABLED is false in .env)")
+        return
+    _telegram_tasks.append(asyncio.create_task(
+        jobhunt_scheduler.run_scheduler(_telegram_stop), name="jobhunt-sweep"))
+
+
 @app.on_event("shutdown")
 async def _stop_telegram_workers():
     if not _telegram_tasks:
@@ -371,9 +521,25 @@ async def _stop_telegram_workers():
     _telegram_stop.set()
     for task in _telegram_tasks:
         task.cancel()
-    # A cancelled long-poll is expected, not an error worth reporting — hence
-    # return_exceptions rather than letting shutdown raise.
-    await asyncio.gather(*_telegram_tasks, return_exceptions=True)
+    # Bounded, and return_exceptions, for two different reasons.
+    #
+    # return_exceptions: a cancelled long-poll is expected, not an error worth
+    # raising out of shutdown.
+    #
+    # wait_for: the poller can be parked inside a blocking urllib request on a
+    # worker thread, and cancelling a task does not interrupt a thread — the
+    # await only returns when the socket does, up to TELEGRAM_POLL_TIMEOUT plus
+    # margin. Waiting that out made every Ctrl+C and every --reload restart look
+    # like a thirty-second hang, and left the old process still polling while
+    # the new one started, which Telegram answers with 409 Conflict on both.
+    # Five seconds is plenty for a clean stop; past that the daemon thread in
+    # telegram/client.py is left to expire on its own and shutdown continues.
+    try:
+        await asyncio.wait_for(
+            asyncio.gather(*_telegram_tasks, return_exceptions=True), timeout=5)
+    except asyncio.TimeoutError:
+        logging.getLogger("momentum.telegram").info(
+            "telegram: a worker is still finishing a long-poll — not waiting for it")
     _telegram_tasks.clear()
 
 

@@ -300,6 +300,16 @@ def fetch_recruitee(token: str, company: str) -> list[dict]:
     return out
 
 
+def fetch_site(token: str, company: str) -> list[dict]:
+    """Any careers page, read from its schema.org structured data.
+
+    Imported lazily because pagescrape imports helpers from this module, and a
+    module-level import either way round would be a cycle.
+    """
+    from .pagescrape import fetch_site as _fetch
+    return _fetch(token, company)
+
+
 PROVIDERS: dict[str, Callable[[str, str], list[dict]]] = {
     "greenhouse": fetch_greenhouse,
     "lever": fetch_lever,
@@ -307,6 +317,8 @@ PROVIDERS: dict[str, Callable[[str, str], list[dict]]] = {
     "workable": fetch_workable,
     "smartrecruiters": fetch_smartrecruiters,
     "recruitee": fetch_recruitee,
+    # The catch-all: token is a full careers-page URL rather than a slug.
+    "site": fetch_site,
 }
 
 
@@ -354,4 +366,12 @@ def detect_board(url: str) -> tuple[str, str] | None:
             if token.lower() in _NOT_TOKENS:
                 continue
             return provider, token
+    # Not one of the six ATS platforms. If it is a URL at all, it can still be
+    # read from its structured data — that is what the "site" provider is for,
+    # and it is what makes "any company careers page" true rather than
+    # "any company on a platform we happen to support".
+    if re.match(r"^(https?://)?[\w.-]+\.[a-z]{2,}(/|$)", text, re.I):
+        if not text.lower().startswith(("http://", "https://")):
+            text = "https://" + text
+        return "site", text
     return None

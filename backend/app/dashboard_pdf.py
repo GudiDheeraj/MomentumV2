@@ -23,6 +23,7 @@ rectangles, so axes, labels and legends behave like charts rather than like
 drawings that happen to look like charts.
 """
 import io
+import os
 from datetime import datetime
 
 from reportlab.lib import colors
@@ -38,9 +39,51 @@ except ImportError:                     # older builds keep it alongside Pie
 from reportlab.graphics.charts.barcharts import VerticalBarChart
 from reportlab.graphics.charts.linecharts import HorizontalLineChart
 from reportlab.graphics.charts.legends import Legend
+from reportlab.lib.utils import ImageReader
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak,
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image,
 )
+
+
+# ---------------------------------------------------------------------------
+# The brand mark on an export
+# ---------------------------------------------------------------------------
+# The header bar used to read "⚡ Momentum" — a lightning emoji standing in for
+# a logo, which renders as a different glyph on every machine and as a hollow
+# box on some. The real mark ships with the backend and is drawn as an image;
+# the knockout (white) version is used because the bar is navy and the mark is
+# dark teal. If the artwork is ever missing the export still builds, wordmark
+# only — a logo is never a reason for a download to fail.
+BRAND_DIR = os.path.join(os.path.dirname(__file__), "brand")
+
+
+def brand_mark(height_pt: float = 15, light: bool = True):
+    """The M, sized by height. None when the artwork isn't there."""
+    path = os.path.join(BRAND_DIR, "mark-light.png" if light else "mark.png")
+    if not os.path.exists(path):
+        return None
+    try:
+        width, height = ImageReader(path).getSize()
+        return Image(path, width=height_pt * width / height, height=height_pt)
+    except Exception:                       # noqa: BLE001
+        return None
+
+
+def brand_bar_row(text_style, height_pt: float = 15):
+    """The mark and the wordmark side by side, as one flowable."""
+    mark = brand_mark(height_pt)
+    word = Paragraph("Momentum", text_style)
+    if mark is None:
+        return word
+    row = Table([[mark, word]], colWidths=[height_pt * 1.75 + 9, None])
+    row.setStyle(TableStyle([
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+        ("LEFTPADDING", (0, 0), (-1, -1), 0), ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+        ("TOPPADDING", (0, 0), (-1, -1), 0), ("BOTTOMPADDING", (0, 0), (-1, -1), 0),
+    ]))
+    return row
+
+
 
 from .report_pdf import (
     NAVY, NAVY_DARK, MINT, MUTED, LIGHT_RULE, STATUS_LABELS, STATUS_BADGE_COLORS,
@@ -77,7 +120,7 @@ def _styles():
 
 
 def _masthead(st, user_name, subtitle):
-    bar = Table([[Paragraph("⚡ Momentum", st["app"])],
+    bar = Table([[brand_bar_row(st["app"], 17)],
                  [Paragraph(subtitle, st["sub"])],
                  [Paragraph(f"{user_name} &nbsp;·&nbsp; {datetime.utcnow().strftime('%d %b %Y')}", st["sub"])]],
                 colWidths=[CARD_W])

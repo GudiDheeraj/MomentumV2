@@ -1,0 +1,614 @@
+{
+  "software_engineer": [
+    {
+      "level": "early",
+      "headline": "Graduate with a placement year behind him",
+      "why": "The industrial placement is the load-bearing entry on a UK graduate CV, so it is written like a real job with real outcomes. Notice that each project says what the stack was, which part he wrote and whether anyone actually used it — a repository link on its own proves nothing.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Jonah Adeyemi",
+        "title": "Graduate Software Engineer",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900612",
+        "email": "jonah.adeyemi@example.com",
+        "linkedin": "linkedin.com/in/jonah-adeyemi-example",
+        "website": "jadeyemi.example.com",
+        "summary": "- Computer science graduate with a twelve-month industrial placement writing production Python and TypeScript.\n- Comfortable working in an existing codebase: the placement work below was all changes to a system with paying users, not greenfield.",
+        "skills": "Languages: Python, TypeScript, SQL, some Go\nWeb and services: FastAPI, React, PostgreSQL, Redis, REST\nTesting and tooling: pytest, Playwright, Git, GitHub Actions, Docker\nWays of working: code review, pair programming, Scrum, Linux",
+        "experience": "Software Engineer (Industrial Placement) | Orrery Software | Manchester, UK | Jul 2023 - Aug 2024\n- Rewrote the CSV import that customers used to onboard their data; the 40-minute timeout that generated most support tickets became a 90-second background job.\n- Added Playwright coverage to the checkout flow after a regression reached customers, and the same bug class has not shipped since.\n- Took 60 to 80 issues through review during the year, including two on-call handovers under supervision.\n- Wrote the internal runbook new placement students still use in their first week.\n---\nStudent Technology Assistant | University of Manchester | Manchester, UK | Oct 2022 - Jun 2023\n- Ran drop-in lab support for first-year Python students, roughly 15 hours a week alongside study.\n- Automated the lab machine-image checks that two staff had been doing by hand each term.",
+        "education": "BSc Computer Science with Industrial Experience (2:1) | University of Manchester | Sep 2021 - Jun 2025\n---\nA-levels: Mathematics (A*), Physics (A), Computer Science (A) | Ashfield Sixth Form College | Sep 2019 - Jun 2021",
+        "projects": "Rota Swap: Shift-swapping app for a student bar, Django and HTMX, deployed on Fly.io. Used by 34 staff across two venues for a year; replaced a WhatsApp group that lost requests.\n---\nDissertation - Incremental Type Inference: Built a caching type checker for a toy ML dialect in OCaml, cutting re-check time on a 5,000-line corpus from 4.1s to 0.6s. Marked 78.",
+        "publications": "",
+        "certifications": "AWS Certified Cloud Practitioner"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years on one product, owning features",
+      "why": "At this stage a reader is checking whether you can carry a feature from spec to production and leave the codebase better than you found it. Every bullet names the system, its scale and the decision that changed — and education has dropped to a single line at the bottom, which is where it belongs by now.",
+      "template_id": "tech_clean_colorful",
+      "data": {
+        "full_name": "Marta Kowalczyk",
+        "title": "Software Engineer",
+        "location": "Edinburgh, UK",
+        "phone": "+44 7700 900238",
+        "email": "marta.kowalczyk@example.com",
+        "linkedin": "linkedin.com/in/marta-kowalczyk-example",
+        "website": "",
+        "summary": "- Five years building and running a scheduling product used by 900 care providers; owns the rostering engine end to end.\n- Splits time between feature work and the slower work of making a seven-year-old codebase safe to change.",
+        "skills": "Languages: Python, TypeScript, SQL\nStack: Django, Celery, PostgreSQL, React, Redis, Terraform, AWS\nQuality: pytest, Playwright, contract tests, feature flags, trunk-based development\nOther: incident response, technical writing, interviewing",
+        "experience": "Software Engineer | Larkspur Care Group Technology | Edinburgh, UK | Feb 2023 - Present\n- Rebuilt shift matching as a constraint solver, which cut unfilled shifts across the customer base from 9% to 3.5% and removed the manual override screen entirely.\n- Introduced feature flags and a staged rollout process; releases went from fortnightly and tense to nine a week.\n- Cut the median API response for the rota view from 1.9s to 310ms by fixing an N+1 that had survived three previous performance sprints.\n- Ran the migration off a shared database that two teams had been editing, splitting it into two services over four months with no customer-visible downtime.\n---\nSoftware Engineer | Fernwood Learning | Glasgow, UK | Sep 2020 - Jan 2023\n- Built the assignment-submission service handling exam-week peaks of 40,000 uploads a day.\n- Replaced a nightly reporting job that regularly overran into the school day with an incremental pipeline finishing by 04:00.\n- Mentored two apprentices through their first year, both of whom passed their end-point assessment.",
+        "education": "BSc Computer Science (First Class) | University of Edinburgh | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Eleven years, staff engineer across three teams",
+      "why": "A staff-level CV stops listing languages and starts listing decisions. The skills block has shrunk to three lines, the bullets carry architecture, migrations and money, and influence outside his own team — standards, hiring, the review he chairs — is treated as achievement rather than housekeeping.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Ravi Chandrasekaran",
+        "title": "Staff Software Engineer",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900745",
+        "email": "r.chandrasekaran@example.com",
+        "linkedin": "linkedin.com/in/ravi-chandrasekaran-example",
+        "website": "",
+        "summary": "- Staff engineer, eleven years in logistics and marketplace systems; works across three teams rather than inside one.\n- Currently accountable for the order platform: 2.4m orders a month, 40 engineers touching it, a £1.6m annual infrastructure line.",
+        "skills": "Technical: Go, Java, Python, PostgreSQL, Kafka, Kubernetes, AWS; event-driven and CQRS designs, schema evolution\nScope: architecture review, technical strategy, incident command, hiring loops\nWriting: design documents, RFC process, post-incident reviews",
+        "experience": "Staff Software Engineer | Kestrel Logistics | Bristol, UK | Apr 2022 - Present\n- Led the two-year decomposition of the order monolith into six services, which took deployment lead time from eleven days to under two hours and let three teams release independently.\n- Wrote the event-schema standard and the compatibility test that enforces it; cross-team breakages fell from roughly one a fortnight to two in the last year.\n- Cut £480k a year from the compute bill by moving batch reconciliation off always-on clusters, after showing the finance team where the money actually went.\n- Chair the architecture review; rewrote it from a gate that blocked teams into a two-day advisory turnaround, and adoption went from grudging to voluntary.\n- Ran incident command for the 2024 carrier-API outage and wrote the review that produced the current dependency-isolation rules.\n---\nSenior Software Engineer | Palisade Retail | Bristol, UK | Jun 2018 - Mar 2022\n- Designed and shipped the inventory reservation service behind click-and-collect for 320 stores, holding oversell below 0.2% through two peak seasons.\n- Moved the team from quarterly releases to continuous delivery, which halved the change-failure rate rather than raising it.\n- Interviewed roughly 90 candidates and rewrote the systems-design stage after it was shown to filter on vocabulary rather than ability.\n---\nSoftware Engineer | Whitfield Utilities | Reading, UK | Sep 2014 - May 2018\n- Built the smart-meter ingestion pipeline taking 11m readings a day, replacing a vendor product that cost £220k a year to license.\n- Second-line on-call for the billing system through two regulatory price-cap changes.",
+        "education": "MEng Computer Science | University of Bristol | Sep 2010 - Jun 2014",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "frontend_engineer": [
+    {
+      "level": "early",
+      "headline": "Design school to front-end, eighteen months in",
+      "why": "Front-end is one of the few fields where the CV is read alongside a live artefact, so the portfolio URL sits in the header rather than at the end. The design background is an asset only once it is attached to engineering numbers — accessibility audits passed, bundle sizes, Core Web Vitals — which is exactly what these project lines do.",
+      "template_id": "creative_colorful",
+      "data": {
+        "full_name": "Sofia Marchetti",
+        "title": "Front-End Engineer",
+        "location": "Brighton, UK",
+        "phone": "+44 7700 900159",
+        "email": "sofia.marchetti@example.com",
+        "linkedin": "linkedin.com/in/sofia-marchetti-example",
+        "website": "sofiamarchetti.example.com",
+        "summary": "- Graphic designer who moved into front-end engineering after a coding bootcamp; eighteen months writing production React and TypeScript.\n- Brings the part most junior front-end CVs are missing: can read a Figma file properly, and can also tell you why the page fails WCAG 2.2 AA.",
+        "skills": "Core: HTML, CSS, JavaScript, TypeScript\nFrameworks: React, Next.js, Astro, Tailwind, Storybook\nQuality: Jest, React Testing Library, Playwright, axe-core, Lighthouse CI\nAccessibility: WCAG 2.2 AA, keyboard and screen-reader testing (NVDA, VoiceOver), ARIA patterns\nDesign: Figma, design tokens, type and colour systems",
+        "experience": "Junior Front-End Engineer | Glasshouse Studios | Brighton, UK | Mar 2025 - Present\n- Rebuilt the marketing site templates as Astro islands, taking Largest Contentful Paint from 4.2s to 1.4s on a mid-range Android handset.\n- Took the component library from 11 to 34 components and wrote the Storybook docs, which stopped three teams rebuilding the same date picker.\n- Fixed 47 of the 52 issues from an external accessibility audit and added axe-core to CI so the same failures cannot merge again.\n---\nGraphic Designer | Quillfield Media | Brighton, UK | Sep 2021 - Aug 2024\n- Designed print and digital campaigns for eight retail clients; ran the studio's move to a shared Figma component set.\n- Built the first HTML email templates in-house, which is where the switch to engineering started.",
+        "education": "Software Engineering Bootcamp (16 weeks) | Makers Academy | Sep 2024 - Jan 2025\n---\nBA Graphic Design (2:1) | University of Brighton | Sep 2018 - Jun 2021",
+        "projects": "Sussex Tide Times: Offline-first PWA in Next.js showing tide and swell data for 18 beaches. 2,100 monthly users, Lighthouse 100 on performance and accessibility, source on GitHub.\n---\nType Scale Playground: Small tool for testing modular type scales against WCAG contrast rules at every step; picked up by two design teams after a write-up on the studio blog.",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Four years, design systems and web performance",
+      "why": "Mid-level front-end is judged on the two numbers nobody can argue with: Core Web Vitals and accessibility audit results. Adoption counts as scope here, so the component-library bullets say how many teams took it up rather than how many components exist.",
+      "template_id": "diagonal_split",
+      "data": {
+        "full_name": "Theo Nakamura",
+        "title": "Front-End Engineer",
+        "location": "Austin, TX",
+        "phone": "+1 (512) 555-0143",
+        "email": "theo.nakamura@example.com",
+        "linkedin": "linkedin.com/in/theo-nakamura-example",
+        "website": "theonakamura.example.com",
+        "summary": "- Four years on high-traffic consumer web, split between a design system team and the checkout squad that consumes it.\n- Owns web performance as a discipline: budgets in CI, a real-user monitoring dashboard, and the unglamorous work of holding the line after launch.",
+        "skills": "Languages: TypeScript, JavaScript, CSS, some Rust (build tooling)\nFrameworks: React, Next.js, Remix, Vite, Turborepo\nPerformance: Core Web Vitals, RUM, bundle budgets, code splitting, image pipelines, Lighthouse CI\nAccessibility: WCAG 2.2 AA, axe, screen-reader testing, accessible form patterns\nTesting: Vitest, Testing Library, Playwright, visual regression",
+        "experience": "Front-End Engineer | Bramblewick Foods | Austin, TX | Jan 2024 - Present\n- Cut the checkout bundle from 780kB to 240kB by splitting the address autocomplete and payment SDKs out of the critical path; mobile conversion rose 2.3% against a holdout.\n- Set per-route performance budgets in CI, which has blocked 31 regressions from merging and ended the quarterly performance firefight.\n- Rewrote the address and payment forms to pass WCAG 2.2 AA after a legal review; the same work reduced form-abandonment on mobile by 6%.\n- Shipped a server-rendered product page in Next.js, taking Interaction to Next Paint from 480ms to 140ms at the 75th percentile.\n---\nFront-End Engineer | Arden Mobility | Austin, TX | Jul 2022 - Dec 2023\n- Built the design system's form and navigation primitives; six of eight product teams adopted them within two quarters.\n- Replaced hand-written CSS with design tokens generated from Figma, which ended a long-running argument about brand colors by making it a build step.\n- Ran the migration from Enzyme to Testing Library across 1,400 tests without freezing feature work.",
+        "education": "BS Computer Science | University of Texas at Austin | Aug 2018 - May 2022",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Nine years, now owns the web platform",
+      "why": "The framework list shrinks to one line and the space goes to platform decisions: which rendering strategy, which migration, which standard became a release gate. A senior front-end CV should let a reader see what you made non-negotiable for everyone else, not what you can build yourself.",
+      "template_id": "tech_clean_colorful",
+      "data": {
+        "full_name": "Lena Fitzhugh",
+        "title": "Principal Front-End Engineer",
+        "location": "London, UK",
+        "phone": "+44 7700 900874",
+        "email": "lena.fitzhugh@example.com",
+        "linkedin": "linkedin.com/in/lena-fitzhugh-example",
+        "website": "",
+        "summary": "- Principal engineer for the web platform at a subscription media business: 14m monthly visitors, 30 engineers building on top of what her team owns.\n- Nine years front-end, the last four spent on the parts that are hard to reverse — rendering strategy, the accessibility standard, and who is allowed to add a dependency.",
+        "skills": "Platform: rendering strategy (SSR, streaming, edge), micro-frontends and why they were rejected, monorepo tooling, dependency governance\nTechnical: TypeScript, React, Next.js, Node, CDN and caching, Core Web Vitals\nOrganisational: technical strategy, hiring, mentoring, accessibility policy, vendor selection",
+        "experience": "Principal Front-End Engineer | Harbourlight Media | London, UK | Nov 2022 - Present\n- Made WCAG 2.2 AA a release gate rather than a quarterly clean-up, negotiating it through product leadership; open accessibility defects fell from 380 to under 40 in a year.\n- Led the move to streaming server rendering across the article and video pages, which lifted Core Web Vitals pass rate from 46% to 91% and recovered an estimated £900k a year in search-driven subscriptions.\n- Rejected a proposed micro-frontend split and wrote the paper explaining why; the modular monolith that replaced it is still shipping 40 releases a week.\n- Grew the platform team from three to eight, including two internal moves from product teams, and set the on-call rotation the group now shares.\n---\nSenior Front-End Engineer | Sable and Finch | London, UK | Mar 2019 - Oct 2022\n- Owned the front end of a full replatform for a 900-store retailer, delivered over 14 months with no drop in conversion at cutover.\n- Introduced real-user monitoring; the first month's data killed two performance projects that were optimising things nobody experienced.\n- Ran the internal front-end guild, roughly 25 engineers, and its fortnightly design-review clinic.\n---\nFront-End Developer | Coppergate Travel | Reading, UK | Aug 2016 - Feb 2019\n- Built the booking funnel's date and passenger selection, used for around 6,000 bookings a day.\n- First accessibility work at the company after a customer complaint, which became the internal checklist still in use.",
+        "education": "BA Modern Languages | University of Warwick | Sep 2012 - Jun 2015",
+        "projects": "",
+        "publications": "Conference talk: \"The rendering decision you cannot undo\", State of the Browser, 2024",
+        "certifications": ""
+      }
+    }
+  ],
+  "backend_engineer": [
+    {
+      "level": "early",
+      "headline": "Degree apprenticeship, two years on payments",
+      "why": "The degree-apprenticeship route means the job and the qualification run over the same four years, and the education entry has to say so or the dates look like an error. A backend junior proves themselves with one service they genuinely own, which is why the payments work is written in more depth than everything else.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Idris Bello",
+        "title": "Software Engineer, Backend",
+        "location": "Nottingham, UK",
+        "phone": "+44 7700 900326",
+        "email": "idris.bello@example.com",
+        "linkedin": "linkedin.com/in/idris-bello-example",
+        "website": "",
+        "summary": "- Backend engineer trained through a Level 6 digital and technology solutions degree apprenticeship, now two years past the end-point assessment.\n- Owns the refund service in a payments platform handling around 90,000 transactions a day, including its share of the on-call rota.",
+        "skills": "Languages: Java, Go, SQL\nServices: Spring Boot, REST, gRPC, RabbitMQ, PostgreSQL, Redis\nInfrastructure: Docker, Kubernetes, GitHub Actions, AWS (ECS, RDS, SQS)\nPractice: unit and contract testing, idempotency, observability with Grafana and OpenTelemetry",
+        "experience": "Software Engineer, Backend | Windrose Payments | Nottingham, UK | Sep 2022 - Present\n- Own the refund service end to end: rewrote its retry handling around idempotency keys after a duplicate-refund incident, and the failure class has not recurred in 19 months.\n- Added OpenTelemetry tracing across four services, which cut the time to locate a failing hop during incidents from hours to minutes.\n- Moved the settlement reconciliation job from a nightly batch to a queue consumer, so merchants see refunds within 15 minutes rather than the next morning.\n- Carry second-line on-call one week in five and wrote the runbook the rest of the rota uses for refund failures.\n---\nApprentice Software Engineer | Windrose Payments | Nottingham, UK | Sep 2018 - Aug 2022\n- Four-year apprenticeship rotating through the API, ledger and integrations teams alongside part-time study.\n- Built the merchant sandbox environment now used by every new integration partner.",
+        "education": "BSc Digital and Technology Solutions (First Class), Level 6 apprenticeship | Nottingham Trent University | Sep 2018 - Jul 2022\n---\nBTEC Level 3 Extended Diploma, Computing (D*DD) | Castlefield College | Sep 2016 - Jun 2018",
+        "projects": "Ledger Fuzzer: Property-based test harness in Go that generates random payment sequences and asserts the ledger balances. Found two real ordering bugs in staging before customers did; now runs nightly.",
+        "publications": "",
+        "certifications": "AWS Certified Developer - Associate"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, high-throughput services in Go",
+      "why": "A backend CV lives or dies on scale figures. Requests per second, p99 latency and data volume tell a reader whether you have operated something under load; \"built microservices\" does not. Notice that the failures and the rollback are on the page too, because a service that has never been stressed teaches nothing.",
+      "template_id": "swiss_grid",
+      "data": {
+        "full_name": "Fatima Benali",
+        "title": "Backend Engineer",
+        "location": "London, UK",
+        "phone": "+44 7700 900491",
+        "email": "fatima.benali@example.com",
+        "linkedin": "linkedin.com/in/fatima-benali-example",
+        "website": "",
+        "summary": "- Five years on high-throughput backend systems, currently the availability API behind a hotel booking platform: 12,000 requests a second at peak, 60ms p99.\n- Comfortable at the boundary where the database stops being the easy answer — partitioning, caching, and knowing which reads may be stale.",
+        "skills": "Languages: Go, Python, SQL\nData: PostgreSQL (partitioning, logical replication), Redis, Kafka, ClickHouse\nServices: gRPC, REST, protobuf, connection pooling, rate limiting, circuit breakers\nOperations: Kubernetes, Terraform, Prometheus, Grafana, load testing with k6",
+        "experience": "Backend Engineer | Coppergate Travel | London, UK | Jun 2023 - Present\n- Rebuilt the availability API around a read-through cache with per-property invalidation, taking p99 from 940ms to 60ms and removing the need for a planned £300k database upgrade.\n- Partitioned the 4.1bn-row bookings table by month, cutting the nightly reporting query from 50 minutes to under three and making retention deletes possible at all.\n- Introduced load testing to the release process after a marketing push took the search tier down; every service now has a documented capacity ceiling.\n- Shipped, then rolled back, an event-sourced pricing rewrite when replay times proved unworkable at our volume, and wrote up what the second attempt did differently.\n---\nBackend Engineer | Tessellate Labs | London, UK | Aug 2021 - May 2023\n- Built the webhook delivery service for 1,400 integrating customers: at-least-once delivery, exponential backoff, 99.95% delivered within a minute.\n- Cut Kafka consumer lag during peaks from 20 minutes to under 30 seconds by fixing partition-key skew that had been blamed on the broker for a year.\n- Took the API from no rate limiting to per-tenant quotas, which ended the noisy-neighbour incidents that dominated on-call.",
+        "education": "MSc Computing Science (Distinction) | Imperial College London | Sep 2020 - Sep 2021\n---\nBSc Mathematics | University of Leeds | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Twelve years, owns the transaction platform",
+      "why": "At this level the interesting content is what you decommissioned, not what you added. Migrations, consistency choices, the on-call load you are accountable for and the cost of the thing you own — those are the bullets. The database list has collapsed into one supporting line, which is the correct trade.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Gustav Lindqvist",
+        "title": "Principal Backend Engineer",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900068",
+        "email": "gustav.lindqvist@example.com",
+        "linkedin": "linkedin.com/in/gustav-lindqvist-example",
+        "website": "",
+        "summary": "- Principal engineer accountable for the transaction platform at a building society: 6m accounts, £14bn in balances, 24 engineers across four teams building on it.\n- Twelve years in financial backend systems, most of it spent moving money correctly and proving to auditors that it was moved correctly.",
+        "skills": "Technical: Java, Kotlin, Go, PostgreSQL, Oracle, Kafka, Kubernetes, AWS; distributed transactions, double-entry ledgers, exactly-once semantics\nDomain: payments, Faster Payments and BACS, double-entry accounting, PRA and FCA operational-resilience requirements\nScope: technical leadership across four teams, architecture governance, vendor and regulator conversations",
+        "experience": "Principal Backend Engineer | Northaven Building Society | Leeds, UK | Feb 2022 - Present\n- Led the four-year migration of the core ledger off a mainframe batch process onto an event-driven platform, running both in parallel for nine months and cutting over 6m accounts without a single reconciliation break.\n- Retired the £2.3m-a-year mainframe licence that migration depended on, which is what funded the programme in the first place.\n- Redesigned the payment engine for real-time settlement: end-of-day batch became sub-second posting, and the operational-resilience impact tolerance moved from four hours to fifteen minutes.\n- Rewrote the on-call model after the platform team was carrying 40 pages a month; it is now under six, and the change was measured rather than asserted.\n- Present the platform's design to the regulator's operational-resilience reviews and own the technical evidence pack.\n---\nSenior Backend Engineer | Tidewater Bank | Leeds, UK | Jan 2018 - Jan 2022\n- Built the open-banking API estate to the UK standard, serving 380 registered third parties at 99.98% availability.\n- Replaced optimistic locking on the balance table with a serialisable ledger append, ending a class of overdraft race conditions that had cost roughly £150k a year in write-offs.\n- Led six engineers and ran the team's design-review practice.\n---\nBackend Developer | Ferrymead Systems | Manchester, UK | Sep 2014 - Dec 2017\n- Built card-authorisation integrations for three acquiring banks, including the PCI DSS scope reduction that took 40 servers out of the audit boundary.\n- Second-line support for a platform processing 2m authorisations a day.",
+        "education": "MSc Distributed Systems | KTH Royal Institute of Technology | Aug 2012 - Jun 2014\n---\nBSc Computer Engineering | Lund University | Aug 2009 - Jun 2012",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "fullstack_engineer": [
+    {
+      "level": "early",
+      "headline": "Physics graduate, first year at an agency",
+      "why": "Agency work gives a junior full-stack CV breadth faster than anything else, but breadth reads as shallow unless each entry names the client problem, the choice made and what happened afterwards. The physics degree stays on the page because the numerical work is genuinely relevant, not because every degree deserves space.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Saoirse Donnelly",
+        "title": "Full-Stack Developer",
+        "location": "Belfast, UK",
+        "phone": "+44 7700 900713",
+        "email": "saoirse.donnelly@example.com",
+        "linkedin": "linkedin.com/in/saoirse-donnelly-example",
+        "website": "saoirsedonnelly.example.com",
+        "summary": "- Physics graduate, fourteen months at a digital agency delivering seven client builds across Rails, Next.js and PostgreSQL.\n- Agency pace means shipping alone: on four of those projects there was no second engineer to hand the tricky part to.",
+        "skills": "Front end: TypeScript, React, Next.js, Tailwind, accessible forms\nBack end: Ruby on Rails, Node, PostgreSQL, Sidekiq, REST and webhooks\nInfrastructure: Heroku, Vercel, AWS S3 and Lambda, GitHub Actions, Sentry\nAdjacent: Stripe and GoCardless integrations, Figma handover, client demos",
+        "experience": "Junior Full-Stack Developer | Bellcastle Digital | Belfast, UK | Jun 2025 - Present\n- Sole developer on a booking system for a chain of six climbing gyms; live in ten weeks, now taking around 1,800 bookings a month.\n- Replaced a client's spreadsheet-based membership process with a Rails admin and Stripe billing, removing roughly two days of manual work each month.\n- Built a Next.js storefront for a food producer that held up through a Christmas peak of 40 orders an hour after the previous site had fallen over.\n- Introduced Sentry across the agency's active projects, which surfaced three silent payment failures nobody had reported.\n---\nLaboratory Demonstrator | Queen's University Belfast | Belfast, UK | Oct 2023 - May 2025\n- Supported second-year physics computing labs; wrote the Python marking scripts that replaced hand-marking for 140 students.",
+        "education": "BSc Physics (2:1) | Queen's University Belfast | Sep 2022 - Jun 2025\n---\nA-levels: Physics (A), Mathematics (A), Chemistry (B) | Rathcoole Grammar School | Sep 2020 - Jun 2022",
+        "projects": "Tide and Trail: Next.js and PostGIS site mapping coastal walks against tide windows in Northern Ireland. Around 900 monthly users; the routing logic came out of the dissertation work on graph search.\n---\nSpectra Fit: Small Rails app for fitting spectroscopy peaks, built for the university lab and still used by two research groups. Handles files the commercial tool refused to open.",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, features from schema to screen",
+      "why": "The trap in a full-stack CV is reading as half a front-end engineer and half a back-end one, which makes a hiring manager for either job pass. These bullets each follow one feature all the way through — data model, API, interface, and the number that moved — which is the thing neither specialist can claim.",
+      "template_id": "tech_clean_colorful",
+      "data": {
+        "full_name": "Samir Haddad",
+        "title": "Full-Stack Engineer",
+        "location": "Birmingham, UK",
+        "phone": "+44 7700 900285",
+        "email": "samir.haddad@example.com",
+        "linkedin": "linkedin.com/in/samir-haddad-example",
+        "website": "",
+        "summary": "- Five years full-stack in B2B SaaS; takes features from data model to interface and stays on them after release.\n- Works best on the ambiguous ones where the schema and the screen have to be designed against each other, and neither is settled at the start.",
+        "skills": "Languages: TypeScript, Python, SQL\nFront end: React, Next.js, TanStack Query, Tailwind, Playwright\nBack end: FastAPI, Node, PostgreSQL, Redis, Celery, REST and GraphQL\nPlatform: AWS, Docker, Terraform, GitHub Actions, Datadog\nProduct: user interviews, instrumentation, A/B readouts with the analyst",
+        "experience": "Full-Stack Engineer | Stonecrop Analytics | Birmingham, UK | Apr 2023 - Present\n- Built the scheduled-reports feature end to end — schema, generation queue, editor UI — and 62% of accounts had switched at least one report onto it within two quarters.\n- Reworked permissions from a flat role column to a proper policy model, closing an escalation path found in a customer's own security review and unblocking two enterprise deals.\n- Cut dashboard first-paint from 5.4s to 1.2s by moving aggregation into materialised views and paginating the front end against them; the fix was two thirds database, one third React.\n- Instrumented the onboarding flow and found 30% of new accounts abandoning at the data-source step, which redirected a quarter of roadmap.\n---\nSoftware Engineer | Marlowe Fitness | Birmingham, UK | Sep 2020 - Mar 2023\n- Shipped class booking and waitlists across web and the member portal for 140 gyms, including the fairness rules the operations team had asked for twice before.\n- Replaced a third-party form builder costing £30k a year with an internal one, then supported it for two years.\n- Ran the migration from JavaScript to TypeScript across a 90,000-line codebase, incrementally, without a feature freeze.",
+        "education": "BSc Computer Science (2:1) | Aston University | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Ten years, first engineer at two startups",
+      "why": "A senior CV deliberately held to one page. When the evidence is that you built the whole thing, the useful detail is what you chose not to build, who you hired behind you, and what the business did next — so the tooling list is three lines and the outcomes are in money and headcount.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Marisol Reyes-Tan",
+        "title": "Founding Engineer / Head of Engineering",
+        "location": "Denver, CO",
+        "phone": "+1 (720) 555-0192",
+        "email": "marisol.reyes-tan@example.com",
+        "linkedin": "linkedin.com/in/marisol-reyes-tan-example",
+        "website": "",
+        "summary": "- First engineering hire at two venture-backed startups; took one from prototype to $9m ARR and 22 engineers.\n- Ten years full-stack. The judgement on offer is about sequencing — what to build badly on purpose, and when that stops being the right answer.",
+        "skills": "Technical: TypeScript, Python, PostgreSQL, React, AWS, Terraform; multi-tenant SaaS, billing, SOC 2 controls\nLeadership: hiring and calibration, team structure, roadmap trade-offs, board-facing technical reporting",
+        "experience": "Head of Engineering (first engineer) | Trellis Health | Denver, CO | Mar 2021 - Present\n- Built the first version of the care-coordination product alone in five months; it carried the company to $2m ARR before the second engineer joined.\n- Grew engineering to 22 across four teams, hired every one of them, and kept regretted attrition under 8% through two funding rounds.\n- Deliberately ran on a single Postgres instance and a modular monolith until $6m ARR, then split out only the two services that were actually contended.\n- Led the SOC 2 Type II programme and the HIPAA controls work that opened the health-system segment, now 40% of revenue.\n- Cut infrastructure spend from 31% to 11% of revenue over eighteen months, mostly by deleting things rather than tuning them.\n---\nFounding Engineer | Perihelion Games | Remote, US | Jan 2018 - Feb 2021\n- Built the matchmaking and telemetry backend for a live multiplayer title that peaked at 180,000 daily players.\n- Wrote the deployment tooling that let a team of five ship weekly during live operations, and handed it over cleanly on exit.\n---\nSoftware Engineer | Ashgrove Aerospace | Boulder, CO | Jul 2015 - Dec 2017\n- Ground-station telemetry pipelines in Python and C++ for two small-satellite programmes.",
+        "education": "BS Computer Science | Purdue University | Aug 2011 - May 2015",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "mobile_engineer": [
+    {
+      "level": "early",
+      "headline": "Graduate with two apps actually on the store",
+      "why": "Mobile is the rare field where a junior can point at a shipped artefact, so the projects name the app, the platform and its store rating instead of describing the work. Crash-free session rate is the metric that separates somebody who has released an app from somebody who has only built one.",
+      "template_id": "startup_energetic",
+      "data": {
+        "full_name": "Kit Amankwah",
+        "title": "Mobile Engineer",
+        "location": "Cardiff, UK",
+        "phone": "+44 7700 900537",
+        "email": "kit.amankwah@example.com",
+        "linkedin": "linkedin.com/in/kit-amankwah-example",
+        "website": "kitamankwah.example.com",
+        "summary": "- Computer science graduate with two apps published under my own developer account and one shipped in a placement team.\n- Has been through the parts of mobile that a course does not cover: store review rejections, signing certificates, and a bad release that had to be pulled.",
+        "skills": "Platforms: Android (Kotlin, Jetpack Compose), iOS (Swift, SwiftUI)\nCore: coroutines, Room, Retrofit, MVVM, dependency injection with Hilt\nRelease: Google Play Console, App Store Connect, Fastlane, staged rollouts, Firebase Crashlytics\nOther: Git, GitHub Actions, Figma, accessibility (TalkBack, VoiceOver)",
+        "experience": "Android Engineer (Placement) | Arden Mobility | Cardiff, UK | Jul 2024 - Aug 2025\n- Rebuilt the journey-planning screen in Jetpack Compose, cutting cold-start time on low-end devices from 3.8s to 1.6s.\n- Took the crash-free session rate from 97.2% to 99.6% by fixing three lifecycle bugs that had been reported as \"random logouts\" for a year.\n- Added TalkBack support to the ticket-purchase flow, which was the first accessibility work the app had had.\n- Ran two staged rollouts and halted one at 10% after Crashlytics showed a spike on Android 11.\n---\nRetail Assistant | Redmoor Pharmacy Group | Cardiff, UK | Sep 2021 - Jun 2024\n- Part-time alongside study; trained six new starters on the dispensary system.",
+        "education": "BSc Computer Science with Placement Year (First Class) | Cardiff University | Sep 2021 - Jun 2026",
+        "projects": "Cwtch Walks (Android, Google Play): Offline walking-route app for south Wales. 4,300 downloads, 4.6 stars from 88 ratings, Kotlin and Compose with Mapbox tiles cached locally.\n---\nSet Break (iOS, App Store): Interval timer for climbers, SwiftUI and HealthKit. 1,100 downloads and a live-activity widget; rejected twice on background-audio grounds before it passed review.",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Four years native Android, then multiplatform",
+      "why": "Mobile release cycles are the thing to quantify: staged rollout percentages, crash-free sessions, store review turnaround, and the minimum OS version you were able to drop. Owning a release train is what separates a mid-level mobile engineer from somebody who owns screens.",
+      "template_id": "tech_clean_colorful",
+      "data": {
+        "full_name": "Elif Korkmaz",
+        "title": "Mobile Engineer",
+        "location": "Portland, OR",
+        "phone": "+1 (503) 555-0166",
+        "email": "elif.korkmaz@example.com",
+        "linkedin": "linkedin.com/in/elif-korkmaz-example",
+        "website": "",
+        "summary": "- Four years native Android, the last eighteen months moving a two-codebase product onto Kotlin Multiplatform.\n- Owns the release train for an app with 1.2m monthly active users: rollout policy, crash triage, and the argument about what ships on Thursday.",
+        "skills": "Android: Kotlin, Jetpack Compose, coroutines and Flow, Room, Hilt, WorkManager\nCross-platform: Kotlin Multiplatform, SQLDelight, Ktor; Swift and SwiftUI at the iOS boundary\nRelease and quality: Fastlane, staged rollouts, feature flags, Firebase Crashlytics, Espresso, Maestro\nPerformance: Baseline Profiles, Macrobenchmark, startup and jank tracing",
+        "experience": "Mobile Engineer | Bramblewick Foods | Portland, OR | Feb 2024 - Present\n- Moved the ordering, basket and pricing logic into a shared Kotlin Multiplatform module, which ended a two-year problem where iOS and Android calculated delivery fees differently.\n- Own the weekly release: staged rollouts at 5 / 20 / 100 with automatic halt on crash-rate regression, which has stopped three bad builds before 20% of users saw them.\n- Raised crash-free sessions from 99.1% to 99.87% and cut p90 cold start from 2.4s to 1.1s using Baseline Profiles.\n- Dropped support for Android 8 after showing it was 0.6% of users and 22% of crash volume; the argument was made with data rather than preference.\n---\nAndroid Engineer | Marlowe Fitness | Portland, OR | Aug 2022 - Jan 2024\n- Rewrote the workout-tracking screens from XML views to Compose over two quarters without a feature freeze.\n- Built offline sync for logged sessions, which removed the top support complaint from gyms with poor signal.\n- Set up the first instrumented test suite in CI, taking the pre-release manual regression pass from two days to four hours.",
+        "education": "BSc Computer Engineering | Middle East Technical University | Sep 2017 - Jun 2021",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Eleven years iOS, now leads mobile at a bank",
+      "why": "Senior mobile is accountable for what happens after the binary leaves the building — rollout policy, forced-upgrade thresholds, and the review gates a regulated app has to clear. The language list is one line; the release-governance and security detail is what a hiring manager at this level is actually reading for.",
+      "template_id": "tech_clean_colorful",
+      "data": {
+        "full_name": "Bram Visser",
+        "title": "Head of Mobile Engineering",
+        "location": "Glasgow, UK",
+        "phone": "+44 7700 900402",
+        "email": "bram.visser@example.com",
+        "linkedin": "linkedin.com/in/bram-visser-example",
+        "website": "",
+        "summary": "- Leads mobile engineering at a challenger bank: 3.1m monthly active users, 18 engineers across iOS, Android and a shared platform team.\n- Eleven years in mobile, six of them in regulated products where a bad release is a customer-harm event rather than a bad review.",
+        "skills": "Technical: Swift, SwiftUI, Kotlin, Jetpack Compose, Kotlin Multiplatform; mobile security, certificate pinning, biometric and device-binding flows\nGovernance: release policy, forced-upgrade thresholds, App Store and Play review escalation, annual mobile penetration testing, FCA operational-resilience evidence\nLeadership: three team leads reporting in, hiring, capability planning, vendor management",
+        "experience": "Head of Mobile Engineering | Foxglove Bank | Glasgow, UK | Jun 2022 - Present\n- Rebuilt the release process around feature flags and staged rollout; a critical fix now reaches all users in under six hours rather than the eight days an App Store cycle used to take.\n- Set the forced-upgrade policy after a payments bug stranded users on an old build, and negotiated it through compliance and customer operations rather than shipping it unilaterally.\n- Took the app from 3.4 to 4.6 stars over two years, mostly by fixing the biometric login failure that generated 40% of one-star reviews.\n- Grew the team from 9 to 18, introduced a mobile platform group, and cut the median pull-request wait from three days to four hours.\n- Own the annual mobile penetration test and the remediation plan the regulator's operational-resilience review reads.\n---\nPrincipal iOS Engineer | Ludgate Insurance | London, UK | Jan 2019 - May 2022\n- Led the claims app rebuild in SwiftUI, taking first-notification-of-loss submissions from 22% to 61% through the app and removing roughly 90,000 calls a year from the contact centre.\n- Introduced certificate pinning and jailbreak detection after a penetration test finding, then wrote the mobile security standard the group still applies.\n- Mentored four engineers; two now lead their own teams.\n---\niOS Developer | Coppergate Travel | Amsterdam, Netherlands | Sep 2015 - Dec 2018\n- Built the boarding-pass and offline itinerary features used by around 400,000 travellers a month.\n- Owned the Apple Wallet and push-notification integrations, including the migration to the modern push API.",
+        "education": "BSc Software Engineering | Delft University of Technology | Sep 2011 - Jun 2015",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "devops_sre": [
+    {
+      "level": "early",
+      "headline": "Service desk to SRE, first platform role",
+      "why": "The support-to-SRE route is common and the CV has to make the switch legible: the service-desk years are rewritten as incident handling and automation rather than ticket counts. One or two real certifications do more for a junior here than any side project, which is why they sit above education.",
+      "template_id": "twocolumn_sidebar",
+      "data": {
+        "full_name": "Ngozi Eze",
+        "title": "Site Reliability Engineer",
+        "location": "Reading, UK",
+        "phone": "+44 7700 900951",
+        "email": "ngozi.eze@example.com",
+        "linkedin": "linkedin.com/in/ngozi-eze-example",
+        "website": "",
+        "summary": "- Came through third-line support into a platform team; ten months as an SRE after four years keeping the same systems alive from the other side of the ticket.\n- The support background is the point: has handled roughly 500 real incidents, which is more than most people entering the discipline.",
+        "skills": "Infrastructure: Kubernetes, Docker, Terraform, Ansible, Linux administration\nCloud: AWS (EKS, EC2, IAM, CloudWatch, S3), some Azure\nObservability: Prometheus, Grafana, Loki, PagerDuty, structured logging\nScripting: Python, Bash, some Go\nProcess: incident response, on-call, change management, ITIL practices",
+        "experience": "Site Reliability Engineer | Whitfield Utilities | Reading, UK | Nov 2025 - Present\n- Replaced the hand-built staging environment with Terraform modules, so a rebuild that took two days of somebody's time now takes 40 minutes unattended.\n- Wrote the first Prometheus alerts based on customer-facing symptoms rather than CPU, which cut pages by roughly half while catching two outages the old alerts had missed.\n- Automated the certificate renewals that had caused three of the previous year's incidents.\n- On the primary rota one week in four; handled 22 incidents and wrote the review for the worst of them.\n---\nThird-Line Support Analyst | Whitfield Utilities | Reading, UK | Jan 2022 - Oct 2025\n- Escalation point for the metering platform, around 180 incidents a year, including major-incident bridge duty.\n- Wrote the Python scripts that automated the four most common restore procedures, taking each from 45 minutes of manual steps to a single command.\n- Trained six first-line analysts and rewrote the runbook set they work from.\n---\nIT Support Technician | Kingsmoor Borough Council | Reading, UK | Aug 2020 - Dec 2021\n- Desktop and network support for 900 staff across eleven sites.",
+        "education": "BSc Information Systems (2:1) | University of Hertfordshire | Sep 2016 - Jun 2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "Certified Kubernetes Administrator (CKA)\nHashiCorp Certified: Terraform Associate\nAWS Certified SysOps Administrator - Associate\nITIL 4 Foundation"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, on-call for a payments platform",
+      "why": "SRE bullets are graded on reliability numbers rather than tooling: SLOs defined, error budget spent, MTTR, change-failure rate, and hours of toil removed. Saying which rotation you carried and how heavy it was tells a reader more about the job you did than another Kubernetes mention.",
+      "template_id": "swiss_grid",
+      "data": {
+        "full_name": "Ruairi Doyle",
+        "title": "Site Reliability Engineer",
+        "location": "Newcastle upon Tyne, UK",
+        "phone": "+44 7700 900274",
+        "email": "ruairi.doyle@example.com",
+        "linkedin": "linkedin.com/in/ruairi-doyle-example",
+        "website": "",
+        "summary": "- Five years SRE on payments infrastructure: 34 services, 99.98% availability against a 99.95% SLO, primary on-call one week in five.\n- Spends more time deleting alerts and automating recovery than adding tooling; the platform runs on fewer moving parts than it did three years ago.",
+        "skills": "Reliability: SLI and SLO definition, error-budget policy, incident command, blameless post-incident review, chaos testing\nPlatform: Kubernetes, Helm, Argo CD, Terraform, Istio, AWS (EKS, RDS, MSK)\nObservability: Prometheus, Grafana, OpenTelemetry, Loki, Tempo, PagerDuty\nDelivery: GitHub Actions, progressive delivery, DORA metrics\nLanguages: Go, Python, Bash",
+        "experience": "Site Reliability Engineer | Windrose Payments | Newcastle upon Tyne, UK | Jul 2023 - Present\n- Defined SLOs for the 12 customer-facing services that had none; the error-budget policy that came with them has paused feature work twice, which is the point of having one.\n- Cut MTTR from 74 minutes to 19 by replacing dashboard-hunting with a single service-health view and automating the three most common recovery actions.\n- Took change-failure rate from 18% to 4.5% by moving deploys to Argo CD with automated canary analysis, while deployment frequency rose from 30 to 210 a week.\n- Removed roughly 15 hours a week of toil across the team by automating certificate rotation, database failover drills and access provisioning.\n- Ran incident command on the regional outage in March and wrote the review that produced the current multi-AZ requirement.\n---\nDevOps Engineer | Alderbrook Telecom | Newcastle upon Tyne, UK | Sep 2020 - Jun 2023\n- Migrated 60 services from hand-managed EC2 to EKS over 14 months, cutting the monthly bill by £38k through right-sizing along the way.\n- Built the shared CI templates that took a new service from repository to production in a day rather than three weeks.\n- Introduced game days; the first one found that nobody could actually restore the primary database from backup.",
+        "education": "BSc Computer Networks and Cyber Security (First Class) | Northumbria University | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "Certified Kubernetes Administrator (CKA)\nHashiCorp Certified: Terraform Associate"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Twelve years, reliability for 200 services",
+      "why": "At the top of SRE the evidence is organisational: who carries the pager, what the error-budget policy is actually allowed to stop, and how far the cloud bill fell. These bullets read like operating decisions because at this level that is what the job is — and the tool list has dropped to two lines to make room.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Deborah Vasquez",
+        "title": "Director of Site Reliability Engineering",
+        "location": "Chicago, IL",
+        "phone": "+1 (312) 555-0138",
+        "email": "deborah.vasquez@example.com",
+        "linkedin": "linkedin.com/in/deborah-vasquez-example",
+        "website": "",
+        "summary": "- Runs reliability for a healthcare data platform: 200 services, 4,000 nodes, a $9m annual cloud bill and 26 engineers in three SRE teams.\n- Twelve years in operations and reliability. The last four have been about organisational design as much as engineering — who owns what at 3am, and what the company is willing to stop doing to fix it.",
+        "skills": "Reliability at scale: SLO programme design, error-budget governance, incident command structure, capacity planning, disaster recovery testing\nPlatform: Kubernetes, Terraform, AWS and GCP, service mesh, multi-region failover\nCost: FinOps practice, showback and chargeback, commitment planning\nLeadership: three managers reporting in, hiring, on-call health, executive and board reporting",
+        "experience": "Director of Site Reliability Engineering | Trellis Health | Chicago, IL | Aug 2022 - Present\n- Rebuilt on-call across 200 services onto a you-build-it-you-run-it model; pages per engineer per week fell from 11 to 2.3 and voluntary attrition in the group halved.\n- Established the error-budget policy the executive team signed: two of last year's roadmap quarters were partially reallocated to reliability work under it, without a separate negotiation each time.\n- Cut cloud spend from $14m to $9m in two years through a FinOps practice with per-team showback, commitment purchasing and the retirement of 40 idle services.\n- Took the platform through its first successful full-region failover exercise, which then became a quarterly requirement with a named owner.\n- Rewrote the incident-severity definitions and command structure after a nine-hour outage; median time to declare a major incident went from 38 minutes to under five.\n---\nSRE Manager | Verity Health Systems | Chicago, IL | Mar 2019 - Jul 2022\n- Built the SRE function from two engineers to eleven, including the first formal on-call compensation and handover practice.\n- Led the migration of the clinical data pipeline to multi-region active-active, taking the recovery time objective from four hours to eleven minutes.\n- Introduced blameless post-incident review; repeat-cause incidents fell from 34% to 9% of the total over two years.\n---\nSenior Systems Engineer | Silverbirch Grid | Denver, CO | Jun 2014 - Feb 2019\n- Ran the Linux and virtualisation estate behind grid-balancing systems with a hard regulatory availability floor.\n- Automated patching across 1,800 hosts, ending a quarterly maintenance window that had cost 12 engineer-days each time.",
+        "education": "BS Computer Science | University of Colorado Boulder | Aug 2010 - May 2014",
+        "projects": "",
+        "publications": "",
+        "certifications": "AWS Certified DevOps Engineer - Professional\nFinOps Certified Practitioner"
+      }
+    }
+  ],
+  "cloud_architect": [
+    {
+      "level": "early",
+      "headline": "Network engineer crossing into cloud architecture",
+      "why": "Nobody starts as a cloud architect, so an early-career example in this field is really a career change. The on-premise years are reframed as capacity, networking and cost decisions rather than kit maintained, and the certifications sit above education because they are what lets a hiring manager take the move seriously.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Hyun-woo Park",
+        "title": "Cloud Engineer, moving into architecture",
+        "location": "Milton Keynes, UK",
+        "phone": "+44 7700 900830",
+        "email": "hyunwoo.park@example.com",
+        "linkedin": "linkedin.com/in/hyunwoo-park-example",
+        "website": "",
+        "summary": "- Seven years in enterprise networking, the last two designing and building AWS landing zones for the same organisation's migration programme.\n- The transferable part is not the tooling: routing, segmentation and capacity planning are the same problems in a VPC, and most people arriving from software have never had to think about them.",
+        "skills": "Cloud: AWS (Organizations, Control Tower, Transit Gateway, VPC, IAM, S3, RDS), Azure fundamentals\nNetworking: BGP, MPLS, VPN and Direct Connect, DNS, firewalls, network segmentation\nInfrastructure as code: Terraform, CloudFormation, Ansible\nDesign: landing zone patterns, hub-and-spoke topologies, hybrid connectivity, cost modelling",
+        "experience": "Cloud Engineer | Oakhaven Water | Milton Keynes, UK | Oct 2024 - Present\n- Designed and built the multi-account landing zone now hosting 40 workloads, including the Transit Gateway topology connecting it to two data centres.\n- Wrote the Terraform modules and guardrails that let application teams create their own accounts inside policy, taking provisioning from a six-week request to a same-day pipeline.\n- Modelled the run cost of three migration options and showed that the cheapest on paper was the most expensive over five years once egress was counted; the programme changed approach.\n- Built the hybrid DNS design that unblocked the first wave of migrations after two earlier attempts had stalled.\n---\nSenior Network Engineer | Oakhaven Water | Milton Keynes, UK | Apr 2019 - Sep 2024\n- Owned the WAN connecting 60 treatment sites; redesigned it around dual-carrier resilience after a single-carrier failure caused a nine-hour telemetry outage.\n- Cut annual circuit costs by £210k by consolidating legacy MPLS onto SD-WAN at 45 of those sites.\n- Ran the network side of two data-centre moves.\n---\nNetwork Technician | Alderbrook Telecom | Luton, UK | Jul 2017 - Mar 2019\n- Provisioning and fault resolution for business broadband and leased-line customers.",
+        "education": "BEng Electronic Engineering (2:1) | Loughborough University | Sep 2013 - Jun 2017",
+        "projects": "",
+        "publications": "",
+        "certifications": "AWS Certified Solutions Architect - Associate\nMicrosoft Certified: Azure Administrator Associate\nHashiCorp Certified: Terraform Associate\nCisco Certified Network Professional (CCNP) Enterprise"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, migrations for regulated clients",
+      "why": "Architecture CVs are read for the shape of what you designed, not the services you named — account structure, the compliance regime it had to satisfy, and what it cost to run afterwards. Because the work is client-facing, the engagements are listed separately with their size and outcome, the way a consultant's CV carries a deal list.",
+      "template_id": "consulting_premium",
+      "data": {
+        "full_name": "Georgina Attwell",
+        "title": "Cloud Architect",
+        "location": "Southampton, UK",
+        "phone": "+44 7700 900117",
+        "email": "georgina.attwell@example.com",
+        "linkedin": "linkedin.com/in/georgina-attwell-example",
+        "website": "",
+        "summary": "- Cloud architect in a consultancy practice, six years designing AWS and Azure estates for financial services and healthcare clients.\n- Every design below had to satisfy an external auditor as well as an engineering team, which is the constraint that shapes the work.",
+        "skills": "Platforms: AWS (Control Tower, Organizations, PrivateLink, KMS, GuardDuty), Azure (Landing Zones, Policy, Entra ID)\nArchitecture: multi-account landing zones, hub-and-spoke networking, data residency, disaster recovery design, migration patterns (6Rs)\nGovernance and compliance: ISO 27001, PCI DSS, SOC 2, DORA operational-resilience requirements, Well-Architected reviews\nCost: FinOps, tagging strategy, commitment planning, TCO modelling\nDelivery: Terraform, Azure DevOps, client workshops, target operating model design",
+        "experience": "Cloud Architect | Wrenfield Advisory | Southampton, UK | May 2023 - Present\n- Designed the AWS landing zone for a mid-size insurer's migration of 180 workloads, with the account and network structure that let their PCI DSS scope stay inside eight accounts instead of the whole estate.\n- Ran 14 Well-Architected reviews across four clients; the reliability findings from one of them prevented a single-AZ database design going live in a payments path.\n- Built the client-facing cost model that reset a migration business case from a promised 40% saving to a defensible 12%, which the client's finance director accepted where the original had been rejected.\n- Lead the practice's landing-zone reference implementation, now the starting point for every engagement rather than a fresh design each time.\n---\nCloud Consultant | Ferrymead Systems | London, UK | Aug 2020 - Apr 2023\n- Migrated a hospital group's imaging archive to Azure with data-residency and retention controls signed off by their information-governance board.\n- Designed the disaster-recovery topology for a wealth manager, taking tested recovery time from an assumed 24 hours to a demonstrated 90 minutes.\n- Ran the architecture workstream on a £4m programme, including the vendor evaluation that chose against the incumbent.",
+        "education": "MSc Cloud Computing | University of Southampton | Sep 2019 - Sep 2020\n---\nBSc Computer Science (2:1) | University of Portsmouth | Sep 2016 - Jun 2019",
+        "projects": "Insurer landing zone, 180 workloads: 18-month AWS migration, £2.1m programme. PCI DSS scope contained to eight accounts; run cost 22% under the modelled ceiling at completion.\n---\nHospital imaging archive to Azure: 400TB of clinical images with UK data-residency and 30-year retention controls; retrieval latency held under the radiologists' 3-second threshold.\n---\nWealth manager disaster recovery: cross-region design with quarterly tested failover, taking demonstrated RTO from 24 hours to 90 minutes ahead of a regulatory deadline.",
+        "publications": "",
+        "certifications": "AWS Certified Solutions Architect - Professional\nMicrosoft Certified: Azure Solutions Architect Expert\nFinOps Certified Practitioner\nTOGAF 9 Certified"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Fifteen years, principal architect, $12m estate",
+      "why": "At principal level the CV stops describing systems and starts describing governance: the standards you set, the spend you answer for, and the review board you chair. Two pages is normal here, and the second page is certifications and named engagements rather than more bullets about the first.",
+      "template_id": "executive_twopage",
+      "data": {
+        "full_name": "Vikram Deshmukh",
+        "title": "Principal Cloud Architect",
+        "location": "Boston, MA",
+        "phone": "+1 (617) 555-0104",
+        "email": "vikram.deshmukh@example.com",
+        "linkedin": "linkedin.com/in/vikram-deshmukh-example",
+        "website": "",
+        "summary": "- Principal architect accountable for a $12m multi-cloud estate: 340 AWS accounts, 60 Azure subscriptions, 1,100 engineers building inside the guardrails his team sets.\n- Fifteen years across infrastructure and architecture, the last six setting technical standards rather than implementing them, and defending those standards to both engineering and finance.",
+        "skills": "Architecture: multi-cloud governance, landing zone and guardrail design, identity federation, data platform architecture, migration strategy, build-versus-buy analysis\nGovernance: architecture review board, technical standards, security architecture with zero-trust and CSPM, third-party risk\nCommercial: $12m cloud budget ownership, enterprise agreement negotiation, FinOps operating model, TCO and business-case modelling\nPlatforms: AWS, Azure, Kubernetes, Terraform, Databricks",
+        "experience": "Principal Cloud Architect | Verity Health Systems | Boston, MA | Jan 2021 - Present\n- Chair the architecture review board across nine business units; rebuilt it from a monthly approval queue with a six-week wait into a standards-plus-exceptions model with a five-day turnaround, and 80% of designs now need no review at all.\n- Own the $12m cloud budget. Held growth to 6% while compute demand rose 40%, through a FinOps operating model with per-unit showback and commitment planning.\n- Set the guardrail standard now enforced across 340 accounts; publicly exposed storage went from 60 findings a quarter to zero sustained for eighteen months.\n- Led the architecture for the clinical data platform consolidating 14 warehouses, retiring $3.4m a year of licensing and shortening research data requests from six weeks to two days.\n- Made the decision, and wrote the paper, not to go multi-region active-active for the clinical estate — the cost was real and the failure modes it protected against were not the ones actually occurring.\n- Mentor eight architects across the business units and run the internal architecture certification path.\n---\nLead Cloud Architect | Silverbirch Grid | Denver, CO | Sep 2017 - Dec 2020\n- Designed and delivered the AWS foundation for a utility's move off two data centres, 220 applications over three years, on budget and eleven weeks early.\n- Built the identity architecture federating 9,000 staff across cloud and on-premise, which retired a $600k-a-year legacy SSO product.\n- Established the first cloud security standard after an audit finding, then took the estate through its SOC 2 Type II with no cloud-related exceptions.\n---\nInfrastructure Architect | Ashgrove Aerospace | Boulder, CO | Jun 2011 - Aug 2017\n- Designed the virtualisation and storage platform for engineering simulation workloads, cutting job queue times by 60%.\n- Ran the capacity planning function for a 2,400-host estate.",
+        "education": "MSc Information Systems | Boston University | Sep 2009 - May 2011\n---\nBE Computer Engineering | University of Pune | Jul 2005 - Jun 2009",
+        "projects": "Clinical data platform consolidation: 14 warehouses to one lakehouse, $3.4m annual licence retirement, research data requests from six weeks to two days.\n---\nUtility data-centre exit: 220 applications to AWS over three years, delivered eleven weeks early against a $18m programme budget.",
+        "publications": "",
+        "certifications": "AWS Certified Solutions Architect - Professional\nGoogle Cloud Professional Cloud Architect\nMicrosoft Certified: Azure Solutions Architect Expert\nTOGAF 9 Certified\nFinOps Certified Practitioner\nCertified Information Systems Security Professional (CISSP)"
+      }
+    }
+  ],
+  "security_engineer": [
+    {
+      "level": "early",
+      "headline": "SOC analyst, first year, moving to engineering",
+      "why": "Security is one of the few fields where the CV carries proof from outside employment — CTF placings, a credited vendor advisory, a home lab with real detections. Say which frameworks you have genuinely worked to, because every applicant lists MITRE ATT&CK and NIST, and the ones who have used them describe them differently.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Leila Farahani",
+        "title": "Security Engineer",
+        "location": "Coventry, UK",
+        "phone": "+44 7700 900649",
+        "email": "leila.farahani@example.com",
+        "linkedin": "linkedin.com/in/leila-farahani-example",
+        "website": "",
+        "summary": "- Fourteen months as a SOC analyst, now moving into detection engineering; writes the rules rather than only triaging what they produce.\n- Comes with evidence from outside the job: a credited vendor advisory, two national CTF finals, and a home lab whose detections have gone into production.",
+        "skills": "Detection: Sigma rules, KQL, Splunk SPL, Elastic; MITRE ATT&CK mapping, alert tuning\nTooling: Microsoft Sentinel, CrowdStrike, Suricata, Wireshark, Velociraptor, TheHive\nOffensive basics: Burp Suite, nmap, Metasploit, web application testing to OWASP Top 10\nScripting: Python, PowerShell, KQL, Bash\nFrameworks: MITRE ATT&CK, NIST Cyber Security Framework, Cyber Essentials Plus",
+        "experience": "Security Operations Analyst | Emberline Security | Coventry, UK | Jun 2025 - Present\n- Triage around 60 alerts a shift for four client tenants; escalated the credential-stuffing campaign in September that turned out to affect two of them.\n- Rewrote the 20 noisiest detection rules by mapping each to an ATT&CK technique and asking what it was actually meant to catch; false positives fell 62% with no loss of true positives.\n- Built the phishing triage automation in Python that pulls headers, detonates attachments and drafts the response, taking each case from 25 minutes to about six.\n- Wrote nine new Sigma rules for the shared detection library, three of which came out of home-lab work.\n---\nIT Support Technician | Bramblewick Foods | Coventry, UK | Sep 2023 - May 2025\n- First-line support for 400 staff; ran the rollout of multi-factor authentication across the business after a business-email-compromise attempt.",
+        "education": "BSc Cyber Security (First Class) | Coventry University | Sep 2020 - Jun 2023",
+        "projects": "Detection Lab: Persistent home lab of eleven virtual machines running Sentinel and Velociraptor against simulated intrusions from Atomic Red Team. Two of the detections written there are now in the employer's production ruleset.\n---\nAdvisory credit: Reported an authentication bypass in an open-source ticketing system through the maintainer's disclosure process; credited in the vendor advisory and the 2025 release notes.",
+        "publications": "",
+        "certifications": "CompTIA Security+\nBlue Team Level 1 (BTL1)\neLearnSecurity Junior Penetration Tester (eJPT)\nUK Cyber Security Challenge national finalist, 2024 and 2025"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, application security in fintech",
+      "why": "An application-security CV has to separate what you found from what you fixed — findings alone read as a scanner licence. Name the standard the work was assessed against, OWASP ASVS or PCI DSS or SOC 2, and say whether anything moved left into the pipeline, because that is the difference between a tester and a security engineer.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Oskar Bergström",
+        "title": "Application Security Engineer",
+        "location": "Sheffield, UK",
+        "phone": "+44 7700 900583",
+        "email": "oskar.bergstrom@example.com",
+        "linkedin": "linkedin.com/in/oskar-bergstrom-example",
+        "website": "",
+        "summary": "- Application security engineer, five years in fintech, embedded with 40 developers rather than sitting in a separate function.\n- Measured on what gets fixed and what stops being introduced, not on findings raised: mean time to remediate critical issues is 4.5 days across the estate.",
+        "skills": "Application security: threat modelling (STRIDE), secure code review, SAST and DAST, dependency and supply-chain security, secrets management\nTesting: Burp Suite Professional, OWASP ZAP, Semgrep, Trivy, manual API and authorisation testing\nCloud and container security: AWS security services, Kubernetes admission control, CIS benchmarks, image signing with Sigstore\nStandards: OWASP ASVS and Top 10, PCI DSS, SOC 2, NIST SSDF\nLanguages: Python, Go, Java, TypeScript (reading and reviewing all four)",
+        "experience": "Application Security Engineer | Foxglove Bank | Sheffield, UK | Mar 2023 - Present\n- Found and drove the fix for a broken object-level authorisation flaw in the statements API that exposed other customers' data to an authenticated user; the class was then covered by an automated test in CI.\n- Moved scanning left: Semgrep rules written against our own past incidents now block on pull request, and vulnerabilities reaching production fell 71% year on year.\n- Cut critical remediation time from 26 days to 4.5 by giving each finding an owning team and a build-breaking deadline, agreed with engineering leadership rather than imposed.\n- Run threat-modelling sessions on every new service; 34 done so far, and two designs were changed materially before a line was written.\n- Took the payments estate through PCI DSS 4.0 with no findings against the application controls.\n---\nSecurity Engineer | Tessellate Labs | Manchester, UK | Sep 2021 - Feb 2023\n- Built the software bill-of-materials pipeline and the policy that blocked 14 packages with known malicious versions during the 2022 npm incidents.\n- Ran the internal bug-bounty triage, closing 180 reports and paying out on 41.\n- Wrote the secure coding guidance and taught it to 60 engineers over eight sessions; measured the effect through the next quarter's findings rather than attendance.",
+        "education": "MSc Cyber Security | University of Sheffield | Sep 2020 - Sep 2021\n---\nBSc Computer Science | Uppsala University | Aug 2017 - Jun 2020",
+        "projects": "",
+        "publications": "\"Authorisation bugs your scanner will never find\", talk at BSides Leeds, 2025",
+        "certifications": "Offensive Security Certified Professional (OSCP)\nGIAC Web Application Penetration Tester (GWAPT)\nCertified Kubernetes Security Specialist (CKS)"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Fourteen years, cleared work and security architecture",
+      "why": "Cleared roles change what a CV can say. You state that you hold clearance and when it was last renewed, then describe the work at a releasable level — scale and outcome without naming the system — which is exactly what the defence entries below do. CISSP and a named framework list stop being optional at this level.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Rhiannon Vaughan-Price",
+        "title": "Head of Security Engineering",
+        "location": "Cheltenham, UK",
+        "phone": "+44 7700 900396",
+        "email": "r.vaughan-price@example.com",
+        "linkedin": "linkedin.com/in/rhiannon-vaughan-price-example",
+        "website": "",
+        "summary": "- Head of security engineering for a critical-national-infrastructure operator: 19 engineers across detection, application security and security platform.\n- Fourteen years in security, six of them in cleared defence programmes. Holds current SC clearance, renewed 2024; DV held 2018 to 2023.\n- Accountable for a £4.2m security budget and for the board-level risk reporting that goes with it.",
+        "skills": "Security architecture: zero-trust design, OT and IT segmentation, identity architecture, cryptographic key management, secure-by-design assurance\nGovernance and compliance: NCSC Cyber Assessment Framework, NIS Regulations, ISO 27001, NIST CSF and SSDF, Secure by Design for defence programmes\nOperations: detection engineering, incident command, threat intelligence, red and purple teaming, third-party assurance\nLeadership: three team leads, £4.2m budget, board and regulator reporting, vendor negotiation",
+        "experience": "Head of Security Engineering | Silverbirch Grid | Cheltenham, UK | Apr 2022 - Present\n- Built the security engineering function from six to nineteen across three disciplines, and moved it out of IT to report to the CISO with its own budget line.\n- Led the segmentation programme separating operational technology from corporate IT across 40 sites; the regulator's Cyber Assessment Framework score moved from partially achieved to achieved on eight of the fourteen objectives.\n- Rebuilt detection around threat-informed defence: coverage of the ATT&CK techniques in our threat model went from 31% to 78%, and dwell time in exercises fell from days to under four hours.\n- Ran the response to a supply-chain compromise at a managed service provider with access to our estate, including the board briefing and the regulator notification inside the statutory window.\n- Cut £700k a year from the tooling estate by consolidating six overlapping products, having first shown which detections would be lost.\n---\nPrincipal Security Architect | Cardinal Point Defence | Bristol, UK | Jan 2018 - Mar 2022\n- Security architecture lead on two cleared programmes; scope, outcomes and assurance evidence delivered to the accreditor's timetable on both. Further detail available at the appropriate classification.\n- Wrote the secure-by-design assurance approach adopted across the business unit, replacing per-programme improvisation with a single evidence framework.\n- Chaired the cross-programme cryptographic design authority.\n---\nSecurity Consultant | Wrenfield Advisory | London, UK | Sep 2012 - Dec 2017\n- Delivered ISO 27001 implementations and penetration testing for 20-plus clients across finance, utilities and government.\n- Led the incident response retainer team through nine engagements, including two ransomware recoveries.",
+        "education": "MSc Information Security | Royal Holloway, University of London | Sep 2011 - Sep 2012\n---\nBSc Mathematics (First Class) | Cardiff University | Sep 2008 - Jun 2011",
+        "projects": "",
+        "publications": "",
+        "certifications": "Certified Information Systems Security Professional (CISSP)\nCertified Information Security Manager (CISM)\nNCSC Certified Cyber Professional (CCP), Security and Information Risk Advisor - Senior\nISO 27001 Lead Auditor\nCurrent SC clearance (renewed 2024); DV held 2018-2023"
+      }
+    }
+  ],
+  "qa_engineer": [
+    {
+      "level": "early",
+      "headline": "Manual tester, one year, automating now",
+      "why": "QA is the field where a manual-to-automation move has to be visible on the page: what you automated, in which framework, and what the suite runtime is. ISTQB Foundation is the credential a UK QA CV is expected to carry early, and exploratory-testing evidence matters more than tool names at this stage.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Bilal Choudhury",
+        "title": "QA Engineer",
+        "location": "Luton, UK",
+        "phone": "+44 7700 900722",
+        "email": "bilal.choudhury@example.com",
+        "linkedin": "linkedin.com/in/bilal-choudhury-example",
+        "website": "",
+        "summary": "- Fourteen months in QA, hired as a manual tester and now writing the automation for the team's two busiest journeys.\n- Reads a specification for the case nobody wrote down: three of last year's four production defects were found in exploratory sessions, not in the scripted pass.",
+        "skills": "Testing: exploratory testing, boundary and equivalence analysis, risk-based test design, regression and smoke suites\nAutomation: Playwright with TypeScript, pytest, Postman and Newman, basic SQL for test data\nTools: Jira, TestRail, Xray, Git, GitHub Actions, Charles Proxy, BrowserStack\nOther: accessibility checks with axe, API testing, mobile testing on real devices",
+        "experience": "QA Engineer | Fernwood Learning | Luton, UK | Jul 2025 - Present\n- Automated the enrolment and payment journeys in Playwright, replacing a 90-minute manual regression pass with a 7-minute pipeline run before every release.\n- Introduced a defect-triage rota with the developers, which took average time from raise to first response from three days to under four hours.\n- Ran the accessibility pass on the student dashboard and raised 23 issues, 19 of which shipped fixed in the same quarter.\n---\nQA Analyst (manual) | Fernwood Learning | Luton, UK | Jun 2024 - Jun 2025\n- Executed and maintained the regression suite for a platform used by 60,000 students; wrote 180 of the test cases now in TestRail.\n- Found the timetable-clash defect during exploratory testing that scripted cases had passed through three releases.\n---\nCustomer Service Advisor | Redmoor Pharmacy Group | Luton, UK | Sep 2022 - May 2024\n- Handled around 50 customer contacts a day; became the escalation point for order-system faults, which is where the interest in testing started.",
+        "education": "BSc Computer Science (2:2) | De Montfort University | Sep 2019 - Jun 2022",
+        "projects": "",
+        "publications": "",
+        "certifications": "ISTQB Certified Tester Foundation Level (CTFL)\nISTQB Certified Tester Foundation Level - Agile Tester Extension"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, automation inside a release train",
+      "why": "Mid-level QA is judged on escaped defects and pipeline health, not on how many test cases exist. Give the flake rate, the suite runtime and how many bugs still reached production, because a suite nobody trusts is worse than no suite — and that is the number a hiring manager is quietly looking for.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Marit Solberg",
+        "title": "QA Automation Engineer",
+        "location": "Minneapolis, MN",
+        "phone": "+1 (612) 555-0179",
+        "email": "marit.solberg@example.com",
+        "linkedin": "linkedin.com/in/marit-solberg-example",
+        "website": "",
+        "summary": "- Five years in test automation, embedded in a squad shipping daily to 400,000 users.\n- Owns the end-to-end suite: 1,400 tests, 11-minute run, 0.4% flake rate, and the discipline of deleting tests that stopped earning their place.",
+        "skills": "Automation: Playwright and TypeScript, pytest, REST Assured, Cypress; page-object and screenplay patterns\nAPI and contract testing: Postman, Pact, schema validation, test data factories\nPerformance and resilience: k6, JMeter, load profiles from production traffic\nPipelines: GitHub Actions, parallelisation and sharding, flaky-test quarantine, test reporting\nProcess: risk-based test strategy, shift-left, ISTQB practices, Jira and Xray, defect analytics",
+        "experience": "QA Automation Engineer | Palisade Retail | Minneapolis, MN | Feb 2023 - Present\n- Cut the end-to-end suite from 52 minutes to 11 by sharding across eight runners and deleting 300 tests that duplicated unit coverage; releases went from three a week to daily.\n- Brought flake down from 9% to 0.4% with a quarantine process and a rule that a flaky test is fixed or removed within a sprint, never muted indefinitely.\n- Escaped defects reaching production fell from 14 a quarter to 3 after contract tests were added at the two integration boundaries where most of them originated.\n- Built the load-test profile from real Black Friday traffic, which found the session-store ceiling six weeks before peak rather than during it.\n---\nQA Engineer | Marlowe Fitness | Minneapolis, MN | Aug 2021 - Jan 2023\n- Introduced the first automated API test suite; the manual pre-release check went from a day and a half to two hours.\n- Sat in on refinement and wrote acceptance criteria with the product manager, which halved the tickets bounced back for clarification.\n- Ran cross-browser and device coverage on BrowserStack after two mobile-only defects reached customers.",
+        "education": "BS Information Technology | University of Minnesota | Aug 2017 - May 2021",
+        "projects": "",
+        "publications": "",
+        "certifications": "ISTQB Certified Tester Foundation Level (CTFL)\nISTQB Advanced Level Test Automation Engineer"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Twelve years, quality lead in medical software",
+      "why": "A senior QA CV argues for a quality strategy rather than a testing service: the release gates you own, the shift-left decisions, the team, and — in a regulated domain — the standard your test evidence has to satisfy under audit. IEC 62304 and a clean audit are worth more here than any tool list.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Camille Ouedraogo",
+        "title": "Head of Quality Engineering",
+        "location": "Leicester, UK",
+        "phone": "+44 7700 900465",
+        "email": "camille.ouedraogo@example.com",
+        "linkedin": "linkedin.com/in/camille-ouedraogo-example",
+        "website": "",
+        "summary": "- Head of quality engineering for a medical-device software business: 16 engineers, three product lines, and test evidence that has to stand up in a notified-body audit.\n- Twelve years in QA, the last five spent arguing that quality is a release-gate decision rather than a team that tests things after the fact.",
+        "skills": "Strategy: test strategy and policy, risk-based release gates, shift-left programmes, quality metrics and reporting to the executive\nRegulated software: IEC 62304, ISO 13485, ISO 14971 risk management, FDA 21 CFR Part 11, design history file and traceability evidence\nEngineering: Playwright, pytest, REST Assured, k6, GitHub Actions; test data management, environment strategy\nLeadership: three team leads, hiring, competency framework, supplier and outsourced-testing management",
+        "experience": "Head of Quality Engineering | Ravenscroft Health Software | Leicester, UK | Sep 2022 - Present\n- Replaced a six-week manual validation cycle with automated verification traced to requirements, taking regulated releases from two a year to one a quarter with no reduction in evidence.\n- Owned the software quality evidence through two notified-body audits under IEC 62304 and ISO 13485; both closed with no non-conformities against the software lifecycle.\n- Set the release gates the business now runs on — coverage of hazard-related requirements, zero open critical defects, and a signed traceability matrix — and had them agreed by regulatory affairs and engineering jointly.\n- Grew the function from 9 to 16 and moved testers into squads, which cut the average defect age from 31 days to 9.\n- Made the case to stop testing one legacy product entirely and sunset it; the £480k a year it was consuming went to the two lines that were growing.\n---\nQA Manager | Trellis Health | Nottingham, UK | Jan 2019 - Aug 2022\n- Led eight testers across three squads and introduced the first automated regression suite, which took the release cycle from monthly to fortnightly.\n- Built the environment and test-data strategy that ended the practice of testing against a copy of production, closing a live information-governance risk.\n- Reduced production incidents attributed to untested changes by 68% over two years.\n---\nSenior QA Engineer | Verity Diagnostics UK | Nottingham, UK | Jun 2014 - Dec 2018\n- Test lead on a laboratory information system used by 30 hospital labs, including the validation pack for each site's go-live.\n- Trained six analysts through ISTQB Foundation and built the department's first competency framework.",
+        "education": "BSc Biomedical Science (2:1) | University of Leicester | Sep 2010 - Jun 2013",
+        "projects": "",
+        "publications": "",
+        "certifications": "ISTQB Certified Tester Advanced Level - Test Manager\nISTQB Certified Tester Foundation Level (CTFL)\nISO 13485 Lead Auditor"
+      }
+    }
+  ]
+}

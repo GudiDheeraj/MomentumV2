@@ -139,6 +139,19 @@ def get_current_user(
     user = db.query(models.User).get(user_id)
     if user is None or not user.is_active:
         raise credentials_error
+
+    # Make this user's own LLM provider visible to app/ai/* for the rest of the
+    # request. Done here because it is the one function every authenticated
+    # request already passes through — the alternative was threading a config
+    # argument down through six routers into engine.py, none of which have any
+    # other reason to know about API keys. Imported lazily to keep auth.py free
+    # of a dependency on the AI stack at import time.
+    try:
+        from .ai.userconfig import bind_for_request
+        bind_for_request(db, user.id)
+    except Exception:
+        pass   # never let an AI setting stop someone logging in
+
     return user
 
 

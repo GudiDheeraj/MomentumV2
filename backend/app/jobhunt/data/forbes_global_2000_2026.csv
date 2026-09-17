@@ -1,0 +1,2001 @@
+rank,company,domain,country,industry
+1,JPMorganChase,jpmorganchase.com,United States,Banking
+2,Amazon,amazon.com,United States,Retail and Wholesale
+3,Berkshire Hathaway,berkshirehathaway.com,United States,Insurance
+4,Alphabet,abc.xyz,United States,IT Software & Services
+5,Saudi Arabian Oil Company (Saudi Aramco),aramco.com,Saudi Arabia,Oil & Gas Operations
+6,ICBC,icbc.com.cn,China,Banking
+7,Bank of America,bankofamerica.com,United States,Banking
+7,Microsoft,microsoft.com,United States,IT Software & Services
+9,China Construction Bank,ccb.com,China,Banking
+10,Agricultural Bank of China,abchina.com,China,Banking
+11,Apple,apple.com,United States,Technology Hardware & Equipment
+12,Bank of China,boc.cn,China,Banking
+13,HSBC Holdings,hsbc.com,United Kingdom,Banking
+14,ExxonMobil,corporate.exxonmobil.com,United States,Oil & Gas Operations
+15,Samsung Electronics,samsung.com,South Korea,Technology Hardware & Equipment
+16,Meta Platforms,about.meta.com,United States,IT Software & Services
+17,Toyota Motor,toyota.co.jp,Japan,Consumer Durables
+18,Citigroup,citigroup.com,United States,Banking
+19,Goldman Sachs Group,goldmansachs.com,United States,Diversified Financials
+20,Wells Fargo,wellsfargo.com,United States,Banking
+21,Morgan Stanley,morganstanley.com,United States,Diversified Financials
+22,PetroChina,petrochina.com.cn,China,Oil & Gas Operations
+23,Walmart,corporate.walmart.com,United States,Retailing
+24,Royal Bank of Canada,rbcroyalbank.com,Canada,Banking
+25,Santander,santander.com,Spain,Banking
+26,Ping An Insurance Group,group.pingan.com,China,Insurance
+27,NVIDIA,nvidia.com,United States,Semiconductors
+28,Shell Plc,shell.us,United Kingdom,Oil & Gas Operations
+29,UnitedHealth Group,unitedhealthgroup.com,United States,Drugs & Biotechnology
+30,Mitsubishi UFJ Financial,mufg.jp,Japan,Banking
+31,Taiwan Semiconductor,tsmc.com,Taiwan,Semiconductors
+32,Allianz,allianz.de,Germany,Insurance
+33,Tencent Holdings,tencent.com,China,IT Software & Services
+34,TD Bank Group,td.com,Canada,Banking
+35,Chevron,chevron.com,United States,Oil & Gas Operations
+36,China Mobile,chinamobileltd.com,Hong Kong,Telecommunications Services
+37,BNP Paribas,usa.bnpparibas,France,Banking
+38,Verizon Communications,verizon.com,United States,Telecommunications Services
+39,AT&T,att.com,United States,Telecommunications Services
+40,TotalEnergies,total.com,France,Oil & Gas Operations
+41,Alibaba Group,alibabagroup.com,China,Retailing
+42,China Merchants Bank,hk.cmbchina.com,China,Banking
+43,Johnson & Johnson,jnj.com,United States,Drugs & Biotechnology
+44,BBVA-Banco Bilbao Vizcaya Argentaria,bbva.com,Spain,Banking
+45,Deutsche Telekom,telekom.com,Germany,Telecommunications Services
+46,UBS,advisors.ubs.com,Switzerland,Diversified Financials
+47,China Life Insurance,e-chinalife.com,China,Insurance
+48,SK Hynix,skhynix.com,South Korea,Semiconductors
+49,Sumitomo Mitsui Financial,smfg.co.jp,Japan,Banking
+50,American Express,americanexpress.com,United States,Business Services & Supplies
+51,AXA Group,axa.fr,France,Insurance
+52,Oracle,oracle.com,United States,IT Software & Services
+53,Broadcom,broadcom.com,United States,Semiconductors
+54,Softbank,group.softbank,Japan,Telecommunications Services
+55,Reliance Industries,ril.com,India,Oil & Gas Operations
+56,Walt Disney,thewaltdisneycompany.com,United States,Media
+57,LVMH Louis Vuitton Moet Hennessy,lvmh.com,France,Household & Personal Products
+58,Bank of Communications,bankcomm.com,China,Banking
+59,Nestlé,nestleusa.com,Switzerland,"Food, Drink & Tobacco"
+60,Postal Savings Bank Of China (PSBC),psbc.com,China,Banking
+61,Siemens,siemens.com,Germany,Capital Goods
+62,State Bank of India,sbi.bank.in,India,Banking
+63,Petrobras,petrobras.com.br,Brazil,Oil & Gas Operations
+64,Comcast,cmcsa.com,United States,Media
+64,Intesa Sanpaolo,intesasanpaoloprotezione.com,Italy,Insurance
+66,Procter & Gamble,pg.com,United States,Household & Personal Products
+67,Mizuho Financial,mizuho-fg.co.jp,Japan,Banking
+68,RTX,rtx.com,United States,Aerospace & Defense
+69,Home Depot,homedepot.com,United States,Retailing
+70,HDFC Bank,hdfc.bank.in,India,Banking
+71,Contemporary Amperex Technology,catlbattery.com,China,Capital Goods
+71,Eli Lilly,lilly.com,United States,Drugs & Biotechnology
+73,Zurich Insurance Group,zurich.com,Switzerland,Insurance
+74,Commonwealth Bank,commbank.com.au,Australia,Banking
+75,Hyundai Motor,hyundaimotorgroup.com,South Korea,Consumer Durables
+75,Itaú Unibanco Holding,itau.com.br,Brazil,Banking
+75,Roche Holding,roche.com,Switzerland,Drugs & Biotechnology
+78,IBM,ibm.com,United States,IT Software & Services
+79,Chubb,chubb.com,Switzerland,Insurance
+80,BMO,bmoharris.com,Canada,Banking
+81,Credit Agricole,credit-agricole.fr,France,Banking
+82,Hon Hai Precision ,honhai.com.tw,Taiwan,Technology Hardware & Equipment
+83,Cisco Systems,cisco.com,United States,IT Software & Services
+84,Sinopec,sinopecgroup.com,China,Oil & Gas Operations
+85,CNOOC,cnoocltd.com,Hong Kong,Oil & Gas Operations
+86,Volkswagen Group,volkswagen-group.com,Germany,Consumer Durables
+87,Costco Wholesale,costco.com,United States,Retailing
+88,Merck & Co.,merck.com,United States,Drugs & Biotechnology
+88,Micron Technology,micron.com,United States,Semiconductors
+90,PepsiCo,pepsico.com,United States,"Food, Drink & Tobacco"
+91,Pfizer,pfizer.com,United States,Drugs & Biotechnology
+92,Bank of Nova Scotia,scotiabank.com,Canada,Banking
+93,Anheuser-Busch InBev,anheuser-busch.com,Belgium,"Food, Drink & Tobacco"
+94,CITIC,group.citic,China,Business Services & Supplies
+95,NTT,ntt.co.jp,Japan,Telecommunications Services
+96,Tesla,tesla.com,United States,Consumer Durables
+97,AIRBUS,airbus.com,Netherlands,Aerospace & Defense
+97,UniCredit,unicreditgroup.eu,Italy,Banking
+99,Canadian Imperial Bank,cibc.com,Canada,Banking
+100,Mitsubishi Corporation,mitsubishicorp.com,Japan,Trading Companies
+101,Novartis,novartis.com,Switzerland,Drugs & Biotechnology
+102,AstraZeneca,astrazeneca.com,United Kingdom,Drugs & Biotechnology
+103,Progressive,progressive.com,United States,Insurance
+104,Enel,enel.com,Italy,Utilities
+105,Caterpillar,caterpillar.com,United States,Capital Goods
+106,Munich Re,munichre.com,Germany,Insurance
+107,BP,bp.com,United Kingdom,Oil & Gas Operations
+108,Barclays,home.barclays,United Kingdom,Diversified Financials
+109,Deutsche Bank,deutsche-bank.de,Germany,Diversified Financials
+109,Société Générale,societegenerale.com,France,Banking
+111,Rio Tinto,riotinto.com,United Kingdom,Materials
+112,CVS Health,cvshealth.com,United States,Retailing
+113,BMW Group,bmwusa.com,Germany,Consumer Durables
+113,US Bancorp,usbank.com,United States,Banking
+115,GE Aerospace,geaerospace.com,United States,Aerospace & Defense
+116,Life Insurance Corp. of India,,India,Insurance
+117,Iberdrola,iberdrola.com,Spain,Utilities
+118,BHP Group,bhp.com,Australia,Materials
+118,Industrial Bank ,cib.com.cn,China,Banking
+120,Charles Schwab,schwab.com,United States,Diversified Financials
+120,China Citic Bank,citicbank.com,China,Banking
+122,Coca-Cola,coca-colacompany.com,United States,"Food, Drink & Tobacco"
+123,Capital One Financial,capitalone.com,United States,Banking
+123,Cigna,cigna.com,United States,Drugs & Biotechnology
+125,DBS,dbs.bank.in,Singapore,Banking
+126,Generali Group,generali.it,Italy,Insurance
+127,Visa,usa.visa.com,United States,Business Services & Supplies
+128,Mercedes-Benz Group,group.mercedes-benz.com,Germany,Consumer Durables
+129,Dell Technologies,dell.com,United States,Technology Hardware & Equipment
+130,Equinor,equinor.com,Norway,Oil & Gas Operations
+131,Bank of New York Mellon,bnymellon.com,United States,Diversified Financials
+132,Mitsui & Co.,mitsui.com,Japan,Chemicals
+133,ConocoPhillips,conocophillips.com,United States,Oil & Gas Operations
+134,Tokio Marine Holdings,tokiomarinehd.com,Japan,Insurance
+135,Elevance Health,elevancehealth.com,United States,Drugs & Biotechnology
+136,PNC Financial Services,pnc.com,United States,Banking
+137,Novo Nordisk,novonordisk-us.com,Denmark,Drugs & Biotechnology
+138,VINCI,vinci.com,France,Construction
+139,NatWest Group,rbs.com,United Kingdom,Banking
+140,AbbVie,abbvie.com,United States,Drugs & Biotechnology
+141,PDD Holdings,pinduoduo.com,Ireland,Retailing
+142,AIA Group,aia.com,Hong Kong,Insurance
+143,NextEra Energy,nexteraenergy.com,United States,Utilities
+144,Westpac Banking Group,westpac.com.au,Australia,Banking
+145,Enbridge,enbridge.com,Canada,Utilities
+146,BYD,byd.com.cn,China,Capital Goods
+147,British American Tobacco,bat.com,United Kingdom,"Food, Drink & Tobacco"
+148,ENGIE ,engie.com,France,Utilities
+149,ING Group,ing.com,Netherlands,Banking
+149,Itochu,itochu.co.jp,Japan,Food Markets
+151,ICICI Bank,icicibank.com,India,Banking
+152,ANZ Group Holdings,anz.com,Australia,Banking
+153,Sanofi ,sanofi.com,France,Drugs & Biotechnology
+154,CaixaBank,caixabank.es,Spain,Banking
+154,Thermo Fisher Scientific,thermofisher.com,United States,Health Care Equipment & Services
+156,NAB - National Australia Bank,nab.com.au,Australia,Banking
+157,Manulife,manulife.ca,Canada,Banking and Financial Services
+158,Salesforce,salesforce.com,United States,IT Software & Services
+159,Hitachi,hitachi.com,Japan,Capital Goods
+160,Boeing,boeing.com,United States,Aerospace & Defense
+161,MetLife,metlife.com,United States,Insurance
+162,McKesson,mckesson.com,United States,Health Care Equipment & Services
+163,Shanghai Pudong Development,spdb.com.cn,China,Banking
+164,International Holding Company,,United Arab Emirates,Health Care Equipment & Services
+164,SAP,sap.com,Germany,IT Software & Services
+166,Abbott Laboratories,abbott.com,United States,Health Care Equipment & Services
+167,China Pacific Insurance,cpic.com.cn,China,Insurance
+168,Standard Chartered,sc.com,United Kingdom,Banking
+169,Lloyds Banking Group,lloydsbankinggroup.com,United Kingdom,Banking
+170,China Shenhua Energy,csec.com,China,Materials
+171,General Motors,gm.com,United States,Consumer Durables
+172,BlackRock,blackrock.com,United States,Diversified Financials
+173,Netflix,netflix.com,United States,IT Software & Services
+174,Amgen,amgen.com,United States,Drugs & Biotechnology
+175,Allstate,allstate.com,United States,Insurance
+175,GE Vernova,gevernova.com,United States,Capital Goods
+177,Unilever,unilever.com,United Kingdom,Household & Personal Products
+178,Philip Morris International,pmi.com,United States,"Food, Drink & Tobacco"
+179,John Deere,deere.com,United States,Capital Goods
+180,FedEx,fedex.com,United States,Transportation
+181,Nordea Bank,nordea.com,Finland,Banking
+181,Zijin Mining Group,zijinmining.com,China,Materials
+183,Eni,eni.com,Italy,Oil & Gas Operations
+184,China State Construction Engineering,cscec.com,China,Construction
+184,Duke Energy,duke-energy.com,United States,Utilities
+186,L'Oréal,loreal.com,France,Household & Personal Products
+187,Linde,linde.com,United Kingdom,Chemicals
+188,Bristol Myers Squibb,bms.com,United States,Drugs & Biotechnology
+189,Travelers,travelers.com,United States,Insurance
+190,Marathon Petroleum,marathonpetroleum.com,United States,Oil & Gas Operations
+190,Midea Group,midea.com,China,Consumer Durables
+192,Truist,truist.com,United States,Banking
+193,Accenture,accenture.com,Ireland,IT Software & Services
+194,Advanced Micro Devices (AMD),ir.amd.com,United States,Semiconductors
+195,China Telecom,chinatelecom-h.com,China,Telecommunications Services
+196,GSK,gsk.com,United Kingdom,Drugs & Biotechnology
+197,Uber,uber.com,United States,Transportation
+198,ASML Holding,asml.com,Netherlands,Semiconductors
+199,E.ON,eon.com,Germany,Utilities
+200,Banco Bradesco,banco.bradesco,Brazil,Banking
+200,Lowe's,lowes.com,United States,Retailing
+202,Qualcomm,qualcomm.com,United States,Semiconductors
+203,Phillips 66,phillips66.com,United States,Oil & Gas Operations
+204,Southern Company,southerncompany.com,United States,Utilities
+205,Xiaomi  ,mi.com,China,Technology Hardware & Equipment
+206,United Parcel Service (UPS),ups.com,United States,Transportation
+207,América Móvil,americamovil.com,Mexico,Telecommunications Services
+208,PICC,picc.com,China,Insurance
+209,Schneider Electric,se.com,France,Capital Goods
+210,HCA Healthcare,hcahealthcare.com,United States,Health Care Equipment & Services
+211,Safran,safran-group.com,France,Aerospace & Defense
+212,Mastercard,mastercard.us,United States,Business Services & Supplies
+213,Investor AB,investorab.com,Sweden,Diversified Financials
+214,Deutsche Post,dpdhl.com,Germany,Transportation
+215,Oversea-Chinese Banking,ocbc.com.sg,Singapore,Banking
+216,Lockheed Martin,lockheedmartin.com,United States,Aerospace & Defense
+217,Al Rajhi Bank,alrajhibank.com.sa,Saudi Arabia,Banking
+218,Emirates NBD,emiratesnbd.com,United Arab Emirates,Banking
+219,Prudential Financial,prudential.com,United States,Insurance
+220,Qatar National Bank,qnb.com,Qatar,Banking
+221,KDDI,kddi.com,Japan,Telecommunications Services
+222,MS&AD Insurance,ms-ad-hd.com,Japan,Insurance
+223,KBC Group,kbc.com,Belgium,Banking
+224,Brookfield Corporation,brookfield.com,Canada,Diversified Financials
+225,Honeywell Technologies,honeywell.com,United States,Aerospace & Defense
+225,Medtronic,medtronic.com,Ireland,Health Care Equipment & Services
+227,Valero Energy,valero.com,United States,Oil & Gas Operations
+228,Daiichi Life Group.,dai-ichi-life-hd.com,Japan,Insurance
+229,Swiss Re ,swissre.com,Switzerland,Insurance
+230,KB Financial Group,kbfg.com,South Korea,Banking
+231,Saudi National Bank,alahli.com,Saudi Arabia,Banking
+232,McDonald's,mcdonalds.com,United States,"Hotels, Restaurants & Leisure"
+233,Gilead Sciences,gilead.com,United States,Drugs & Biotechnology
+234,Japan Post Holdings,japanpost.jp,Japan,Insurance
+235,Fubon Financial,fubon.com,Taiwan,Insurance
+236,KKR,kkr.com,United States,Diversified Financials
+237,First Abu Dhabi Bank,bankfab.com,United Arab Emirates,Banking
+238,Union Pacific,up.com,United States,Transportation
+239,Commerzbank,commerzbank.de,Germany,Banking
+240,Erste Group Bank,erstegroup.com,Austria,Banking
+241,National Grid,nationalgrid.com,United Kingdom,Utilities
+242,General Dynamics,gd.com,United States,Aerospace & Defense
+243,Inditex,inditex.com,Spain,Retailing
+244,Constellation Energy,constellationenergy.com,United States,Utilities
+245,Delta Air Lines,delta.com,United States,Transportation
+246,Siemens Energy,,Germany,Capital Goods
+247,Canadian Natural Resources,cnrl.com,Canada,Oil & Gas Operations
+248,Sumitomo,sumitomocorp.com,Japan,Trading Companies
+249,Cathay Financial,cathaybk.com.tw,Taiwan,Insurance
+250,Cencora,cencora.com,United States,Health Care Equipment & Services
+251,Citic Securities,cs.ecitic.com,China,Diversified Financials
+252,Oil & Natural Gas,ongcindia.com,India,Oil & Gas Operations
+253,Macquarie Group Limited,macquarie.com.au,Australia,Banking
+254,KIA,kia.com,South Korea,Consumer Durables
+255,Target,target.com,United States,Retailing
+256,ArcelorMittal,arcelormittal.com,Luxembourg,Materials
+256,Suncor Energy,suncor.com,Canada,Oil & Gas Operations
+258,National Bank of Canada,nbc.ca,Canada,Banking
+259,Banco Btg Pactual,btgpactual.com,Brazil,Diversified Financials
+259,Talanx,talanx.de,Germany,Insurance
+261,Kweichow Moutai,moutaichina.com,China,"Food, Drink & Tobacco"
+261,Volvo Group,volvogroup.com,Sweden,Capital Goods
+263,Rolls-Royce Holdings,rolls-royce.com,United Kingdom,Aerospace & Defense
+264,Marubeni,marubeni.com,Japan,"Food, Drink & Tobacco"
+265,Newmont ,newmont.com,United States,Materials
+266,TJX Cos,tjx.com,United States,Retailing
+267,Danaher,danaher.com,United States,Health Care Equipment & Services
+268,Vale,vale.com,Brazil,Materials
+269,China Everbright Bank,cebbank.com,China,Banking
+270,ABB,abb.com,Switzerland,Capital Goods
+271,Air Liquide,airliquide.com,France,Chemicals
+272,Applied Materials,appliedmaterials.com,United States,Capital Goods
+273,JD.com,corporate.jd.com,China,Retailing
+274,Fairfax Financial,fairfax.ca,Canada,Insurance
+275,Danske Bank,danskebank.com,Denmark,Banking
+276,Prudential,prudentialplc.com,Hong Kong,Insurance
+277,Eaton,eaton.com,Ireland,Capital Goods
+278,United Overseas Bank,uob.co.id,Singapore,Banking
+279,China Resources Land,crland.com.hk,Hong Kong,Construction
+280,Bank Of Jiangsu,jsbchina.cn,China,Banking
+281,DNB Bank,dnb.no,Norway,Banking
+282,Power Corp of Canada,powercorporation.com,Canada,Insurance
+283,BASF,basf.com,Germany,Chemicals
+284,Northrop Grumman,northropgrumman.com,United States,Aerospace & Defense
+285,American Electric,aep.com,United States,Utilities
+286,Shinhan Financial Group,shinhanglobal.com,South Korea,Banking
+287,ORLEN Spolka Akcyjna,orlen.pl,Poland,Oil & Gas Operations
+288,EssilorLuxottica,essilorluxottica.com,France,Health Care Equipment & Services
+289,PTT ,pttplc.com,Thailand,Oil & Gas Operations
+290,Mondelez International,mondelezinternational.com,United States,"Food, Drink & Tobacco"
+291,State Street,statestreet.com,United States,Diversified Financials
+292,CRH,crh.com,United States,Construction
+293,ONEOK,oneok.com,United States,Oil & Gas Operations
+294,SLB,slb.com,United States,Oil & Gas Operations
+295,PayPal,paypal.com,United States,Business Services & Supplies
+296,Banco do Brasil,bb.com.br,Brazil,Banking
+297,Saint-Gobain,saint-gobain-northamerica.com,France,Construction
+298,Sun Life Financial,sunlife.com,Canada,Insurance
+299,Poste Italiane,poste.it,Italy,Transportation
+300,Aflac,aflac.com,United States,Insurance
+301,Marsh,marshmclennan.com,United States,Insurance
+302,Ameriprise Financial,ameriprise.com,United States,Diversified Financials
+302,Automatic Data Processing,adp.com,United States,Business Services & Supplies
+304,United Airlines Holdings,united.com,United States,Transportation
+305,China Minsheng Bank,cmbc.com.cn,China,Banking
+306,American International Group,aig.com,United States,Insurance
+307,Richemont,richemont.com,Switzerland,Consumer Durables
+308,Amphenol,amphenol.com,United States,Technology Hardware & Equipment
+309,Bharti Airtel,airtel.in,India,Telecommunications Services
+310,EOG Resources,eogresources.com,United States,Oil & Gas Operations
+311,Bank of Ningbo,nbcb.com.cn,China,Banking
+312,China Unicom,chinaunicom.com.hk,Hong Kong,Telecommunications Services
+313,Apollo Global Management,agm.com,United States,Diversified Financials
+314,Royal Ahold Delhaize N.V.,aholddelhaize.com,Netherlands,Food Markets
+315,IntercontinentalExchange,ice.com,United States,Diversified Financials
+316,Toyota Tsusho,toyota-tsusho.com,Japan,Trading Companies
+317,Exelon,exeloncorp.com,United States,Utilities
+318,PG&E,pgecorp.com,United States,Utilities
+319,Korea Electric Power,kepco.co.kr,South Korea,Utilities
+320,Luxshare Precision Industry,luxshare-ict.com,China,Technology Hardware & Equipment
+321,Freeport-McMoRan,fcx.com,United States,Materials
+322,BAE Systems,baesystems.com,United Kingdom,Aerospace & Defense
+323,Stryker,stryker.com,United States,Health Care Equipment & Services
+324,Hartford Financial Services,thehartford.com,United States,Insurance
+325,Mitsubishi Electric,mitsubishielectric.co.jp,Japan,Capital Goods
+326,Axis Bank,axis.bank.in,India,Banking
+327,Banorte,banorte.com,Mexico,Banking
+328,SEB AB,sebgroup.com,Sweden,Banking
+329,Tesco,tescoplc.com,United Kingdom,Food Markets
+330,S&P Global,spglobal.com,United States,Business Services & Supplies
+331,Repsol ,repsol.com,Spain,Oil & Gas Operations
+332,Mitsubishi Heavy Industries,mhi.co.jp,Japan,Capital Goods
+333,Cenovus Energy,cenovus.com,Canada,Oil & Gas Operations
+334,Charter Communications,spectrum.com,United States,Media
+335,Dominion Energy,dominionenergy.com,United States,Utilities
+336,Cardinal Health,cardinalhealth.com,United States,Health Care Equipment & Services
+337,Quanta Computer,quantatw.com,Taiwan,Technology Hardware & Equipment
+338,Nomura,nomura.com,Japan,Diversified Financials
+339,Japan Tobacco,jt.com,Japan,"Food, Drink & Tobacco"
+340,Orix,orix.co.jp,Japan,Business Services & Supplies
+341,Couche Tard,couche-tard.com,Canada,Retailing
+342,Aviva,aviva.ca,United Kingdom,Insurance
+343,Baker Hughes Company,bakerhughes.com,United States,Oil & Gas Operations
+344,Barrick Mining,barrick.com,Canada,Materials
+345,"Merck KGaA, Darmstadt, Germany and its affiliates",merckgroup.com,Germany,Drugs & Biotechnology
+346,RWE Group,rwe.com,Germany,Utilities
+347,Altria Group,altria.com,United States,"Food, Drink & Tobacco"
+348,Kinder Morgan,kindermorgan.com,United States,Oil & Gas Operations
+349,Grupo Mexico,gmexico.com,Mexico,Materials
+350,CK Hutchison,ckh.com.hk,Hong Kong,Retailing
+351,Fannie Mae,fanniemae.com,United States,Business Services & Supplies
+352,Texas Instruments,ti.com,United States,Semiconductors
+353,CTBC Financial Holding,ctbcholding.com,Taiwan,Banking
+354,Waste Management,wm.com,United States,Business Services & Supplies
+355,Denso,denso.com,Japan,Consumer Durables
+356,Booking Holdings,bookingholdings.com,United States,Business Services & Supplies
+357,Cosco Shipping,chinacosco.com,China,Transportation
+358,China Yangtze Power,cypc.com.cn,China,Utilities
+359,Adobe,adobe.com,United States,IT Software & Services
+360,Freddie Mac,freddiemac.com,United States,Business Services & Supplies
+361,A.P. Moller-Maersk,maersk.com,Denmark,Transportation
+361,Daimler Truck Holding,daimler-trucksnorthamerica.com,Germany,Consumer Durables
+363,SK,sk.co.kr,South Korea,Diversified Financials
+364,Johnson Controls International,johnsoncontrols.com,Ireland,Capital Goods
+365,Swedbank,swedbank.se,Sweden,Banking
+366,Cummins,cummins.com,United States,Consumer Durables
+367,MercadoLibre,mercadolibre.com,Uruguay,Retailing
+368,Sompo,sompo-hd.com,Japan,Insurance
+369,Boston Scientific,bostonscientific.com,United States,Health Care Equipment & Services
+369,Nu Holdings,,Brazil,Banking
+371,Nike,nike.com,United States,Household & Personal Products
+372,Samsung Life Insurance,samsunglife.com,South Korea,Insurance
+373,Indian Oil,iocl.com,India,Oil & Gas Operations
+374,Bank Leumi,leumi.co.il,Israel,Banking
+375,Bank Rakyat Indonesia (BRI),bri.co.id,Indonesia,Banking
+376,Takeda Pharmaceutical,takeda.com,Japan,Drugs & Biotechnology
+377,Aon,aon.com,Ireland,Insurance
+378,New China Life Insurance,newchinalife.com,China,Insurance
+379,Intuit,intuit.com,United States,IT Software & Services
+380,Hana Financial Group,hanafn.com,South Korea,Banking
+381,Fifth Third Bank,53.com,United States,Banking
+382,Hyundai Mobis,mobis.co.kr,South Korea,Consumer Durables
+383,Occidental Petroleum,oxy.com,United States,Oil & Gas Operations
+384,Larsen & Toubro,larsentoubro.com,India,Construction
+385,London Stock Exchange,lseg.com,United Kingdom,Business Services & Supplies
+386,SAIC Motor,saicmotor.com,China,Consumer Durables
+387,Saudi Telecom,stc.com.sa,Saudi Arabia,Telecommunications Services
+388,Arch Capital Group,archgroup.com,Bermuda,Insurance
+389,Bank Hapoalim,bankhapoalim.co.il,Israel,Banking
+390,Gree Electric Appliances,gree.com,China,Capital Goods
+391,Royal Caribbean Group,royalcaribbean.com,United States,"Hotels, Restaurants & Leisure"
+392,Panasonic,na.panasonic.com,Japan,Consumer Durables
+393,Danone,danone.com,France,"Food, Drink & Tobacco"
+394,Etisalat,etisalat.ae,United Arab Emirates,Telecommunications Services
+395,Paccar,paccar.com,United States,Capital Goods
+395,Samsung C&T,samsungcnt.com,South Korea,Construction
+397,Huaxia Bank,hxb.com.cn,China,Banking
+398,OTP Bank,otpbank.hu,Hungary,Banking
+399,Blackstone,,United States,Diversified Financials
+400,Seven & I Holdings,7andi.com,Japan,Food Markets
+401,Hermès International,hermes.com,France,Household & Personal Products
+401,Sumitomo Mitsui Trust,smth.jp,Japan,Banking
+403,3M,3m.com,United States,Conglomerates
+404,Guotai Junan Securities,gtja.com,China,Diversified Financials
+405,Fast Retailing,fastretailing.com,Japan,Retailing
+406,Fiserv,fiserv.com,United States,Business Services & Supplies
+407,China Railway Group,crec.cn,China,Construction
+408,Edison International,edison.com,United States,Utilities
+409,Synchrony Financial,synchrony.com,United States,Business Services & Supplies
+410,CMOC Group,chinamoly.com,China,Trading Companies
+411,NTPC,ntpc.co.in,India,Utilities
+412,Ecopetrol,ecopetrol.com.co,Colombia,Oil & Gas Operations
+413,Parker-Hannifin,investors.parker.com,United States,Capital Goods
+414,Prologis,prologis.com,United States,Diversified Financials
+415,Weichai Power,weichaipower.com,China,Consumer Durables
+416,Nucor,nucor.com,United States,Materials
+417,Svenska Handelsbanken,handelsbanken.com,Sweden,Banking
+418,Nutrien,nutrien.com,Canada,Chemicals
+419,Humana,humana.com,United States,Drugs & Biotechnology
+420,Carnival Corporation,carnivalcorp.com,United States,"Hotels, Restaurants & Leisure"
+421,Sempra,sempra.com,United States,Oil & Gas Operations
+422,Veolia Environnement,veolia.com,France,Utilities
+423,D.R. Horton,drhorton.com,United States,Construction
+424,Lam Research,lamresearch.com,United States,Capital Goods
+425,M&T Bank,mtb.com,United States,Banking
+426,Standard Bank Group,standardbank.com,South Africa,Banking
+427,Toyota Industries,toyota-shokki.co.jp,Japan,Capital Goods
+428,Bank of Nanjing,njcb.com.cn,China,Banking
+429,Intel,intel.ca,United States,Semiconductors
+429,International Airlines,iairgroup.com,United Kingdom,Transportation
+431,Kuwait Finance House,kfh.com,Kuwait,Banking
+431,Swiss Life Holding,swisslife.com,Switzerland,Insurance
+433,Thales,thalesgroup.com,France,Aerospace & Defense
+434,Starbucks,starbucks.com,United States,Restaurants
+435,Abu Dhabi Commercial Bank,adcb.com,United Arab Emirates,Banking
+436,Regeneron Pharmaceuticals,regeneron.com,United States,Drugs & Biotechnology
+437,Marriott International,marriott.com,United States,"Hotels, Restaurants & Leisure"
+437,Sun Hung Kai Properties,shkp.com,Hong Kong,Construction
+439,Wanhua Chemical Group,whchem.com,China,Chemicals
+440,Compass Group,compass-usa.com,United Kingdom,"Hotels, Restaurants & Leisure"
+441,Femsa,femsa.com,Mexico,"Food, Drink & Tobacco"
+441,FirstRand,firstrand.co.za,South Africa,Banking
+443,Archer Daniels Midland,adm.com,United States,"Food, Drink & Tobacco"
+444,Emerson Electric,emerson.com,United States,Technology Hardware & Equipment
+444,Huntington Bank,huntington.com,United States,Banking
+446,Bank of Beijing,bankofbeijing.com.cn,China,Banking
+447,Williams,williams.com,United States,Oil & Gas Operations
+448,ENEOS Holdings,hd.eneos.co.jp,Japan,Oil & Gas Operations
+449,Sumitomo Electric,sei.co.jp,Japan,Consumer Durables
+450,Shin-Etsu Chemical,shinetsu.co.jp,Japan,Chemicals
+450,Xcel Energy,xcelenergy.com,United States,Utilities
+452,TC Energy,transcanada.com,Canada,Oil & Gas Operations
+453,Diageo,diageo.com,United Kingdom,"Food, Drink & Tobacco"
+454,Bank Of Shanghai,bosc.cn,China,Banking
+455,Agnico Eagle Mines,agnicoeagle.com,Canada,Materials
+455,Maybank,maybank.com,Malaysia,Banking
+457,Kroger,thekrogerco.com,United States,Food Markets
+458,TAQA,taqa.ae,United Arab Emirates,Utilities
+459,Consolidated Edison,coned.com,United States,Utilities
+459,Geely Automobile Holdings,geelyauto.com.hk,Hong Kong,Consumer Durables
+461,CME Group,cmegroup.com,United States,Diversified Financials
+462,CSX,csx.com,United States,Transportation
+463,Analog Devices,analog.com,United States,Semiconductors
+464,Glencore International,glencore.com,Switzerland,Trading Companies
+465,Tata Consultancy Services,tcs.com,India,IT Software & Services
+466,Daikin Industries,daikin.com,Japan,Capital Goods
+467,Komatsu,komatsu.com,Japan,Capital Goods
+468,Bouygues,bouygues.fr,France,Construction
+469,ACS Actividades de Construccion y Servicios,grupoacs.com,Spain,Construction
+470,PKO Bank Polski,pkobp.pl,Poland,Banking
+471,Northern Trust,northerntrust.com,United States,Diversified Financials
+472,NetEase,ir.netease.com,China,IT Software & Services
+473,Haier Smart Home,haier.com,China,Consumer Durables
+474,DSV,dsv.com,Denmark,Transportation
+475,CRRC,crrcgc.cc,China,Capital Goods
+476,American Tower,americantower.com,United States,Diversified Financials
+476,Ford Motor,ford.com,United States,Consumer Durables
+478,Power Construction Corporation of China,powerchina.cn,China,Construction
+479,Canadian Pacific Kansas City,cpr.ca,Canada,Transportation
+479,Raymond James Financial,raymondjames.com,United States,Diversified Financials
+481,China Hongqiao Group,hongqiaochina.com,China,Materials
+482,MediaTek,mediatek.com,Taiwan,Semiconductors
+483,Deutsche Boerse,deutsche-boerse.com,Germany,Diversified Financials
+484,Keurig Dr Pepper,keurigdrpepper.com,United States,"Food, Drink & Tobacco"
+485,China CSSC Holdings,csscholdings.com,China,Capital Goods
+486,China Railway Construction,crcc.cn,China,Construction
+487,Orange,orange.fr,France,Telecommunications Services
+488,L3Harris Technologies,l3harris.com,United States,Aerospace & Defense
+489,Sherwin-Williams,sherwin-williams.com,United States,Chemicals
+490,Gallagher,ajg.com,United States,Insurance
+490,Suzuki Motor,globalsuzuki.com,Japan,Consumer Durables
+492,OMV Group,omv.com,Austria,Oil & Gas Operations
+493,First Citizens Bank (NC),firstcitizens.com,United States,Banking
+494,HeidelbergCement,heidelbergcement.com,Germany,Construction
+495,Kotak Mahindra Bank,kotak.bank.in,India,Banking
+496,Sony Group,sony.com,Japan,Technology Hardware & Equipment
+497,Intact Financial,intactfc.com,Canada,Insurance
+498,Reckitt Benckiser Group,rb.com,United Kingdom,Household & Personal Products
+499,Woodside Energy Group,woodside.com.au,Australia,Oil & Gas Operations
+500,BCE,bce.ca,Canada,Telecommunications Services
+500,Venture Global,,United States,Oil & Gas Operations
+502,Canadian National Railway,cn.ca,Canada,Transportation
+503,NN Group,nn-group.com,Netherlands,Insurance
+504,Trane Technologies,tranetechnologies.com,Ireland,Capital Goods
+505,Entergy,entergy.com,United States,Utilities
+505,Sysco,sysco.com,United States,Food Markets
+507,Woori Financial Group,woorifg.com,South Korea,Banking
+508,Ericsson,ericsson.com,Sweden,Technology Hardware & Equipment
+509,Welltower,welltower.com,United States,Diversified Financials
+510,Emaar Properties,emaar.com,United Arab Emirates,Construction
+511,Coca-Cola Europacific Partners,cocacolaep.com,United Kingdom,"Food, Drink & Tobacco"
+512,Saudi Electricity,se.com.sa,Saudi Arabia,Utilities
+513,Corning,corning.com,United States,Technology Hardware & Equipment
+514,Chery Automobile,chery.cn,China,Consumer Durables
+515,Cheniere Energy,cheniere.com,United States,Oil & Gas Operations
+516,Bank Mandiri,bankmandiri.co.id,Indonesia,Banking
+517,Banca MPS,mps.it,Italy,Banking
+518,Kioxia Holdings,,Japan,Technology Hardware & Equipment
+519,Naturgy Energy Group,naturgy.com,Spain,Oil & Gas Operations
+520,Fortescue Metals Group,fmgl.com.au,Australia,Materials
+521,HP,hp.com,United States,IT Software & Services
+521,Wilmar International,wilmar-international.com,Singapore,"Food, Drink & Tobacco"
+523,Norfolk Southern,nscorp.com,United States,Transportation
+524,Republic Services,republicservices.com,United States,Business Services & Supplies
+525,Lenovo Group,lenovo.com,Hong Kong,Technology Hardware & Equipment
+526,Citizens Financial Group,citizensbank.com,United States,Banking
+526,Principal Financial Group,principal.com,United States,Diversified Financials
+526,Vistra Energy,vistraenergy.com,United States,Utilities
+529,Imperial Brands,imperialbrandsplc.com,United Kingdom,"Food, Drink & Tobacco"
+530,BT Group,bt.com,United Kingdom,Telecommunications Services
+531,China Communications Construction,ccccltd.cn,China,Construction
+532,Henkel,henkel-northamerica.com,Germany,Chemicals
+533,TE Connectivity,te.com,Ireland,Semiconductors
+534,QBE Insurance Group,qbe.com,Australia,Insurance
+535,East Japan Railway,jreast.co.jp,Japan,Transportation
+536,Bridgestone,bridgestoneamericas.com,Japan,Consumer Durables
+536,Daiwa House Industry,daiwahouse.co.jp,Japan,Construction
+538,BPER Banca,bper.it,Italy,Banking
+539,Shaanxi Coal Industry,shxcoal.com,China,Materials
+540,Vertex Pharmaceuticals,vrtx.com,United States,Drugs & Biotechnology
+541,Devon Energy,devonenergy.com,United States,Oil & Gas Operations
+542,Delta Electronics,deltaww.com,Taiwan,Technology Hardware & Equipment
+542,Rogers Communications,shaw.ca,Canada,Telecommunications Services
+544,Mahindra & Mahindra,mahindra.com,India,Consumer Durables
+545,ASE Technology Holding,aseglobal.com,Taiwan,Semiconductors
+546,SingTel,singtel.com,Singapore,Telecommunications Services
+547,Jardine Matheson,jardines.com,Bermuda,Conglomerates
+548,Swisscom,swisscom.com,Switzerland,Telecommunications Services
+549,Fresenius,fresenius.de,Germany,Health Care Equipment & Services
+550,Honda Motor,honda.com,Japan,Consumer Durables
+550,Sea,sea.com,Singapore,IT Software & Services
+552,United Rentals,unitedrentals.com,United States,Business Services & Supplies
+553,Public Service Enterprise Group,investor.pseg.com,United States,Utilities
+554,Mitsui Fudosan,mitsuifudosan.co.jp,Japan,Construction
+555,Legal & General Group,legalandgeneral.com,United Kingdom,Insurance
+556,Michelin Group,michelin.com,France,Consumer Durables
+557,Infineon Technologies,infineon.com,Germany,Semiconductors
+557,Naspers,naspers.com,South Africa,IT Software & Services
+559,Kansai Electric Power,kepco.co.jp,Japan,Utilities
+560,Carrier Global,corporate.carrier.com,United States,Capital Goods
+561,Atlas Copco,atlascopco.com,Sweden,Capital Goods
+562,Canon,global.canon,Japan,Technology Hardware & Equipment
+563,Quanta Services,quantaservices.com,United States,Construction
+564,Banco BPM,bancobpmspa.it,Italy,Banking
+565,Air Products & Chemicals,airproducts.com,United States,Chemicals
+566,Loews,loews.com,United States,Insurance
+567,Bank Central Asia,bca.co.id,Indonesia,Banking
+567,CBRE Group,cbre.us,United States,Construction
+569,Central Japan Railway,jr-central.co.jp,Japan,Transportation
+570,Bank of Baroda,bankofbaroda.bank.in,India,Banking
+571,Nokia,nokia.com,Finland,Technology Hardware & Equipment
+572,Baoshan Iron & Steel,baosteel.com,China,Materials
+573,Haleon,,United Kingdom,Drugs & Biotechnology
+574,Becton Dickinson,bd.com,United States,Health Care Equipment & Services
+575,Recruit Holdings ,recruit-holdings.co.jp,Japan,IT Software & Services
+576,KeyCorp,key.com,United States,Banking
+576,S.F. Holding,sf-express.com,China,Transportation
+578,China Coal Energy,chinacoalenergy.com,China,Materials
+578,Targa Resources,targaresources.com,United States,Oil & Gas Operations
+580,Tokyo Electron,tel.com,Japan,Capital Goods
+581,Corteva,corteva.com,United States,"Food, Drink & Tobacco"
+582,Hindalco Industries,hindalco.com,India,Materials
+583,JSW Steel,jsw.in,India,Materials
+584,Ecolab,ecolab.com,United States,Chemicals
+584,Teva Pharmaceutical,tevapharm.com,Israel,Drugs & Biotechnology
+586,Wesfarmers,wesfarmers.com,Australia,Retailing
+587,GE HealthCare Technologies,gehealthcare.com,United States,Health Care Equipment & Services
+588,Bank Of Hangzhou,hzbank.com.cn,China,Banking
+589,China Taiping Insurance,ctih.cntaiping.com,Hong Kong,Insurance
+590,Bayer ,bayer.com,Germany,Drugs & Biotechnology
+591,Warner Bros. Discovery,wbd.com,United States,Media
+592,JBS,jbs.com.br,Netherlands,"Food, Drink & Tobacco"
+592,Leonardo,leonardo.com,Italy,Aerospace & Defense
+594,Coal India,coalindia.in,India,Materials
+595,Bajaj Finserv ,bajajfinserv.in,India,Insurance
+596,AirBnB,airbnb.com,United States,"Hotels, Restaurants & Leisure"
+597,Inpex,inpex.co.jp,Japan,Oil & Gas Operations
+598,NXP Semiconductors,nxp.com,Netherlands,Semiconductor
+599,Grupa PZU,pzu.pl,Poland,Insurance
+600,Aluminum Corp of China,chalco.com.cn,China,Trading Companies
+601,Interactive Brokers Group,interactivebrokers.com,United States,Diversified Financials
+602,Prysmian,prysmiangroup.com,Italy,Capital Goods
+603,Resona Holdings,resona-gr.co.jp,Japan,Banking
+604,Unipol Gruppo,unipolgf.it,Italy,Insurance
+605,Aegon,aegon.com,Netherlands,Insurance
+605,Regions Financial,regions.com,United States,Banking
+607,Huaneng Power International,hpi.com.cn,China,Utilities
+608,NEC,jpn.nec.com,Japan,IT Software & Services
+609,Publicis Groupe,publicisgroupe.com,France,Media
+610,Fujitsu,fujitsu.com,Japan,IT Software & Services
+610,Nintendo,nintendo.com,Japan,Consumer Durables
+612,Holcim,lafargeholcim.com,Switzerland,Construction
+613,Power Finance,pfcindia.com,India,Business Services & Supplies
+614,Eversource Energy,eversource.com,United States,Utilities
+615,Fujifilm Holdings,holdings.fujifilm.com,Japan,Health Care Equipment & Services
+615,Sandisk,sandisk.com,United States,Technology Hardware & Equipment
+617,KLA,kla.com,United States,Semiconductors
+618,Vodafone,vodafone.com,United Kingdom,Telecommunications Services
+619,Dollar General,dollargeneral.com,United States,Retailing
+620,Riyad Bank,riyadbank.com,Saudi Arabia,Banking
+621,Reinsurance Group of America,rgare.com,United States,Insurance
+622,AutoZone,autozone.com,United States,Retailing
+622,Stellantis,stellantis.com,Netherlands,Consumer Durables
+624,Raiffeisen Bank International,rbinternational.com,Austria,Banking
+625,Otsuka Holding,otsuka.com,Japan,Drugs & Biotechnology
+626,Lennar,lennar.com,United States,"Construction, Chemicals, Raw Materials"
+627,Ageas,ageas.com,Belgium,Insurance
+628,Canara Bank,canarabank.bank.in,India,Banking
+629,ServiceNow,servicenow.com,United States,IT Software & Services
+630,DTE Energy,dteenergy.com,United States,Utilities
+631,Spotify Technology,open.spotify.com,Sweden,IT Software & Services
+632,Punjab National Bank,pnb.bank.in,India,Banking
+633,Mapfre,mapfre.com,Spain,Insurance
+634,Arista Networks,arista.com,United States,Technology Hardware & Equipment
+635,Heineken,theheinekencompany.com,Netherlands,"Food, Drink & Tobacco"
+636,Hanwha Aerospace,hanwhatechwin.com,South Korea,Aerospace & Defense
+637,Medline,,United States,
+638,Markel,markel.com,United States,Insurance
+639,LG Electronics,lg.com,South Korea,Consumer Durables
+640,Centene,centene.com,United States,Drugs & Biotechnology
+641,Adidas,adidas.ca,Germany,Household & Personal Products
+642,EDP,edp.pt,Portugal,Utilities
+642,EQT,eqt.com,United States,Oil & Gas Operations
+644,National Bank of Kuwait ,kuwait.nbk.com,Kuwait,Banking
+645,Saudi Arabian Mining,maaden.com.sa,Saudi Arabia,Materials
+646,SBI Holdings,sbigroup.co.jp,Japan,Diversified Financials
+647,Cincinnati Financial,cinfin.com,United States,Insurance
+648,Ross Stores,rossstores.com,United States,Retailing
+649,Union Bank of India,unionbankofindia.bank.in,India,Banking
+650,BOE Technology Group,boe.com,China,Technology Hardware & Equipment
+651,O'Reilly Automotive,oreillyauto.com,United States,Retailing
+652,Capgemini,capgemini.com,France,IT Software & Services
+653,Equinix,equinix.com,United States,Diversified Financials
+654,CIMB Group Holdings,cimb.com,Malaysia,Banking
+655,Block,squareup.com,United States,Business Services & Supplies
+656,Hengli Petrochemical,hengliinc.com,China,Chemicals
+657,Halliburton,halliburton.com,United States,Oil & Gas Operations
+657,Tata Steel,tatasteel.com,India,Materials
+659,Meituan ,about.meituan.com,China,IT Software & Services
+660,China National Nuclear Power,cnnp.com.cn,China,Utilities
+661,Isbank,isbank.com.tr,Turkey,Banking
+662,Bunge Global,bunge.com,United States,"Food, Drink & Tobacco"
+663,Infosys,infosys.com,India,IT Software & Services
+664,George Weston,weston.ca,Canada,Food Markets
+665,Aeon,aeon.info,Japan,Food Markets
+666,Kuaishou Technology,,China,Media
+667,CSL,csl.com,Australia,Drugs & Biotechnology
+667,Hong Kong Exchanges,hkex.com.hk,Hong Kong,Diversified Financials
+669,Western Digital,westerndigital.com,United States,Technology Hardware & Equipment
+670,Colgate-Palmolive,colgatepalmolive.com,United States,Household & Personal Products
+670,Hewlett Packard Enterprise,hpe.com,United States,Technology Hardware & Equipment
+672,Simon Property Group,simon.com,United States,Diversified Financials
+673,CEZ Group,cez.cz,Czech Republic,Utilities
+673,Intuitive,intuitive.com,United States,Health Care Equipment & Services
+675,TS Financial Holding,taishinholdings.com.tw,Taiwan,Diversified Financials
+676,Mitsubishi Estate,mec.co.jp,Japan,Construction
+677,W. R. Berkley,berkley.com,United States,Insurance
+678,VakifBank,vakifbank.com.tr,Turkey,Banking
+679,Illinois Tool Works,itw.com,United States,Consumer Durables
+680,Trip.com Group,ctrip.com,Singapore,Business Services & Supplies
+681,China Tower Corp.,china-tower.com,China,Telecommunications Services
+682,Vonovia,vonovia.de,Germany,Construction
+683,WEC Energy Group,wecenergygroup.com,United States,Utilities
+684,Telstra,telstra.com.au,Australia,Telecommunications Services
+685,Credicorp,credicorpnet.com,Peru,Banking
+686,Lincoln National,lincolnfinancial.com,United States,Insurance
+687,Yankuang Energy Group,yanzhoucoal.com.cn,China,Materials
+688,Baidu,baidu.com,China,IT Software & Services
+688,Kubota,kubota.com,Japan,Capital Goods
+690,Deutsche Lufthansa,lufthansagroup.com,Germany,Transportation
+691,Posco,posco.com,South Korea,Materials
+692,China Zheshang Bank,czbank.com,China,Banking
+693,SSE,sse.com,United Kingdom,Utilities
+694,Mizrahi Tefahot Bank,mizrahi-tefahot.co.il,Israel,Banking
+695,Ferguson Enterprises,ferguson.com,United States,Trading Companies
+696,TD SYNNEX,tdsynnex.com,United States,Trading Companies
+697,AerCap Holdings,aercap.com,Ireland,Business Services & Supplies
+698,FirstEnergy,firstenergycorp.com,United States,Utilities
+699,Ally Financial,ally.com,United States,Business Services & Supplies
+700,Wistron,wistron.com,Taiwan,Technology Hardware & Equipment
+701,RELX,reedelsevier.com,United Kingdom,Business Services & Supplies
+702,Telefónica,telefonica.com,Spain,Telecommunications Services
+703,Everest Re Group,everestre.com,Bermuda,Insurance
+704,Fidelity National Information (FIS),fisglobal.com,United States,IT Software & Services
+705,Bharat Petroleum,bharatpetroleum.in,India,Oil & Gas Operations
+705,Helvetia Baloise Holding,helvetia.com,Switzerland,Insurance
+707,Sampo,sampo.com,Finland,Insurance
+707,TDK,tdk.com,Japan,Technology Hardware & Equipment
+709,Kenvue,,United States,Household & Personal Products
+709,SK Square,,South Korea,Diversified Financials
+711,Assa Abloy,assaabloydss.com,Sweden,Consumer Durables
+712,Expand Energy,chk.com,United States,Oil & Gas Operations
+713,AIB Group,group.aib.ie,Ireland,Banking
+714,HD KOREA SHIPBUILDING & OFFSHORE ENGINEERING CO. LTD.,hhi.co.kr,South Korea,Capital Goods
+715,Marvell Technology,marvell.com,United States,Semiconductors
+716,HD HYUNDAI,hyundai-holdings.com,South Korea,Capital Goods
+717,General Mills,generalmills.com,United States,"Food, Drink & Tobacco"
+718,Keyence,keyence.com,Japan,Technology Hardware & Equipment
+719,Palo Alto Networks,paloaltonetworks.com,United States,IT Software & Services
+720,Flex,flex.com,United States,Technology Hardware & Equipment
+721,Synopsys,synopsys.com,United States,IT Software & Services
+722,Industrial Bank of Korea,global.ibk.co.kr,South Korea,Business Services & Supplies
+723,Vestas Wind Systems,vestas.com,Denmark,Capital Goods
+724,EnBW Energie Baden-Wurttemberg,enbw-oberliga.de,Germany,Utilities
+725,IQVIA,iqvia.com,United States,Drugs & Biotechnology
+726,Jiangxi Copper,jxcc.com,China,Materials
+726,Samsung Fire & Marine,samsungfire.com,South Korea,Insurance
+728,Tenaga Nasional,tnb.com.my,Malaysia,Utilities
+729,Axia Energia,eletrobras.com,Brazil,Utilities
+730,Muyuan Foods,muyuanfoods.com,China,"Food, Drink & Tobacco"
+731,TransDigm Group,transdigm.com,United States,Aerospace & Defense
+732,Turkish Airlines,turkishairlines.com,Turkey,Transportation
+733,Eiffage,eiffage.com,France,Construction
+734,Philips,philips.com,Netherlands,Health Care Equipment & Services
+735,Huatai Securities,htsc.com.cn,China,Diversified Financials
+736,CGN Power,cgnp.com.cn,China,Utilities
+737,Banco de Sabadell,bancsabadell.com,Spain,Banking
+738,WW Grainger,grainger.com,United States,Trading Companies
+739,Saudi British Bank,sabb.com.sa,Saudi Arabia,Banking
+740,Tenet Healthcare,tenethealth.com,United States,Health Care Equipment & Services
+741,Universal Music Group,universalmusic.com,Netherlands,Business Services & Supplies
+742,East Money Information  ,eastmoney.com,China,IT Software & Services
+743,Hikvision,hikvision.com,China,Technology Hardware & Equipment
+744,Motorola Solutions,motorolasolutions.com,United States,Technology Hardware & Equipment
+745,Chubu Electric Power,chuden.co.jp,Japan,Utilities
+746,Cognizant,cognizant.com,United States,IT Software & Services
+747,3i Group,3igroup.com,United Kingdom,Diversified Financials
+748,Air France-KLM,airfranceklm.com,France,Transportation
+749,Daiichi Sankyo,daiichisankyo.com,Japan,Drugs & Biotechnology
+750,Robinhood Markets,,United States,Diversified Financials
+751,China Energy Engineering,ceec.net.cn,China,Construction
+752,Dow,dow.com,United States,Chemicals
+753,Nippon Steel ,nipponsteel.com,Japan,Materials
+754,Seagate Technology,seagate.com,United States,Technology Hardware & Equipment
+755,Ameren,ameren.com,United States,Utilities
+756,Murata Manufacturing,murata.com,Japan,Technology Hardware & Equipment
+757,Ryanair Holdings,ryanair.com,Ireland,Transportation
+758,Anglo American,angloamerican.com,United Kingdom,Materials
+759,Semiconductor Manufacturing International,smics.com,China,Semiconductors
+760,Groupo Cibest,bancolombia.com,Colombia,Banking
+760,Sekisui House,sekisuihouse-global.com,Japan,Construction
+762,Expedia Group,expediagroup.com,United States,Business Services & Supplies
+763,Bank of Ireland,bankofireland.com,Ireland,Banking
+764,Carvana,carvana.com,United States,Retailing
+765,Kraft Heinz Company,kraftheinzcompany.com,United States,"Food, Drink & Tobacco"
+766,Inner Mongolia Yili ,yili.com,China,"Food, Drink & Tobacco"
+767,GD Power Development,600795.com.cn,China,Utilities
+767,Las Vegas Sands,sands.com,United States,"Hotels, Restaurants & Leisure"
+769,NASDAQ,nasdaq.com,United States,Diversified Financials
+770,Super Micro Computer,,United States,Technology Hardware & Equipment
+771,Fox,foxcorporation.com,United States,Media
+772,Fortis (Canada),fortisinc.com,Canada,Utilities
+773,Public Bank,pbebank.com,Malaysia,Banking
+774,Diamondback Energy,diamondbackenergy.com,United States,Oil & Gas Operations
+775,St. James's Place,sjp.co.uk,United Kingdom,Insurance
+776,Astellas Pharma,astellas.com,Japan,Drugs & Biotechnology
+777,Kimberly-Clark,kimberly-clark.com,United States,Household & Personal Products
+778,Digital Realty Trust,digitalrealty.com,United States,Diversified Financials
+779,Asr Nederland,asrnederland.nl,Netherlands,Insurance
+779,Jabil Circuit,jabil.com,United States,Capital Goods
+781,Realty Income,realtyincome.com,United States,Diversified Financials
+782,Sinopharm Group,sinopharmholding.com,China,Health Care Equipment & Services
+783,Mirae Asset Financial Group,miraeassetdaewoo.com,South Korea,Diversified Financials
+784,Annaly Capital Management,annaly.com,United States,Diversified Financials
+785,Akbank,akbank.com,Turkey,Banking
+786,Huishang Bank,hsbank.com.cn,China,Banking
+787,Ferrovial,ferrovial.com,Netherlands,Construction
+788,eBay,ebayinc.com,United States,Retailing
+789,Associated British Foods,abf.co.uk,United Kingdom,"Food, Drink & Tobacco"
+789,VICI Properties,viciproperties.com,United States,Diversified Financials
+791,Sandvik,home.sandvik,Sweden,Capital Goods
+792,HAL Trust,halinvestments.nl,Netherlands,Diversified Financials
+793,AngloGold Ashanti,anglogoldashanti.com,United States,Materials
+794,Schweizerische Nationalbank,snb.ch,Switzerland,Banking
+795,China Resources Power,cr-power.com,Hong Kong,Utilities
+796,MTR,mtr.com.hk,Hong Kong,Transportation
+797,H&M - Hennes & Mauritz,hm.com,Sweden,Retailing
+798,T&D Holdings,td-holdings.co.jp,Japan,Insurance
+799,Acciona,acciona.com,Spain,Construction
+800,Pernod Ricard,pernod-ricard.com,France,"Food, Drink & Tobacco"
+801,Roper Technologies,ropertech.com,United States,IT Software & Services
+802,Tenaris,tenaris.com,Luxembourg,Materials
+803,Vingroup,vingroup.net,Vietnam,Construction
+804,PPL,pplweb.com,United States,Utilities
+805,Legrand,legrand.com,France,Technology Hardware & Equipment
+806,Koç Holding,koc.com.tr,Turkey,Oil & Gas Operations
+807,Westinghouse Air Brake Technologies,wabtec.com,United States,Capital Goods
+808,PPG ,ppg.com,United States,Chemicals
+809,Great Wall Motor ,gwm.com.cn,China,Consumer Durables
+809,Hilton Worldwide Holdings,hilton.com,United States,"Hotels, Restaurants & Leisure"
+811,WH Group ,wh-group.com,Hong Kong,"Food, Drink & Tobacco"
+812,CK Asset Holdings,ckph.com.hk,Hong Kong,Construction
+813,KASIKORNBANK,kasikornbank.com,Thailand,Banking
+814,Shopify,shopify.ca,Canada,IT Software & Services
+815,Daiwa Securities,daiwa-grp.jp,Japan,Diversified Financials
+816,DoorDash,about.doordash.com,United States,Transportation
+817,RenaissanceRe Holdings,renre.com,Bermuda,Insurance
+818,Steel Dynamics,steeldynamics.com,United States,Materials
+819,Mitsubishi UFJ Lease,lf.mufg.jp,Japan,Business Services & Supplies
+820,LG Chem,lgchem.com,South Korea,Chemicals
+820,Yuanta Financial Holding,yuanta.com,Taiwan,Diversified Financials
+822,Vertiv Holdings,vertiv.com,United States,Technology Hardware & Equipment
+823,CenterPoint Energy,centerpointenergy.com,United States,Utilities
+824,Southwest Airlines,southwest.com,United States,Transportation
+825,Antofagasta,antofagasta.co.uk,United Kingdom,Materials
+826,CLP Holdings,clpgroup.com,Hong Kong,Utilities
+827,Sungrow Power Supply  ,,China,Capital Goods
+828,Absa Group,absa.africa,South Africa,Banking
+828,UCB,ucb.com,Belgium,Drugs & Biotechnology
+830,Adani Enterprises,adani.com,India,Trading Companies
+831,Meritz Financial Group,meritzgroup.com,South Korea,Diversified Financials
+832,Cintas,cintas.com,United States,Business Services & Supplies
+833,Teck Resources,teck.com,Canada,Materials
+834,Carrefour,carrefour.com,France,Retailing
+835,EMCOR Group,emcorgroup.com,United States,Construction
+836,Beijing-Shanghai High-Speed Railway,,China,Transportation
+837,Rongsheng Petrochemical,cnrspc.com,China,Trading Companies
+838,NRG Energy,nrg.com,United States,Utilities
+839,PulteGroup,pultegroupinc.com,United States,Construction
+840,China Reinsurance Group,chinare.com.cn,China,Insurance
+840,Sany Heavy Industry,sanyhi.com,China,Capital Goods
+842,Asahi Group Holdings,asahigroup-holdings.com,Japan,"Food, Drink & Tobacco"
+843,WTW,wtwco.com,United Kingdom,Insurance
+844,Magna International,magna.com,Canada,Consumer Durables
+845,Sunbelt Rentals,sunbeltrentals.com,United States,Business Services & Supplies
+846,GF Securities,gf.com.cn,China,Diversified Financials
+847,Biogen,biogen.com,United States,Drugs & Biotechnology
+848,Tyson Foods,tysonfoods.com,United States,"Food, Drink & Tobacco"
+849,Idemitsu Kosan,idemitsu.co.jp,Japan,Oil & Gas Operations
+850,MTN Group,mtn.co.za,South Africa,Telecommunications Services
+851,HCLTech,hcltech.com,India,IT Software & Services
+852,Aena,aena.es,Spain,Transportation
+853,ITC,itcportal.com,India,"Food, Drink & Tobacco"
+854,Israel Discount Bank,discountbank.co.il,Israel,Banking
+854,SK Innovation ,skinnovation.com,South Korea,Oil & Gas Operations
+856,Standard Life,thephoenixgroup.com,United Kingdom,Insurance
+857,Huadian New Energy Group Corporation,,China,Utilities
+858,Nippon Yusen,nyk.com,Japan,Transportation
+859,Alinma Bank,alinma.com,Saudi Arabia,Banking
+859,Restaurant Brands International,rbi.com,Canada,"Hotels, Restaurants & Leisure"
+861,Grasim Industries,grasim.com,India,Construction
+862,Monster Beverage,monsterbevcorp.com,United States,"Food, Drink & Tobacco"
+863,Eurobank,eurobank.gr,Greece,Banking
+864,Bank Pekao,pekao.com.pl,Poland,Banking
+865,Kering,kering.com,France,Household & Personal Products
+865,Kyocera,kyocera.com,Japan,Trading Companies
+867,Advantest,advantest.co.jp,Japan,Technology Hardware & Equipment
+868,Dubai Islamic Bank,dib.ae,United Arab Emirates,Banking
+869,Abu Dhabi Islamic Bank,adib.ae,United Arab Emirates,Banking
+869,Asustek Computer,asus.com,Taiwan,Technology Hardware & Equipment
+871,TCL ,tcl.com,China,Technology Hardware & Equipment
+872,Halkbank,halkbank.com.tr,Turkey,Banking
+873,Kajima,kajima.co.jp,Japan,Construction
+874,Rheinmetall,rheinmetall.com,Germany,Aerospace & Defense
+875,Falabella,falabella.com,Chile,Retailing
+876,Kuehne & Nagel International,kuehne-nagel.com,Switzerland,Transportation
+877,Aldar Properties,aldar.com,United Arab Emirates,Construction
+878,Mediobanca,mediobanca.com,Italy,Banking
+878,Tokyo Gas,tokyo-gas.co.jp,Japan,Oil & Gas Operations
+880,Amrize,,United States,Construction
+881,AppLovin,applovin.com,United States,IT Software & Services
+882,Fidelity National Financial,fnf.com,United States,Insurance
+882,Howmet Aerospace,howmet.com,United States,Aerospace & Defense
+884,Neste,neste.com,Finland,Oil & Gas Operations
+885,Moody's,moodys.com,United States,Business Services & Supplies
+886,Amcor,amcor.com,Switzerland,Materials
+887,Zhongji Innolight,,China,Semiconductors
+888,Smurfit Westrock,,Ireland,Materials
+889,TBEA,tbea.com,China,Capital Goods
+890,Sumitomo Realty,sumitomo-rd.co.jp,Japan,Construction
+891,Joint Stock Commercial Bank for Foreign Trade of Vietnam,vietcombank.com.vn,Vietnam,Banking
+892,Poly Developments & Holdings Group,gzpoly.com,China,Construction
+893,Aisin Seiki,aisin.co.jp,Japan,Consumer Durables
+893,Live Nation Entertainment,livenationentertainment.com,United States,Media
+895,Mega Financial Holding,megaholdings.com.tw,Taiwan,Banking
+895,Sika,sika.com,Switzerland,Chemicals
+897,Hanwha,hanwhacorp.co.kr,South Korea,Chemicals
+898,Xiamen C&D,chinacnd.com,China,Transportation
+899,LyondellBasell Industries,lyondellbasell.com,United Kingdom,Chemicals
+900,Shanghai Rural Commercial Bank,,China,Banking
+901,Julius Baer Group,juliusbaer.com,Switzerland,Diversified Financials
+902,Gold Fields,goldfields.co.za,South Africa,Materials
+903,Nissan Motor,nissanusa.com,Japan,Consumer Durables
+904,Alcon,alcon.com,Switzerland,Health Care Equipment & Services
+905,Dassault Aviation,dassault-aviation.fr,France,Aerospace & Defense
+906,Renault,renaultgroup.com,France,Consumer Durables
+907,CMS Energy,cmsenergy.com,United States,Utilities
+908,Asahi Kasei,asahi-kasei.com,Japan,Chemicals
+909,CP All,cpall.co.th,Thailand,Food Markets
+910,Echostar,echostar.com,United States,Telecommunications Services
+911,Anta Sports Products,anta.cn,China,Household & Personal Products
+911,Banca Mediolanum,bancamediolanum.it,Italy,Banking
+913,Bank Of Chengdu,bocd.com.cn,China,Banking
+914,Chipotle Mexican Grill,chipotle.com,United States,"Hotels, Restaurants & Leisure"
+915,Vedanta Limited,vedantaresources.com,India,Materials
+916,KGI Financial Holding,cdibh.com,Taiwan,Insurance
+916,Legend Holding,legendholdings.com.cn,China,Diversified Financials
+918,China Merchants Securities,newone.com.cn,China,Diversified Financials
+919,Singapore Airlines,singaporeair.com,Singapore,Transportation
+920,Woolworths,woolworthsgroup.com.au,Australia,Food Markets
+921,Corebridge Financial,,United States,Insurance
+922,Sanlam,sanlamonline.co.za,South Africa,Insurance
+923,Palantir Technologies,palantir.com,United States,IT Software & Services
+924,Mashreq Bank,mashreqbank.com,United Arab Emirates,Banking
+925,Krung Thai Bank,krungthai.com,Thailand,Banking
+926,Global Payments,globalpayments.com,United States,Business Services & Supplies
+927,Metallurgical Corp of China,mccchina.com,China,Construction
+928,E.Sun Financial,esunbank.com,Taiwan,Banking
+929,TELUS,telus.com,Canada,Telecommunications Services
+930,Phoenix Holdings,,Israel,Insurance
+931,Indian Bank,indianbank.in,India,Banking
+932,Comfort Systems USA,comfortsystemsusa.com,United States,Construction
+933,Banco Comercial Portugues,millenniumbcp.pt,Portugal,Banking
+933,Ferrari,ferrari.com,Italy,Consumer Durables
+935,Power Grid of India,powergridindia.com,India,Utilities
+936,Otis Worldwide,otis.com,United States,Construction
+937,Zoetis,zoetis.com,United States,Drugs & Biotechnology
+938,Constellation Brands,cbrands.com,United States,"Food, Drink & Tobacco"
+939,Omnicom,omnicomgroup.com,United States,Media
+940,Sandoz Group,,Switzerland,Drugs & Biotechnology
+941,Chongqing Rural Bank,cqrcb.com,China,Banking
+941,Waste Connections,wasteconnections.com,Canada,Business Services & Supplies
+943,Grupo Inbursa,inbursa.com.mx,Mexico,Banking
+944,United Microelectronics,umc.com,Taiwan,Semiconductors
+945,Bankinter,ebankinter.es,Spain,Banking
+945,LPL Financial Holdings,lpl.com,United States,Diversified Financials
+947,Fortinet,fortinet.com,United States,IT Software & Services
+947,SCB X Public Company ,scb.co.th,Thailand,Banking
+949,Guosen Securities,guosen.com.cn,China,Diversified Financials
+950,Nongfu Spring,,China,"Food, Drink & Tobacco"
+951,Mitsui OSK Lines,mol.co.jp,Japan,Transportation
+952,M&G,,United Kingdom,Diversified Financials
+953,Gulf Development,,Thailand,Construction
+953,Schindler Holding,schindler.com,Switzerland,Capital Goods
+955,Snam,snam.it,Italy,Oil & Gas Operations
+956,Vienna Insurance Group,vig.com,Austria,Insurance
+957,East West Bancorp,eastwestbank.com,United States,Banking
+958,Evergreen Marine Corp. (Taiwan),evergreen-marine.com,Taiwan,Transportation
+959,Orsted,orsted.com,Denmark,Utilities
+959,XCMG Construction Machinery,xcmg.com,China,Capital Goods
+961,Bank of India,bankofindia.bank.in,India,Banking
+961,China Merchants Shekou Industrial Zone Holdings,cmsk1979.com,China,Construction
+961,Martin Marietta Materials,martinmarietta.com,United States,Construction
+964,Verbund,verbund.com,Austria,Utilities
+965,AES,aes.com,United States,Utilities
+966,Techtronic Industries,ttigroup.com,Hong Kong,Consumer Durables
+967,Itaúsa,itausa.com.br,Brazil,Diversified Financials
+968,Commercial Bank For Investment & Development Of Vietnam,bidv.com.vn,Vietnam,Banking
+969,Kinross Gold,kinross.com,Canada,Materials
+970,China Vanke,vanke.com,China,Construction
+970,Public Storage,publicstorage.com,United States,Diversified Financials
+972,Celestica,celestica.com,Canada,Technology Hardware & Equipment
+973,China National Chemical,cncec.com.cn,China,Construction
+974,Naver,navercorp.com,South Korea,IT Software & Services
+975,China International Capital,cicc.com.cn,China,Diversified Financials
+975,Nidec,nidec.com,Japan,Capital Goods
+977,Shanghai Pharmaceuticals,sphchina.com,China,Drugs & Biotechnology
+978,Tokyo Electric Power,tepco.co.jp,Japan,Utilities
+979,Anhui Conch Cement,conch.cn,China,Construction
+980,Scor,scor.com,France,Insurance
+981,Telenor,telenor.com,Norway,Telecommunications Services
+982,Nippon Paint,nipponpaint-holdings.com,Japan,Chemicals
+983,Essity,essity.com,Sweden,Household & Personal Products
+984,National Bank of Greece,nbg.gr,Greece,Banking
+985,Yum! Brands,yum.com,United States,"Hotels, Restaurants & Leisure"
+986,Wuxi Apptec,wuxiapptec.com.cn,China,Drugs & Biotechnology
+987,Bangkok Bank,bangkokbank.com,Thailand,Banking
+988,Arrow Electronics,arrow.com,United States,Trading Companies
+989,Unum Group,unumgroup.com,United States,Insurance
+990,Industrivarden,industrivarden.se,Sweden,Diversified Financials
+990,Sunshine Insurance Group,,China,Insurance
+992,StoneX Group,intlfcstone.com,United States,Diversified Financials
+993,Kone,kone.com,Finland,Construction
+994,Ametek,ametek.com,United States,Capital Goods
+995,The Hershey Company,hersheys.com,United States,"Food, Drink & Tobacco"
+996,Obayashi,obayashi.co.jp,Japan,Construction
+997,ZTE,zte.com.cn,China,Technology Hardware & Equipment
+998,HF Sinclair,hollyfrontier.com,United States,Oil & Gas Operations
+999,Atmos Energy,atmosenergy.com,United States,Oil & Gas Operations
+1000,Crown Castle International,crowncastle.com,United States,Diversified Financials
+1001,Greenland Holdings Group,ldjt.com.cn,China,Construction
+1002,Dollar Tree,dollartree.com,United States,Retailing
+1003,Thomson Reuters,thomsonreuters.com,Canada,IT Software & Services
+1004,Unibail-Rodamco-Westfield ,urw.com,France,Diversified Financials
+1005,Euronext,,Netherlands,Diversified Financials
+1006,Zhejiang Huayou Cobalt,huayou.com,China,Materials
+1007,American Airlines Group,aa.com,United States,Transportation
+1007,Rocket Companies,rocketcompanies.com,United States,Business Services & Supplies
+1009,Attijariwafa Bank,attijariwafabank.com,Morocco,Banking
+1010,Carlsberg,carlsberggroup.com,Denmark,"Food, Drink & Tobacco"
+1011,Fastenal,fastenal.com,United States,Trading Companies
+1012,Kaspi.kz JSC,,Kazakhstan,Business Services & Supplies
+1012,Latam Airlines,latamairlinesgroup.net,Chile,Transportation
+1014,Sumitomo Metal Mining,smm.co.jp,Japan,Materials
+1015,Jeronimo Martins,jeronimomartins.pt,Portugal,Food Markets
+1016,AGNC Investment,agnc.com,United States,Diversified Financials
+1017,STMicroelectronics,st.com,Switzerland,Semiconductors
+1018,International Paper,internationalpaper.com,United States,Materials
+1019,Norsk Hydro,hydro.com,Norway,Materials
+1020,Sabanci Holding,sabanci.com,Turkey,Banking
+1021,Coinbase,coinbase.com,United States,Diversified Financials
+1022,Country Garden Holdings,en.bgy.com.cn,China,Construction
+1023,Garmin,garmin.com,Switzerland,Technology Hardware & Equipment
+1024,Banque Saudi Fransi,alfransi.com.sa,Saudi Arabia,Banking
+1025,Subaru Corporation,subaru.co.jp,Japan,Consumer Durables
+1026,Yara International,yara.com,Norway,Chemicals
+1027,Labcorp Holdings,labcorp.com,United States,Health Care Equipment & Services
+1028,Db Insurance,idbins.com,South Korea,Insurance
+1029,KGHM Polska Miedz,kghm.com,Poland,Materials
+1030,SM Investments,sminvestments.com,Philippines,Retailing
+1031,Vietin Bank,vietinbank.vn,Vietnam,Banking
+1032,China Galaxy Securities,chinastock.com.cn,China,Diversified Financials
+1033,Hexagon ,hexagon.com,Sweden,Technology Hardware & Equipment
+1034,BCI-Banco Credito,bci.cl,Chile,Banking
+1035,Leidos,leidos.com,United States,IT Software & Services
+1035,Porsche Automobil Holding,porsche-se.com,Germany,Consumer Durables
+1035,Rakuten,global.rakuten.com,Japan,Retailing
+1038,Shanghai International Port,portshanghai.com.cn,China,Transportation
+1039,Datang International Power,dtpower.com,China,Utilities
+1040,Constellation Software,csisoftware.com,Canada,IT Software & Services
+1041,Coupang,,United States,Retailing
+1042,KT ,kt.com,South Korea,Telecommunications Services
+1043,Fosun International,fosun.com,China,Insurance
+1043,Industrias Peñoles,penoles.com.mx,Mexico,Materials
+1045,Rockwell Automation,rockwellautomation.com,United States,Capital Goods
+1046,American Water Works,amwater.com,United States,Utilities
+1047,Sichuan Road & Bridge,scrbc.com.cn,China,Construction
+1048,Terna,terna.it,Italy,Utilities
+1049,Adani Ports & Special Economic Zone,adaniports.com,India,Transportation
+1049,Eoptolink Technology,,China,Capital Goods
+1051,NiSource,nisource.com,United States,Oil & Gas Operations
+1052,Galp Energia,galpenergia.com,Portugal,Oil & Gas Operations
+1052,Qatar Islamic Bank,qib.com.qa,Qatar,Banking
+1054,SDIC Power Holdings,sdicpower.com,China,Utilities
+1055,Wheaton Precious Metals,wheatonpm.com,Canada,Materials
+1056,Arca Continental,arcacontal.com,Mexico,"Food, Drink & Tobacco"
+1056,DICK'S Sporting Goods,dickssportinggoods.com,United States,Retailing
+1056,Seres Group,,China,Consumer Durables
+1059,Equitable Holdings,equitable.com,United States,Insurance
+1059,Sabesp,sabesp.com.br,Brazil,Utilities
+1061,Hua Nan Financial,hnfhc.com.tw,Taiwan,Banking
+1062,Telecom Italia,telecomitalia.com,Italy,Telecommunications Services
+1062,US Foods,usfoods.com,United States,Food Markets
+1064,Kyushu Electric Power,kyuden.co.jp,Japan,Utilities
+1065,Jones Lang LaSalle,us.jll.com,United States,Construction
+1066,China Resources Pharmaceutical Group,crpharm.com,Hong Kong,Drugs & Biotechnology
+1067,Pembina Pipeline,pembina.com,Canada,Oil & Gas Operations
+1068,Assurant,assurant.com,United States,Insurance
+1069,Givaudan,givaudan.com,Switzerland,Household & Personal Products
+1070,Shriram Finance,stfc.in,India,Business Services & Supplies
+1071,Chunghwa Telecom,cht.com.tw,Taiwan,Telecommunications Services
+1072,First Financial Holding,firstholding.com.tw,Taiwan,Banking
+1073,Grupo Bimbo,grupobimbo.com,Mexico,"Food, Drink & Tobacco"
+1074,Fujikura,fujikura.co.jp,Japan,Capital Goods
+1074,Hoya,hoya.co.jp,Japan,Health Care Equipment & Services
+1076,Harel Insurance Investments & Financial Services,harel-group.com,Israel,Insurance
+1077,Best Buy,bestbuy.ca,United States,Retailing
+1077,Huadian Power International,hdpi.com.cn,China,Utilities
+1079,Piraeus Bank,piraeusbank.gr,Greece,Banking
+1080,Kirin Holdings,kirinholdings.com,Japan,"Food, Drink & Tobacco"
+1081,China Bohai Bank,,China,Banking
+1082,BDO Unibank,bdo.com.ph,Philippines,Banking
+1082,International Flavors & Fragrances,iff.com,United States,"Food, Drink & Tobacco"
+1082,Wuchan Zhongda Group,zjmi.com,China,Trading Companies
+1085,Darden Restaurants,darden.com,United States,"Hotels, Restaurants & Leisure"
+1086,Uni-President,uni-president.com.tw,Taiwan,Food Markets
+1087,China Huarong Asset Management,chamc.com.cn,China,Diversified Financials
+1088,Strategy,,United States,IT Software & Services
+1089,Daqin Railway,daqintielu.com,China,Transportation
+1090,NARI Technology Development,naritech.cn,China,Capital Goods
+1091,Henderson Land,hld.com,Hong Kong,Construction
+1092,Casey's General Stores,caseys.com,United States,Retailing
+1093,Coles Group,,Australia,Food Markets
+1094,CoreWeave,coreweave.com,United States,IT Software & Services
+1095,Dassault Systemes,3ds.com,France,IT Software & Services
+1096,Korea Investment Holdings,koreaholdings.com,South Korea,Diversified Financials
+1096,Ulta Beauty,ulta.com,United States,Retailing
+1098,CDW,cdw.com,United States,IT Software & Services
+1099,CNPC Capital,jichai.com,China,Banking
+1099,SinoPac Financial,sinopac.com,Taiwan,Banking
+1101,Lithia Motors,lithia.com,United States,Retailing
+1102,STRABAG,strabag.com,Austria,Construction
+1103,Hydro One,hydroone.com,Canada,Utilities
+1104,Accton Technology,accton.com,Taiwan,Technology Hardware & Equipment
+1105,China National Building,cnbmltd.com,China,Construction
+1106,Vulcan Materials,vulcanmaterials.com,United States,Construction
+1107,Viatris,viatris.com,United States,Drugs & Biotechnology
+1108,Wipro,wipro.com,India,IT Software & Services
+1109,WESCO International,wesco.com,United States,Trading Companies
+1110,Suzano ,suzano.com.br,Brazil,Materials
+1111,Goodman Group,goodman.com,Australia,Diversified Financials
+1112,Zijin Gold International,,Hong Kong,Materials
+1113,YPF ,ypf.com,Argentina,Oil & Gas Operations
+1114,Bank of Changsha,bankofchangsha.com,China,Banking
+1115,TechnipFMC,technipfmc.com,United States,Oil & Gas Operations
+1116,Sinotruk Hong Kong,en.sinotruk.com,China,Capital Goods
+1117,Cadence Design,cadence.com,United States,IT Software & Services
+1118,Extra Space Storage,extraspace.com,United States,Diversified Financials
+1118,Nebius Group,yandex.com,Netherlands,IT Software & Services
+1120,Ningxia Baofeng Energy Group,,China,Chemicals
+1121,Experian,experianplc.com,Ireland,Business Services & Supplies
+1122,All Nippon Airways,ana.co.jp,Japan,Transportation
+1123,Iveco Group,,Italy,Consumer Durables
+1124,Paychex,paychex.com,United States,Business Services & Supplies
+1125,Paramount,viacomcbs.com,United States,Media
+1126,Autodesk,autodesk.com,United States,IT Software & Services
+1127,Ajinomoto,ajinomoto.com,Japan,"Food, Drink & Tobacco"
+1128,Advanced Info Service,ais.co.th,Thailand,Telecommunications Services
+1129,Coca-Cola HBC,coca-colahellenic.com,Switzerland,"Food, Drink & Tobacco"
+1130,Csc Financial,csc108.com,China,Diversified Financials
+1131,Textron,textron.com,United States,Aerospace & Defense
+1132,Shenwan Hongyuan Group,swhygh.com,China,Diversified Financials
+1133,Bawag Group,bawaggroup.com,Austria,Banking
+1134,iA Financial Corporation,ia.ca,Canada,Diversified Financials
+1134,Osaka Gas,osakagas.co.jp,Japan,Oil & Gas Operations
+1136,Cathay Pacific Airways,cathaypacific.com,Hong Kong,Transportation
+1137,Taisei,taisei.co.jp,Japan,Construction
+1138,Brookfield Wealth Solutions,,Bermuda,Insurance
+1139,Arab National Bank,anb.com.sa,Saudi Arabia,Banking
+1140,Isuzu Motors,isuzu.co.jp,Japan,Consumer Durables
+1141,Shanghai Construction ,scg.com.cn,China,Construction
+1142,Quest Diagnostics,questdiagnostics.com,United States,Health Care Equipment & Services
+1142,Tractor Supply,tractorsupply.com,United States,Retailing
+1144,Cemex,cemex.com,Mexico,Construction
+1145,Ball,ball.com,United States,Materials
+1145,Swire Pacific,swirepacific.com,Hong Kong,"Food, Drink & Tobacco"
+1147,Greentown China Holdings,chinagreentown.com,China,Construction
+1148,OM,oldmutual.co.za,South Africa,Insurance
+1149,Renesas Electronics,renesas.com,Japan,Semiconductors
+1150,Kawasaki Heavy Industries,global.kawasaki.com,Japan,Consumer Durables
+1151,Corpay,corpay.com,United States,Business Services & Supplies
+1152,Penske Automotive,penskeautomotive.com,United States,Retailing
+1153,Formosa Petrochemical,fpcc.com.tw,Taiwan,Oil & Gas Operations
+1153,Performance Food Group,pfgc.com,United States,Transportation
+1155,T Rowe Price,troweprice.com,United States,Diversified Financials
+1156,CNH Industrial,cnh.com,United Kingdom,Capital Goods
+1156,Hyundai Glovis,glovis.net,South Korea,Transportation
+1158,Adani Power Limited,adanipower.com,India,Utilities
+1158,Brown & Brown,bbinsurance.com,United States,Insurance
+1160,Xylem,xylem.com,United States,Capital Goods
+1161,Alcoa,alcoa.com,United States,Materials
+1162,Quinenco,quinenco.cl,Chile,Banking
+1162,Sun Pharma Industries,sunpharma.com,India,Drugs & Biotechnology
+1164,China Southern Airlines,csair.com,China,Transportation
+1165,Workday,workday.com,United States,IT Software & Services
+1166,Volvo Car,,Sweden,Consumer Durables
+1166,Voya Financial,voya.com,United States,Insurance
+1168,Samsung SDI,samsungsdi.com,South Korea,Capital Goods
+1169,Amadeus IT Group ,amadeus.com,Spain,IT Software & Services
+1170,Top Frontier Investment Holdings,topfrontier.com.ph,Philippines,Oil & Gas Operations
+1171,WEG,weg.net,Brazil,Capital Goods
+1172,Albertsons,albertsonscompanies.com,United States,Food Markets
+1173,Circle,circle.com,United States,IT Software & Services
+1174,DiDi Global,,China,IT Software & Services
+1174,GS Holdings,gs.co.kr,South Korea,Food Markets
+1176,arGEN-X,,Netherlands,Drugs & Biotechnology
+1177,Electronic Arts,ea.com,United States,IT Software & Services
+1177,Shimao Property Holdings,shimaoproperty.com,Hong Kong,Construction
+1177,Vodafone Idea,vodafoneidea.com,India,Telecommunications Services
+1180,Franklin Resources,franklinresources.com,United States,Diversified Financials
+1181,Franco-Nevada,franco-nevada.com,Canada,Materials
+1182,Jefferies Financial ,jefferies.com,United States,Diversified Financials
+1183,TUI,tui-group.com,Germany,Business Services & Supplies
+1184,Jiangsu Hengrui Pharmaceuticals,,China,Drugs & Biotechnology
+1185,Zoom Video Communications,zoom.us,United States,IT Software & Services
+1186,Pinnacle Financial Partners,pinnbank.com,United States,Banking
+1187,AvalonBay Communities,avaloncommunities.com,United States,Diversified Financials
+1188,AntarChile,antarchile.cl,Chile,Diversified Financials
+1188,Webster Financial,websterbank.com,United States,Banking
+1190,Agilent Technologies,agilent.com,United States,Health Care Equipment & Services
+1191,Dover,dovercorporation.com,United States,Capital Goods
+1192,The Estée Lauder Companies,elcompanies.com,United States,Household & Personal Products
+1192,Flutter Entertainment,paddypowerbetfair.com,United States,"Hotels, Restaurants & Leisure"
+1194,Jiangsu Hengrui Medicine,hrs.com.cn,China,Drugs & Biotechnology
+1195,Halyk Bank,halykbank.kz,Kazakhstan,Banking
+1196,MSCI,msci.com,United States,Business Services & Supplies
+1197,Bank Negara Indonesia,bni.co.id,Indonesia,Banking
+1198,A2A,a2a.eu,Italy,Utilities
+1198,First Horizon,fhnc.com,United States,Banking
+1200,Chandra Asri Petrochemical,chandra-asri.com,Indonesia,Chemicals
+1200,Kaisa Group Holdings,kaisagroup.com,China,Construction
+1202,Hanwha Ocean,dsme.co.kr,South Korea,Capital Goods
+1202,WSP,wsp.com,Canada,Construction
+1204,ASM International,asm.com,Netherlands,Capital Goods
+1205,Viking Holdings,,Bermuda,"Hotels, Restaurants & Leisure"
+1206,JFE Holdings,jfe-holdings.co.jp,Japan,Materials
+1207,Bajaj Auto,bajajgroup.company,India,Consumer Durables
+1208,Reliance Steel,rsac.com,United States,Materials
+1209,ThyssenKrupp Group,thyssenkrupp.de,Germany,Materials
+1210,WT Microelectronics,wtmec.com,Taiwan,Trading Companies
+1211,Copart,copart.com,United States,Retailing
+1212,Chongqing Changan Auto,changan.com.cn,China,Consumer Durables
+1213,Universal Health Services,uhsinc.com,United States,Health Care Equipment & Services
+1214,Fanuc,fanuc.co.jp,Japan,Capital Goods
+1215,Evergy,evergy.com,United States,Utilities
+1215,Lululemon Athletica,shop.lululemon.com,Canada,Household & Personal Products
+1217,TMX Group,tmx.com,Canada,Diversified Financials
+1218,J Sainsbury,j-sainsbury.co.uk,United Kingdom,Food Markets
+1219,Keysight Technologies,keysight.com,United States,Technology Hardware & Equipment
+1220,Edwards Lifesciences,edwards.com,United States,Health Care Equipment & Services
+1221,Daou Technology,daou.co.kr,South Korea,Diversified Financials
+1222,Beiersdorf,beiersdorf.com,Germany,Household & Personal Products
+1222,CBOE Global Markets,cboe.com,United States,Diversified Financials
+1224,Li Auto,,China,Consumer Durables
+1225,CF Industries Holdings,cfindustries.com,United States,Chemicals
+1225,Longfor Group Holdings,longfor.com,China,Construction
+1227,IHI,ihi.co.jp,Japan,Capital Goods
+1228,Pop Mart International Group,,China,Media
+1229,Rede D'Oro Luiz,,Brazil,Health Care Equipment & Services
+1229,ResMed,resmed.com,United States,Health Care Equipment & Services
+1231,Taiwan Cooperative Financial,tcfhc.com.tw,Taiwan,Banking
+1232,CJ Corporation,cj.net,South Korea,"Food, Drink & Tobacco"
+1232,Quilter,oldmutualwealth.co.uk,United Kingdom,Diversified Financials
+1234,Next,nextplc.co.uk,United Kingdom,Household & Personal Products
+1235,Partners Group Holding,partnersgroup.com,Switzerland,Diversified Financials
+1236,Zhejiang Zheneng Electric Power,zzepc.com.cn,China,Utilities
+1237,MTU Aero Engines AG,mtu.de,Germany,Aerospace & Defense
+1237,SoFi,sofi.com,United States,Business Services & Supplies
+1239,APA,,United States,Oil & Gas Operations
+1240,Mitsubishi Chemical,mitsubishichem-hd.co.jp,Japan,Chemicals
+1241,Bank of Chongqing,cqcbank.com,China,Banking
+1242,MOL Hungarian Oil,mol.hu,Hungary,Oil & Gas Operations
+1243,IDEXX Laboratories,idexx.com,United States,Health Care Equipment & Services
+1243,Yokohama Financial Group,concordia-fg.jp,Japan,Banking
+1245,Boliden,boliden.com,Sweden,Materials
+1246,Western Alliance Bancorp.,westernalliancebancorporation.com,United States,Banking
+1247,Aurubis,aurubis.com,Germany,Materials
+1248,Alstom,alstom.com,France,Capital Goods
+1249,Alpha Bank,alpha.gr,Greece,Banking
+1250,China Eastern Airlines,ceair.com,China,Transportation
+1251,dsm-firmenich,firmenich.com,Switzerland,Household & Personal Products
+1251,Expeditors International,expeditors.com,United States,Transportation
+1253,First Solar,firstsolar.com,United States,Semiconductors
+1254,Continental,continental.com,Germany,Consumer Durables
+1254,Doosan,doosan.com,South Korea,Capital Goods
+1256,Ovintiv,encana.com,United States,Oil & Gas Operations
+1257,Jiangsu Eastern Shenghong,,China,Utilities
+1258,Shanghai Electric Group,shanghai-electric.com,China,Capital Goods
+1259,"Zhongjin Gold Corp., Ltd.",zjgold.com,China,Materials
+1260,Indian Railway Finance,,India,Business Services & Supplies
+1260,MasTec,mastec.com,United States,Construction
+1262,Korea Gas,kogas.or.kr,South Korea,Oil & Gas Operations
+1263,Xiamen International Trade Group,itg.com.cn,China,Transportation
+1264,Dongfang Electric,dec-ltd.cn,China,Capital Goods
+1265,Ares Management,,United States,Diversified Financials
+1266,Shaanxi Construction Engineering Group,,China,Construction
+1267,Telkom Indonesia,telkom.co.id,Indonesia,Telecommunications Services
+1268,Zions Bancorp,zionsbank.com,United States,Banking
+1269,Pan Pacific International Holdings,ppi-hd.co.jp,Japan,Retailing
+1270,Huaqin,,China,Technology Hardware & Equipment
+1271,Adyen,adyen.com,Netherlands,Business Services & Supplies
+1272,GlobalFoundries,globalfoundries.com,United States,"Semiconductors, Electronics, Electrical Engineering"
+1273,Qilu Bank,,China,Banking
+1274,Old Dominion Freight Line,odfl.com,United States,Transportation
+1275,Lonza Group,lonza.com,Switzerland,Drugs & Biotechnology
+1276,Mazda Motor,mazdausa.com,Japan,Consumer Durables
+1277,Santos,santos.com,Australia,Oil & Gas Operations
+1278,Yum China Holdings,yumchina.com,China,"Hotels, Restaurants & Leisure"
+1279,Qinghai Salt Lake Industry,qhyhgf.com,China,Chemicals
+1279,Rexel,rexel.com,France,Trading Companies
+1281,CGI,cgi.com,Canada,Business Services & Supplies
+1282,Nanya Technology,nanya.com,Taiwan,Semiconductors
+1283,Titan (India),titan.co.in,India,Consumer Durables
+1284,Bombardier,bombardier.com,Canada,Aerospace & Defense
+1285,J.B. Hunt Transport Services,jbhunt.com,United States,Transportation
+1286,C.H. Robinson,chrobinson.com,United States,Transportation
+1287,Migdal Insurance,migdal.co.il,Israel,Insurance
+1288,Teradyne,teradyne.com,United States,Technology Hardware & Equipment
+1288,Tokyo Century,tokyocentury.co.jp,Japan,Business Services & Supplies
+1290,Sigma Healthcare,,Australia,Drugs & Biotechnology
+1291,Tohoku Electric Power,tohoku-epco.co.jp,Japan,Utilities
+1292,Charoen Pokphand Group,cpgroupglobal.com,Thailand,"Food, Drink & Tobacco"
+1293,Equity Residential,equityapartments.com,United States,Diversified Financials
+1294,Grupo Aval,grupoaval.com,Colombia,Banking
+1294,Korea Zinc,koreazinc.co.kr,South Korea,Materials
+1296,NAURA Technology Group,,China,Capital Goods
+1296,NVR,nvrinc.com,United States,Construction
+1298,Sojitz,sojitz.com,Japan,Materials
+1299,Shanxi Xinghuacun Fen Wine Factory,fenjiu.com.cn,China,"Food, Drink & Tobacco"
+1300,Bank of Suzhou,suzhoubank.com,China,Banking
+1301,Wuliangye Yibin,wuliangye.com.cn,China,"Food, Drink & Tobacco"
+1301,Zimmer Biomet,zimmerbiomet.com,United States,Health Care Equipment & Services
+1303,CIFI Holdings Group,cifi.com.cn,China,Construction
+1304,DISCO Corp.,disco.co.jp,Japan,Capital Goods
+1305,FinecoBank,fineco.it,Italy,Banking
+1306,Military Commercial Joint Stock Bank,mbbank.com.vn,Vietnam,Banking
+1307,Lundin Mining,,Canada,Materials
+1308,Samsung Electro-Mechanics,samsungsem.co.kr,South Korea,Semiconductors
+1309,MBRF Global Foods Company,marfrig.com.br,Brazil,"Food, Drink & Tobacco"
+1310,Forvia,,France,Consumer Durables
+1311,MGM Resorts,mgmresorts.com,United States,"Hotels, Restaurants & Leisure"
+1312,Japan Exchange Group,jpx.co.jp,Japan,Diversified Financials
+1313,Eve Energy,,China,Capital Goods
+1313,Jyske Bank,jyskebank.dk,Denmark,Banking
+1315,Kao ,kao.com,Japan,Household & Personal Products
+1316,NetApp,netapp.com,United States,Technology Hardware & Equipment
+1317,Popular,popular.com,United States,Banking
+1317,XP,,Brazil,Diversified Financials
+1319,Genuine Parts,genpt.com,United States,Trading Companies
+1319,Lundbergs,lundbergforetagen.se,Sweden,Diversified Financials
+1321,West Japan Railway,westjr.co.jp,Japan,Transportation
+1322,Ubiquiti,,United States,Technology Hardware & Equipment
+1323,CarMax,carmax.com,United States,Retailing
+1324,Williams-Sonoma,williams-sonomainc.com,United States,Retailing
+1325,SouthState Bank,southstatebank.com,United States,Banking
+1326,Olam Group,olamgroup.com,Singapore,"Food, Drink & Tobacco"
+1326,Storebrand,storebrand.no,Norway,Banking
+1328,Toll Brothers,tollbrothers.com,United States,Construction
+1329,CAPITEC,capitecbank.co.za,South Africa,Insurance
+1330,Emera,emera.com,Canada,Utilities
+1331,Monolithic Power Systems,,United States,Semiconductors
+1332,Bank Of Guiyang,bankgy.com,China,Banking
+1333,Schaeffler,schaeffler.com,Germany,Consumer Durables
+1334,Beijing Enterprises,behl.com.hk,Hong Kong,Oil & Gas Operations
+1334,Daou Data,daoudata.co.kr,South Korea,Trading Companies
+1336,UMB Financial,umbfinancial.com,United States,Banking
+1336,Unicaja Banco,unicajabanco.es,Spain,Banking
+1338,United Therapeutics,unither.com,United States,Drugs & Biotechnology
+1339,Epiroc,epirocgroup.com,Sweden,Capital Goods
+1340,Ventas,ventasreit.com,United States,Diversified Financials
+1341,Ingram Micro Holding,,United States,IT Software & Services
+1342,GAIL India,gailonline.com,India,Oil & Gas Operations
+1343,Investec,investec.com,United Kingdom,Diversified Financials
+1343,Shenzhen Mindray Bio-Medical Electronics,mindray.com,China,Health Care Equipment & Services
+1345,Kiwoom Securities,kiwoom.com,South Korea,Diversified Financials
+1346,RHB Bank,rhbgroup.com,Malaysia,Banking
+1346,S-Oil,s-oil.com,South Korea,Oil & Gas Operations
+1348,Aptiv,aptiv.com,Switzerland,Capital Goods
+1349,Saab Group,saab.com,Sweden,Aerospace & Defense
+1350,Metro,metro.ca,Canada,Food Markets
+1351,Lindt & Sprungli,lindt-spruengli.com,Switzerland,"Food, Drink & Tobacco"
+1351,NH Investment & Securities,nhqv.com,South Korea,Diversified Financials
+1353,Globe Life,globelifeinsurance.com,United States,Insurance
+1354,Yunnan Aluminium,,China,Materials
+1355,Hong Leong Financial,hlfg.com.my,Malaysia,Banking
+1356,Wintrust Financial,wintrust.com,United States,Banking
+1357,HBIS,hebgtgf.com,China,Materials
+1357,Hyundai Marine & Fire,hi.co.kr,South Korea,Insurance
+1357,Pan American Silver,,Canada,Materials
+1360,Cellnex Telecom,,Spain,Construction
+1361,DaVita,davita.com,United States,Health Care Equipment & Services
+1361,Dollarama,dollarama.com,Canada,Retailing
+1363,SMC,smcworld.com,Japan,Capital Goods
+1364,Bank of Qingdao,qdccb.com,China,Banking
+1365,UPM-Kymmene,upm.com,Finland,Materials
+1366,Raizen,,Brazil,Retailing
+1367,Korean Air,koreanair.com,South Korea,Transportation
+1368,HMM,hmm21.com,South Korea,Transportation
+1369,Nan Ya Plastics,npc.com.tw,Taiwan,Chemicals
+1370,Stifel Financial,stifel.com,United States,Diversified Financials
+1371,Japan Airlines,jal.co.jp,Japan,Transportation
+1372,Xiamen Xiangyu,xiangyu.cn,China,Transportation
+1373,Alliant Energy,alliantenergy.com,United States,Utilities
+1374,Vietnam Prosperity Joint Stock Commercial Bank (VPBank),vpbank.com.vn,Vietnam,Banking
+1375,Banca Transilvania,bancatransilvania.ro,Romania,Banking
+1376,IDBI Bank,idbi.com,India,Banking
+1377,International Container Terminal Services,ictsi.com,Philippines,Transportation
+1378,Aselsan Elektronik Sanayi ve Ticaret,aselsan.com.tr,Turkey,Aerospace & Defense
+1379,WPP,wpp.com,United Kingdom,Media
+1380,Nedbank,nedbank.co.za,South Africa,Banking
+1381,Elia System Operator,elia.be,Belgium,Utilities
+1382,Metropolitan Bank & Trust,metrobank.com.ph,Philippines,Banking
+1382,Royalty Pharma,,United States,Drugs & Biotechnology
+1384,Shimizu,shimz.co.jp,Japan,Construction
+1385,Siam Cement,scg.co.th,Thailand,Construction
+1386,EQT AB,,Sweden,Diversified Financials
+1387,SGS,sgs.com,Switzerland,Business Services & Supplies
+1388,Ingersoll Rand,irco.com,United States,Capital Goods
+1389,Alfa Laval,alfalaval.com,Sweden,Capital Goods
+1390,Scentre Group,scentregroup.com,Australia,Diversified Financials
+1391,Chiba Bank,chibabank.co.jp,Japan,Banking
+1391,Yuexiu Property ,yuexiuproperty.com,Hong Kong,Construction
+1393,Iron Mountain,ironmountain.com,United States,Diversified Financials
+1394,Qantas Airways,qantas.com,Australia,Transportation
+1395,Centrica,centrica.co.uk,United Kingdom,Oil & Gas Operations
+1396,Ralph Lauren,ralphlauren.com,United States,Household & Personal Products
+1397,AVIC Chengdu Aircraft,,China,Technology Hardware & Equipment
+1398,Klepierre,klepierre.com,France,Construction
+1398,Samsung Securities,samsungpop.com,South Korea,Diversified Financials
+1400,Wolters Kluwer,wolterskluwer.com,Netherlands,IT Software & Services
+1401,Insurance Australia Group,iag.com.au,Australia,Insurance
+1402,Luzhou Lao Jiao,lzlj.com.cn,China,"Food, Drink & Tobacco"
+1403,Fortum,fortum.com,Finland,Utilities
+1404,Teledyne Technologies,teledyne.com,United States,Aerospace & Defense
+1405,Wärtsilä,wartsila.com,Finland,Capital Goods
+1406,Fukuoka Financial Group,fukuoka-fg.com,Japan,Banking
+1407,ZTO Express (Cayman),,China,Transportation
+1408,Fuyao Glass Industry Group,fuyaogroup.com,China,Consumer Durables
+1409,Old National Bank,oldnational.com,United States,Banking
+1410,Incyte,incyte.com,United States,Drugs & Biotechnology
+1411,China Three Gorges Renewables (Group),,China,Utilities
+1412,Air Canada,aircanada.com,Canada,Transportation
+1413,AutoNation,autonation.com,United States,Retailing
+1413,Orient Securities,dfzq.com.cn,China,Diversified Financials
+1415,Solventum,,United States,Health Care Equipment & Services
+1416,Valeo,valeo.com,France,Consumer Durables
+1417,Vietnam Technological & Commercial Joint Stock Bank,,Vietnam,Banking
+1418,Smithfield Foods,smithfieldfoods.com,United States,"Food, Drink & Tobacco"
+1419,Shenzhen Longsys Electronics,,China,Semiconductors
+1420,Foshan Haitian Flavouring and Food,haitian-food.com,China,"Food, Drink & Tobacco"
+1421,Momentum Metropolitan Holdings,mmiholdings.com,South Africa,Insurance
+1422,American Financial Group,afginc.com,United States,Insurance
+1422,Bullish,,Cayman Islands,IT Software & Services
+1424,Macy's,macys.com,United States,Retailing
+1425,DuPont De Nemours,dupont.com,United States,Chemicals
+1426,Novonesis A/S,novozymes.com,Denmark,Chemicals
+1427,BAIC Motor,baicgroup.com.cn,China,Consumer Durables
+1428,Modon Holding PSC,,United Arab Emirates,Diversified Financials
+1429,Coherent,,United States,Semiconductors
+1430,ENN Natural Gas,,China,Oil & Gas Operations
+1430,Heico,heico.com,United States,Aerospace & Defense
+1430,KE Holdings,,China,Construction
+1433,Broadridge Financial,broadridge.com,United States,IT Software & Services
+1433,Burlington Stores,burlington.com,United States,Retailing
+1435,Packaging Corp of America,packagingcorp.com,United States,Materials
+1435,Zhongyuan Bank,zybank.com.cn,China,Banking
+1437,Galaxy Entertainment,galaxyentertainment.com,Hong Kong,"Hotels, Restaurants & Leisure"
+1437,Yageo Corporation,yageo.com,Taiwan,Technology Hardware & Equipment
+1439,Chang Hwa Bank,bankchb.com,Taiwan,Banking
+1439,IEIT Systems,,China,Technology Hardware & Equipment
+1441,Tapestry,tapestry.com,United States,Retailing
+1442,China International Marine,cimc.com,China,Materials
+1442,Hankook Tire,kr.hankooktire.com,South Korea,Consumer Durables
+1444,BJ's Wholesale Club,bjs.com,United States,Retailing
+1445,First Pacific,firstpacific.com,Hong Kong,"Food, Drink & Tobacco"
+1446,Pegatron,pegatroncorp.com,Taiwan,Technology Hardware & Equipment
+1447,Millicom International,millicom.com,Luxembourg,Telecommunications Services
+1448,Old Republic International,oldrepublic.com,United States,Insurance
+1449,Axis Capital Holdings,axis.bm,Bermuda,Insurance
+1450,Muthoot Finance,,India,Business Services & Supplies
+1451,Vipshop Holdings,vipshop.com,China,Retailing
+1452,Shionogi,shionogi.co.jp,Japan,Drugs & Biotechnology
+1453,Bandai Namco Holdings,bandainamco.co.jp,Japan,Consumer Durables
+1453,Brambles,brambles.com,Australia,Transportation
+1453,Suncorp Group,suncorpgroup.com.au,Australia,Insurance
+1456,Banque Cantonale Vaudoise,bcv.ch,Switzerland,Banking
+1457,Ford Otosan,fordotosan.com.tr,Turkey,Consumer Durables
+1458,China Merchants Energy Shipping,cmenergyshipping.com,China,Transportation
+1459,Shandong Gold Mining,sdhjgf.com.cn,China,Materials
+1460,Kingspan Group PLC,kingspan.com,Ireland,Construction
+1460,Veeva Systems,veeva.com,United States,IT Software & Services
+1462,Towngas,towngas.com,Hong Kong,Oil & Gas Operations
+1463,McCormick,mccormickcorporation.com,United States,"Food, Drink & Tobacco"
+1464,Industries Qatar,iq.com.qa,Qatar,Materials
+1465,Celltrion,celltrion.com,South Korea,Drugs & Biotechnology
+1466,Victory Giant Technology,,China,Technology Hardware & Equipment
+1467,SiriusXM Holdings,,United States,Media
+1468,Chow Tai Fook Jewellery,chowtaifook.com,Hong Kong,Consumer Durables
+1469,Shizuoka Financial Group,,Japan,Banking
+1470,PGE Polska Grupa Energetyczna,gkpge.pl,Poland,Utilities
+1471,Mebuki Financial Group,mebuki-fg.co.jp,Japan,Banking
+1472,Hubbell,hubbell.com,United States,Capital Goods
+1473,Elbit Systems,elbitsystems.com,Israel,Aerospace & Defense
+1473,Waters,waters.com,United States,Health Care Equipment & Services
+1475,BNK Financial Group,bnkfg.com,South Korea,Banking
+1476,BBMG,bbmg.com.cn,China,Construction
+1477,Asia Vital Components Company,,Taiwan,Technology Hardware & Equipment
+1478,Commercial Bank Dubai,cbd.ae,United Arab Emirates,Banking
+1479,China Nuclear Engineering Corporation,ltd.cnecc.com,China,Construction
+1480,Rajesh Exports,rajeshindia.com,India,Consumer Durables
+1481,Commercial International Bank,cibeg.com,Egypt,Banking
+1481,Wuestenrot & Wuerttembergische,ww-ag.de,Germany,Insurance
+1483,VeriSign,verisigninc.com,United States,IT Software & Services
+1484,Dexcom,dexcom.com,United States,Health Care Equipment & Services
+1485,Toray Industries,toray.com,Japan,Household & Personal Products
+1486,CrowdStrike,crowdstrike.com,United States,IT Software & Services
+1487,KPN,kpn.com,Netherlands,Telecommunications Services
+1488,Bank of Tianjin,bankoftianjin.com,China,Banking
+1488,China Cinda Asset Management,cinda.com.cn,China,Diversified Financials
+1490,Terumo,terumo.co.jp,Japan,Health Care Equipment & Services
+1491,Aristocrat Leisure,aristocrat.com.au,Australia,"Hotels, Restaurants & Leisure"
+1492,Vibra Energia,,Brazil,Retailing
+1493,Skanska,usa.skanska.com,Sweden,Construction
+1494,Jackson Financial,,United States,Insurance
+1495,China Development Bank Financial Leasing,cdb-leasing.com,China,Business Services & Supplies
+1496,Grupo Bolivar,grupobolivar.com,Colombia,Banking
+1497,SBA Communications,sbasite.com,United States,Diversified Financials
+1498,Bank Albilad,bankalbilad.com,Saudi Arabia,Banking
+1499,Kyoto Financial Group,kyotobank.co.jp,Japan,Banking
+1500,E-mart ,emartcompany.com,South Korea,Retailing
+1500,Tongling Nonferrous Metals,tlys.cn,China,Materials
+1500,Transurban Group,transurban.com,Australia,Transportation
+1503,Longi Green Energy Technology,longigroup.com,China,Semiconductors
+1504,Northern Star Resources,,Australia,Materials
+1505,Telia,teliacompany.com,Sweden,Telecommunications Services
+1505,Zhuhai Huafa Properties,cnhuafas.com,China,Construction
+1507,Atkinsrealis Group,,Canada,Construction
+1507,Sodexo,sodexo.com,France,Business Services & Supplies
+1509,Credito Emiliano,credem.it,Italy,Banking
+1510,Hyundai Engineering,hdec.kr,South Korea,Construction
+1511,Cambricon Technologies ,,China,Semiconductors
+1512,El Puerto de Liverpool,liverpool.com.mx,Mexico,Retailing
+1513,Molina Healthcare,molinahealthcare.com,United States,Drugs & Biotechnology
+1514,Tradeweb Markets,,United States,Diversified Financials
+1515,Columbia Banking System,columbiabank.com,United States,Banking
+1516,LEG Immobilien AG,leg-nrw.de,Germany,Construction
+1517,Knorr-Bremse,knorr-bremse.com,Germany,Consumer Durables
+1518,Veralto,veralto.com,United States,Capital Goods
+1519,Brighthouse Financial,brighthousefinancial.com,United States,Insurance
+1519,CVC Capital Partners,,United Kingdom,Diversified Financials
+1521,Valley National Bancorp,valleynationalbank.com,United States,Banking
+1522,Hansoh Pharmaceutical Group ,,China,Drugs & Biotechnology
+1522,Hygon Information Technology,,China,IT Software & Services
+1524,Public Power,dei.gr,Greece,Utilities
+1524,Shenzhen Inovance Technology,,China,Capital Goods
+1526,Rithm Capital,newresi.com,United States,Diversified Financials
+1527,Bharat Electronics,bel-india.com,India,Aerospace & Defense
+1527,Galaxy Digital,,United States,Diversified Financials
+1529,ENN Energy Holdings,xinaogas.com,China,Oil & Gas Operations
+1529,PTC,ptc.com,United States,IT Software & Services
+1531,Aramark,aramark.com,United States,"Hotels, Restaurants & Leisure"
+1531,Reddit,,United States,IT Software & Services
+1533,Ayala Corp,ayala.com.ph,Philippines,Construction
+1534,Dongguan Rural Commercial Bank,,China,Banking
+1535,Borouge,,United Arab Emirates,Chemicals
+1535,Guangzhou Automobile Group,gagc.com.cn,China,Consumer Durables
+1537,China Jinmao,chinajinmao.cn,Hong Kong,Construction
+1538,Guangzhou Rural Commercial Bank,grcbank.com,China,Banking
+1539,Inner Mongolia Baotou Steel,btsteel.com,China,Materials
+1540,Bank of Maharashtra,bankofmaharashtra.in,India,Banking
+1541,"Gap, Inc.",gapcanada.ca,United States,Retailing
+1542,Clal Insurance Enterprises ,clal-ins.co.il,Israel,Insurance
+1543,Verisk Analytics,verisk.com,United States,Business Services & Supplies
+1544,Hengtong Optic-Electric,htgd.com.cn,China,Capital Goods
+1545,ON Semiconductor ,onsemi.com,United States,Semiconductors
+1545,Stanley Black & Decker,stanleyblackanddecker.com,United States,Consumer Durables
+1547,Sun Communities,suncommunities.com,United States,Diversified Financials
+1548,Thai Oil,thaioilgroup.com,Thailand,Oil & Gas Operations
+1549,Kongsberg Gruppen ,kongsberg.com,Norway,Capital Goods
+1550,Carlyle Group,,United States,Diversified Financials
+1551,Elite Material,,Taiwan,Capital Goods
+1551,Kobe Steel,kobelco.co.jp,Japan,Materials
+1553,Jinke Property Group,jinke.com,China,Construction
+1554,Qnity Electronics,,United States,Technology Hardware & Equipment
+1555,China Communications Services,chinaccs.com.hk,China,Construction
+1556,FICO,fico.com,United States,Business Services & Supplies
+1557,Snap-on,snapon.com,United States,Consumer Durables
+1557,SS&C Technologies,ssctech.com,United States,IT Software & Services
+1559,Arab Bank,arabbank.com.qa,Jordan,Banking
+1560,BAC Holding International,,Colombia,Business Services & Supplies
+1561,Bloom Energy,,United States,Technology Hardware & Equipment
+1562,Ciena,ciena.com,United States,Technology Hardware & Equipment
+1562,Stora Enso,storaenso.com,Finland,Materials
+1564,Ultrapar Participacoes,ultra.com.br,Brazil,Retailing
+1565,Illumina,illumina.com,United States,Health Care Equipment & Services
+1566,Schroders,fanniemae.com,United Kingdom,Diversified Financials
+1567,Liberty Media Corporation Series A Liberty Formula One,libertymedia.com,United States,Media
+1568,Lumentum Holdings,,United States,Capital Goods
+1569,Harbin Bank,hrbcb.com.cn,China,Banking
+1570,Mettler-Toledo International,us.mt.com,United States,Health Care Equipment & Services
+1571,Bank of Guizhou,,China,Banking
+1571,NIO,nio.com,China,Consumer Durables
+1573,Anhui Construction Engineering Group,cahsl.com,China,Construction
+1574,Tianshan Material,,China,Construction
+1575,Lumen Technologies,lumen.com,United States,Telecommunications Services
+1576,Datadog,datadoghq.com,United States,IT Software & Services
+1576,Sunac China Holdings,sunac.com.cn,China,Construction
+1578,ST Engineering,stengg.com,Singapore,Aerospace & Defense
+1579,Zhejiang Expressway ,zjec.com.cn,China,Transportation
+1580,Cullen/Frost Bankers,frostbank.com,United States,Banking
+1580,Secom,secom.co.jp,Japan,Business Services & Supplies
+1582,Rocket Lab,,United States,Aerospace & Defense
+1583,Hunan Valin Steel,valin.cn,China,Materials
+1584,Jiangsu Changshu Rural Commercial Bank,csrcbank.com,China,Banking
+1584,SK Telecom,sktelecom.com,South Korea,Telecommunications Services
+1586,Aumovio,,Germany,Consumer Durables
+1587,Alnylam Pharmaceuticals,alnylam.com,United States,Drugs & Biotechnology
+1588,Oriental Land,olc.co.jp,Japan,Media
+1589,Origin Energy,originenergy.com.au,Australia,Oil & Gas Operations
+1590,Cloudflare,cloudflare.com,United States,IT Software & Services
+1591,ACWA Power,,Saudi Arabia,Utilities
+1591,Alamos Gold,,Canada,Materials
+1593,Montage Technology,,China,Semiconductors
+1594,Sumitomo Forestry ,sfc.jp,Japan,Construction
+1595,Guangdong Haid Group,haid.com.cn,China,"Food, Drink & Tobacco"
+1596,Yuzhou Group Holdings,,China,Construction
+1597,LS Corp,lsholdings.com,South Korea,Capital Goods
+1598,CTP,,Netherlands,Construction
+1598,Metro Group,metroag.de,Germany,Food Markets
+1600,AviChina Industry & Technology,avichina.com,China,Aerospace & Defense
+1601,Hyundai Steel,hyundai-steel.com,South Korea,Materials
+1601,Ternium,ternium.com,Luxembourg,Materials
+1603,Caesars Entertainment,caesars.com,United States,"Hotels, Restaurants & Leisure"
+1603,Lyft,lyft.com,United States,Transportation
+1603,World Kinect,wfscorp.com,United States,Trading Companies
+1606,CJ Cheiljedang,cj.co.kr,South Korea,Transportation
+1607,Huntington Ingalls Industries,hii.com,United States,Aerospace & Defense
+1608,Covestro,covestro.com,Germany,Chemicals
+1609,Goertek,goertek.com,China,Technology Hardware & Equipment
+1610,Cleveland-Cliffs,clevelandcliffs.com,United States,Materials
+1610,Fibra Uno,en.funo.mx,Mexico,Diversified Financials
+1612,Cerebras Systems,cerebras.net,United States,IT Software & Services
+1613,SpareBank 1 SR-Bank,sr-bank.no,Norway,Banking
+1614,WPG Holdings,wpgholdings.com,Taiwan,Trading Companies
+1615,Bank of East Asia,hkbea.com,Hong Kong,Banking
+1616,Avis Budget Group,avisbudgetgroup.com,United States,Business Services & Supplies
+1617,TMBThanachart Bank,tmbbank.com,Thailand,Banking
+1618,Admiral Group ,admiral.com,United Kingdom,Insurance
+1619,Aroundtown ,aroundtown.de,Luxembourg,Diversified Financials
+1619,Zheshang Development Group,zmd.com.cn,China,Trading Companies
+1621,Knowledge Atlas Technology Joint Stock,,China,IT Software & Services
+1622,BOK Financial,bokfinancial.com,United States,Banking
+1622,Range Intelligent Computing Technology Group,,China,Business Services & Supplies
+1624,Capital A Berhad,airasia.com,Malaysia,Transportation
+1625,Wen's Foodstuff Group,wens.com.cn,China,"Food, Drink & Tobacco"
+1626,InterContinental Hotels,ihgplc.com,United Kingdom,"Hotels, Restaurants & Leisure"
+1627,Bank of Zhengzhou,zzbank.cn,China,Banking
+1628,Jointown Pharmaceutical Group,jztey.com,China,Health Care Equipment & Services
+1629,Lear,lear.com,United States,Consumer Durables
+1630,United Utilities,unitedutilities.com,United Kingdom,Utilities
+1631,United Natural Foods,unfi.com,United States,Food Markets
+1632,Suzhou Dongshan Precision Manufacturing,,China,Technology Hardware & Equipment
+1633,Hokuhoku Financial Group,hokuhoku-fg.co.jp,Japan,Banking
+1634,BG Financial Group,,Panama,Banking
+1635,Steris,steris.com,Ireland,Health Care Equipment & Services
+1636,Bank OZK,ozk.com,United States,Banking
+1637,Snowflake,snowflake.net,United States,IT Software & Services
+1638,Take-Two Interactive Software,take2games.com,United States,IT Software & Services
+1639,Avenue Supermarts,dmartindia.com,India,Retailing
+1640,"Furukawa Electric Co.,",furukawa.co.jp,Japan,Capital Goods
+1641,First Quantum Minerals,first-quantum.com,Canada,Materials
+1642,"WUS PRINTED CIRCUIT (KUNSHAN) CO., LTD.",,China,Technology Hardware & Equipment
+1643,Genworth Financial,genworth.com,United States,Insurance
+1643,Murphy USA,murphyusa.com,United States,Retailing
+1645,Church & Dwight,churchdwight.com,United States,Household & Personal Products
+1645,PBF Energy,pbfenergy.com,United States,Oil & Gas Operations
+1647,Crown Holdings,crowncork.com,United States,Materials
+1648,Akzo Nobel,akzonobel.com,Netherlands,Chemicals
+1648,Japan Securities Finance,jsf.co.jp,Japan,Diversified Financials
+1650,First National Of Nebraska,fnni.com,United States,Banking
+1651,Avolta,dufry.com,Switzerland,Retailing
+1652,Tongwei,tongwei.com.cn,China,"Food, Drink & Tobacco"
+1653,Bayan Resources,bayan.com.sg,Indonesia,Materials
+1654,General Insurance Corporation Of India,gicofindia.com,India,Insurance
+1654,Microchip Technology,microchip.com,United States,Semiconductors
+1656,Evonik Industries,evonik.com,Germany,Chemicals
+1657,SJ Semiconductor,,China,Semiconductors
+1658,Evolution Mining,,Australia,Materials
+1659,Pinnacle West,pinnaclewest.com,United States,Utilities
+1660,Sumitomo Chemical,sumitomo-chem.co.jp,Japan,Chemicals
+1661,AGC,agc.com,Japan,Consumer Durables
+1662,Samvardhana Motherson International,motherson.com,India,Consumer Durables
+1662,Shanghai Commercial & Savings Bank,scsb.com.tw,Taiwan,Banking
+1664,Evolution Gaming Group AB,,Sweden,IT Software & Services
+1665,Yamaha Motor,yamaha-motor.com,Japan,Consumer Durables
+1666,B3,b3.com.br,Brazil,Diversified Financials
+1667,FIBI Holdings,fibi.co.il,Israel,Banking
+1668,Asics,asics.com,Japan,Household & Personal Products
+1668,Flagstar Bank,flagstar.com,United States,Banking
+1668,F.N.B.,fnbcorporation.com,United States,Banking
+1671,Nishi-nippon Financial Holdings,nnfh.co.jp,Japan,Banking
+1672,Cameco,cameco.com,Canada,Materials
+1673,Yunnan Copper ,yunnan-copper.com,China,Materials
+1674,Shengyi Technology,,China,Capital Goods
+1674,Tata Capital,,India,Business Services & Supplies
+1676,Ceconomy,ceconomy.de,Germany,Retailing
+1677,Ooredoo Q.P.S.C,ooredoo.qa,Qatar,Telecommunications Services
+1678,Covivio,covivio.eu,France,Diversified Financials
+1678,Giga Device Semiconductor,,China,Semiconductors
+1680,XPO,xpo.com,United States,Transportation
+1681,Uniqa,uniqagroup.com,Austria,Insurance
+1682,Booz Allen Hamilton Holding,boozallen.com,United States,Business Services & Supplies
+1683,AECOM,aecom.com,United States,Construction
+1684,Adecco Group,adeccogroup.com,Switzerland,Business Services & Supplies
+1684,Geberit,geberit.de,Switzerland,Construction
+1686,CapitaLand Integrated Commercial Trust ,cmt.com.sg,Singapore,Diversified Financials
+1687,Hachijuni Bank,82bank.co.jp,Japan,Banking
+1687,Moore Threads Technology,,China,Semiconductors
+1689,Kyushu Financial Group,kyushu-fg.co.jp,Japan,Banking
+1689,Suzhou TFC Optical Communication,,China,Semiconductors
+1691,Mosaic,mosaicco.com,United States,Chemicals
+1691,Randstad N.V.,randstad.com,Netherlands,Business Services & Supplies
+1693,Jiangxi Bank,jx-bank.com,China,Banking
+1693,Norwegian Cruise Line Holdings ,nclhltd.com,United States,"Hotels, Restaurants & Leisure"
+1695,Motor Oil,moh.gr,Greece,Oil & Gas Operations
+1696,Banco BBVA Peru,bbvacontinental.pe,Peru,Banking
+1696,Cholamandalam Investment and Finance,,India,Business Services & Supplies
+1696,Goodyear,goodyear.com,United States,Consumer Durables
+1696,North Pacific Bank,hokuyobank.co.jp,Japan,Banking
+1700,Segro,segro.com,United Kingdom,Diversified Financials
+1700,Unisplendour,unis.cn,China,Technology Hardware & Equipment
+1702,Fastighets Balder,balder.se,Sweden,Construction
+1703,Zhejiang Chint Electrics,chint.net,China,Capital Goods
+1704,Yamaguchi Financial,ymfg.co.jp,Japan,Banking
+1705,Manila Electric,meralco.com.ph,Philippines,Utilities
+1705,Masco,masco.com,United States,Construction
+1707,Medipal Holdings,medipal.co.jp,Japan,Health Care Equipment & Services
+1708,DapuStor,,China,Semiconductors
+1709,BIM Birlesik Magazalar,bim.com.tr,Turkey,Food Markets
+1710,Grupo Carso,carso.com.mx,Mexico,Retailing
+1711,Host Hotels & Resorts,hosthotels.com,United States,Diversified Financials
+1712,Avnet,avnet.com,United States,Trading Companies
+1712,JD Sports Fashion,,United Kingdom,Retailing
+1714,Azrieli Group,azrieli.com,Israel,Construction
+1715,Coeur Mining,,United States,Materials
+1716,Taiwan Business Bank,tbb.com.tw,Taiwan,Banking
+1717,Grupo Galicia,gfgsa.com,Argentina,Banking
+1717,Hangzhou Binjiang Real Estate Group ,binjiang.com.cn,China,Construction
+1719,F5,f5.com,United States,IT Software & Services
+1719,Luzerner Kantonalbank,lukb.ch,Switzerland,Banking
+1721,Bank of Xi'an,xacbank.com,China,Banking
+1721,Compal Electronics,compal.com,Taiwan,Technology Hardware & Equipment
+1723,MetaX Integrated Circuits (Shanghai),,China,Semiconductors
+1724,Bank of Lanzhou,,China,Banking
+1725,Bunzl,bunzl.com,United Kingdom,Trading Companies
+1726,Asbury Automotive Group,asburyauto.com,United States,Retailing
+1726,CPFL Energia,cpfl.com.br,Brazil,Utilities
+1728,WHSP-WH Soul Pattinson & Co,whsp.com.au,Australia,Diversified Financials
+1729,Hirogin Holdings,,Japan,Banking
+1730,Founder Securities,foundersc.com,China,Diversified Financials
+1731,UniMicron Technology Corp.,unimicron.com,Taiwan,Technology Hardware & Equipment
+1732,Power Assets Holdings,powerassets.com,Hong Kong,Utilities
+1732,Zhejiang Century Huatong Group,sjhuatong.com,China,IT Software & Services
+1734,Far East Horizon,fehorizon.com,Hong Kong,Business Services & Supplies
+1735,BeOne Medicines,,Switzerland,Drugs & Biotechnology
+1736,Bank of Jiujiang,jjccb.com,Hong Kong,Banking
+1736,Gen Digital,nortonlifelock.com,United States,IT Software & Services
+1738,Saipem,saipem.com,Italy,Construction
+1739,Inventec,inventec.com,Taiwan,Technology Hardware & Equipment
+1740,Lundin Gold,,Canada,Materials
+1740,National Bank of Ras Al-Khaimah (P.S.C.),rakbank.ae,United Arab Emirates,Banking
+1742,Permian Resources,,United States,Oil & Gas Operations
+1743,Qingdao Rural Commercial Bank,qrcb.com.cn,China,Banking
+1743,Tryg,tryg.com,Denmark,Insurance
+1743,Zhejiang NHU,cnhu.com,China,Drugs & Biotechnology
+1746,Astera Labs,,United States,Semiconductors
+1747,LG Display,lgdisplay.com,South Korea,Technology Hardware & Equipment
+1748,Advanced Micro-Fabrication Equipment Inc. China,,China,Capital Goods
+1749,Webuild ,salini-impregilo.com,Italy,Construction
+1750,BorgWarner,borgwarner.com,United States,Capital Goods
+1751,Tele2,tele2.com,Sweden,Telecommunications Services
+1752,Basler Kantonalbank,bkb.ch,Switzerland,Banking
+1752,Central Bank of India,centralbankofindia.co.in,India,Banking
+1752,Harbour Energy,,United Kingdom,Oil & Gas Operations
+1755,Weihai City Commercial Bank,,China,Banking
+1756,Saudi Investment Bank,saib.com.sa,Saudi Arabia,Banking
+1757,Cencosud,cencosud.com,Chile,Retailing
+1757,Gold.com,amark.com,United States,Diversified Financials
+1759,Chugin Financial Group ,,Japan,Banking
+1760,Zhongsheng Group Holdings,zs-group.com.cn,China,Retailing
+1761,BayWa,baywa.de,Germany,Trading Companies
+1761,Lennox International,lennox.com,United States,Capital Goods
+1763,Bank Muscat,bankmuscat.com,Oman,Banking
+1764,Shennan Circuit,,China,Technology Hardware & Equipment
+1765,Asia Commercial Bank,acb.com.vn,Vietnam,Banking
+1765,Bank of Queensland,boq.com.au,Australia,Banking
+1765,Empire,empireco.ca,Canada,Food Markets
+1765,KION Group,kiongroup.com,Germany,Capital Goods
+1765,Securitas,securitasinc.com,Sweden,Business Services & Supplies
+1770,SQM,sqm.com,Chile,Chemicals
+1771,OneMain Holdings,onemainfinancial.com,United States,Business Services & Supplies
+1772,Alaska Air Group,alaskaair.com,United States,Transportation
+1772,EasyJet,easyjet.com,United Kingdom,Transportation
+1772,Voestalpine,voestalpine.com,Austria,Materials
+1775,Daito Trust Construction,kentaku.co.jp,Japan,Construction
+1776,Group 1 Automotive,group1auto.com,United States,Retailing
+1776,iM Financial Group,dgbfg.co.kr,South Korea,Banking
+1778,Menora Mivtachim Holdings,menoramivt.co.il,Israel,Insurance
+1778,PTT Global Chemical,pttgcgroup.com,Thailand,Oil & Gas Operations
+1780,Thai Beverage,thaibev.com,Thailand,"Food, Drink & Tobacco"
+1781,Gunma Bank,gunmabank.co.jp,Japan,Banking
+1781,Resonac Holdings,sdk.co.jp,Japan,Chemicals
+1783,China Power International Development,chinapower.hk,Hong Kong,Utilities
+1783,Hera,gruppohera.it,Italy,Utilities
+1785,Daishi Hokuetsu Financial Group,dhfg.co.jp,Japan,Banking
+1786,InterGlobe Aviation,goindigo.in,India,Transportation
+1786,Mobile Telecommunications KSC,zain.com,Kuwait,Telecommunications Services
+1788,Sasol,sasol.com,South Africa,Chemicals
+1789,Xiamen Bank,,China,Banking
+1790,Orkla,orkla.com,Norway,"Food, Drink & Tobacco"
+1790,Phison Electronics,,Taiwan,Technology Hardware & Equipment
+1792,Bendigo & Adelaide Bank,bendigoadelaide.com.au,Australia,Banking
+1793,SLM,salliemae.com,United States,Business Services & Supplies
+1794,Iyogin Holdings,,Japan,Banking
+1795,Umicore,umicore.com,Belgium,Materials
+1795,Yangzijiang Shipbuilding (Holdings),yzjship.com,China,Capital Goods
+1797,Brookfield Renewable Holdings,bep.brookfield.com,United States,Utilities
+1797,Kerry Group,kerry.com,Ireland,"Food, Drink & Tobacco"
+1799,77 Bank,77bank.co.jp,Japan,Banking
+1799,Chugoku Electric Power,energia.co.jp,Japan,Utilities
+1801,Boyd Gaming,boydgaming.com,United States,"Hotels, Restaurants & Leisure"
+1802,Equifax,equifax.com,United States,Business Services & Supplies
+1803,Ho Chi Minh City Development Joint Stock Commercial Bank,hdbank.com.vn,Vietnam,Banking
+1804,Grupo Nutresa,grupochocolates.com,Colombia,"Food, Drink & Tobacco"
+1805,Deckers Outdoor,deckers.com,United States,Household & Personal Products
+1805,Fuji Electric,fujielectric.com,Japan,Capital Goods
+1807,Zall Smart Commerce Group,zallcn.com,China,Transportation
+1808,Keppel Ltd,keppel.com,Singapore,Utilities
+1809,Digital China Group,digitalchina.com,China,Technology Hardware & Equipment
+1810,Genmab,genmab.com,Denmark,Drugs & Biotechnology
+1811,Jacobs Solutions,jacobs.com,United States,Business Services & Supplies
+1812,Oi,oi.com.br,Brazil,Telecommunications Services
+1813,China Longyuan Power,clypg.com.cn,China,Utilities
+1814,Banco Davivienda ,davivienda.com,Colombia,Banking
+1814,DCC,dcc.ie,Ireland,Oil & Gas Operations
+1816,Bank Of Gansu,gsbankchina.com,China,Banking
+1817,Ackermans & van Haaren,avh.be,Belgium,Construction
+1818,Banque Centrale Populaire,gbp.ma,Morocco,Banking
+1818,Kimco Realty,kimcorealty.com,United States,Diversified Financials
+1818,Mueller Industries,muellerindustries.com,United States,Materials
+1818,Starwood Property Trust,starwoodpropertytrust.com,United States,Diversified Financials
+1822,Lotte Chemical,lottechem.com,South Korea,Chemicals
+1823,Hengyi Petrochemical ,hengyishihua.com,China,Household & Personal Products
+1824,Check Point Software,checkpoint.com,Israel,IT Software & Services
+1825,Tauron Group,tauron-pe.pl,Poland,Utilities
+1826,Alfresa Holdings,alfresa.com,Japan,Health Care Equipment & Services
+1827,AGCO,agcocorp.com,United States,Capital Goods
+1828,Dr. Sulaiman Al-Habib Medical Services Group,,Saudi Arabia,Health Care Equipment & Services
+1829,LIC Housing Finance,lichousing.com,India,Business Services & Supplies
+1830,St. Galler Kantonalbank,sgkb.ch,Switzerland,Banking
+1831,Avery Dennison,averydennison.com,United States,Materials
+1832,Ag Anadolu Grubu Holding Anonim Sirketi,yazicilarholding.com,Turkey,"Food, Drink & Tobacco"
+1832,Bausch Health Companies,bauschhealth.com,Canada,Drugs & Biotechnology
+1832,SITC International Holdings,,Hong Kong,Transportation
+1835,"LG Innotek Co.,",lginnotek.com,South Korea,Technology Hardware & Equipment
+1835,Zangge Mining,,China,Capital Goods
+1837,Ampol ,caltex.com.au,Australia,Oil & Gas Operations
+1838,Endeavour Mining,,United Kingdom,Materials
+1838,Marks & Spencer,marksandspencer.com,United Kingdom,Retailing
+1840,Sparebanken Vest,spv.no,Norway,Banking
+1841,CP Axtra,siammakro.co.th,Thailand,Food Markets
+1841,XPeng,,China,Consumer Durables
+1843,ARC Resources,arcenergytrust.com,Canada,Oil & Gas Operations
+1844,Tokyu Fudosan,tokyu-fudosan-hd.co.jp,Japan,Construction
+1845,Lasertec,,Japan,Technology Hardware & Equipment
+1846,Jiangsu Zhongtian Technology,,China,Capital Goods
+1847,Invitation Homes,invitationhomes.com,United States,Diversified Financials
+1848,IndusInd Bank,indusind.bank.in,India,Banking
+1849,MiniMax Group,,China,IT Software & Services
+1850,Credo Technology Group Holding,,Cayman Islands,IT Software & Services
+1851,SDIC Capital,sdiccapital.com,China,Diversified Financials
+1852,Samsung Heavy Industries,shi.samsung.co.kr,South Korea,Capital Goods
+1852,San-In Godo Bank,gogin.co.jp,Japan,Banking
+1854,Autoliv,autoliv.com,Sweden,Consumer Durables
+1854,Gjensidige Forsikring,gjensidige.no,Norway,Insurance
+1854,Mitsubishi Motors,mitsubishi-motors.co.jp,Japan,Consumer Durables
+1854,Rollins,rollins.com,United States,Business Services & Supplies
+1858,Axon Enterprise,,United States,Aerospace & Defense
+1858,Satellite Chemical,,China,Chemicals
+1860,Seazen Group,futureholdings.com.cn,China,Construction
+1861,Eicher Motors,eichermotors.com,India,Consumer Durables
+1861,Jinshang Bank,,China,Banking
+1861,Nitto Denko,nitto.co.jp,Japan,Technology Hardware & Equipment
+1861,WuXi Biologics,wuxiapptec.com.cn,China,Drugs & Biotechnology
+1865,Molson Coors Brewing,molsoncoors.com,United States,"Food, Drink & Tobacco"
+1865,Nextpower,,United States,Technology Hardware & Equipment
+1867,Lotte Shopping,lotteshoppingir.com,South Korea,Retailing
+1867,Royal Gold,royalgold.com,United States,Materials
+1869,Ningbo Jintian Copper (Group),,China,Materials
+1870,Airports of Thailand,airportthai.co.th,Thailand,Transportation
+1871,Cosmo Energy Holdings,cosmo-energy.co.jp,Japan,Oil & Gas Operations
+1872,FTAI Aviation,,United States,Aerospace & Defense
+1872,Mobily,mobily.com.sa,Saudi Arabia,Telecommunications Services
+1872,Revolution Medicines,,United States,Drugs & Biotechnology
+1872,Shandong Hi-Speed Road & Bridge Group,,China,Construction
+1876,Nova Ljubljanska Banka,,Slovenia,Banking
+1876,Roblox,,United States,IT Software & Services
+1876,Sino-Ocean Group Holding,sinooceangroup.com,China,Construction
+1879,Tower Semiconductor,,Israel,Semiconductors
+1880,Westlake Corporation,westlake.com,United States,Chemicals
+1881,Lens Technology,hnlens.com,China,Consumer Durables
+1882,Commercial Bank of Qatar ,cbq.com.qa,Qatar,Diversified Financials
+1883,BEKB-BCBE,bekb.ch,Switzerland,Banking
+1883,Viva Energy Group,vivaenergy.com.au,Australia,Oil & Gas Operations
+1885,Aozora Bank,aozorabank.co.jp,Japan,Diversified Financials
+1886,Prosperity Bancshares,prosperitybankusa.com,United States,Banking
+1887,Manpower,manpowergroup.com,United States,Business Services & Supplies
+1887,Ricoh,ricoh.com,Japan,Technology Hardware & Equipment
+1889,APi Group,apigroupinc.com,United States,Construction
+1889,Goldwind Science & Technology,goldwind.cn,China,Capital Goods
+1891,Barry Callebaut,barry-callebaut.com,Switzerland,"Food, Drink & Tobacco"
+1891,Link REIT,thelinkreit.com,Hong Kong,Diversified Financials
+1891,New World Development,nwd.com.hk,Hong Kong,Construction
+1894,Twilio,,United States,IT Software & Services
+1894,YTO Express Group,trands.com,China,Transportation
+1896,Curtiss Wright Corporation,curtisswright.com,United States,Aerospace & Defense
+1896,Wise,transferwise.com,United Kingdom,Business Services & Supplies
+1898,Chroma Ate,,Taiwan,Technology Hardware & Equipment
+1899,China Merchants Port Holdings,cmport.com.hk,Hong Kong,Transportation
+1900,Beijing Shougang,sggf.com.cn,China,Materials
+1901,Bajaj Holdings & Investment,bajajauto.com,India,Diversified Financials
+1901,Sydbank,sydbank.dk,Denmark,Banking
+1903,Chailease Holding,,Taiwan,Business Services & Supplies
+1904,AmBank Group,ambankgroup.com,Malaysia,Banking
+1904,Kingfisher,kingfisher.com,United Kingdom,Retailing
+1906,China Industrial Securities,xyzq.com.cn,China,Diversified Financials
+1907,China Merchants Port Group,,China,Transportation
+1908,Lion Finance Group,,United Kingdom,Banking
+1909,Commerce Bancshares,commercebank.com,United States,Banking
+1910,China Northern Rare Earth High-Tech,reht.com,China,Chemicals
+1911,New Hope Liuhe,newhopeagri.com,China,"Food, Drink & Tobacco"
+1911,Shandong Humon Smelting,,China,Materials
+1911,SharkNinja,,United States,Consumer Durables
+1914,United Bank (Pakistan),ubldirect.com,Pakistan,Banking
+1915,Brenntag,brenntag.com,Germany,Trading Companies
+1916,Sinotrans Ltd.,sinotrans.com,China,Transportation
+1917,Hanwa,hanwa.co.jp,Japan,Trading Companies
+1918,China Petroleum Engineering,cpec.com.cn,China,Chemicals
+1919,Bureau Veritas,bureauveritas.com,France,Business Services & Supplies
+1919,Gaming And Leisure Properties,glpropinc.com,United States,Diversified Financials
+1919,nVent Electric,,United Kingdom,Technology Hardware & Equipment
+1922,Minebea,minebea.co.jp,Japan,Semiconductors
+1923,KakaoBank,kakaobank.com,South Korea,Banking
+1924,JB Financial Group,jbfg.com,South Korea,Banking
+1925,MACOM Technology Solutions Holdings,,United States,Semiconductors
+1925,Mercuries & Associates,mercuries.com.tw,Taiwan,Insurance
+1927,Saputo,saputo.com,Canada,"Food, Drink & Tobacco"
+1927,Sumec Corporation,sumec.com,China,Capital Goods
+1929,Mowi ASA,marineharvest.com,Norway,"Food, Drink & Tobacco"
+1930,Konami,konami.co.jp,Japan,IT Software & Services
+1931,Optimum,optimum.com,United States,Telecommunications Services
+1932,AltaGas,altagas.ca,Canada,Oil & Gas Operations
+1933,China Tourism Group Duty Free ,citsgroup.net,China,Retailing
+1933,EFG International,efginternational.com,Switzerland,Diversified Financials
+1933,Emirates Integrated Telecom,du.ae,United Arab Emirates,Telecommunications Services
+1936,Bolsa de Valores de Colombia,,Colombia,Diversified Financials
+1937,Biwin Storage Technology,,China,Technology Hardware & Equipment
+1937,Nippon Express Holdings,,Japan,Transportation
+1937,Yes Bank,yesbank.in,India,Banking
+1940,Moncler SpA,monclergroup.com,Italy,Household & Personal Products
+1941,DCI Indonesia,,Indonesia,Business Services & Supplies
+1942,Hanwha Chemical,hcc.hanwha.co.kr,South Korea,Semiconductors
+1943,Ibiden,ibiden.co.jp,Japan,Technology Hardware & Equipment
+1944,Dai Nippon Printing,dnp.co.jp,Japan,Business Services & Supplies
+1945,Aeroports de Paris,parisaeroport.fr,France,Transportation
+1946,Guangdong Songfa Ceramics,,China,Consumer Durables
+1947,Enka,enka.com,Turkey,Construction
+1948,PT Barito Pacific,,Indonesia,Materials
+1949,Companhia Energetica de Minas Gerais,cemig.com.br,Brazil,Utilities
+1950,E-L Financial,,Canada,Insurance
+1950,Shiga Bank,shigagin.com,Japan,Banking
+1950,Tongkun Group,zjtkgf.com,China,Household & Personal Products
+1953,Associated Banc-Corp,associatedbank.com,United States,Banking
+1954,AlRayan Bank,alrayan.com,Qatar,Diversified Financials
+1955,West Pharmaceutical Services,westpharma.com,United States,Health Care Equipment & Services
+1956,Navient,navient.com,United States,Business Services & Supplies
+1957,Delivery Hero,deliveryhero.com,Germany,Transportation
+1958,Bank of Africa,,Morocco,Banking
+1958,Sime Darby,simedarby.com,Malaysia,Trading Companies
+1960,Guangzhou Friendship Group,cgzfs.com,China,Diversified Financials
+1960,Hyakugo Bank,hyakugo.co.jp,Japan,Banking
+1962,Dangote Cement,dangcem.com,Nigeria,Construction
+1962,Everpure,,United States,Technology Hardware & Equipment
+1962,Prada,pradagroup.com,Italy,Household & Personal Products
+1965,Suzuken,suzuken.co.jp,Japan,Health Care Equipment & Services
+1966,Valiant Holding,valiant.ch,Switzerland,Banking
+1967,China Aviation Oil,caosco.com,Singapore,Trading Companies
+1968,Juroku  Financial Group,juroku.co.jp,Japan,Banking
+1968,Tingyi Holding,masterkong.com.cn,China,"Food, Drink & Tobacco"
+1970,Mitsubishi Materials,mmc.co.jp,Japan,Materials
+1970,Natera,natera.com,United States,Drugs & Biotechnology
+1972,Arab Banking,arabbanking.com,Bahrain,Banking
+1972,Hikari Tsushin,hikari.co.jp,Japan,Utilities
+1972,Tata Motors,tatamotors.com,India,Consumer Durables
+1975,Whirlpool,whirlpoolcorp.com,United States,Consumer Durables
+1975,Zhejiang Sanhua Intelligent Controls,,China,Capital Goods
+1977,BrightSpring Health Services,brightspringhealth.com,United States,Health Care Equipment & Services
+1978,Deutsche Pfandbriefbank,pfandbriefbank.com,Germany,Banking
+1978,RTL Group,rtlgroup.com,Luxembourg,Media
+1980,LKQ,lkqcorp.com,United States,Consumer Durables
+1981,Neurocrine Biosciences,neurocrine.com,United States,Drugs & Biotechnology
+1982,Alior Bank,aliorbank.pl,Poland,Banking
+1983,Hainan Airlines Holding,,China,Transportation
+1983,Hulic ,hulic.co.jp,Japan,Construction
+1983,Open House,,Japan,Construction
+1986,Bank Aljazira,aljazirabank.com.sa,Saudi Arabia,Banking
+1987,Avanza Bank Holding,avanza.com,Sweden,Diversified Financials
+1988,Invesco,invesco.com,United States,Diversified Financials
+1988,Tokyo Kiraboshi Financial Group,tokyo-kiraboshifg.co.jp,Japan,Banking
+1990,Antero Resources,anteroresources.com,United States,Oil & Gas Operations
+1990,BitGo Holdings,,United States,Business Services & Supplies
+1990,Kuwait Projects,kipco.com,Kuwait,Banking
+1990,Logitech International,logitech.com,Switzerland,Technology Hardware & Equipment
+1990,Sanmina-SCI,sanmina.com,United States,Technology Hardware & Equipment
+1990,Sterling Infrastructure,,United States,Construction
+1996,Asian Paints,asianpaints.com,India,Chemicals
+1996,Baxter International,baxter.com,United States,Health Care Equipment & Services
+1998,Graubunder Ktbk,gkb.ch,Switzerland,Banking
+1998,Zscaler,zscaler.com,United States,IT Software & Services
+2000,Federal Bank,federal.bank.in,India,Banking

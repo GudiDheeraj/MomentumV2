@@ -1,0 +1,478 @@
+{
+  "data_engineer": [
+    {
+      "level": "early",
+      "headline": "Graduate scheme finished, two years in",
+      "why": "Nobody believes a data engineer this early has run a platform, so the evidence is reliability instead: the job that stopped failing, the test that caught something before a board pack used it, the runtime that came down. Note that the projects sit under a real role rather than replacing it, and that a current cloud data certification does more work here than it ever will again.",
+      "template_id": "tech_clean_colorful",
+      "data": {
+        "full_name": "Niamh Corrigan",
+        "title": "Data Engineer",
+        "location": "Belfast, UK",
+        "phone": "+44 7700 900612",
+        "email": "niamh.corrigan@example.com",
+        "linkedin": "linkedin.com/in/niamh-corrigan-example",
+        "website": "",
+        "summary": "- Data engineer two years out of a graduate scheme, working on the ingestion and warehouse layer behind a grocery loyalty programme.\n- Took on the two pipelines nobody wanted and made them boring, which is most of what the job turned out to be.",
+        "skills": "Languages: Python, SQL, a little Scala\nWarehouse and storage: Snowflake, PostgreSQL, S3, Parquet\nOrchestration and transformation: Airflow, dbt, Spark\nIngestion: Fivetran, Debezium, Kafka (consumer side)\nQuality and operations: dbt tests, Great Expectations, Docker, GitHub Actions, Datadog",
+        "experience": "Data Engineer | Cloudberry Grocers | Belfast, UK | Sep 2024 - Present\n- Inherited the nightly loyalty ingestion after eleven failures in one quarter; made the loads idempotent, added retries and a dead-letter path, and it has not paged anyone since March.\n- Wrote the team's first 40 dbt tests across the customer and transaction models, which caught a duplicate-key bug four days before it would have reached a board pack.\n- Cut the basket-analysis Spark job from 71 minutes to 18 by salting a skewed join, freeing the cluster for the 06:00 refresh.\n---\nData Engineering Placement | Cloudberry Grocers | Belfast, UK | Jul 2022 - Aug 2023\n- Built the ingestion for third-party footfall feeds from 14 suppliers on inconsistent schedules; still running unchanged.\n- Documented every table in the analytics schema after finding that half the analysts were guessing what the columns meant.",
+        "education": "BSc Computer Science (First Class) | Queen's University Belfast | Sep 2020 - Jun 2024",
+        "projects": "Open Transport Backfill: Loaded eight years of a public cycle-hire release into Snowflake with dbt and Airflow, then wrote the incremental model that keeps it current. The point was practising late-arriving data, which that source has plenty of.\n---\nCredit Attribution Notebook: Small tool that reads Snowflake query history and attributes credits back to the dbt model that caused them. Used it at work to find £4k a year of spend sitting in one table nobody queried.",
+        "publications": "",
+        "certifications": "AWS Certified Data Engineer - Associate\ndbt Fundamentals"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, owns the ingestion platform",
+      "why": "Five years in, a data-engineering CV is read for reliability and cost rather than for tools, and almost every bullet here names an SLA, a bill or a failure mode that went away. The skills block is grouped by function - languages, warehouse, orchestration, streaming, reliability - because that is the order a data-engineering job spec is written in, and a recruiter matches against it line by line.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Arjun Pillai",
+        "title": "Senior Data Engineer",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900255",
+        "email": "arjun.pillai@example.com",
+        "linkedin": "linkedin.com/in/arjun-pillai-example",
+        "website": "",
+        "summary": "- Senior data engineer, five years across shipping and energy; owns the ingestion platform that 40 analysts and three ML services read from.\n- Roughly half the week goes on reliability and cost rather than new pipelines, which is where the arguments are.",
+        "skills": "Languages: Python, SQL, Go\nWarehouse and lakehouse: Snowflake, Databricks, Apache Iceberg, S3\nOrchestration and transformation: Airflow, dbt, Dagster\nStreaming: Kafka, Debezium, Flink\nReliability: data contracts, SLAs and freshness monitoring, backfill tooling, on-call rota design\nInfrastructure: Terraform, Kubernetes, GitHub Actions, AWS",
+        "experience": "Senior Data Engineer | Ravenspur Energy | Bristol, UK | May 2023 - Present\n- Moved 140 scheduled jobs off cron onto Airflow with SLAs attached; late-data incidents fell from around nine a month to one, and the analysts stopped opening the day by checking whether yesterday had loaded.\n- Rebuilt the meter-reading pipeline on Kafka and Iceberg, taking lag from six hours to under four minutes, which let the trading desk retire the private copy of the data it had been keeping.\n- Took £310k a year off the Snowflake bill by re-clustering the two largest tables and deleting 60 models nothing had queried in six months.\n- Wrote the data contracts the four product teams now publish against, so a schema change fails in their CI instead of surfacing as a broken dashboard on a Monday.\n---\nData Engineer | Windlass Shipping | Southampton, UK | Aug 2021 - Apr 2023\n- Built the container-tracking pipeline handling 30m events a day, replacing a nightly batch that ran three days behind the ships.\n- Reduced overnight pages by two thirds by making the eleven noisiest jobs retry rather than alert.\n- Ran the Redshift to Snowflake migration for 400 tables over five months with no reporting outage.",
+        "education": "BEng Electronic Engineering | University of Bristol | Sep 2017 - Jun 2021",
+        "projects": "",
+        "publications": "",
+        "certifications": "Databricks Certified Data Engineer Professional\nAWS Certified Solutions Architect - Associate"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Twelve years, now heads the platform",
+      "why": "The tooling list is the shortest of the three and that is deliberate: at this level the reader is checking what you were accountable for, who you hired and what the platform costs. Every migration bullet ends in a business consequence rather than a technology name, and the certifications section has been dropped entirely because nobody is screening a head of platform on a badge.",
+      "template_id": "swiss_grid",
+      "data": {
+        "full_name": "Zsofia Bartha",
+        "title": "Head of Data Platform",
+        "location": "London, UK",
+        "phone": "+44 7700 900739",
+        "email": "zsofia.bartha@example.com",
+        "linkedin": "linkedin.com/in/zsofia-bartha-example",
+        "website": "",
+        "summary": "- Head of data platform at a £900m-revenue insurer; nine engineers across ingestion, warehouse and data reliability, on a £2.4m budget.\n- Twelve years in data engineering, the last four spent making the case for platform work to people who do not want to hear about pipelines.",
+        "skills": "Leadership: team of 9 across two squads, hiring and progression, £2.4m platform budget, vendor negotiation\nPlatform: lakehouse architecture, data contracts and SLAs, governance for GDPR and Solvency II reporting, disaster recovery\nTechnical: Python, SQL, Spark, Airflow, dbt, Snowflake, Databricks, Terraform, AWS",
+        "experience": "Head of Data Platform | Brightwater Insurance | London, UK | Feb 2023 - Present\n- Restructured three squads into two after finding the split was generating more handover meetings than work; nine engineers now cover ingestion, warehouse and reliability between them.\n- Led the move from a nightly warehouse to a lakehouse serving 40 teams, which took regulatory reporting preparation from eleven days to two and is now the basis of the Solvency II submission.\n- Cut platform spend from £1.6m to £960k over four quarters by moving cold claims history to object storage and charging compute back to the teams using it.\n- Set the data contract standard and the incident process; Sev-2 data incidents went from 34 in the first year to 7 in the last.\n- Hired six engineers and lost none in two years, after a period when the team had been turning over about a third annually.\n---\nData Engineering Manager | Ashvale Pharmaceuticals | Cambridge, UK | Jan 2019 - Jan 2023\n- Built the clinical data platform used by 12 trial teams, retiring a set of Access databases and a shared drive.\n- Grew the team from two to seven and put the first on-call rota in place.\n- Produced the GxP validation evidence for the platform, which passed audit without a finding.\n---\nSenior Data Engineer | Thistledown Bank | London, UK | Sep 2014 - Dec 2018\n- Built the regulatory reporting pipeline covering 18 returns; it has outlived two of the systems that fed it.",
+        "education": "MSc Computer Science | University College London | Sep 2013 - Sep 2014\n---\nBSc Mathematics | Budapest University of Technology and Economics | Sep 2010 - Jun 2013",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "data_analyst": [
+    {
+      "level": "early",
+      "headline": "Four years in retail, now analysing it",
+      "why": "The career-change version, and the useful thing is what it does not do: the retail years are not hidden, apologised for or shrunk to one line. They are the domain knowledge, so they are written in analyst language. The projects section carries the technical proof, because eleven months of analyst work cannot, and the two certifications are the ones UK employers actually recognise.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Owen Trelawney",
+        "title": "Data Analyst",
+        "location": "Plymouth, UK",
+        "phone": "+44 7700 900148",
+        "email": "owen.trelawney@example.com",
+        "linkedin": "linkedin.com/in/owen-trelawney-example",
+        "website": "",
+        "summary": "- Data analyst eleven months into the role, after four years running retail branches - which is where most of the questions now being asked of the data used to land.\n- SQL and Power BI day to day; strongest on the retail side, where knowing which number a store manager will act on matters more than the query that produced it.",
+        "skills": "Analysis: SQL (joins, CTEs, window functions), Excel to Power Query and pivot models, cohort and basket analysis, descriptive statistics\nVisualisation: Power BI (DAX, row-level security), Tableau, Looker Studio\nProgramming: Python (pandas, matplotlib), Git basics\nDomain: retail operations, stock and shrinkage, rota and labour planning, EPOS data",
+        "experience": "Data Analyst | Saltmarsh Retail Group | Plymouth, UK | Oct 2025 - Present\n- Rebuilt the weekly trading pack in Power BI, replacing nine hand-assembled spreadsheets and taking Monday preparation from most of a day to about twenty minutes.\n- Found that the shrinkage report double-counted returns processed at a different store, which had overstated losses across 30 branches for two years.\n- Handle the ad-hoc questions from area managers, mostly stock, staffing and promotion performance; anything asked twice now becomes a self-serve page instead.\n---\nBranch Manager | Saltmarsh Retail Group | Truro, UK | Feb 2022 - Sep 2025\n- Ran a branch of 22 staff turning over £4.1m a year, top five of 60 on stock accuracy for six consecutive quarters.\n- Built the rota and stock forecasting spreadsheet the South West region adopted, which is how the move into analytics started.\n---\nAssistant Manager | Halloway Foods | Exeter, UK | Sep 2018 - Jan 2022\n- Managed ordering for a £2.6m store, cutting waste from 3.4% to 2.1% of sales over two years.",
+        "education": "BA Geography | University of Exeter | Sep 2015 - Jun 2018",
+        "projects": "Seasonal Trade Model: Joined public visitor-numbers data to three years of the group's own EPOS extracts to test whether a store's summer uplift could be predicted; it went into the 2026 seasonal ordering discussion.\n---\nRota Cost Comparison: Python and Streamlit tool that scores rota shapes against forecast footfall for a single branch, which showed about £9k a year of avoidable overtime.",
+        "publications": "",
+        "certifications": "Microsoft Certified: Power BI Data Analyst Associate (PL-300)\nGoogle Data Analytics Professional Certificate"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Four years, insurance claims and pricing",
+      "why": "A mid-level analyst CV lives or dies on whether a reader can tell what changed because of the analysis, so every bullet here names the decision rather than the dashboard - including one that names an analysis that killed something. The tooling has shrunk to a block at the top, because by four years in it is a screening filter rather than the story.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Hana Sakamoto",
+        "title": "Senior Data Analyst",
+        "location": "Birmingham, UK",
+        "phone": "+44 7700 900520",
+        "email": "hana.sakamoto@example.com",
+        "linkedin": "linkedin.com/in/hana-sakamoto-example",
+        "website": "",
+        "summary": "- Senior analyst, four years in general insurance; sits with the claims and pricing teams rather than in a central reporting function.\n- Does the unglamorous half of the job first: agreeing what a metric means before anyone builds a chart of it.",
+        "skills": "Analysis: SQL, Python (pandas, statsmodels), experiment readouts, cohort and retention analysis, reading GLM output for pricing\nVisualisation and modelling: Power BI, dbt at analyst level, Excel\nData: Snowflake, Azure Data Factory extracts, Alteryx\nWorking: requirements sessions with underwriters and claims handlers, writing the definition before the dashboard",
+        "experience": "Senior Data Analyst | Wrenhaven Insurance | Birmingham, UK | Jun 2024 - Present\n- Showed that the fast-track settlement path was being applied to claims it was never designed for, at a cost of roughly £1.2m a year; the eligibility rules were rewritten inside the quarter.\n- Separated reserve movements from payments in the claims-leakage reporting, ending a long-running argument between finance and claims about which number was the real one.\n- Ran the analysis behind the telematics pricing trial across 18,000 policies, including the readout that killed the second variant.\n- Cut the monthly reporting cycle from six days to two by moving 30 hand-run queries into scheduled dbt models.\n---\nData Analyst | Merrowdale Water | Coventry, UK | Sep 2022 - May 2024\n- Built the leakage reporting used in the regulator submission, replacing a spreadsheet three people maintained separately.\n- Found a meter-reading gap that had inflated reported consumption for 40,000 households, which corrected two years of billing analysis.\n- Trained 15 operations staff to answer their own routine questions in Power BI, halving the ad-hoc request queue.",
+        "education": "BSc Economics | University of Nottingham | Sep 2019 - Jun 2022",
+        "projects": "",
+        "publications": "",
+        "certifications": "Microsoft Certified: Power BI Data Analyst Associate (PL-300)"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Ten years, now runs the insight function",
+      "why": "At the top of an analyst career the CV stops listing analyses and starts describing a function: who reports to you, what the team is trusted to decide, which arguments you settled permanently. Watch what happens to the definitions bullet - it is worth more than any dashboard on the page, and it is the sort of thing analysts routinely leave off.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Adaeze Okonkwo",
+        "title": "Head of Insight",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900873",
+        "email": "adaeze.okonkwo@example.com",
+        "linkedin": "linkedin.com/in/adaeze-okonkwo-example",
+        "website": "",
+        "summary": "- Heads a team of eight analysts across trading, supply chain and customer for a £400m home and garden retailer.\n- Ten years in analytics, six of them in retail; moved the function from taking ticket requests to holding its own line in the weekly trading meeting.",
+        "skills": "Leadership: team of 8 with two analytics leads, hiring and levelling, £700k function budget\nPractice: metric governance and certified definitions, self-serve enablement, experiment standards, analytics roadmap agreed with product and finance\nTechnical: SQL, Python, Looker, Power BI, Snowflake, dbt",
+        "experience": "Head of Insight | Sorrelwood Home & Garden | Leeds, UK | Mar 2023 - Present\n- Lead eight analysts across three areas, and created the analytics lead grade so two senior analysts had somewhere to go other than out; both are still here.\n- Settled the definition of an active customer that four teams had been reporting differently, which moved the reported base by 11% and, more usefully, ended the quarterly argument about it.\n- Made the case for a £310k warehouse and BI consolidation across three overlapping tools; licence spend fell £180k a year and the reporting layer went from four owners to one.\n- Set the rule that no dashboard ships without a named owner and a review date, then retired 240 of the 400 reports in the estate in the first year.\n- Sit in the weekly trading meeting as the person who calls whether a movement is real, which had previously been nobody's job.\n---\nAnalytics Manager | Selwyn Sports Nutrition | Manchester, UK | Jan 2020 - Feb 2023\n- Grew the analytics team from one person to four and wrote the first hiring bar for the role.\n- Owned the customer segmentation behind the loyalty relaunch, which lifted repeat purchase rate nine points in its first year.\n- Replaced a £90k a year reporting contract with an in-house Looker instance.\n---\nSenior Data Analyst | Brindley Telecom | Leeds, UK | Jul 2016 - Dec 2019\n- Ran the churn analysis that redirected £2m of retention spend away from customers who were never going to leave.",
+        "education": "MSc Business Analytics | University of Leeds | Sep 2015 - Sep 2016\n---\nBSc Statistics | University of Nigeria, Nsukka | Sep 2011 - Jul 2015",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "ml_engineer": [
+    {
+      "level": "early",
+      "headline": "MSc, a workshop paper, two years in",
+      "why": "Under two years in there is no production history to point at, so this one leans on benchmarks and a published negative result, which is why it uses the academic layout rather than a product one. The lesson is in the projects: each states the baseline it beat and where the model actually ran, because an offline number with no deployment behind it proves very little to an ML hiring manager.",
+      "template_id": "academic_cv",
+      "data": {
+        "full_name": "Milena Draganova",
+        "title": "Machine Learning Engineer",
+        "location": "Edinburgh, UK",
+        "phone": "+44 7700 900366",
+        "email": "m.draganova@example.com",
+        "linkedin": "linkedin.com/in/milena-draganova-example",
+        "website": "mdraganova.example.com",
+        "summary": "- ML engineer two years in, after an MSc in Informatics with a thesis on how retrieval systems are evaluated.\n- Ships models rather than notebooks: both projects below sit behind an API with a monitored eval suite in front of them.",
+        "skills": "Languages: Python, SQL, some Rust\nModelling: PyTorch, Hugging Face Transformers, sentence-transformers, scikit-learn, LoRA fine-tuning\nServing and infrastructure: FastAPI, Docker, ONNX Runtime, AWS SageMaker, basic Kubernetes\nEvaluation and tracking: MLflow, Weights & Biases, offline eval harnesses, recall@k and NDCG, human labelling design",
+        "experience": "Machine Learning Engineer | Fennimore Legal Software | Edinburgh, UK | Oct 2024 - Present\n- Replaced keyword search in the case-law product with a hybrid retriever - BM25, embeddings and a cross-encoder rerank - lifting recall@10 from 0.61 to 0.84 on a 2,000-query set the solicitors labelled themselves.\n- Built the eval harness every model change now runs through; before it existed, a retrieval regression had shipped twice without anyone noticing.\n- Brought p95 latency on the reranker from 900ms to 210ms through batching, int8 quantisation and keeping the model resident.\n---\nMachine Learning Intern | Fennimore Legal Software | Edinburgh, UK | Jun 2024 - Sep 2024\n- Prototyped the document-clustering view that turned into the retrieval work above.",
+        "education": "MSc Informatics (Distinction) | University of Edinburgh | Sep 2023 - Aug 2024\n---\nBSc Computer Science | Sofia University St. Kliment Ohridski | Sep 2020 - Jun 2023",
+        "projects": "retrieval-check: Open-source harness that scores a retriever against a labelled query set and fails CI when it regresses past a threshold. 340 stars, and it is the harness running in production at the role above.\n---\nDialect Tagging on Low-Resource Audio: MSc thesis, fine-tuning wav2vec 2.0 for Bulgarian dialect tagging on 40 hours of audio; 78% frame accuracy against a 61% multilingual baseline.",
+        "publications": "Draganova M., Whitcombe R. Query-set design matters more than the reranker: an ablation on legal retrieval. Workshop on Insights from Negative Results in NLP, 2025",
+        "certifications": "AWS Certified Machine Learning Engineer - Associate"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, ranking systems in production",
+      "why": "This is where the line between a data scientist and an ML engineer becomes visible on paper. The bullets are about serving - p99 latency, inference cost, what happens when the model misbehaves on new users - not about which architecture won offline, and every offline gain is paired with what it did online. Owning the rollback path is a legitimate CV line in this field.",
+      "template_id": "tech_clean_colorful",
+      "data": {
+        "full_name": "Zainab Qureshi",
+        "title": "Machine Learning Engineer",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900294",
+        "email": "zainab.qureshi@example.com",
+        "linkedin": "linkedin.com/in/zainab-qureshi-example",
+        "website": "",
+        "summary": "- Five years building and running recommendation and ranking systems; currently owns the models behind the home feed at a four-million-user marketplace.\n- Takes a model to production and keeps it there: serving, monitoring, retraining, and the rollback that follows a bad day.",
+        "skills": "Modelling: PyTorch, TensorFlow, two-tower retrieval, gradient-boosted rankers, sequence models, bandits for exploration\nServing: Triton Inference Server, TorchServe, ONNX, gRPC, Redis feature cache\nPlatform: Kubernetes, Ray, Airflow, MLflow, Feast, Terraform, GCP\nPractice: offline and online evaluation, shadow deploys, A/B and interleaving, drift monitoring, on-call for model services",
+        "experience": "Machine Learning Engineer | Saltford Marketplace | Manchester, UK | Feb 2023 - Present\n- Replaced the hand-tuned home feed with two-tower retrieval and a learned ranker; click-through rose 14% and seller-side impressions spread across roughly three times as many accounts, which was the thing the business actually wanted.\n- Cut inference cost from £46k to £17k a month by distilling the ranker, moving to int8 on Triton and taking the GPU fleet from 24 nodes to 9 at the same p99.\n- Built the shadow-deploy path every model change now passes through; two of the last nine candidates were caught misbehaving on new sellers before a user saw them.\n- Added drift monitoring on the feature store after a silent upstream schema change degraded ranking for eleven days.\n---\nMachine Learning Engineer | Northlake Semiconductors | Manchester, UK | Sep 2021 - Jan 2023\n- Built the wafer-defect classifier now running on three production lines, catching 91% of the defects the optical rule set missed.\n- Fitted the model onto factory-floor edge boxes inside a 40ms budget through pruning and a TensorRT conversion.\n- Wrote the labelling guidance and review process for the technicians, which took inter-annotator agreement from 0.62 to 0.88 kappa.",
+        "education": "BSc Computer Science (First Class) | University of Manchester | Sep 2018 - Jun 2021",
+        "projects": "",
+        "publications": "",
+        "certifications": "Google Cloud Professional Machine Learning Engineer"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Eleven years, leads the ML platform",
+      "why": "A senior ML CV drops the framework list almost to nothing and describes the platform other people build on: what it costs, what it guarantees, how many teams depend on it. Model detail survives in exactly one place, where a technical decision saved money. The incident bullet is here on purpose - at this level, having owned a bad day and fixed the process reads better than a clean sheet.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Lucas Almeida-Rocha",
+        "title": "Principal Machine Learning Engineer",
+        "location": "London, UK",
+        "phone": "+44 7700 900487",
+        "email": "lucas.almeida-rocha@example.com",
+        "linkedin": "linkedin.com/in/lucas-almeida-rocha-example",
+        "website": "",
+        "summary": "- Principal ML engineer, eleven years; leads a platform team of six serving 40 models for 14 product teams at around 90k inferences a second at peak.\n- Accountable for a £3.1m annual compute budget and for the review that decides whether a model is allowed near a customer.",
+        "skills": "Leadership: platform team of 6, technical review board, £3.1m compute budget, ML hiring across three teams\nPlatform: multi-tenant inference, feature stores, GPU scheduling and capacity planning, model registry and governance, incident response\nTechnical: Python, PyTorch, Ray, Kubernetes, Triton, vLLM, Kafka, Terraform, AWS and on-premise GPU",
+        "experience": "Principal Machine Learning Engineer | Petrel Mobility | London, UK | Apr 2022 - Present\n- Consolidated 40 models running on nine different serving stacks onto one platform, retiring roughly 4,000 lines of per-team deployment glue and the arguments that came with it.\n- Took GPU spend from £4.9m to £3.1m a year while traffic grew 60%, through continuous batching, KV-cache reuse on the LLM services and capacity planning based on measured load rather than headroom by default.\n- Chair the review that decides what can go in front of a rider or driver, and wrote the harm and rollback criteria the safety team now applies.\n- Cut median time from trained model to live traffic from three weeks to two days, which changed what teams were willing to attempt.\n- Owned the ETA-model incident that mispriced 40 minutes of trips; rewrote the rollback path so a bad model is out of traffic in under 90 seconds.\n---\nStaff Machine Learning Engineer | Sedgemoor Logistics | London, UK | Jun 2018 - Mar 2022\n- Built the route-time prediction service behind 2m deliveries a week, taking the promised-window miss rate from 12% to 5%.\n- Introduced the feature store, ending eighteen months of every team recomputing the same customer features slightly differently.\n- Grew the ML group from three to eleven and wrote the levelling guide still in use.\n---\nMachine Learning Engineer | Wrayford Media | Lisbon, Portugal | Sep 2015 - May 2018\n- Built the ad click-prediction model serving 1.2bn requests a day inside a 20ms budget.",
+        "education": "MSc Artificial Intelligence | University of Amsterdam | Sep 2014 - Aug 2015\n---\nBSc Computer Engineering | Universidade de Lisboa | Sep 2010 - Jul 2014",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "analytics_engineer": [
+    {
+      "level": "early",
+      "headline": "Two years an analyst, now modelling",
+      "why": "Almost nobody starts as an analytics engineer; they arrive sideways from analysis, and this CV is built to show the crossover rather than bury it. The analyst years stay because they are the reason the models are right, while the recent bullets are about tests, documentation and definitions instead of charts. The dbt certification does real work at this stage, which it stops doing later.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Imogen Radcliffe",
+        "title": "Analytics Engineer",
+        "location": "Cardiff, UK",
+        "phone": "+44 7700 900931",
+        "email": "imogen.radcliffe@example.com",
+        "linkedin": "linkedin.com/in/imogen-radcliffe-example",
+        "website": "",
+        "summary": "- Analytics engineer ten months into the role, after two years as an analyst on the same data - which is why the models match how the business actually counts things.\n- Owns 90 dbt models covering subscriptions and billing, and the tests that keep them honest.",
+        "skills": "Transformation: dbt (models, tests, snapshots, macros, exposures), SQL, dimensional modelling, slowly changing dimensions\nWarehouse: BigQuery, PostgreSQL, partitioning and clustering\nEngineering practice: Git, pull-request review, dbt Cloud CI, YAML documentation, Airflow for scheduling\nBI: Looker and LookML, Metabase, Google Sheets connectors\nAnalysis: cohort and retention analysis, Python (pandas)",
+        "experience": "Analytics Engineer | Penhallow Software | Cardiff, UK | Nov 2025 - Present\n- Rebuilt the subscription models as a proper star schema; the three teams that each maintained their own MRR query now read one table, and the numbers agree for the first time.\n- Added 210 dbt tests and a CI check that blocks a merge on a failure, after a null-handling change silently halved reported churn for a fortnight.\n- Documented every model in the billing mart and wired exposures to the 14 Looker dashboards downstream, so a breaking change now names who has to be told.\n---\nData Analyst | Penhallow Software | Cardiff, UK | Sep 2023 - Oct 2025\n- Owned the subscription reporting the finance team closed the month on.\n- Found that trials spanning a month end were credited to the wrong month, which had distorted the growth chart for a year.\n- Ran the weekly self-serve clinic that got 30 non-technical staff writing their own Looker filters.",
+        "education": "BSc Mathematics | Cardiff University | Sep 2020 - Jun 2023",
+        "projects": "Definitions Registry: Internal site generated from the dbt YAML that lets anyone look up what a metric means and which model produces it. Finance and support adopted it before the data team did.",
+        "publications": "",
+        "certifications": "dbt Analytics Engineer Certification"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years owning the transformation layer",
+      "why": "Analytics engineering is judged on the state of the warehouse rather than on any individual analysis, so the numbers here are model counts, build times, test coverage and competing definitions that went away. Note the first bullet deletes more than it builds - a data engineer's CV would not be able to claim that, and it is the clearest signal that these are different jobs.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Kwabena Osei",
+        "title": "Senior Analytics Engineer",
+        "location": "London, UK",
+        "phone": "+44 7700 900677",
+        "email": "kwabena.osei@example.com",
+        "linkedin": "linkedin.com/in/kwabena-osei-example",
+        "website": "",
+        "summary": "- Senior analytics engineer, five years; owns the dbt project and semantic layer that around 120 people query, directly or through Looker.\n- Spends as much time deleting models and settling definitions as writing anything new, which is usually where the value turns out to be.",
+        "skills": "Transformation: dbt (500+ models, macros, packages, unit tests), SQL, Kimball dimensional modelling, incremental strategies\nSemantic and BI: dbt Semantic Layer, LookML, Looker, Tableau, certified metric governance\nWarehouse: Snowflake, BigQuery, cost attribution, clustering and performance tuning\nEngineering: Git, GitHub Actions, dbt Cloud CI, Python for macros and tooling, Airflow, Elementary for observability",
+        "experience": "Senior Analytics Engineer | Ashcombe Payments | London, UK | Jan 2024 - Present\n- Took the dbt project from 640 models to 380 by removing duplicates and unused marts; the full build fell from 2h 10m to 34 minutes and the warehouse bill by £126k a year.\n- Rewrote revenue as one certified model after finding eleven definitions of it in production; finance, growth and the board pack now reconcile without a spreadsheet in between.\n- Introduced dbt unit tests and a CI job that runs affected models against a sample, taking data incidents that reached a dashboard from about six a month to one.\n- Built the semantic layer for the eight core metrics, so a change to the churn definition updates Looker, the notebooks and the exec pack at once.\n---\nAnalytics Engineer | Woodvale Trust | London, UK | Aug 2021 - Dec 2023\n- Migrated 200 SQL Server stored procedures into a tested dbt project, which is the point at which the team stopped being afraid to change a report.\n- Modelled donor and legacy income into one fact table, replacing four extracts that fundraising and finance reconciled by hand each month.\n- Wrote the style guide and review checklist four analysts still use on pull requests.",
+        "education": "BSc Economics and Statistics | University of Warwick | Sep 2018 - Jun 2021",
+        "projects": "",
+        "publications": "",
+        "certifications": "dbt Analytics Engineer Certification\nSnowPro Core Certification"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Nine years, analytics platform for 300",
+      "why": "At lead level the job is standards: who may build a model, what a certified metric means, what the warehouse costs and who pays. The bullets name a policy and then its consequence, which is the shape senior analytics-engineering work takes. The technical line has collapsed to one row because nobody is screening this CV on whether the writer knows dbt.",
+      "template_id": "swiss_grid",
+      "data": {
+        "full_name": "Jakub Prochazka",
+        "title": "Lead Analytics Engineer",
+        "location": "Reading, UK",
+        "phone": "+44 7700 900805",
+        "email": "jakub.prochazka@example.com",
+        "linkedin": "linkedin.com/in/jakub-prochazka-example",
+        "website": "",
+        "summary": "- Lead analytics engineer at a telecoms group, running a team of five and the platform around 300 people query.\n- Nine years modelling data; the last three have been mostly about who owns which number, which turned out to be the harder problem.",
+        "skills": "Leadership: team of 5, analytics engineering guild across four business units, hiring and levelling, roadmap agreed with the data platform team\nStandards: certified metric layer, model ownership and deprecation policy, data contracts with source teams, cost allocation by domain\nTechnical: dbt, SQL, Snowflake, Looker, dbt Semantic Layer, Airflow, Python, GitHub Actions",
+        "experience": "Lead Analytics Engineer | Wistman Telecom | Reading, UK | Feb 2023 - Present\n- Lead five analytics engineers and chair the guild that sets modelling standards for the 30 analysts across four business units.\n- Introduced certified models with named owners and a deprecation process; the estate went from 1,100 tables of unclear provenance to 340 that somebody is accountable for.\n- Ran the consolidation of four separate warehouses into one Snowflake account, finished two months early, and took combined spend from £2.7m to £1.55m a year.\n- Set up per-domain cost allocation, after which three teams voluntarily rewrote their heaviest models - something two years of asking had not achieved.\n- Wrote the change and incident process for data, so the quarterly regulatory return now has one agreed source rather than three that had to be reconciled first.\n---\nSenior Analytics Engineer | Whitlow Retail Group | Bristol, UK | Sep 2019 - Jan 2023\n- Built the dimensional model behind trading reporting for 340 stores, replacing a reporting cube nobody had been able to change since 2016.\n- Cut the overnight build from five hours to 50 minutes by moving the six largest models to incremental.\n- Mentored three analysts into analytics engineering roles, two of them internally.\n---\nData Analyst | Pentreath Foods | Bristol, UK | Jul 2017 - Aug 2019\n- Reporting and forecasting for the chilled category; wrote the SQL that later became the first dbt models.",
+        "education": "MSc Data Science | University of Bath | Sep 2016 - Sep 2017\n---\nBSc Economics | Charles University, Prague | Sep 2013 - Jun 2016",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "research_scientist": [
+    {
+      "level": "early",
+      "headline": "PhD just finished, first postdoc",
+      "why": "A research CV is not a resume with a publication list bolted on. Publications, funding and talks are the currency and they are formatted so a panel can check them: author position marked, the preprint labelled as a preprint rather than dressed up as a paper, and every award given with its funder and period. Employment takes up less space than the sections underneath it, which is correct here and nowhere else. A real one would also carry an ORCID iD beside the contact line.",
+      "template_id": "academic_cv",
+      "data": {
+        "full_name": "Tinashe Mutasa",
+        "title": "Postdoctoral Research Associate, Marine Biogeochemistry",
+        "location": "Southampton, UK",
+        "phone": "+44 7700 900209",
+        "email": "t.mutasa@example.com",
+        "linkedin": "linkedin.com/in/tinashe-mutasa-example",
+        "website": "tmutasa.example.com",
+        "summary": "- Postdoctoral researcher in marine biogeochemistry; PhD awarded 2025 on carbon export in the Southern Ocean.\n- Four peer-reviewed papers, two as first author, plus the sensor quality-control package now used by three other groups.",
+        "skills": "Methods: stable isotope analysis, sediment trap deployment and recovery, BGC-Argo float data, inverse modelling of carbon flux\nComputational: Python (xarray, scipy), R, MATLAB, legacy Fortran model code, Slurm and HPC job management\nFieldwork: 62 days at sea across three research cruises, CTD operation, small-boat sampling ticket\nCommunication: peer review for two journals, public engagement at two schools programmes",
+        "experience": "Postdoctoral Research Associate | Stannary Marine Institute | Southampton, UK | Oct 2025 - Present\n- Leading the reanalysis of eleven years of autonomous float data towards a revised Southern Ocean carbon budget, under the group's NERC-funded programme.\n- Rewrote the flux-processing pipeline the group had used since 2016; a run that took two weeks and a postdoc now takes nine hours and one command.\n- Co-supervising one MSc student and running the practical sessions on the institute's summer school.\n---\nResearch Assistant | Wrenfield Coastal Observatory | Plymouth, UK | Jan 2021 - Sep 2021\n- Maintained the mooring array and processed two years of data for the observatory's public release.\n- Wrote the quality-control routines that later became the argoflux package.",
+        "education": "PhD, Marine Biogeochemistry | University of Southampton | Oct 2021 - Sep 2025\n---\nMSc, Oceanography (Distinction) | University of Cape Town | Feb 2020 - Dec 2020\n---\nBSc, Environmental Science (First Class) | University of Zimbabwe | Feb 2016 - Nov 2019",
+        "projects": "argoflux: Open-source Python package for BGC-Argo quality control and carbon-flux estimation. Used by three research groups and cited in two papers I had no part in.",
+        "publications": "Mutasa T.*, Ellingworth R., Sandoval-Reyes M. Particle export efficiency in the Antarctic Circumpolar Current from combined float and trap observations. Global Biogeochemical Cycles, 2025 (*corresponding author)\nMutasa T., Ellingworth R. Seasonal bias in sediment-trap estimates of carbon flux below 1000 m. Journal of Geophysical Research: Oceans, 2024\nKaur-Whitby S., Mutasa T., Ellingworth R. An open pipeline for BGC-Argo quality control. Limnology and Oceanography: Methods, 2024\nEllingworth R., Mutasa T., et al. Ocean carbon uptake under a weakened overturning: a model intercomparison. Preprint, EGUsphere, 2026 - under review at Biogeosciences",
+        "certifications": "",
+        "custom_sections": [
+          {
+            "title": "Funding and Awards",
+            "items": [
+              {
+                "heading": "NERC Doctoral Training Partnership studentship",
+                "meta": "2021 - 2025",
+                "text": "Fully funded studentship, awarded competitively across the partnership."
+              },
+              {
+                "heading": "Challenger Society travel grant",
+                "meta": "2024",
+                "text": "£1,800 to present at the Ocean Sciences Meeting."
+              },
+              {
+                "heading": "Best student talk, institute annual meeting",
+                "meta": "2024",
+                "text": ""
+              }
+            ]
+          },
+          {
+            "title": "Conference Presentations",
+            "items": [
+              {
+                "heading": "Ocean Sciences Meeting",
+                "meta": "2024",
+                "text": "Contributed talk on seasonal bias in sediment-trap flux estimates."
+              },
+              {
+                "heading": "EGU General Assembly",
+                "meta": "2023 and 2025",
+                "text": "Posters on float-derived export estimates."
+              }
+            ]
+          },
+          {
+            "title": "Teaching and Supervision",
+            "items": [
+              {
+                "heading": "MSc dissertation co-supervision",
+                "meta": "2025 - present",
+                "text": "One student, on float-derived nitrate fluxes."
+              },
+              {
+                "heading": "Demonstrator, undergraduate oceanographic data analysis",
+                "meta": "2022 - 2025",
+                "text": "Six cohorts of about 40; wrote the Python practical still in use."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, industry research and patents",
+      "why": "The industry version of a research CV, and the differences are the whole lesson. Publications survive but are cut to a selected list with the total stated; what leads instead is the thing an academic CV never has to show, which is what reached a product. Patents get their own block with the inventor position given, because in industrial research they are read the way papers are read in academia.",
+      "template_id": "harvard_classic",
+      "data": {
+        "full_name": "Cecilia Baumgartner",
+        "title": "Senior Research Scientist, Battery Materials",
+        "location": "Oxford, UK",
+        "phone": "+44 7700 900418",
+        "email": "c.baumgartner@example.com",
+        "linkedin": "linkedin.com/in/cecilia-baumgartner-example",
+        "website": "",
+        "summary": "- Senior research scientist in battery materials, six years in industry after a PhD in solid-state chemistry.\n- Two of the four programmes below reached a shipping cell chemistry; named inventor on three granted patents.",
+        "skills": "Materials and characterisation: solid-state synthesis, XRD with Rietveld refinement, XPS, SEM and EDS, electrochemical impedance spectroscopy, coin and pouch cell assembly\nAnalysis: Python (pandas, scipy), design of experiments, Bayesian optimisation for formulation screening, statistical process control\nTranslation: gram to kilogram scale-up, supplier qualification, tech-transfer documentation, invention disclosure and prosecution support\nWorks with: process engineering, quality, and two contract manufacturers",
+        "experience": "Senior Research Scientist | Aurelian Cell Technologies | Oxford, UK | Mar 2023 - Present\n- Led the silicon-anode binder programme from screening through to a qualified formulation; the resulting cell holds 88% capacity at 800 cycles against 71% for the incumbent, and shipped in the 2025 pack.\n- Cut formulation screening from eleven weeks to three by replacing a full factorial design with Bayesian optimisation over 40 candidates.\n- Named inventor on two granted patents and three further filings from the binder and electrolyte-additive work.\n- Own the technical relationship with two contract manufacturers through scale-up, and caught a moisture-control gap during qualification that would otherwise have cost a full production lot.\n---\nResearch Scientist | Cindermoor Materials | Manchester, UK | Oct 2020 - Feb 2023\n- Developed the cathode coating process that raised first-cycle efficiency by four points and went onto the pilot line.\n- Built the automated cell-testing rig and its data pipeline, taking the group from about 40 to 300 cells characterised a month.\n- Published three papers from the programme after negotiating disclosure with legal, and presented the work at two international meetings.",
+        "education": "PhD, Solid-State Chemistry | University of Oxford | Oct 2016 - Sep 2020\n---\nMSc, Chemistry | Technical University of Munich | Oct 2014 - Aug 2016\n---\nBSc, Chemistry | University of Vienna | Oct 2011 - Jul 2014",
+        "projects": "",
+        "publications": "Selected from 11 peer-reviewed papers.\nBaumgartner C., Vintner R., Ashdown-Petrie L. Binder architecture and capacity retention in high-silicon anodes. Journal of Power Sources, 2025\nBaumgartner C., Vintner R. Moisture tolerance during pouch-cell scale-up: a process study. Journal of the Electrochemical Society, 2024\nRusanova I., Baumgartner C. Automated cell characterisation at pilot scale. Batteries & Supercaps, 2022\nBaumgartner C., et al. Fluorinated additive effects on the SEI in silicon-graphite composites. Journal of Materials Chemistry A, 2021",
+        "certifications": "",
+        "custom_sections": [
+          {
+            "title": "Patents",
+            "items": [
+              {
+                "heading": "Binder composition for silicon-dominant anodes",
+                "meta": "GB, granted 2025",
+                "text": "Named inventor, one of three."
+              },
+              {
+                "heading": "Electrolyte additive package for high-nickel cathodes",
+                "meta": "EP, granted 2024",
+                "text": "Named inventor, one of two."
+              },
+              {
+                "heading": "Method for moisture control in pouch-cell assembly",
+                "meta": "WO, published 2026, pending",
+                "text": "Sole inventor."
+              }
+            ]
+          },
+          {
+            "title": "Selected Talks",
+            "items": [
+              {
+                "heading": "International Battery Association meeting",
+                "meta": "2025",
+                "text": "Invited talk on binder design for high-silicon anodes."
+              },
+              {
+                "heading": "Electrochemical Society meeting",
+                "meta": "2023",
+                "text": "Contributed talk on automated cell characterisation at pilot scale."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Fifteen years, leads a research group",
+      "why": "By this point the publication list is explicitly selected and the funding block has become the headline: funder, role, amount, period, in that order, because a panel reads it before anything else. What a senior research CV adds that an academic one at any earlier stage does not is a management dimension - the size of the group, the budget behind it and where its people went afterwards.",
+      "template_id": "executive_elegant",
+      "data": {
+        "full_name": "Hyeon-jae Suh",
+        "title": "Head of Computational Research",
+        "location": "Cambridge, UK",
+        "phone": "+44 7700 900556",
+        "email": "hj.suh@example.com",
+        "linkedin": "linkedin.com/in/hyeon-jae-suh-example",
+        "website": "hjsuh.example.com",
+        "summary": "- Heads a computational research group of fourteen - four staff scientists, seven postdocs, three PhD students - working on protein design for therapeutics.\n- £6.8m won as principal investigator since 2019, 74 peer-reviewed papers, and two designed binders now in preclinical development with a partner.",
+        "skills": "Leadership: group of 14, £6.8m as PI, portfolio and strategy, recruitment and promotion cases, partnership negotiation with two pharmaceutical sponsors\nResearch: protein structure prediction and design, molecular dynamics, generative models for sequence design, high-throughput binding assays with the wet-lab team\nService: associate editor, two conference programme committees, funding panel member",
+        "experience": "Head of Computational Research | Wrenfield Institute for Molecular Medicine | Cambridge, UK | Jan 2019 - Present\n- Built the group from three people to fourteen and set up the joint computational and wet-lab design cycle that now turns a design round in nine days rather than three months.\n- Won £6.8m as principal investigator across six awards, including the £2.4m programme grant funding five of the current posts.\n- Two designed binders entered preclinical development under a partnership; negotiated the terms with the sponsor and the institute's translation office.\n- Chair the research computing committee, made the case for the £1.9m GPU cluster six groups now share, and set the allocation policy that keeps it near 85% utilised.\n- Supervised eleven PhD students to completion; four hold group leader or staff scientist positions elsewhere.\n---\nSenior Research Fellow | Ardenmoor Institute of Structural Biology | Leeds, UK | Sep 2014 - Dec 2018\n- Led the fragment-based design programme, which produced the scoring function the group still uses.\n- First or senior author on nine papers over the period, including the two most cited from that group.\n- Secured a five-year fellowship and the group's first industrial co-funding, together £940k, and supervised three PhD students.\n---\nPostdoctoral Fellow | Ardenmoor Institute of Structural Biology | Leeds, UK | Oct 2011 - Aug 2014\n- Developed the molecular dynamics protocol that became the group's standard for flexible docking.",
+        "education": "PhD, Computational Biophysics | KAIST | Mar 2007 - Aug 2011\n---\nBS, Chemistry | Seoul National University | Mar 2003 - Feb 2007",
+        "projects": "",
+        "publications": "Selected from 74 peer-reviewed papers; full list and citation record on request.\nSuh H., Ravensworth A., Okoye-Brandt N. Generative sequence design for high-affinity miniprotein binders. Nature Communications, 2025\nOkoye-Brandt N., Suh H. Physics-informed scoring improves design success rates in fragment linking. Journal of Medicinal Chemistry, 2024 (senior author)\nSuh H., et al. A nine-day design-build-test cycle for protein binders. Nature Protocols, 2023\nVaillancourt E., Suh H. Sampling limits in flexible docking of cryptic pockets. PNAS, 2020 (co-first authors)",
+        "certifications": "",
+        "custom_sections": [
+          {
+            "title": "Funding as Principal Investigator",
+            "items": [
+              {
+                "heading": "Wellcome Trust Discovery Award",
+                "meta": "2023 - 2028",
+                "text": "£2.4m, PI. Generative design of miniprotein binders."
+              },
+              {
+                "heading": "BBSRC responsive mode grant",
+                "meta": "2021 - 2025",
+                "text": "£1.3m, PI with two co-investigators."
+              },
+              {
+                "heading": "Horizon Europe consortium, UK partner",
+                "meta": "2022 - 2026",
+                "text": "£1.1m of a €14m consortium; work-package lead."
+              },
+              {
+                "heading": "Industrial partnerships, two sponsors",
+                "meta": "2019 - present",
+                "text": "£2.0m combined under rolling three-year agreements."
+              }
+            ]
+          },
+          {
+            "title": "Service and Invited Talks",
+            "items": [
+              {
+                "heading": "Associate editor, Journal of Chemical Information and Modeling",
+                "meta": "2022 - present",
+                "text": ""
+              },
+              {
+                "heading": "Funding panel member, BBSRC",
+                "meta": "2023 - present",
+                "text": ""
+              },
+              {
+                "heading": "Invited talks",
+                "meta": "2021 - 2026",
+                "text": "Keystone Symposia (2025), Gordon Research Conference on Computer-Aided Drug Design (2023), and fourteen departmental seminars."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@ from datetime import date as date_cls
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from .. import models, schemas
+from .. import job_enrich, models, schemas
 from ..ai.engine import extract_job_posting
 from ..ats_scorer import score_resume_against_job
 from ..auth import get_current_user
@@ -100,6 +100,21 @@ def capture_job(payload: schemas.ExtensionCaptureRequest, db: Session = Depends(
         if not resume:
             notes.append("Selected resume wasn't found — skipped tailoring and cover letter.")
 
+    # The page gives us a role, a company and the description; location,
+    # salary, skills and tags are usually only stated inside that description.
+    # Reading them out here is what makes a one-click capture arrive on the
+    # board as a filled-in row rather than two fields and a wall of text.
+    fields = {
+        "location": payload.location,
+        "salary_range": payload.salary_range,
+        "skills_required": None,
+        "tags": None,
+    }
+    derived = job_enrich.apply_to(fields, payload.job_description or "", payload.role_title or "")
+    if derived:
+        notes.append("Filled in " + ", ".join(f.replace("_", " ") for f in derived)
+                     + " from the job description.")
+
     job = models.JobApplication(
         user_id=current_user.id,
         company_name=payload.company_name,
@@ -107,8 +122,10 @@ def capture_job(payload: schemas.ExtensionCaptureRequest, db: Session = Depends(
         job_link=payload.job_link,
         date_applied=payload.date_applied or date_cls.today(),
         status=payload.status,
-        location=payload.location,
-        salary_range=payload.salary_range,
+        location=fields["location"],
+        salary_range=fields["salary_range"],
+        skills_required=fields["skills_required"],
+        tags=fields["tags"],
         source=payload.source or "Chrome Extension",
         job_description=payload.job_description,
         resume_id=resume.id if resume else None,

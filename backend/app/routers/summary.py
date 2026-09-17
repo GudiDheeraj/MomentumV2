@@ -136,6 +136,7 @@ def summary_week(start_date: date, db: Session = Depends(get_db), current_user: 
     start = _week_start(start_date)
     days = [start + timedelta(days=i) for i in range(7)]
     habits = _active_habits(db, current_user.id)
+    today = date.today()
 
     day_series = []
     totals = {s: [0, 0] for s in SCOPES}
@@ -145,8 +146,10 @@ def summary_week(start_date: date, db: Session = Depends(get_db), current_user: 
             totals[s][0] += counts[s][0]
             totals[s][1] += counts[s][1]
         c, t = counts["all"]
+        # is_future matches the day and month series, so a client can tell a day
+        # you missed from a day that hasn't arrived. The counts are unchanged.
         day_series.append({"label": DAY_LABELS[i], "date": str(d), "completed": c, "total": t,
-                            "percent": _pct(c, t), **_scoped_fields(counts)})
+                            "percent": _pct(c, t), "is_future": d > today, **_scoped_fields(counts)})
     total_completed, total_all = totals["all"]
 
     # One query for the whole grid rather than one per habit — see the same
@@ -229,6 +232,18 @@ def _month_core(db: Session, user_id: int, year: int, month: int, habits, today:
     weekday_buckets = {s: defaultdict(lambda: [0, 0]) for s in SCOPES}  # 0=Mon..6=Sun
     streak_input = {s: [] for s in SCOPES}
 
+    # Seed a bucket for every week the month touches, including weeks still to
+    # come. The loop below skips future days entirely, so without this the
+    # series only contained the weeks that had already started — on the 7th of
+    # a month that meant a "Month" chart with two bars on it, which reads as
+    # "August had two weeks" rather than "August is one week old". Day-level and
+    # month-level series already report future periods with is_future set; this
+    # brings weeks into line with them.
+    for d in days_all:
+        ws = _week_start(d)
+        for s in SCOPES:
+            week_buckets[s][ws]  # touch: defaultdict creates the empty bucket
+
     for d in days_all:
         if d > today:
             day_series.append({
@@ -273,9 +288,15 @@ def summary_month(year: int, month: int, db: Session = Depends(get_db), current_
     def scope_key(scope, name):
         return name if scope == "all" else f"{scope}_{name}"
 
+    this_week = _week_start(today)
+
     def build_scope(scope):
+        # is_future lets the client draw a week that hasn't happened differently
+        # from one that happened and scored zero — the two look identical
+        # otherwise, and only one of them is bad news.
         weeks = [
-            {"week_start": str(ws), "completed": c, "total": t, "percent": _pct(c, t)}
+            {"week_start": str(ws), "completed": c, "total": t, "percent": _pct(c, t),
+             "is_future": ws > this_week}
             for ws, (c, t) in sorted(week_buckets[scope].items())
         ]
         weekdays = [
@@ -488,3 +509,37 @@ def summary_year(year: int, db: Session = Depends(get_db), current_user: models.
         "per_habit": per_habit, "best_habit": best_habit, "needs_focus_habit": needs_focus_habit,
         "scopes": scopes,
     }
+
+
+@router.get("/year/{year}/days")
+def summary_year_days(year: int, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
+    """Every day of the year, flat, for the year-at-a-glance consistency grid.
+
+    /year/{year} returns month aggregates, which is the right shape for the
+    month bars but says nothing about individual days. Rather than widen that
+    response — it is fetched on every dashboard load and most callers don't
+    want 365 extra objects — this is a separate endpoint the client asks for
+    only when the Year tab is opened.
+
+    The work is the same as /year/{year} already does (one _month_core per
+    elapsed month); only the projection differs. Months that haven't started
+    are filled in without touching the database, so asking for the current year
+    in January costs one month of queries rather than twelve.
+    """
+    today = date.today()
+    habits = _active_habits(db, current_user.id)
+
+    days = []
+    for m in range(1, 13):
+        if date(year, m, 1) > today:
+            for day_num in range(1, calendar.monthrange(year, m)[1] + 1):
+                days.append({"date": str(date(year, m, day_num)), "completed": 0,
+                             "total": 0, "percent": None, "is_future": True})
+            continue
+        day_series, *_ = _month_core(db, current_user.id, year, m, habits, today)
+        days.extend({
+            "date": d["date"], "completed": d["completed"], "total": d["total"],
+            "percent": d["percent"], "is_future": d["is_future"],
+        } for d in day_series)
+
+    return {"year": year, "days": days}

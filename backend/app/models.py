@@ -48,6 +48,7 @@ class User(Base):
     resumes = relationship("Resume", back_populates="owner", cascade="all, delete-orphan")
     jobs = relationship("JobApplication", back_populates="owner", cascade="all, delete-orphan")
     job_boards = relationship("JobBoard", back_populates="owner", cascade="all, delete-orphan")
+    portfolios = relationship("Portfolio", back_populates="owner", cascade="all, delete-orphan")
     study_blocks = relationship("StudyBlock", back_populates="owner", cascade="all, delete-orphan")
     telegram_link = relationship("TelegramLink", back_populates="owner", uselist=False,
                                  cascade="all, delete-orphan")
@@ -149,6 +150,62 @@ class Resume(Base):
         structured form data and can therefore be reopened and edited. An
         uploaded PDF is just a file, so it can't be."""
         return bool(self.builder_data and self.builder_data.strip())
+
+
+class Portfolio(Base):
+    """A portfolio website built in the Portfolio tab.
+
+    Only the *content* lives here — the rendered site is produced from
+    `data` + `template_id` by the front end, which is what makes the
+    exported file a single self-contained page with no build step and
+    nothing to host but itself. Switching template therefore never
+    touches the content, and re-opening an old portfolio picks up any
+    later improvement to the template it uses.
+    """
+    __tablename__ = "portfolios"
+    __table_args__ = (Index("ix_portfolios_user_created", "user_id", "created_at"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    name = Column(String(200), nullable=False)
+    template_id = Column(String(50), nullable=False, default="aurora")
+    data = Column(Text, nullable=True)          # JSON snapshot of the builder form
+    # The resume this site offers for download, if any. Nullable and
+    # deliberately not a hard FK constraint: deleting a resume should not
+    # take the portfolio with it — the site just stops offering the file.
+    resume_id = Column(Integer, nullable=True)
+    # Set once the customer has downloaded the site at least once. Purely
+    # informational — it drives the "Not downloaded yet" chip on the card.
+    last_exported_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    owner = relationship("User", back_populates="portfolios")
+
+
+class PortfolioTemplate(Base):
+    """A design somebody assembled themselves in the portfolio designer.
+
+    It holds a *design*, never content: a theme plus an ordered list of
+    blocks. That separation is the whole reason a design can be reused —
+    point three portfolios at the same template and each still draws its
+    own name, projects and photo. Deleting a design therefore never costs
+    anybody a word of their writing; the portfolios that used it simply
+    fall back to the default template.
+
+    Stored as JSON text for the same reason `Portfolio.data` is: block
+    types and their options are still moving, and every new option would
+    otherwise be a column and a migration.
+    """
+    __tablename__ = "portfolio_templates"
+    __table_args__ = (Index("ix_portfolio_templates_user_created", "user_id", "created_at"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    name = Column(String(120), nullable=False)
+    design = Column(Text, nullable=True)        # JSON: { theme, blocks }
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class StudyBlock(Base):
@@ -470,6 +527,75 @@ class JobSearch(Base):
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
+class JobPosting(Base):
+    """Every posting currently visible on a board, cached locally.
+
+    Why a cache at all. Searching used to fetch every board live on each run,
+    which is fine at sixty boards and impossible at two thousand: it would put
+    two thousand outbound requests behind a button press and take minutes to
+    answer. So the network work moves to a scheduled sweep that writes here,
+    and a search becomes a query against this table, which is instant.
+
+    The table is shared, not per user. Two people searching the same company
+    read the same rows, and the sweep runs once for everybody.
+
+    closed_at is what makes a withdrawn posting visible as withdrawn. A sweep
+    that no longer sees a posting on its board stamps it closed rather than
+    deleting it on the spot, so a hit already shown to somebody can be
+    reconciled before the row goes.
+    """
+    __tablename__ = "job_postings"
+    __table_args__ = (
+        UniqueConstraint("board_id", "fingerprint", name="uq_job_posting"),
+        Index("ix_job_postings_open", "closed_at", "posted_at"),
+        Index("ix_job_postings_seen", "last_seen_at"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    board_id = Column(Integer, ForeignKey("company_boards.id"), nullable=False, index=True)
+    # Same identity rule as JobHit.fingerprint, so a hit and its posting can be
+    # matched up without a join through the board.
+    fingerprint = Column(String(120), nullable=False)
+    company = Column(String(200), nullable=False, index=True)
+    provider = Column(String(30), nullable=True)
+    title = Column(String(300), nullable=False)
+    url = Column(String(600), nullable=True)
+    location = Column(String(200), nullable=True)
+    department = Column(String(160), nullable=True)
+    employment_type = Column(String(60), nullable=True)
+    remote = Column(Boolean, nullable=True)
+    posted_at = Column(DateTime, nullable=True, index=True)
+    description = Column(Text, nullable=True)
+    # Lowercased title plus department, written once at sweep time so the role
+    # filter is an indexable LIKE instead of a full scan in Python.
+    search_text = Column(String(500), nullable=True, index=True)
+    first_seen_at = Column(DateTime, default=datetime.utcnow, index=True)
+    last_seen_at = Column(DateTime, default=datetime.utcnow, index=True)
+    # Set by the sweep that first failed to find this posting on its board.
+    closed_at = Column(DateTime, nullable=True, index=True)
+
+
+class BoardSweep(Base):
+    """One row per sweep run. Exists so the app can say when it last looked,
+    and so a restart cannot trigger a second full sweep on the same day."""
+    __tablename__ = "board_sweeps"
+
+    id = Column(Integer, primary_key=True, index=True)
+    started_at = Column(DateTime, default=datetime.utcnow, index=True)
+    finished_at = Column(DateTime, nullable=True)
+    # The UTC calendar date this sweep counts as. Date based rather than "hours
+    # since", so the run lands once per day whatever time the backend was up.
+    run_date = Column(Date, nullable=True, index=True)
+    kind = Column(String(20), default="daily")     # daily | manual | rolling
+    boards_total = Column(Integer, default=0)
+    boards_ok = Column(Integer, default=0)
+    boards_failed = Column(Integer, default=0)
+    postings_new = Column(Integer, default=0)
+    postings_closed = Column(Integer, default=0)
+    postings_purged = Column(Integer, default=0)
+    note = Column(String(300), nullable=True)
+
+
 class JobHit(Base):
     """A posting that matched, kept so "new since you last looked" is possible.
 
@@ -525,3 +651,150 @@ class ReferralContact(Base):
     contact = Column(String(300), nullable=True)     # email, LinkedIn, phone
     notes = Column(Text, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ApplicationProfile(Base):
+    """The answers every job application asks for, stored once.
+
+    Scope is deliberate: identity, contact, work eligibility, availability and
+    money — the fields that actually gate an application and that a recruiter
+    filters on.
+
+    Demographic questions (gender, ethnicity, disability, veteran status) are
+    NOT here. On a real application those are voluntary EEO self-identification,
+    legally separated from the hiring decision, and under UK GDPR they are
+    special-category data needing a lawful basis this app has no reason to
+    claim. They are also the one part of a form nobody should have autofilled
+    on their behalf. Answer them yourself, on the form, or leave them blank —
+    which is always allowed.
+    """
+    __tablename__ = "application_profiles"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True, index=True)
+
+    # Identity and contact
+    full_name = Column(String(200), nullable=True)
+    email = Column(String(255), nullable=True)
+    phone = Column(String(60), nullable=True)
+    city = Column(String(120), nullable=True)
+    country = Column(String(120), nullable=True)
+    linkedin = Column(String(300), nullable=True)
+    github = Column(String(300), nullable=True)
+    website = Column(String(300), nullable=True)
+
+    # Work eligibility — the questions that decide whether an application is
+    # even considered, and the ones most tedious to retype.
+    work_auth_country = Column(String(120), nullable=True)   # "United Kingdom"
+    right_to_work = Column(Boolean, nullable=True)           # authorised without sponsorship
+    visa_status = Column(String(200), nullable=True)         # "Skilled Worker", "Citizen", "Graduate"
+    needs_sponsorship = Column(Boolean, nullable=True)
+    sponsorship_notes = Column(Text, nullable=True)
+
+    # Availability and money
+    notice_period = Column(String(120), nullable=True)       # "1 month"
+    earliest_start = Column(Date, nullable=True)
+    salary_expectation = Column(String(120), nullable=True)
+    salary_currency = Column(String(10), nullable=True)
+    willing_to_relocate = Column(Boolean, nullable=True)
+    remote_preference = Column(String(60), nullable=True)    # remote | hybrid | onsite | any
+    preferred_locations = Column(String(300), nullable=True)
+
+    # Experience summary, for the "years of experience" style questions
+    current_title = Column(String(200), nullable=True)
+    current_company = Column(String(200), nullable=True)
+    years_experience = Column(Integer, nullable=True)
+
+    # What to attach and say by default
+    default_resume_id = Column(Integer, ForeignKey("resumes.id"), nullable=True)
+    how_did_you_hear = Column(String(200), nullable=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class LLMSettings(Base):
+    """One person's AI provider, key and writing preferences.
+
+    The key is stored encrypted (see app/ai/keystore.py) rather than in the
+    clear. It is not a secret the app needs to read back to a human — only to
+    send to a provider — so there is no reason for a database backup, a stray
+    SELECT or a shared screen to expose it. The API never returns it either;
+    reads get a masked hint.
+    """
+    __tablename__ = "llm_settings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, unique=True, index=True)
+    provider = Column(String(30), default="openai")     # openai | anthropic | gemini | ollama
+    api_key_enc = Column(Text, nullable=True)
+    key_hint = Column(String(30), nullable=True)         # "sk-…3f9a", for recognising which key
+    model = Column(String(120), nullable=True)
+    base_url = Column(String(300), nullable=True)        # OpenAI-compatible endpoints, local Ollama
+
+    # "Generate it the way I want" — folded into the system prompt on every
+    # call, so it applies to résumés, cover letters and the assistant alike
+    # rather than being retyped per feature.
+    tone = Column(String(60), nullable=True)             # professional | warm | direct | …
+    length = Column(String(20), nullable=True)           # short | medium | long
+    instructions = Column(Text, nullable=True)           # free text, wins over the presets
+    temperature = Column(String(10), nullable=True)      # stored as text; parsed on use
+
+    last_ok_at = Column(DateTime, nullable=True)
+    last_error = Column(String(300), nullable=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class TailorPrompt(Base):
+    """A tailoring instruction the person wrote once and wants to reuse.
+
+    "Keep every bullet, lead with Azure and dbt, UK spelling" is not a thought
+    anyone wants to have twice, and it is the same thought for every advert in
+    a given job hunt. Saved per person, named by them, and applied by pressing
+    the name — the box above the strengths is the only place it appears, so
+    there is nothing to learn beyond "type it, save it, pick it".
+
+    The body is stored verbatim. It is parsed at use time rather than at save
+    time so that improvements to the parser reach prompts already saved.
+    """
+    __tablename__ = "tailor_prompts"
+    __table_args__ = (UniqueConstraint("user_id", "name", name="uq_tailor_prompt_name"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    name = Column(String(80), nullable=False)
+    body = Column(Text, nullable=False)
+    # Sorting by use puts the one they actually reach for first, without
+    # asking anybody to maintain an ordering by hand.
+    use_count = Column(Integer, default=0)
+    last_used_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+# ---------------------------------------------------------------------------
+# UK register of licensed worker sponsors
+# ---------------------------------------------------------------------------
+# Account-wide reference data rather than per-user rows: the register is public
+# and identical for everyone, so one copy serves the whole install.
+class SponsorOrg(Base):
+    __tablename__ = "sponsor_orgs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(400), nullable=False)
+    # The comparison key (see sponsors.normalise): lowercased, punctuation and
+    # legal suffixes removed. Indexed because every lookup starts here — an
+    # exact hit on this column is the fast path, and the LIKE prefix scan that
+    # follows uses the same index.
+    norm_name = Column(String(400), nullable=False, index=True)
+    city = Column(String(200), nullable=True)
+    county = Column(String(200), nullable=True)
+    routes = Column(String(400), nullable=True)   # "Skilled Worker, Global Business Mobility"
+
+
+class SponsorRegisterMeta(Base):
+    """One row. When the register was last downloaded, and what from."""
+    __tablename__ = "sponsor_register_meta"
+
+    id = Column(Integer, primary_key=True, index=True)
+    synced_at = Column(DateTime, nullable=True)
+    source_url = Column(String(600), nullable=True)
+    org_count = Column(Integer, default=0)

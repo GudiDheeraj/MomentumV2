@@ -26,15 +26,20 @@ function scoreElementForContent(el) {
   return t.length * (1 - linkDensity);
 }
 
-function extractMainContentText() {
-  const candidates = document.querySelectorAll("article, main, [role='main'], section, div");
+function extractMainContentText(root) {
+  // Scored inside the posting's own pane when there is one. Without this the
+  // backend's AI pass was handed the entire search page — filter bar, results
+  // list and all — and asked to find the posting in it, which is a harder
+  // question than it needs to be and one it sometimes got wrong.
+  const scope = root || document;
+  const candidates = scope.querySelectorAll("article, main, [role='main'], section, div");
   let best = null;
   let bestScore = 0;
   for (const el of candidates) {
     const score = scoreElementForContent(el);
     if (score > bestScore) { bestScore = score; best = el; }
   }
-  const text = (best || document.body).innerText || "";
+  const text = (best || (root || document.body)).innerText || "";
   return text.replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim().slice(0, 8000);
 }
 
@@ -42,11 +47,31 @@ function text(el) {
   return el ? el.textContent.replace(/\s+/g, " ").trim() : "";
 }
 
-function firstMatch(selectors, accept) {
+// The description is the one field where layout carries meaning. textContent
+// welds every element together — a bullet list comes back as
+// "Build modelsShip themMeasure impact", and a filter bar as
+// "Date postedEasy ApplyUnder 10 applicants" — so paragraphs, bullets and
+// headings are lost before the ATS scorer or the keyword matcher ever see the
+// text. innerText respects rendered line breaks, which is exactly what a job
+// description needs.
+function blockText(el) {
+  if (!el) return "";
+  const raw = el.innerText || el.textContent || "";
+  return raw
+    .replace(/\r/g, "")
+    .replace(/[ \t\u00a0]+/g, " ")
+    .split("\n").map(l => l.trim()).join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function firstMatch(selectors, accept, root, reader) {
+  const scope = root || document;
+  const read = reader || text;
   for (const sel of selectors) {
     try {
-      const el = document.querySelector(sel);
-      const t = el ? text(el) : "";
+      const el = scope.querySelector(sel);
+      const t = el ? read(el) : "";
       // A validator lets a selector that matched the wrong element fall
       // through to the next candidate instead of winning by being first.
       if (t && (!accept || accept(t))) return t;
@@ -284,6 +309,221 @@ function portalName(host) {
   return "";
 }
 
+// Which part of a packed metadata line is the place. Applicant counts, "2
+// weeks ago", "Easy Apply" and the company name all live in the same string.
+function pickLocation(line) {
+  const raw = (line || "").replace(/\s+/g, " ").trim();
+  if (!raw) return "";
+  const parts = raw.split(/\s*[·•|]\s*/).map(x => x.trim()).filter(Boolean);
+  const NOT_A_PLACE = [
+    /\bago\b/i, /\bapplicants?\b/i, /\beasy apply\b/i, /\bpromoted\b/i,
+    /\bviewed\b/i, /\breposted\b/i, /^\d+$/, /\bfull[- ]time\b/i, /\bpart[- ]time\b/i,
+    /\bcontract\b/i, /\binternship\b/i, /\d+\s*(applicants|people)/i,
+  ];
+  const candidates = parts.filter(p => !NOT_A_PLACE.some(re => re.test(p)));
+  // A place usually carries a comma ("London, England, United Kingdom") or is
+  // one of the work-mode words a board uses in place of a city.
+  const withComma = candidates.find(p => p.includes(",") && p.length <= 90);
+  if (withComma) return withComma;
+  const workMode = candidates.find(p => /^(remote|hybrid|on-?site)$/i.test(p));
+  const named = candidates.find(p => p.length >= 3 && p.length <= 60 && /[a-z]/i.test(p));
+  // The first segment is normally the company on LinkedIn's top card, so it is
+  // only accepted when nothing better is on the line.
+  return withComma || (named && named !== parts[0] ? named : "") || workMode || "";
+}
+
+// The URL of the posting, not of the page it happened to be read from. On a
+// two-pane search page location.href is ".../jobs/search-results/?keywords=…",
+// which is a search, not a job: reopening it later lands on a different set of
+// results, and nothing downstream can tell two captures apart.
+function canonicalJobUrl() {
+  const here = location.href;
+  const host = location.hostname;
+  try {
+    const params = new URLSearchParams(location.search);
+    if (/linkedin\./i.test(host)) {
+      const id = params.get("currentJobId")
+        || document.querySelector(".jobs-search-results-list__list-item--active [data-job-id],"
+            + " .job-card-container--active[data-job-id], li.jobs-search-results-list__list-item--active")?.dataset?.jobId
+        || (document.querySelector("a[href*='/jobs/view/']")?.getAttribute("href") || "")
+            .match(/\/jobs\/view\/(\d+)/)?.[1];
+      if (id && !/\/jobs\/view\//.test(location.pathname)) {
+        return `https://www.linkedin.com/jobs/view/${id}/`;
+      }
+    }
+    if (/indeed\./i.test(host)) {
+      const jk = params.get("vjk") || params.get("jk");
+      if (jk && !/\/viewjob/i.test(location.pathname)) {
+        return `${location.origin}/viewjob?jk=${jk}`;
+      }
+    }
+  } catch { /* malformed URL — fall through to the page's own address */ }
+  // A canonical link is the site telling us the posting's real address; only
+  // trusted when it still looks like a posting rather than the site's root.
+  const canonical = document.querySelector("link[rel='canonical']")?.href || "";
+  if (canonical && /job|vacanc|career|position/i.test(canonical)) return canonical;
+  return here;
+}
+
+// ---------------------------------------------------------------------------
+// Telling the posting apart from the page around it
+// ---------------------------------------------------------------------------
+// A job board's search page is mostly not the job: filter chips, a results
+// list, "people you can reach out to", promoted-jobs explainers. The old
+// selector chain ended in `article, main`, which on a LinkedIn search page is
+// the entire screen — so the description saved for a Deliveroo ML role opened
+// with "Date posted Easy Apply Under 10 applicants In my network Jobs based on
+// your preferences … 99+ results · How promoted jobs are ranked", and every
+// keyword, ATS score and tailored résumé downstream was computed from that.
+//
+// Two defences, because either alone fails: a validator that recognises page
+// furniture and refuses it, and a search that is scoped to the pane holding
+// the posting rather than to the document.
+
+const PAGE_CHROME = [
+  /how promoted jobs are ranked/i,
+  /jobs based on your preferences/i,
+  /people you can reach out to/i,
+  /\bdate posted\b/i,
+  /\beasy apply\b/i,
+  /\bunder \d+ applicants?\b/i,
+  /\bin my network\b/i,
+  /\b\d+\+? results\b/i,
+  /set alert|create (a )?job alert/i,
+  /sort by:?\s*(most relevant|recent)/i,
+  /experience level|job type|remote\b.*\bon-?site/i,
+  /skip to (main )?content/i,
+  /save this (job|search)/i,
+  /^\s*(filters?|all filters)\b/i,
+  /show more jobs|see more jobs/i,
+];
+
+// A description has to survive two questions: does it read like page
+// furniture, and is there enough of it to be a description at all.
+function looksLikeDescription(t) {
+  const body = (t || "").trim();
+  if (body.length < 120) return false;
+  const head = body.slice(0, 400);
+  let hits = 0;
+  for (const re of PAGE_CHROME) {
+    if (re.test(head)) hits += 2;          // chrome at the very top is decisive
+    else if (re.test(body)) hits += 1;
+    if (hits >= 2) return false;
+  }
+  // A results list is mostly short lines; a description is mostly prose. This
+  // catches list markup no phrase list anticipated.
+  const lines = body.split("\n").filter(l => l.trim());
+  if (lines.length >= 12) {
+    const shortLines = lines.filter(l => l.trim().length < 32).length;
+    if (shortLines / lines.length > 0.75) return false;
+  }
+  return true;
+}
+
+// The pane that holds the posting you are actually looking at. Found by
+// climbing from the job title — whose class LinkedIn has kept stable across
+// several redesigns — to the nearest ancestor that also contains a description
+// block. Anchoring on structure rather than on the description's own class
+// means a renamed description container still resolves, and, more importantly,
+// the search can never wander into the results list beside it.
+function detailPaneRoot() {
+  const ANCHORS = [
+    ".job-details-jobs-unified-top-card__job-title",
+    ".jobs-unified-top-card__job-title",
+    ".job-details-jobs-unified-top-card__company-name",
+    "[data-testid='jobsearch-RightPane']",
+    ".jobsearch-RightPane",
+    "[data-testid='jobsearch-JobComponent']",
+  ];
+  const DESC_IN_PANE = "#job-details, .jobs-description__content, .jobs-description-content__text,"
+    + " [class*='jobs-description'], .jobsearch-jobDescriptionText, [data-testid='jobDescriptionText'],"
+    + " [class*='job-description'], [class*='JobDescription']";
+  // The results list. Climbing past it means we have left the pane and are
+  // looking at the whole page again.
+  const RESULTS_LIST = "li.scaffold-layout__list-item, li.jobs-search-results__list-item,"
+    + " ul.jobs-search-results__list, div.job_seen_beacon, [data-testid='slider_item']";
+
+  let anchor = null;
+  for (const sel of ANCHORS) {
+    try { anchor = document.querySelector(sel); } catch { continue; }
+    if (anchor) break;
+  }
+  if (!anchor) return null;
+
+  // Preferred: the nearest ancestor that holds both the title and a known
+  // description block. Precise, and cheap when the board's markup is familiar.
+  if (anchor.querySelector && anchor.querySelector(DESC_IN_PANE)) return anchor;
+  for (let i = 0, p = anchor.parentElement; i < 10 && p; i++, p = p.parentElement) {
+    if (p.querySelector(DESC_IN_PANE)) return p;
+  }
+
+  // Fallback: no description block we recognise — which is exactly the case
+  // that used to send the entire search page into the field. Climb from the
+  // title as far as possible WITHOUT swallowing the results list. Whatever
+  // that is, it is the pane holding this posting and nothing else, whether or
+  // not we know what its children are called.
+  let widest = null;
+  for (let p = anchor; p && p !== document.body; p = p.parentElement) {
+    if (p.querySelector(RESULTS_LIST)) break;
+    widest = p;
+  }
+  return widest;
+}
+
+// Is this a results list rather than one posting's own page? On a listing page
+// the whole-document fallbacks (`article`, `main`) are guaranteed to be wrong,
+// so they are simply not offered.
+function isListingPage() {
+  if (/\/jobs\/(search|search-results|collections)/i.test(location.pathname)) return true;
+  if (/[?&](keywords|q)=/i.test(location.search) && !/\/jobs\/view\//i.test(location.pathname)) return true;
+  return document.querySelectorAll(
+    "li.scaffold-layout__list-item, li.jobs-search-results__list-item, div.job_seen_beacon"
+  ).length > 3;
+}
+
+// When the description is read from the pane rather than from a known
+// container, it opens with the top card: the role, the employer, the
+// "· 2 weeks ago · Over 100 applicants" line. All three are already captured
+// as their own fields, and repeating them at the top of the description skews
+// every keyword count that follows.
+function dropRepeatedHeader(body, known) {
+  const lines = (body || "").split("\n");
+  const same = (line, value) => {
+    const a = line.trim().toLowerCase();
+    const b = (value || "").trim().toLowerCase();
+    return !!b && (a === b || (a.length < 90 && a.includes(b) && a.length - b.length < 40));
+  };
+  let start = 0;
+  while (start < lines.length && start < 8) {
+    const line = lines[start].trim();
+    if (!line) { start++; continue; }
+    const isHeader = same(line, known.role) || same(line, known.company) || same(line, known.location)
+      || /·/.test(line) && /(ago|applicants?|promoted|viewed)/i.test(line);
+    if (!isHeader) break;
+    start++;
+  }
+  return lines.slice(start).join("\n").trim();
+}
+
+// Whatever the source, a description can still arrive with a band of interface
+// copy welded to the front. Drop leading lines that are page furniture until a
+// line looks like the posting itself.
+function stripLeadingChrome(body) {
+  const lines = (body || "").split("\n");
+  let start = 0;
+  while (start < lines.length && start < 12) {
+    const line = lines[start].trim();
+    if (!line) { start++; continue; }
+    const isChrome = PAGE_CHROME.some(re => re.test(line))
+      || /^(about the job|job description|full job description|the role|overview)\s*:?$/i.test(line);
+    // A heading like "About the job" is furniture too, but a useful marker:
+    // everything above it belongs to the page, not the posting.
+    if (isChrome) { start++; continue; }
+    break;
+  }
+  return lines.slice(start).join("\n").trim();
+}
+
 function scrapeJobPostingOnce() {
   const host = location.hostname.replace(/^www\./, "");
   const isLinkedIn = host.includes("linkedin");
@@ -291,8 +531,12 @@ function scrapeJobPostingOnce() {
   // Structured data first — it is the only source that is stated rather than
   // inferred, so anything it gives us outranks a CSS guess.
   const ld = extractJobPostingJsonLd() || microdataJobPosting() || {};
+  // The pane holding the posting that is actually open. Every CSS guess below
+  // is tried inside it first, so on a two-pane search page the results list
+  // beside the posting can never answer for it.
+  const pane = detailPaneRoot();
 
-  const roleTitle = ld.role || firstMatch([
+  const ROLE_SELECTORS = [
     // LinkedIn — current (2024+) unified top card, several known variants
     ".job-details-jobs-unified-top-card__job-title h1",
     ".job-details-jobs-unified-top-card__job-title",
@@ -316,9 +560,13 @@ function scrapeJobPostingOnce() {
     "h1[class*='job-title']",
     "h1[class*='JobTitle']",
     "h1",
-  ], looksLikeRole) || titleGuess?.role || metaContent(["og:title"]) || cleanDocumentTitle(document.title, host);
+  ];
+  const roleTitle = ld.role
+    || firstMatch(ROLE_SELECTORS, looksLikeRole, pane, text)
+    || firstMatch(ROLE_SELECTORS, looksLikeRole, document, text)
+    || titleGuess?.role || metaContent(["og:title"]) || cleanDocumentTitle(document.title, host);
 
-  let companyName = ld.company || firstMatch([
+  const COMPANY_SELECTORS = [
     // LinkedIn — current
     ".job-details-jobs-unified-top-card__company-name a",
     ".job-details-jobs-unified-top-card__company-name",
@@ -334,7 +582,10 @@ function scrapeJobPostingOnce() {
     // generic
     "[class*='company-name']",
     "[class*='CompanyName']",
-  ]);
+  ];
+  let companyName = ld.company
+    || firstMatch(COMPANY_SELECTORS, null, pane, text)
+    || firstMatch(COMPANY_SELECTORS, null, document, text);
   // og:site_name is almost always the job board's own name ("LinkedIn",
   // "Indeed"), not the employer — never treat it as the company. If nothing
   // above matched, prefer LinkedIn's title-parsed company over any fallback.
@@ -346,28 +597,62 @@ function scrapeJobPostingOnce() {
   }
   if (!companyName) companyName = "";
 
-  const location_ = ld.location || firstMatch([
+  const LOC_SELECTORS = [
     ".job-details-jobs-unified-top-card__primary-description-container",
+    ".jobs-unified-top-card__primary-description",
     ".jobs-unified-top-card__bullet",
     ".topcard__flavor--bullet",
     "[data-testid='jobsearch-JobInfoHeader-companyLocation']",
+    "[data-testid='inlineHeader-companyLocation']",
     "[class*='job-location']",
     "[class*='JobLocation']",
-    "[data-testid='inlineHeader-companyLocation']",
-  ]) || titleGuess?.location || "";
+  ];
+  // LinkedIn's top card is one line holding several facts:
+  //   "Deliveroo · London, England, United Kingdom · 2 weeks ago · Over 100 applicants"
+  // Saving that whole string as the Location made the field useless for
+  // filtering and for anything downstream that groups by place, so the parts
+  // are separated and the one that is actually a place is kept.
+  const location_ = ld.location
+    || pickLocation(firstMatch(LOC_SELECTORS, null, pane, text))
+    || pickLocation(firstMatch(LOC_SELECTORS, null, document, text))
+    || titleGuess?.location || "";
 
-  const description = ld.description || firstMatch([
+  // Description selectors, most specific first. Tried inside the posting's own
+  // pane before being tried against the document, so a results list next to the
+  // posting can never win.
+  const DESC_SELECTORS = [
     "#job-details",
     ".jobs-description__content .jobs-box__html-content",
+    ".jobs-box__html-content",
+    ".jobs-description-content__text--stretch",
     ".jobs-description-content__text",
+    ".jobs-description__container",
     ".jobs-description__content",
+    "[class*='jobs-description']",
     ".jobsearch-jobDescriptionText",
     "[data-testid='jobDescriptionText']",
     "[class*='job-description']",
     "[class*='JobDescription']",
-    "article",
-    "main",
-  ]) || metaContent(["og:description"]);
+    "[data-automation='jobAdDetails']",
+    "[itemprop='description']",
+  ];
+
+  const description =
+    ld.description
+    // Scoped to the open posting. This is the path that matters on a job
+    // board's two-pane search page, which is where most captures happen.
+    || (pane ? firstMatch(DESC_SELECTORS, looksLikeDescription, pane, blockText) : "")
+    || firstMatch(DESC_SELECTORS, looksLikeDescription, document, blockText)
+    // No known container matched, but we do know which pane the posting lives
+    // in — so read the pane itself. This is what keeps a capture working the
+    // day a board renames its description class, which is the failure that
+    // sent the whole search page into the field in the first place.
+    || (pane && looksLikeDescription(blockText(pane)) ? blockText(pane) : "")
+    // Whole-page fallbacks, for a company careers page that is one posting and
+    // nothing else. Never offered on a results list, where they would return
+    // the filter bar and every card on screen.
+    || (isListingPage() ? "" : firstMatch(["article", "main"], looksLikeDescription, document, blockText))
+    || metaContent(["og:description"]);
 
   // Indeed prefixes the description with its own profile-match blurb, which is
   // interface copy, not the employer's text — and it would otherwise be fed to
@@ -377,12 +662,24 @@ function scrapeJobPostingOnce() {
     /^pulled from the full job description\.?/i,
     /^job details\.?/i,
   ];
-  let cleanedDescription = (description || "").trim();
+  // Whichever route the text arrived by — a pane read wholesale, a careers
+  // page's <main>, a container that happened to include the top card — it can
+  // open with the role, the employer and the posting's metadata line. Those
+  // are already captured as their own fields, and repeating them at the top of
+  // the description skews every keyword count drawn from it.
+  let cleanedDescription = stripLeadingChrome(
+    dropRepeatedHeader((description || "").trim(),
+      { role: roleTitle, company: companyName, location: location_ }));
   for (let i = 0; i < DESC_PREAMBLE.length + 2; i++) {
     const before = cleanedDescription;
     for (const re of DESC_PREAMBLE) cleanedDescription = cleanedDescription.replace(re, "").trim();
     if (cleanedDescription === before) break;
   }
+  // A last-ditch og:description or a stubborn pane can still be furniture; an
+  // empty description is a better outcome than a wrong one, because the popup
+  // says so and offers the field for editing, whereas wrong text is saved,
+  // scored and tailored against in silence.
+  if (cleanedDescription && !looksLikeDescription(cleanedDescription)) cleanedDescription = "";
 
   const salary = ld.salary || firstMatch([
     "[class*='salary']",
@@ -398,13 +695,13 @@ function scrapeJobPostingOnce() {
     location: location_.slice(0, 150),
     job_description: cleanedDescription.slice(0, 8000),
     salary_range: salary.slice(0, 100),
-    job_link: location.href,
+    job_link: canonicalJobUrl(),
     source,
     // Extra context for backend AI-assisted extraction — a general-purpose
     // readability-style dump, not tied to this site's specific markup, so
     // the backend can double-check/improve on the guesses above for ANY
     // job site, including ones with no matching selectors at all.
-    raw_text: extractMainContentText(),
+    raw_text: extractMainContentText(pane),
     page_title: document.title,
     page_url: location.href,
   };
@@ -472,12 +769,12 @@ function mtInjectLauncher() {
       .fab {
         position: fixed; right: 22px; bottom: 22px; width: 54px; height: 54px;
         border: none; border-radius: 17px; cursor: pointer; padding: 0;
-        background: #4F46E5; box-shadow: 0 6px 22px rgba(79,70,229,.38);
+        background: #0E9384; box-shadow: 0 6px 22px rgba(14,147,132,.38);
         display: flex; align-items: center; justify-content: center;
         transition: transform .14s ease, box-shadow .14s ease;
       }
       .fab:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(20,16,60,.44); }
-      .fab svg { width: 30px; height: 30px; display: block; }
+      .fab img { width: 30px; height: auto; display: block; }
       .panel {
         position: fixed; right: 22px; bottom: 88px;
         width: 792px; height: 612px; max-width: calc(100vw - 44px); max-height: calc(100vh - 120px);
@@ -499,12 +796,7 @@ function mtInjectLauncher() {
       .close.open { display: block; }
     </style>
     <button class="fab" title="Momentum Tracker — capture this job" aria-label="Open Momentum Tracker">
-      <svg viewBox="0 0 96 96" aria-hidden="true">
-        <path d="M24 72V32L48 56L68 26" fill="none" stroke="#fff" stroke-width="11"
-              stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M52 26H70V44" fill="none" stroke="#fff" stroke-width="11"
-              stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <img src="${chrome.runtime.getURL("icons/mark-light.png")}" alt="" aria-hidden="true">
     </button>
     <button class="close" title="Close">✕</button>
     <div class="panel"><iframe title="Momentum Tracker"></iframe></div>`;

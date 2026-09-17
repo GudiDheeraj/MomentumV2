@@ -1,6 +1,8 @@
 import os
 import uuid
+from datetime import datetime
 import json
+import logging
 import shutil
 import tempfile
 
@@ -13,10 +15,19 @@ from ..cache import TTL_PDF, get_bytes, make_key, memoize_static, set_bytes
 from ..auth import get_current_user
 from ..database import get_db
 from ..ai.engine import tailor_resume_for_job, write_resume_section, parse_resume_document
+from ..ai import jd_keywords, tailor_levels, tailor_prompt
 from ..job_templates import role_template_fields
+from ..resume_examples import examples_for, roles_with_examples
 from ..resume_pdf import TEMPLATES, build_resume_pdf, build_plain_text, resolve_template, template_name
 from ..resume_text import extract_text_from_file
 from .resumes import _safe_resume_extension, MAX_RESUME_BYTES
+
+log = logging.getLogger("momentum.resume")
+
+# Which template an uploaded résumé is rendered into once parsed. A clean,
+# single-column, ATS-safe layout is the right default for a file whose original
+# design is not recoverable — the person can switch template afterwards.
+DEFAULT_IMPORT_TEMPLATE = "compact_onepage"
 
 router = APIRouter(prefix="/api/resume-builder", tags=["resume-builder"])
 
@@ -134,6 +145,34 @@ def list_role_templates():
     necessarily signed in.
     """
     return _role_templates_payload()
+
+
+@memoize_static
+def _example_roles_payload():
+    return {"roles": sorted(roles_with_examples())}
+
+
+@router.get("/role-examples")
+def list_roles_with_examples():
+    """Which roles have worked examples written for them.
+
+    The picker asks once so it can label a role before anybody clicks it,
+    rather than fetching three CVs to find out there are none.
+    """
+    return _example_roles_payload()
+
+
+@router.get("/role-examples/{role_id}")
+def list_role_examples(role_id: str):
+    """Three worked example CVs for one role.
+
+    Fetched per role rather than shipped with the picker: 201 documents is
+    around half a megabyte, and almost nobody looks at more than one role's
+    worth. Unauthenticated, like the recommendations — the examples are
+    invented people (see app/resume_examples.py) and contain nothing about
+    anybody, least of all the person reading them.
+    """
+    return {"role": role_id, "examples": examples_for(role_id)}
 
 
 @router.post("/generate", response_model=schemas.ResumeOut)
@@ -355,6 +394,171 @@ def ai_assist(payload: schemas.ResumeAiAssistRequest,
     return result
 
 
+@router.post("/tailor-analyse")
+def tailor_analyse(payload: schemas.TailorAnalyseRequest,
+                   current_user: models.User = Depends(get_current_user)):
+    """Every term the advert leans on, whether the CV uses it, and where.
+
+    Also returns the advert's own requirement lines marked met/unmet, and a
+    short read on the fit written by whichever model is configured — a hosted
+    key if there is one, a local GGUF if not, and a rule-based sentence when
+    there is neither, so the panel says the same kind of thing either way.
+    """
+    jd = (payload.job_description or "").strip()
+    if len(jd) < 20:
+        raise HTTPException(400, "Paste a fuller job description so the keyword read is meaningful.")
+    try:
+        return jd_keywords.analyse(payload.values or {}, jd)
+    except Exception as exc:                     # noqa: BLE001
+        log.exception("tailor analyse failed")
+        raise HTTPException(500, f"Couldn't analyse that advert: {exc}")
+
+
+@router.post("/tailor-keywords")
+def tailor_keywords(payload: schemas.TailorKeywordsRequest,
+                    current_user: models.User = Depends(get_current_user)):
+    """Put the chosen keywords into the chosen sections.
+
+    The person ticks the terms — this never decides on its own that somebody
+    has a skill. Skills are added by rule; prose sections are reworded by the
+    model, and a rewrite that changes the section's structure, or that fails to
+    place a single term honestly, is discarded and reported rather than shown.
+    """
+    if not payload.keywords:
+        raise HTTPException(400, "Pick at least one keyword to add.")
+    try:
+        return jd_keywords.weave(payload.values or {}, payload.keywords,
+                                 payload.targets, payload.job_description or "")
+    except Exception as exc:                     # noqa: BLE001
+        log.exception("keyword weave failed")
+        raise HTTPException(500, f"Couldn't add those keywords: {exc}")
+
+
+@router.post("/tailor-preview")
+def tailor_preview(payload: schemas.TailorPreviewRequest,
+                   db: Session = Depends(get_db),
+                   current_user: models.User = Depends(get_current_user)):
+    """What tailoring would change, section by section, without changing it.
+
+    The Tailor pane calls this as the job description is pasted and whenever
+    the strength is switched, so the answer has to be cheap and it has to be
+    about the résumé currently on screen — which may never have been saved.
+    Applying a section is the browser's business: it writes the returned text
+    into the field and re-renders the preview, so nothing is committed until
+    the person presses Save like any other edit.
+    """
+    values = dict(payload.values or {})
+    if not values and payload.resume_id:
+        resume = db.query(models.Resume).filter(
+            models.Resume.id == payload.resume_id,
+            models.Resume.user_id == current_user.id).first()
+        if not resume:
+            raise HTTPException(404, "Resume not found")
+        if resume.builder_data:
+            values = json.loads(resume.builder_data)
+    if not values:
+        raise HTTPException(400, "Nothing to tailor yet — add some résumé content first.")
+    jd = (payload.job_description or "").strip()
+    if len(jd) < 20:
+        raise HTTPException(400, "Paste a fuller job description (a few sentences) so the match is meaningful.")
+    try:
+        return tailor_levels.propose(values, jd, payload.level,
+                                     prompt=(payload.prompt or "").strip()[:2000])
+    except Exception as exc:                    # noqa: BLE001
+        log.exception("tailor preview failed")
+        raise HTTPException(500, f"Couldn't analyse that job description: {exc}")
+
+
+# ---------------------------------------------------------------------------
+# Saved tailoring instructions
+# ---------------------------------------------------------------------------
+# Small CRUD, deliberately: the value is not in the storage, it is in not
+# having to retype "keep every bullet, lead with Azure, UK spelling" for the
+# fortieth advert this month.
+def _prompt_out(row: models.TailorPrompt) -> dict:
+    return {"id": row.id, "name": row.name, "body": row.body,
+            "use_count": row.use_count or 0,
+            "notes": tailor_prompt.parse(row.body).notes()}
+
+
+def _own_prompt(db: Session, prompt_id: int, user: models.User) -> models.TailorPrompt:
+    row = db.query(models.TailorPrompt).filter(
+        models.TailorPrompt.id == prompt_id,
+        models.TailorPrompt.user_id == user.id).first()
+    if not row:
+        raise HTTPException(404, "Saved instruction not found")
+    return row
+
+
+@router.get("/tailor-prompts")
+def list_tailor_prompts(db: Session = Depends(get_db),
+                        current_user: models.User = Depends(get_current_user)):
+    rows = (db.query(models.TailorPrompt)
+              .filter(models.TailorPrompt.user_id == current_user.id)
+              .order_by(models.TailorPrompt.use_count.desc(),
+                        models.TailorPrompt.updated_at.desc())
+              .all())
+    return [_prompt_out(r) for r in rows]
+
+
+@router.post("/tailor-prompts")
+def create_tailor_prompt(payload: schemas.TailorPromptIn, db: Session = Depends(get_db),
+                         current_user: models.User = Depends(get_current_user)):
+    name = (payload.name or "").strip()[:80]
+    body = (payload.body or "").strip()[:2000]
+    if not name:
+        raise HTTPException(400, "Give the instruction a name so you can find it again.")
+    if not body:
+        raise HTTPException(400, "There's nothing to save — write the instruction first.")
+    # Saving under a name that already exists is how people edit one: it reads
+    # as "update this", not as an error to be corrected.
+    row = db.query(models.TailorPrompt).filter(
+        models.TailorPrompt.user_id == current_user.id,
+        models.TailorPrompt.name == name).first()
+    if row:
+        row.body = body
+    else:
+        row = models.TailorPrompt(user_id=current_user.id, name=name, body=body, use_count=0)
+        db.add(row)
+    db.commit()
+    db.refresh(row)
+    return _prompt_out(row)
+
+
+@router.put("/tailor-prompts/{prompt_id}")
+def update_tailor_prompt(prompt_id: int, payload: schemas.TailorPromptIn,
+                         db: Session = Depends(get_db),
+                         current_user: models.User = Depends(get_current_user)):
+    row = _own_prompt(db, prompt_id, current_user)
+    if (payload.name or "").strip():
+        row.name = payload.name.strip()[:80]
+    if (payload.body or "").strip():
+        row.body = payload.body.strip()[:2000]
+    db.commit()
+    db.refresh(row)
+    return _prompt_out(row)
+
+
+@router.post("/tailor-prompts/{prompt_id}/used")
+def mark_tailor_prompt_used(prompt_id: int, db: Session = Depends(get_db),
+                            current_user: models.User = Depends(get_current_user)):
+    """Bumps the counter that decides the order. Fire-and-forget from the UI."""
+    row = _own_prompt(db, prompt_id, current_user)
+    row.use_count = (row.use_count or 0) + 1
+    row.last_used_at = datetime.utcnow()
+    db.commit()
+    return {"ok": True, "use_count": row.use_count}
+
+
+@router.delete("/tailor-prompts/{prompt_id}")
+def delete_tailor_prompt(prompt_id: int, db: Session = Depends(get_db),
+                         current_user: models.User = Depends(get_current_user)):
+    row = _own_prompt(db, prompt_id, current_user)
+    db.delete(row)
+    db.commit()
+    return {"ok": True}
+
+
 @router.post("/tailor-for-job", response_model=schemas.ResumeOut)
 def tailor_for_job(payload: schemas.TailorResumeRequest, db: Session = Depends(get_db),
                     current_user: models.User = Depends(get_current_user)):
@@ -369,13 +573,46 @@ def tailor_for_job(payload: schemas.TailorResumeRequest, db: Session = Depends(g
     ).first()
     if not resume:
         raise HTTPException(404, "Resume not found")
-    if not resume.builder_data or not resume.template_id:
-        raise HTTPException(
-            400,
-            "This feature works on resumes created with the Resume Builder, which have structured data "
-            "to regenerate from. This resume was uploaded as a file, so it can't be automatically "
-            "reformatted yet — try building one with the Resume Builder first, then tailor that.",
-        )
+    if not resume.builder_data:
+        # An uploaded résumé has no structured fields, which is why this used
+        # to refuse outright and tell people to retype their CV into the
+        # builder. The text is already extracted for ATS scoring, so read it
+        # back into builder fields instead and carry on — the rest of this
+        # function then behaves identically for uploaded and built résumés.
+        from ..ai.resume_parse import parse_resume_text
+
+        if not (resume.extracted_text or "").strip():
+            raise HTTPException(
+                400,
+                "There's no readable text in this résumé, so it can't be tailored. "
+                "If it's a scanned PDF, the file has no text layer — re-export it "
+                "from the original document, or rebuild it in the Resume Builder.")
+        try:
+            # The account's own details are the fallback for anything the model
+            # can't read off the page — the app already knows who you are.
+            parsed = parse_resume_text(resume.extracted_text, account={
+                "name": current_user.name,
+                "email": current_user.email,
+                "phone": getattr(current_user, "phone", None),
+                "location": getattr(current_user, "location", None),
+            })
+        except ValueError as e:
+            raise HTTPException(400, str(e))
+        except Exception as e:
+            log.exception("resume parse failed for resume %s", resume.id)
+            raise HTTPException(500, f"Couldn't read that résumé: {e}")
+
+        # Saved back onto the source résumé, so the (slow, paid) parse happens
+        # once per file rather than once per tailoring.
+        resume.builder_data = json.dumps(parsed)
+        if not resume.template_id:
+            resume.template_id = DEFAULT_IMPORT_TEMPLATE
+        db.commit()
+        db.refresh(resume)
+
+    if not resume.template_id:
+        resume.template_id = DEFAULT_IMPORT_TEMPLATE
+        db.commit()
     if not payload.job_description or len(payload.job_description.strip()) < 20:
         raise HTTPException(400, "Please paste a fuller job description (at least a few sentences) so the tailoring is meaningful.")
 

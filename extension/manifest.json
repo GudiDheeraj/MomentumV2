@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Momentum Tracker — Job Application Assistant",
-  "version": "1.0.0",
-  "description": "Capture the job posting you're looking at into Momentum Tracker with one click, and auto-generate a tailored resume + cover letter for it.",
+  "name": "Momentum Tracker \u2014 Job Application Assistant",
+  "version": "1.2.0",
+  "description": "Capture the job posting you're looking at into Momentum Tracker, see which employers hold a UK visa sponsor licence without opening the posting, auto-generate a tailored resume + cover letter, and fill application forms from your saved profile.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -20,19 +20,41 @@
     "service_worker": "background.js"
   },
   "options_page": "options.html",
-  "permissions": ["storage", "activeTab", "scripting", "clipboardWrite"],
-  "host_permissions": ["http://*/*", "https://*/*"],
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "clipboardWrite",
+    "downloads"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "content_scripts": [
     {
-      "matches": ["http://*/*", "https://*/*"],
-      "js": ["content.js"],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content.js",
+        "autofill.js",
+        "sponsor-badges.js"
+      ],
       "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["popup.html"],
-      "matches": ["http://*/*", "https://*/*"]
+      "resources": [
+        "popup.html",
+        "icons/mark-light.png"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ]
     }
   ]
 }

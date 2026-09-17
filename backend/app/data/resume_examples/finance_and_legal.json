@@ -1,0 +1,342 @@
+{
+  "accountant": [
+    {
+      "level": "early",
+      "headline": "AAT finished, nine ACCA papers passed",
+      "why": "A part-qualified CV is screened on exam progress before anything else, because the vacancy is written for a specific stage. Say which papers are passed, which are left and when they are booked — 'studying ACCA' tells a hiring manager nothing they can act on. Practice work is described by client type and turnover band, not by task.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Rhys Pennington",
+        "title": "Assistant Accountant (ACCA, part-qualified)",
+        "location": "Chester, UK",
+        "phone": "+44 7700 900103",
+        "email": "rhys.pennington@example.com",
+        "linkedin": "linkedin.com/in/rhys-pennington-example",
+        "website": "",
+        "summary": "- Assistant accountant in a nine-partner practice; AAT Level 4 complete and nine of thirteen ACCA papers passed, with SBL and SBR booked for the December 2026 sitting.\n- Prepares statutory accounts and corporation tax returns for around 60 owner-managed clients turning over £200k to £6m, from trial balance through to filing.",
+        "skills": "Qualification: AAT Level 4 (Distinction); ACCA Applied Knowledge and Applied Skills complete, 9 of 13 exams passed; Strategic Professional in progress\nAccounts preparation: FRS 102 Section 1A, FRS 105, statutory accounts, iXBRL tagging, Companies House filing\nTax: CT600 corporation tax returns, VAT returns under Making Tax Digital, P11D benefits in kind, CIS returns\nBookkeeping and control: purchase and sales ledger, bank and control account reconciliations, aged debt, month-end journals\nSystems: Xero, Sage 50, QuickBooks, IRIS Accounts Production, TaxCalc, Excel (Power Query, pivot tables, lookups)",
+        "experience": "Assistant Accountant | Halewood Grange LLP | Chester, UK | Aug 2024 - Present\n- Prepare year-end accounts and CT600s for about 60 owner-managed clients; roughly 40 of those files now go from trial balance to partner signature without rework.\n- Spotted £31k of unclaimed R&D expenditure at a precision engineering client during a routine review, and the client is now on an annual claim cycle.\n- Rebuilt the VAT process for the practice's 22 quarterly clients in Xero, which cut preparation time by about a third and ended a run of late submissions.\n- Train the two AAT apprentices on bookkeeping and VAT, and review their work before it reaches a manager.\n---\nAccounts Assistant | Marlbrook Timber | Wrexham, UK | Sep 2022 - Jul 2024\n- Ran purchase and sales ledger for a £4m turnover merchant; aged debt over 90 days fell from £180k to £46k once collection calls moved from month end to weekly.\n- Posted month-end journals and reconciled bank, stock and control accounts for the management accounts pack.",
+        "education": "AAT Level 4 Professional Diploma in Accounting (Distinction) | Cheshire College South & West | Sep 2021 - Jun 2022\n---\nBA (Hons) Business Management, 2:1 | University of Chester | Sep 2018 - Jun 2021",
+        "projects": "",
+        "publications": "",
+        "certifications": "ACCA: Applied Knowledge and Applied Skills complete, 9 of 13 exams passed\nACCA Strategic Professional: Strategic Business Leader and Strategic Business Reporting booked for the December 2026 sitting\nACCA Ethics and Professional Skills module completed, 2025\nAAT Level 4 Professional Diploma in Accounting (Distinction), 2022\nXero Advisor Certified"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "ACA, three years practice then industry",
+      "why": "Practice to industry is the commonest move in accounting and the CV has to bridge it: give the qualification and the year, then translate audit and accounts-prep experience into close, control and reporting. Name the framework you report under — FRS 102 or IFRS — because that is the first thing a financial controller checks.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Sadia Rahman",
+        "title": "Financial Accountant",
+        "location": "Birmingham, UK",
+        "phone": "+44 7700 900107",
+        "email": "s.rahman@example.com",
+        "linkedin": "linkedin.com/in/sadia-rahman-example",
+        "website": "",
+        "summary": "- ACA (ICAEW), qualified 2023 in audit; two years since in industry, now responsible for the group's monthly close and its statutory reporting.\n- Took the close from nine working days to five by moving reconciliations onto BlackLine and putting a fixed cut-off on intercompany.\n- Reports six trading entities under FRS 102, with an IFRS reporting pack for the group's US parent.",
+        "skills": "Qualification: ACA (ICAEW), 2023 — three-year training contract in audit and accounts preparation\nReporting: FRS 102 statutory accounts, IFRS 15 and IFRS 16 for group reporting, consolidation of six entities in two currencies\nClose and control: month-end close, balance sheet reconciliations, accruals and prepayments, intercompany, fixed asset register, audit file preparation\nTax and compliance: VAT under Making Tax Digital, corporation tax pack for advisers, PAYE Settlement Agreement, group relief\nSystems: NetSuite, Sage 200, BlackLine, Power BI, Excel (Power Query, model review)",
+        "experience": "Financial Accountant | Quarrenden Group | Birmingham, UK | Jun 2024 - Present\n- Cut month-end close from nine working days to five: reconciliations moved into BlackLine, intercompany agreed against a fixed cut-off, and review points logged rather than emailed round.\n- Own the consolidation of six trading entities and the FRS 102 statutory accounts; last year's audit closed with two adjustments against eleven the year before.\n- Rebuilt the fixed asset register after finding £420k of assets still being depreciated three years after they were disposed of.\n- Built the Power BI margin pack that operations now reads weekly, replacing a spreadsheet only finance could open.\n---\nAssistant Financial Accountant | Quarrenden Group | Birmingham, UK | Sep 2023 - May 2024\n- Delivered the IFRS 16 lease transition across 34 property and vehicle leases, including the disclosure note and the auditor's supporting schedule.\n- Prepared quarterly VAT returns for the group's two registrations and the annual PSA calculation.\n---\nAudit Senior | Ledbury Faulks | Birmingham, UK | Sep 2020 - Aug 2023\n- Ran fieldwork on around 14 engagements a year, turnover £3m to £90m, mostly manufacturing and food production.\n- Qualified ACA in 2023 with first-time passes at Advanced level, and supervised two associates on the larger files.",
+        "education": "BSc (Hons) Accounting and Finance, First Class | University of Birmingham | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "ACA, Institute of Chartered Accountants in England and Wales, 2023 (first-time passes at Advanced level)\nICAEW member in good standing; 40 hours CPD logged annually"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Financial controller, £160m turnover group",
+      "why": "At controller level the qualification is assumed and the page is read for accountability: entities, turnover, team, and what the auditors said. Notice what has dropped off — no ledger packages, no bookkeeping detail, no exam progress. What replaces it is scope and the two or three decisions that cost or saved real money.",
+      "template_id": "finance_formal",
+      "data": {
+        "full_name": "Gordon Whitelaw",
+        "title": "Financial Controller",
+        "location": "Glasgow, UK",
+        "phone": "+44 7700 900275",
+        "email": "gordon.whitelaw@example.com",
+        "linkedin": "linkedin.com/in/gordon-whitelaw-example",
+        "website": "",
+        "summary": "- Financial controller for a £160m turnover group across eleven legal entities in four countries; team of fourteen including two qualified managers.\n- ACMA CGMA since 2014. Took the group from FRS 102 to IFRS ahead of a refinancing and through the finance integration of two acquisitions.\n- Accountable for statutory reporting, treasury, tax compliance and the covenant reporting the lenders see each quarter.",
+        "skills": "Reporting and control: IFRS group reporting, FRS 102 for UK subsidiaries, consolidation of 11 entities, statutory audit, group control framework\nCommercial and treasury: covenant reporting and lender relationships, £40m revolving credit facility, working capital, FX hedging policy\nTransactions: finance due diligence support and post-acquisition integration on two deals, combined consideration £48m\nLeadership: team of 14 across financial control, transactional finance and payroll; audit committee and board reporting",
+        "experience": "Financial Controller | Strathaven Kerr Group | Glasgow, UK | Feb 2021 - Present\n- Lead a finance function of fourteen for a £160m turnover group, rebuilt around three managers after inheriting a structure with eleven direct reports.\n- Moved the group from FRS 102 to IFRS ahead of a refinancing and delivered the first IFRS audit on the original timetable, with no adjustment above materiality.\n- Integrated two acquisitions onto the group ledger and reporting calendar inside four months each, retiring both target finance systems.\n- Renegotiated the covenant package during a soft trading year, which avoided a technical breach and kept a £40m facility in place.\n- Cut the group close from twelve working days to six and moved the board pack to the fourth working day.\n---\nGroup Financial Accountant | Strathaven Kerr Group | Glasgow, UK | Mar 2018 - Jan 2021\n- Owned the consolidation and statutory accounts for eight entities, two of them reporting in euro.\n- Ran transfer pricing documentation and the R&D claim, worth £1.1m over three years.\n---\nFinance Manager | Kelvinhaugh Foods | Glasgow, UK | Jun 2014 - Feb 2018\n- Ran management accounts and budgeting for a £38m turnover food manufacturer.\n- Built the standard costing model that exposed £600k of margin lost to yield variance on two production lines.",
+        "education": "BA (Hons) Accounting | University of Strathclyde | Sep 2007 - Jun 2011",
+        "projects": "",
+        "publications": "",
+        "certifications": "ACMA CGMA, Chartered Institute of Management Accountants, 2014\nCIMA Certificate in Business Accounting, 2011"
+      }
+    }
+  ],
+  "financial_analyst": [
+    {
+      "level": "early",
+      "headline": "Graduate scheme, second year in FP&A",
+      "why": "An early finance CV is read for whether you can build a model rather than maintain someone else's, so the modelling evidence sits above employment and says what drives the model and which decision it fed. Write CFA progress as a level and a sitting date — 'CFA in progress' is what a screener discards.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Aditi Menon",
+        "title": "Financial Analyst",
+        "location": "Reading, UK",
+        "phone": "+44 7700 900461",
+        "email": "aditi.menon@example.com",
+        "linkedin": "linkedin.com/in/aditi-menon-example",
+        "website": "",
+        "summary": "- Two years in FP&A on a graduate scheme, now owning the forecast for a £62m revenue division.\n- CFA Level I passed February 2025; Level II booked for the August 2026 sitting.\n- Builds the models rather than maintaining them: the two below replaced spreadsheets that nobody could audit.",
+        "skills": "Modelling: three-statement models, driver-based revenue forecasting, scenario and sensitivity analysis, headcount planning, unit economics\nAnalysis: budget versus actual variance, gross margin bridges, capital appraisal (NPV, IRR, payback)\nSystems: Excel (advanced, Power Query), Workday Adaptive Planning, NetSuite, Power BI, SQL (intermediate)\nReporting: monthly business review pack, board appendix, commentary written for readers who are not in finance",
+        "experience": "Financial Analyst | Cobbold Instruments | Reading, UK | Sep 2024 - Present\n- Own the forecast for the £62m instruments division; the last four quarters landed within 2.8% on revenue, against a 9% average error before the model was rebuilt.\n- Replaced a forecast built on last year's actuals plus a growth rate with a driver-based model on installed base, service attach and price; the pricing committee now runs its scenarios in it.\n- Found £340k of annualised overspend during a software cost review — 31 licences still billing for people who had left.\n- Cut the reporting pack from eleven working days after close to four by moving variance commentary to a template the division heads complete themselves.\n---\nFinance Graduate (rotational) | Cobbold Instruments | Reading, UK | Sep 2023 - Aug 2024\n- Three rotations across management accounts, treasury and commercial finance.\n- Built the working capital dashboard that finance and operations still use for the weekly cash call.",
+        "education": "BSc (Hons) Economics, First Class | University of Warwick | Sep 2020 - Jun 2023",
+        "projects": "Divisional Forecast Model: Driver-based three-statement model for a £62m division, with installed base, service attach rate and price per unit driving revenue and a switch for three pricing cases. Replaced a growth-rate spreadsheet and took forecast error from 9% to 2.8%.\n---\nCapital Appraisal Template: NPV, IRR and payback template with a two-way sensitivity grid on volume and input cost, now the standard submission for any capital request above £50k.\n---\nSoftware Spend Review: Reconciled 640 licence lines against the HR leaver report and the purchase ledger, which produced the £340k saving and a quarterly recertification that has held it.",
+        "publications": "",
+        "certifications": "CFA Level I passed, February 2025; Level II candidate, August 2026 sitting\nFinancial Modeling and Valuation Analyst (FMVA), Corporate Finance Institute, 2024"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, commercial finance in retail",
+      "why": "A mid-level analyst is judged on whether the analysis changed a decision, so each bullet here names the decision — a promotion, a depot, a supplier term — and what happened to it. Forecast accuracy is the one metric that separates an analyst who is trusted from one whose numbers get re-run by their manager.",
+      "template_id": "finance_formal",
+      "data": {
+        "full_name": "Nikola Jovanović",
+        "title": "Senior Financial Analyst",
+        "location": "London, UK",
+        "phone": "+44 7700 900529",
+        "email": "n.jovanovic@example.com",
+        "linkedin": "linkedin.com/in/nikola-jovanovic-example",
+        "website": "",
+        "summary": "- Senior financial analyst, five years across grocery retail and wholesale; business partner to a commercial director carrying £310m of revenue.\n- Runs the annual budget and the rolling 13-week cash forecast, and sits in the pricing meetings rather than reporting on them afterwards.\n- Gross margin forecast accuracy now runs at ±1.4%, against ±4.6% two years ago.",
+        "skills": "Planning: annual budget, quarterly reforecast, rolling 13-week cash flow, long-range plan, driver trees\nCommercial analysis: promotional ROI against matched control stores, price and margin architecture, supplier terms and rebates, depot and SKU profitability\nModelling: three-statement models, bolt-on acquisition appraisal, sensitivity and scenario design, SQL against the warehouse\nSystems: Anaplan, SAP S/4HANA, Snowflake, Power BI, Tableau, Excel (advanced)",
+        "experience": "Senior Financial Analyst | Fenwick Row Retail | London, UK | Apr 2023 - Present\n- Rebuilt promotional appraisal so post-event margin is measured against a matched control set of stores; three of the ten largest promotions turned out to lose money and the calendar was cut from 44 events to 29 with no loss of volume.\n- Partner the commercial director on £310m of revenue, which now includes writing the trading assumption the board signs off rather than reporting it back.\n- Modelled the supplier terms renegotiation across 60 accounts; the settled position was worth £2.8m of additional annual rebate income.\n- Moved the budget from twelve weeks of spreadsheet consolidation to six in Anaplan, which ended the September weekend working in the finance team.\n---\nFinancial Analyst | Threlfall Wholesale | Reading, UK | Jul 2021 - Mar 2023\n- Built the depot profitability model that showed two of nine depots losing money at the contribution line; one closed and the other's route plan was redrawn.\n- Ran the weekly cash forecast through a covenant-tight year, holding variance to actual inside 3% for eleven consecutive months.\n- Prepared the monthly board pack and drafted the commentary the CFO presented.",
+        "education": "MSc Finance | Bayes Business School, City St George's, University of London | Sep 2019 - Sep 2020\n---\nBSc Economics | University of Belgrade | Oct 2015 - Jul 2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "CFA charterholder, CFA Institute, 2024\nAnaplan Certified Model Builder, 2023"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Head of FP&A, sponsor-backed software group",
+      "why": "Senior finance CVs stop listing systems and start naming who you answer to. Here the audiences are a board, a lender and a private equity investment committee, and each bullet carries a decision with money attached. The modelling that filled the mid-level page has shrunk to a line, which is the point.",
+      "template_id": "consulting_premium",
+      "data": {
+        "full_name": "Beatriz Cardoso",
+        "title": "Head of Financial Planning and Analysis",
+        "location": "London, UK",
+        "phone": "+44 7700 900744",
+        "email": "beatriz.cardoso@example.com",
+        "linkedin": "linkedin.com/in/beatriz-cardoso-example",
+        "website": "",
+        "summary": "- Head of FP&A for a private-equity-backed software group, $340m ARR; team of nine across planning, commercial finance and investor reporting.\n- Twelve years in finance, seven of them under a sponsor: quarterly board packs, lender covenant reporting and two refinancings.\n- Owns the three-year plan the board approves and the model the sponsor's investment committee reads.",
+        "skills": "Planning and reporting: three-year plan, annual budget, quarterly reforecast, board and investor packs, lender covenant reporting\nCommercial: pricing and packaging, ARR and net revenue retention analytics, sales capacity planning, acquisition appraisal and integration\nLeadership: team of nine with two managers; hiring, and the operating rhythm between finance and commercial leadership",
+        "experience": "Head of Financial Planning and Analysis | Lambourne Vale Software | London, UK | Jan 2022 - Present\n- Lead nine people across planning, commercial finance and investor reporting; built the function from three after the sponsor's investment.\n- Rebuilt the plan around net revenue retention and sales capacity rather than a top-down growth target, and the board approved a budget at first submission for the first time in the group's history.\n- Modelled and argued the packaging change that moved 40% of the base onto consumption pricing, worth $18m of incremental ARR over two years.\n- Ran finance on the $95m bolt-on, from the diligence model to the integrated plan; synergies landed at 92% of the case in year one.\n- Took days sales outstanding from 71 to 48 by changing invoicing terms and giving collections a weekly forum with sales leadership.\n---\nSenior Manager, Commercial Finance | Danecroft Analytics | London, UK | Aug 2018 - Dec 2021\n- Partnered a $120m revenue division and built the segment P&L that showed professional services quietly subsidising licence discounting.\n- Led the pricing review that raised list prices 9% with under 1% churn attributable to it.\n- Prepared the vendor due diligence financial pack for the sale of the division.\n---\nManager, Financial Planning | Almadena Diagnostics | Lisbon, Portugal | Sep 2014 - Jul 2018\n- Ran budgeting and forecasting for a 900-person diagnostics business across three countries.",
+        "education": "MBA | IESE Business School | Sep 2012 - Jun 2014\n---\nLicenciatura in Economics | Nova School of Business and Economics | Sep 2008 - Jun 2012",
+        "projects": "",
+        "publications": "",
+        "certifications": "FCCA, Association of Chartered Certified Accountants (member since 2016)"
+      }
+    }
+  ],
+  "investment_banking": [
+    {
+      "level": "early",
+      "headline": "Summer analyst converted, first year M&A",
+      "why": "The transaction list is the analyst CV, and it has to say what you personally built — the operating model, the comps, the data room — not what the bank advised on. Announced deals may be named; live ones are described by sector and size only. In London the degree classification and A-levels stay on the page, because they are still screened.",
+      "template_id": "harvard_classic",
+      "data": {
+        "full_name": "Freddie Ashworth",
+        "title": "Analyst, Industrials M&A",
+        "location": "London, UK",
+        "phone": "+44 7700 900208",
+        "email": "f.ashworth@example.com",
+        "linkedin": "linkedin.com/in/freddie-ashworth-example",
+        "website": "",
+        "summary": "- First-year analyst in industrials M&A, converted from the summer analyst programme.\n- Four announced transactions to date, £610m of combined enterprise value; built the operating model on two of them.\n- Fluent German, used on two cross-border processes.",
+        "skills": "Valuation: DCF, trading comparables, precedent transactions, LBO, accretion and dilution, sum-of-the-parts\nModelling: three-statement operating models, merger models, working capital and capex builds, sensitivity and scenario tables\nMaterials: pitch books, information memoranda, management presentations, board materials\nPlatforms: Capital IQ, FactSet, Bloomberg, Mergermarket, Datasite virtual data rooms\nLanguages: German (fluent), French (working)",
+        "experience": "Analyst, Industrials M&A | Barrowgate Partners | London, UK | Jul 2025 - Present\n- Built the three-statement operating model on a £180m sell-side process, including the working capital and capex build that the buyer's diligence team tested line by line.\n- Ran the data room on two live processes: 3,400 documents, 14 bidders and the Q&A log that went with them.\n- Prepared trading comparables and precedent transaction analysis for eleven pitches, four of which converted to mandates.\n- Drafted the information memorandum on the Kelstrand disposal; it went to market with limited partner redrafting.\n---\nSummer Analyst | Barrowgate Partners | London, UK | Jun 2024 - Aug 2024\n- Ten-week programme split between industrials and business services; returned an offer.",
+        "education": "BSc Economics, First Class (weighted average 76%) | London School of Economics and Political Science | Sep 2021 - Jun 2024\n---\nA-levels: Mathematics (A*), Further Mathematics (A*), Economics (A*), Physics (A) | Winstanley College | Sep 2019 - Jun 2021",
+        "projects": "Sell-side M&A, £180m enterprise value: Advised the shareholders of Kelstrand Precision on the sale of the business to a European strategic buyer. Announced March 2026. Built the operating model and working capital analysis; ran the data room and the Q&A log.\n---\nBuy-side M&A, £240m enterprise value: Advised a listed packaging group on its acquisition of a flexible films business. Announced November 2025. Built the merger model and the accretion and dilution analysis across four financing structures.\n---\nSell-side M&A, £120m enterprise value: Advised a family shareholder on the disposal of an industrial services division to a mid-market sponsor. Announced July 2025. Drafted the information memorandum and the management presentation.\n---\nDebt advisory, £70m: Refinancing of a specialist distributor's senior facilities. Completed January 2026. Built the covenant model and prepared the lender presentation.",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Associate, four years, healthcare M&A",
+      "why": "By associate level the deal list carries the page and the job bullets describe running processes rather than producing slides. Each transaction states side, size, structure and what you owned — a list of logos teaches a recruiter nothing. On a US resume the GPA and the FINRA licences stay; both are screened before a human reads a word.",
+      "template_id": "finance_formal",
+      "data": {
+        "full_name": "Sana Iqbal",
+        "title": "Associate, Healthcare Investment Banking",
+        "location": "New York, NY",
+        "phone": "+1 (212) 555-0148",
+        "email": "sana.iqbal@example.com",
+        "linkedin": "linkedin.com/in/sana-iqbal-example",
+        "website": "",
+        "summary": "- Associate in healthcare investment banking; four years and eleven closed transactions, $4.8bn of combined enterprise value.\n- Runs processes end to end: model, diligence coordination, buyer outreach and the analysis behind the negotiation.\n- Manages two analysts and the staffing across three live mandates.",
+        "skills": "Execution: sell-side and buy-side M&A, carve-outs, minority recapitalizations, sponsor and strategic processes, fairness opinions\nValuation and modelling: DCF, LBO, merger and accretion/dilution, sum-of-the-parts, risk-adjusted NPV for development-stage assets\nSector: medtech, specialty pharmacy services, healthcare IT, provider roll-ups; reimbursement and payer-mix diligence\nPlatforms: Capital IQ, FactSet, Bloomberg, Evaluate Pharma, Datasite, DealCloud",
+        "experience": "Associate, Healthcare Investment Banking | Ashfield Crane & Co. | New York, NY | Jul 2024 - Present\n- Ran the $1.1bn carve-out of a diagnostics division start to finish: 62 buyers contacted, nine management meetings, and a stand-alone cost model that survived four rounds of buyer diligence without restatement.\n- Manage two analysts across three live mandates, including the staffing and the model review that used to sit with the vice president.\n- Led the reimbursement diligence workstream on a provider roll-up, which surfaced a payer-mix shift that cut guided EBITDA by $6m and repriced the deal before signing.\n- Rebuilt the group's LBO template after two sponsors flagged the same debt-schedule circularity; it is now the healthcare standard.\n---\nAnalyst, Healthcare Investment Banking | Ashfield Crane & Co. | New York, NY | Jul 2022 - Jun 2024\n- Built the operating and merger models on six closed transactions across medtech and pharmacy services.\n- Top-rated analyst in the 2024 class and promoted directly to associate without a business school interval.",
+        "education": "BS Finance and Biology, GPA 3.87/4.00 | Georgetown University | Aug 2018 - May 2022",
+        "projects": "Sell-side M&A, $1.1bn: Carve-out and sale of a diagnostics division to a global strategic buyer. Closed February 2026. Owned the stand-alone financial model, the buyer process and the transition services analysis.\n---\nBuy-side M&A, $840m: Advised a sponsor-backed specialty pharmacy platform on its acquisition of a home infusion business. Closed August 2025. Built the LBO and synergy model; coordinated four diligence workstreams.\n---\nSell-side M&A, $610m: Sale of a medtech component manufacturer to a strategic acquirer. Closed March 2025. Ran the information memorandum, the management presentation and the data room.\n---\nMinority recapitalization, $300m: Growth investment into a healthcare IT platform. Closed October 2024. Built the risk-adjusted revenue model and the returns analysis across three structures.\n---\nEleven closed transactions in total, $4.8bn combined enterprise value: six sell-side, four buy-side, one financing.",
+        "publications": "",
+        "certifications": "FINRA Series 79, Investment Banking Representative\nFINRA Series 63, Uniform Securities Agent State Law"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Managing director, sixteen years, £9bn advised",
+      "why": "A managing director is hired for origination, not execution, so the page leads with fees brought in, the clients who came back and the team built. The transaction list stays — in banking it is the record — but the mechanics disappear: nobody is asking whether you can build a merger model.",
+      "template_id": "consulting_premium",
+      "data": {
+        "full_name": "Anjali Sanghera",
+        "title": "Managing Director, Consumer and Retail",
+        "location": "London, UK",
+        "phone": "+44 7700 900817",
+        "email": "a.sanghera@example.com",
+        "linkedin": "linkedin.com/in/anjali-sanghera-example",
+        "website": "",
+        "summary": "- Managing director in consumer and retail M&A; sixteen years and £9.2bn of announced transaction value across 41 deals.\n- Originated £34m of advisory fees over the last four years, 60% of it from clients who had used the firm before.\n- Built and runs a team of eleven, and owns the firm's relationship with six sponsor accounts and three listed corporates.",
+        "skills": "Origination: sponsor and corporate coverage, board-level advisory, public company defence, sector thought leadership\nTransactions: public takeovers under the City Code, cross-border M&A, carve-outs, dual-track processes, take-privates\nLeadership: team of 11 including two directors and three vice presidents; hiring, promotion cases, fee negotiation and mandate structuring",
+        "experience": "Managing Director, Consumer and Retail | Harrowfield Advisory | London, UK | Sep 2020 - Present\n- Originated £34m in advisory fees over four years and took the consumer franchise from ninth to fourth in UK mid-market league position over the same period.\n- Advised the board of a listed retailer through an unsolicited approach; the defence ended in a recommended offer 34% above the original terms.\n- Grew the team from four to eleven and took two vice presidents to director, with no unwanted attrition at that level since 2022.\n- Led a £1.4bn dual-track process for a sponsor-owned branded goods business, running IPO preparation and a sale in parallel until the trade route won on certainty.\n---\nDirector, then Vice President, M&A | Colvinbrook & Partners | London, UK | Jun 2013 - Aug 2020\n- Executed 19 transactions across consumer, leisure and business services, four of them public takeovers under the Takeover Code.\n- Promoted to director in 2017 on the strength of two originated mandates rather than execution volume.\n---\nAnalyst, then Associate, M&A | Colvinbrook & Partners | London, UK | Sep 2010 - May 2013\n- Execution across consumer and industrials, including the firm's first two cross-border mandates in the sector.",
+        "education": "MA Economics | University of Cambridge | Oct 2007 - Jun 2010",
+        "projects": "Public takeover, £1.9bn: Adviser to the target board of a listed retailer on a recommended cash offer under the City Code. Announced 2025. Led the defence strategy and the shareholder engagement programme.\n---\nDual-track, £1.4bn: Sale of a sponsor-owned branded goods business run alongside IPO preparation. Announced 2024. Led both processes and the recommendation that closed the trade route.\n---\nCross-border M&A, £780m: Advised a European consumer group on the acquisition of a UK speciality retailer. Announced 2023.\n---\nTake-private, £520m: Advised the sponsor consortium on the acquisition of a listed hospitality group. Announced 2022.",
+        "publications": "",
+        "certifications": "Certified under the FCA Senior Managers and Certification Regime (client-dealing function)"
+      }
+    }
+  ],
+  "auditor": [
+    {
+      "level": "early",
+      "headline": "Second-year audit associate, ACA in progress",
+      "why": "An audit CV is read for the standards you have actually worked to and the files you have owned. Name the framework — ISAs (UK), FRS 102, IFRS — give the client sizes and sectors, and say which sections of the file were yours. Exam progress and logged practical work experience days go near the top while you are still studying.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Chidera Anyanwu",
+        "title": "Audit Associate",
+        "location": "London, UK",
+        "phone": "+44 7700 900356",
+        "email": "c.anyanwu@example.com",
+        "linkedin": "linkedin.com/in/chidera-anyanwu-example",
+        "website": "",
+        "summary": "- Second-year associate in external audit, working to ISAs (UK) on FRS 102 and IFRS engagements with client turnover from £8m to £340m.\n- ACA (ICAEW): Certificate and Professional levels complete, twelve of fifteen exams passed, 310 of the required 450 practical work experience days logged.\n- Owned revenue and payroll on eight engagements this year and ran interim fieldwork on four without a senior on site.",
+        "skills": "Audit: ISAs (UK), risk assessment under ISA 315, fraud procedures under ISA 240, sampling, substantive analytical procedures, journal entry testing, group instructions under ISA 600\nFrameworks: FRS 102, FRS 105, IFRS 15 and IFRS 16, Companies Act 2006 disclosure requirements\nSections owned: revenue, payroll, fixed assets, inventory and stock counts, cash and bank, related party disclosures\nSystems: CaseWare, Inflo, IDEA, Alteryx (basic), client environments in SAP, Sage and Xero",
+        "experience": "Audit Associate | Pellard Mowbray LLP | London, UK | Sep 2024 - Present\n- Fieldwork on eleven engagements a year across manufacturing, charity and technology clients, turnover £8m to £340m; owned revenue and payroll on eight of them.\n- Attended fourteen stock counts including two unannounced; the count at a wholesale client found a £280k difference to the ledger that became a prior year adjustment.\n- Rebuilt the journal entry testing routine in IDEA for the mid-tier portfolio, taking that section from two days to about four hours per file.\n- Cleared file review with no more than three points on each of the last six engagements.\n---\nAudit Intern | Pellard Mowbray LLP | London, UK | Jun 2023 - Aug 2023\n- Six-week summer placement across two audits, working on cash, bank and expenditure testing; returned an offer.",
+        "education": "BSc (Hons) Accounting and Finance, 2:1 | University of Nottingham | Sep 2021 - Jun 2024",
+        "projects": "",
+        "publications": "",
+        "certifications": "ACA (ICAEW) in progress: Certificate and Professional levels complete, 12 of 15 exams passed\nACA Advanced level: Corporate Reporting and Strategic Business Management booked for the July 2027 sitting\nICAEW training agreement: 310 of 450 practical work experience days logged\nICAEW Ethics Learning Programme completed, 2024"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, SOX and operational internal audit",
+      "why": "SOX work has to be specific or it is unreadable: say whether you tested Section 302, Section 404 or both, whether you tested design or operating effectiveness, and how deficiencies were classified. An internal audit CV also names the standards the function works to and the committee it reports into, because the reporting line is what makes the job independent.",
+      "template_id": "finance_formal",
+      "data": {
+        "full_name": "Hamza Belkacem",
+        "title": "Senior Internal Auditor",
+        "location": "Chicago, IL",
+        "phone": "+1 (312) 555-0173",
+        "email": "h.belkacem@example.com",
+        "linkedin": "linkedin.com/in/hamza-belkacem-example",
+        "website": "",
+        "summary": "- Senior internal auditor at an SEC registrant with $2.1bn of revenue; six years across SOX 404, operational audit and IT general controls.\n- Works to the IIA Global Internal Audit Standards and the COSO 2013 framework, reporting through the chief audit executive to the audit committee.\n- Owns the SOX programme for two of five segments: 214 key controls across seven process owners.",
+        "skills": "SOX and ICFR: Sections 302 and 404, PCAOB AS 2201, COSO 2013 principles, scoping and materiality, walkthroughs, tests of design and operating effectiveness, deficiency evaluation and aggregation\nInternal audit: IIA Global Internal Audit Standards, risk-based annual plan, three lines model, issue tracking and remediation validation, audit committee reporting\nIT audit: ITGCs across access, change and operations; segregation of duties in SAP; key report and information-produced-by-entity testing\nData and systems: SAP S/4HANA, Oracle Financials, AuditBoard, IDEA, Alteryx, Power BI, SQL",
+        "experience": "Senior Internal Auditor | Waverley Ridge Industries | Chicago, IL | Mar 2023 - Present\n- Own the SOX 404 programme for two segments — 214 key controls, walkthroughs and testing across seven process owners — delivered inside the external auditor's reliance timetable every quarter.\n- Rationalised 38 duplicated manual controls that addressed the same risk, cutting 900 testing hours a year with no change in the external auditor's reliance.\n- Found a segregation of duties conflict in SAP that let fourteen users both create and pay a vendor; the control had been rated effective for three years.\n- Raised two significant deficiencies in the revenue cycle and validated the remediation before year end, so neither aggregated into a material weakness.\n- Led the operational audit of freight spend, which identified $1.9m of duplicate accessorial charges and a rate card that no longer matched the carrier contract.\n---\nInternal Auditor | Waverley Ridge Industries | Chicago, IL | Aug 2021 - Feb 2023\n- Tested IT general controls across five in-scope applications; the access review finding drove a quarterly recertification that is now automated.\n- Repeat findings across the plan fell from nine to two after issue owners were given dated remediation plans agreed at director level.\n---\nAudit Associate | Kessler Nunn LLP | Chicago, IL | Jul 2019 - Jul 2021\n- External audit of manufacturing and distribution clients with $40m to $700m of revenue, under PCAOB and AICPA standards.",
+        "education": "BS Accountancy | University of Illinois Urbana-Champaign | Aug 2015 - May 2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "Certified Public Accountant (CPA), Illinois, 2021\nCertified Internal Auditor (CIA), Institute of Internal Auditors, 2023\nCertified Information Systems Auditor (CISA), ISACA, 2024"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Head of internal audit, regulated financial services",
+      "why": "A head of audit is hired for independence and for the relationships that make independence survivable, so this page leads with the reporting line and the plan, and says what happened when a finding was unwelcome. Certifications shrink to a line; committee, regulator, budget and coverage take the space.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Fiona Kinnaird",
+        "title": "Chief Audit Executive",
+        "location": "Edinburgh, UK",
+        "phone": "+44 7700 900693",
+        "email": "fiona.kinnaird@example.com",
+        "linkedin": "linkedin.com/in/fiona-kinnaird-example",
+        "website": "",
+        "summary": "- Chief audit executive for a UK life and pensions business with £14bn of assets under administration; team of eighteen across financial, operational, IT and conduct audit.\n- Reports functionally to the audit committee chair and administratively to the chief executive; attends eight committee meetings a year and the FCA and PRA supervisory reviews.\n- Took the function through an external quality assessment against the IIA Global Internal Audit Standards, rated 'generally conforms'.",
+        "skills": "Audit leadership: risk-based annual plan, three lines model, board and audit committee reporting, external quality assessment, co-source panel management\nRegulatory: FCA Consumer Duty, PRA operational resilience and impact tolerances, Senior Managers and Certification Regime, Solvency UK, outsourcing and third-party risk\nCoverage: financial controls, conduct and customer outcomes, IT and cyber, change programmes, model governance, financial crime\nLeadership: team of 18, £2.6m budget, four audit managers, rotation and secondment from the first line",
+        "experience": "Chief Audit Executive | Kirkmuir Financial Group | Edinburgh, UK | Nov 2021 - Present\n- Rebuilt the annual plan around important business services rather than departments, which put half the coverage on the eleven services the board is held accountable for.\n- Reported an unmitigated operational resilience gap to the audit committee against executive objection; the impact tolerance work that followed closed it four months before the regulatory deadline.\n- Grew the team from eleven to eighteen and brought conduct and model audit in house, cutting co-source spend from £1.4m to £480k while increasing plan coverage.\n- Led the function through its first external quality assessment in six years, rated 'generally conforms' with three improvement actions, all closed within the year.\n- Overdue high-rated findings across the business fell from 23 to four after the committee agreed an automatic escalation to the chief executive at thirty days past due.\n---\nHead of Audit, Retail Banking | Cairnbrae Bank | Edinburgh, UK | Apr 2017 - Oct 2021\n- Ran a team of nine covering retail lending, branch operations and complaints, delivering 100% of the approved plan in four consecutive years.\n- Led the audit of arrears and forbearance that found a policy applied inconsistently across the book; the remediation returned £6.4m to about 11,000 customers.\n---\nSenior Audit Manager | Cairnbrae Bank | Edinburgh, UK | Jan 2013 - Mar 2017\n- Financial and regulatory audit across treasury, capital adequacy and financial reporting.",
+        "education": "BAcc (Hons) Accountancy, First Class | University of Glasgow | Sep 2004 - Jun 2008",
+        "projects": "",
+        "publications": "",
+        "certifications": "CA, Institute of Chartered Accountants of Scotland, 2011\nCertified Internal Auditor (CIA), Institute of Internal Auditors, 2016\nCertification in Risk Management Assurance (CRMA), Institute of Internal Auditors, 2019"
+      }
+    }
+  ],
+  "lawyer": [
+    {
+      "level": "early",
+      "headline": "Newly qualified solicitor, admitted 2025",
+      "why": "A newly qualified CV is read for the seats you sat and the department you qualified into, because that is the whole of your practice-area evidence. State the admission jurisdiction and date rather than a roll number, list the seats with what you actually ran, and keep a short matters list — even at this level the matter, not the month, is the unit of legal experience.",
+      "template_id": "harvard_classic",
+      "data": {
+        "full_name": "Ruth Mwangi",
+        "title": "Solicitor, Commercial",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900142",
+        "email": "ruth.mwangi@example.com",
+        "linkedin": "linkedin.com/in/ruth-mwangi-example",
+        "website": "",
+        "summary": "- Solicitor of the Senior Courts of England and Wales, admitted September 2025; qualified into the commercial team.\n- Four training seats — commercial, employment, real estate and corporate — plus a six-week secondment to a manufacturing client's in-house team.\n- Runs about 30 live commercial contract matters, with partner supervision on anything above £250k in value.",
+        "skills": "Practice areas: commercial contracts, supply and distribution agreements, terms of business, UK GDPR and data sharing, employment (advisory)\nDrafting: NDAs, master services agreements, service level schedules, licence and reseller agreements, settlement agreements, board minutes and written resolutions\nLitigation support: disclosure exercises, witness statement preparation, hearing bundles under CPR Practice Direction 32\nSystems: iManage, HighQ, Luminance contract review, Companies House filing\nLanguages: Swahili (fluent), French (working)",
+        "experience": "Solicitor, Commercial | Hartwell Ashby LLP | Leeds, UK | Sep 2025 - Present\n- Draft and negotiate supply, distribution and services agreements for mid-market manufacturing and technology clients; caseload of around 30 live matters.\n- Ran the contract review behind a client's move to a new standard terms set: 140 supplier agreements triaged against a risk grid, 22 escalated and renegotiated.\n- Wrote the firm's UK GDPR data sharing agreement template, now used across the commercial team.\n---\nTrainee Solicitor | Hartwell Ashby LLP | Leeds, UK | Sep 2023 - Aug 2025\n- Four six-month seats: commercial, employment, real estate and corporate.\n- Employment seat: ran fourteen settlement agreement matters end to end and drafted the response to two employment tribunal claims.\n- Corporate seat: worked on a £12m share sale, running the disclosure exercise and the data room and drafting the first disclosure letter.\n- Six-week secondment to the in-house team of a manufacturing client, handling day-to-day contract queries unsupervised.",
+        "education": "Solicitors Qualifying Examination, SQE1 and SQE2 | The University of Law, Leeds | Sep 2022 - Jun 2023\n---\nLLB (Hons) Law, First Class | University of Leeds | Sep 2019 - Jun 2022",
+        "projects": "Standard terms migration: Triaged 140 supplier agreements for a £90m turnover manufacturer against a risk grid; 22 were renegotiated and the unlimited liability exposure was closed across the supply base.\n---\nShare sale, £12m (trainee, corporate seat): Ran the disclosure exercise and the data room on the sale of a family-owned engineering business, and drafted the first disclosure letter.\n---\nEmployment tribunal response (trainee, employment seat): Drafted the ET3 response and the witness statement in an unfair dismissal claim; the claim settled two weeks before hearing.",
+        "publications": "",
+        "certifications": "Admitted as a solicitor of the Senior Courts of England and Wales, September 2025\nSolicitors Qualifying Examination: SQE1 and SQE2 passed, 2023\nTwo years' qualifying work experience completed and confirmed\nCurrent practising certificate, Solicitors Regulation Authority"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years PQE, commercial disputes",
+      "why": "In private practice the matters list is the CV, and litigation adds detail no other field carries: the court or tribunal, the value, who you acted for and how it ended. PQE belongs in the first line because it sets the band the role is advertised at, and rights of audience are worth a line of their own — they change what a partner can staff you on.",
+      "template_id": "finance_formal",
+      "data": {
+        "full_name": "Mateo Salvatierra",
+        "title": "Senior Associate, Commercial Disputes",
+        "location": "London, UK",
+        "phone": "+44 7700 900109",
+        "email": "m.salvatierra@example.com",
+        "linkedin": "linkedin.com/in/mateo-salvatierra-example",
+        "website": "",
+        "summary": "- Solicitor of the Senior Courts of England and Wales, admitted 2021; five years PQE in commercial disputes, senior associate since 2024.\n- Caseload of twelve to fifteen High Court matters in the £500k to £20m range, supervising two associates and a paralegal on the larger files.\n- Higher Rights of Audience (Civil) granted 2024; has conducted interim applications in the Business and Property Courts.",
+        "skills": "Practice: commercial contract disputes, shareholder and unfair prejudice petitions, professional negligence, injunctions and freezing orders, LCIA and ICC arbitration\nProcedure: CPR Parts 7 and 8, disclosure under Practice Direction 57AD, Part 36 offers, expert evidence, mediation, enforcement against assets\nForums: High Court (King's Bench and Chancery Divisions), County Court, LCIA arbitration\nTechnology: Relativity and Everlaw for technology-assisted review, Opus 2 hearing bundles, iManage\nLanguages: Spanish (native), Portuguese (working)",
+        "experience": "Senior Associate, Commercial Disputes | Pentworth Kaye LLP | London, UK | Apr 2024 - Present\n- Carry twelve to fifteen High Court matters at a time, £500k to £20m, and supervise two associates and a paralegal across the larger files.\n- Led disclosure on a £20m professional negligence claim: 1.4m documents reduced to about 9,000 by technology-assisted review, agreed with the other side and approved at the disclosure guidance hearing.\n- Obtained a without-notice freezing injunction over £3.2m of assets and held it at the return date.\n- Recovered £4.1m for a distribution client on a terminated agency claim, settling at mediation nine weeks before trial.\n- Wrote the firm's Practice Direction 57AD guidance note after two matters ran into disputes over the disclosure model.\n---\nAssociate, Commercial Disputes | Pentworth Kaye LLP | London, UK | Sep 2021 - Mar 2024\n- Ran twenty to twenty-five matters at a time under partner supervision, two of which reached a five-day trial.\n- Prepared instructions to counsel and attended more than thirty hearings; conducted six County Court applications in person.\n- Four-month secondment to an insurance client's legal team, handling coverage disputes and reserving advice.\n---\nTrainee Solicitor | Pentworth Kaye LLP | London, UK | Sep 2019 - Aug 2021\n- Seats in commercial disputes, banking, employment and real estate.",
+        "education": "Legal Practice Course with LLM (Distinction) | BPP University Law School, London | Sep 2018 - Jun 2019\n---\nLLB (Hons) Law, First Class | King's College London | Sep 2015 - Jun 2018",
+        "projects": "Professional negligence, £20m (Chancery Division): Acted for the claimant against a firm of valuers. Led disclosure of 1.4m documents under Practice Direction 57AD; settled at £11.5m after exchange of expert reports.\n---\nFreezing injunction, £3.2m (King's Bench Division): Obtained a without-notice freezing order for a commodities trader against a former agent, continued at the return date and enforced against two accounts.\n---\nUnfair prejudice petition, £7m: Acted for the minority shareholders in a family-owned group; resolved on a buy-out at a valuation 40% above the respondents' opening figure.\n---\nLCIA arbitration, $9m: Acted for a respondent supplier in a distribution termination claim. The award dismissed the claim in full and awarded costs.",
+        "publications": "",
+        "certifications": "Admitted as a solicitor of the Senior Courts of England and Wales, September 2021\nHigher Rights of Audience (Civil Proceedings), 2024\nMember, London Solicitors Litigation Association"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "General counsel, dual-qualified, fifteen years",
+      "why": "Going in house changes what a legal CV proves. Matters give way to the risks you own, the budget you control and the board you advise — and dual qualification must appear as two separate admissions with their dates, because a jurisdiction is not a skill that can be implied from the work.",
+      "template_id": "executive_elegant",
+      "data": {
+        "full_name": "Ezra Lindenbaum",
+        "title": "General Counsel and Company Secretary",
+        "location": "London, UK",
+        "phone": "+44 7700 900925",
+        "email": "ezra.lindenbaum@example.com",
+        "linkedin": "linkedin.com/in/ezra-lindenbaum-example",
+        "website": "",
+        "summary": "- General counsel and company secretary of a payments group operating in eleven markets; team of nine lawyers and two paralegals across commercial, regulatory and disputes.\n- Admitted to the New York State Bar (2012) and as a solicitor of England and Wales (2016); fifteen years split between US and UK practice.\n- Owns a £4.8m legal budget, the external panel, and board and committee governance for the group and four regulated subsidiaries.",
+        "skills": "In house: board and committee advisory, company secretarial, delegated authority framework, panel management, contract playbooks and self-service routes\nRegulatory: FCA authorisation and change in control, payment services and e-money regulation, UK GDPR and international transfers, sanctions and financial crime\nCommercial and transactional: enterprise customer and partner contracts, M&A and joint ventures, financing documentation, employment and equity plans\nLeadership: team of eleven, £4.8m budget, three direct reports, and the build-versus-panel decisions behind them",
+        "experience": "General Counsel and Company Secretary | Ellingsworth Pay Group | London, UK | Feb 2021 - Present\n- Built the legal function from two to eleven and cut external legal spend from £3.9m to £1.6m a year by bringing commercial contracting and employment in house.\n- Led the regulatory workstream on the group's change in control approval after a £220m investment, including the FCA process and the four European regulators that followed.\n- Rewrote the contracting model so that a playbook and a self-service NDA and order form close 68% of deals without a lawyer; median enterprise turnaround fell from 21 days to six.\n- Ran the internal investigation into a sanctions screening failure and the voluntary disclosure that followed, which closed with no enforcement action.\n- Chair the disclosure committee and advise the board on governance for the group and four regulated subsidiaries.\n---\nSenior Legal Counsel, Commercial and Regulatory | Draymere Financial | London, UK | Aug 2016 - Jan 2021\n- Sole counsel for the UK business at the outset; supported it from 90 to 600 people and through two funding rounds.\n- Negotiated the bank sponsorship and scheme agreements underpinning the card programme.\n- Built the first template set and the delegated authority matrix, both of which survived the group's later acquisition unchanged.\n---\nAssociate, Corporate | Whitmore Ganz LLP | New York, NY | Sep 2011 - Jun 2016\n- Corporate and securities work for financial technology and payments clients, including four venture financings and two public company acquisitions.",
+        "education": "Juris Doctor | Columbia Law School | Aug 2008 - May 2011\n---\nBA History | University of Michigan | Sep 2004 - May 2008",
+        "projects": "",
+        "publications": "",
+        "certifications": "Admitted to the New York State Bar, 2012\nAdmitted as a solicitor of the Senior Courts of England and Wales, 2016 (Qualified Lawyers Transfer Scheme)\nCurrent practising certificate, Solicitors Regulation Authority\nAffiliated member, The Chartered Governance Institute UK and Ireland"
+      }
+    }
+  ]
+}

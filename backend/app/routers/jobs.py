@@ -5,7 +5,7 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from .. import models, schemas
+from .. import job_enrich, models, schemas
 from ..auth import get_current_user
 from ..database import get_db
 from ..ai.engine import generate_job_document
@@ -76,6 +76,10 @@ def create_job(payload: schemas.JobCreate, db: Session = Depends(get_db),
     _validate_board_and_resume(db, current_user, data)
     if not data.get("board_id"):
         data["board_id"] = ensure_default_board(db, current_user).id
+    # Fill the columns the board sorts and filters by — location, skills,
+    # salary, tags — from the description, when the person adding the job left
+    # them blank. Anything they typed is untouched (see job_enrich.apply_to).
+    job_enrich.apply_to(data)
     job = models.JobApplication(user_id=current_user.id, **data)
     db.add(job)
     db.commit()
@@ -85,6 +89,18 @@ def create_job(payload: schemas.JobCreate, db: Session = Depends(get_db),
     db.commit()
     db.refresh(job)
     return job
+
+
+@router.post("/enrich")
+def enrich_preview(payload: schemas.JobEnrichIn,
+                   current_user: models.User = Depends(get_current_user)):
+    """What could be filled in from this description, without saving anything.
+
+    The Add Application form calls this as the description is pasted so the
+    fields populate in front of the user, who can then correct them — which is
+    the difference between a helpful guess and a silent one.
+    """
+    return job_enrich.analyse(payload.job_description or "", payload.role_title or "")
 
 
 @router.get("", response_model=list[schemas.JobOut])

@@ -27,21 +27,42 @@ from .providers import PROVIDERS, detect_board
 log = logging.getLogger("momentum.jobhunt")
 
 SEED_FILE = Path(__file__).with_name("companies.json")
+# Extra seed files, loaded after the hand-curated one. companies_global2000.json
+# is written by backend/resolve_boards.py, which probes every company on the
+# Forbes Global 2000 against the six ATS APIs and keeps the ones that answer.
+# It is a separate file rather than an edit to companies.json so that
+# regenerating two thousand machine-resolved rows can never clobber the sixty
+# that were checked by hand.
+EXTRA_SEED_FILES = ("companies_global2000.json",)
 # Retire a board after this many consecutive permanent failures. Three rather
 # than one: a provider having a bad afternoon and answering 403 to everything
 # would otherwise wipe the entire registry in a single run.
 MAX_FAILURES = 3
 
 
-def seed_shared_registry(db: Session) -> int:
-    """Loads companies.json into the shared registry, skipping any already
-    present. Idempotent, so it can run on every startup."""
-    if not SEED_FILE.exists():
-        return 0
+def _load_seed(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
     try:
-        payload = json.loads(SEED_FILE.read_text(encoding="utf-8"))
+        payload = json.loads(path.read_text(encoding="utf-8"))
     except ValueError:
-        log.warning("jobhunt: companies.json is not valid JSON — skipping seed")
+        log.warning("jobhunt: %s is not valid JSON, skipping", path.name)
+        return []
+    return payload.get("companies", []) or []
+
+
+def seed_shared_registry(db: Session) -> int:
+    """Loads the bundled company lists into the shared registry, skipping any
+    already present. Idempotent, so it can run on every startup.
+
+    Rows are added in bulk rather than one commit each: the Global 2000 file
+    carries hundreds of boards, and a commit per row on SQLite is hundreds of
+    fsyncs standing between the process starting and the app answering.
+    """
+    rows: list[dict] = _load_seed(SEED_FILE)
+    for name in EXTRA_SEED_FILES:
+        rows.extend(_load_seed(Path(__file__).with_name(name)))
+    if not rows:
         return 0
 
     existing = {
@@ -49,22 +70,23 @@ def seed_shared_registry(db: Session) -> int:
                                       models.CompanyBoard.token)
         .filter(models.CompanyBoard.user_id.is_(None)).all()
     }
-    added = 0
-    for row in payload.get("companies", []):
+    pending = []
+    for row in rows:
         provider = (row.get("provider") or "").lower().strip()
         token = (row.get("token") or "").strip()
         if provider not in PROVIDERS or not token or (provider, token) in existing:
             continue
-        db.add(models.CompanyBoard(
-            user_id=None, name=(row.get("name") or token).strip(),
+        pending.append(models.CompanyBoard(
+            user_id=None, name=(row.get("name") or token).strip()[:200],
             provider=provider, token=token, active=True,
         ))
         existing.add((provider, token))
-        added += 1
-    if added:
+
+    if pending:
+        db.bulk_save_objects(pending)
         db.commit()
-        log.info("jobhunt: seeded %s company boards", added)
-    return added
+        log.info("jobhunt: seeded %s company boards", len(pending))
+    return len(pending)
 
 
 def boards_for_user(db: Session, user_id: int, include_inactive: bool = False):

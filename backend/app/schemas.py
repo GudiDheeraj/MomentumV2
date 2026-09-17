@@ -254,6 +254,58 @@ class ResumeBuilderRequest(BaseModel):
     passport_status: Optional[str] = None     # e.g. "Valid, transferable" — common on Gulf/Middle East CVs
 
 
+# ---------- Portfolio Builder ----------
+class PortfolioBase(BaseModel):
+    name: str
+    template_id: Optional[str] = None
+    # Free-form content bag. It is deliberately untyped: the templates share
+    # one shape, but every new field a template needs would otherwise mean a
+    # schema change *and* a migration, and old saved portfolios would fail
+    # validation the moment the shape moved on.
+    data: Optional[dict] = None
+    resume_id: Optional[int] = None
+
+
+class PortfolioCreate(PortfolioBase):
+    pass
+
+
+class PortfolioUpdate(BaseModel):
+    name: Optional[str] = None
+    template_id: Optional[str] = None
+    data: Optional[dict] = None
+    # 0 clears the link (JSON has no "unset"; None already means "leave alone").
+    resume_id: Optional[int] = None
+
+
+class PortfolioOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+    template_id: str
+    resume_id: Optional[int] = None
+    data: Optional[dict] = None
+    last_exported_at: Optional[datetime] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+
+class PortfolioSummary(BaseModel):
+    """List view — everything the library grid draws, without shipping every
+    portfolio's full content down the wire for a page of thumbnails."""
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+    template_id: str
+    resume_id: Optional[int] = None
+    headline: Optional[str] = None       # data.full_name — drawn on the card
+    subheading: Optional[str] = None     # data.title
+    section_count: int = 0
+    last_exported_at: Optional[datetime] = None
+    created_at: datetime
+    updated_at: Optional[datetime] = None
+
+
 # ---------- Cover Letter Generator ----------
 class CoverLetterRequest(BaseModel):
     resume_id: int
@@ -300,6 +352,55 @@ class ResumeAiAssistRequest(BaseModel):
     skills: Optional[str] = None
 
 
+class TailorAnalyseRequest(BaseModel):
+    """The advert plus the résumé on screen — the keyword and requirement read."""
+    job_description: str
+    values: dict = {}
+
+
+class TailorKeywordsRequest(BaseModel):
+    """Weave the keywords the person ticked into the sections they chose."""
+    job_description: str = ""
+    values: dict = {}
+    keywords: list[str] = []
+    targets: list[str] = ["skills"]
+
+
+class TailorPreviewRequest(BaseModel):
+    """A live tailoring proposal: what would change, at one of three strengths.
+
+    Carries the résumé's fields rather than its id, because the builder asks
+    for this while you are still editing — the version on screen is the one to
+    tailor, saved or not. That is also why nothing here is persisted.
+    """
+    job_description: str
+    level: str = "regular"
+    values: dict = {}
+    resume_id: Optional[int] = None   # only used to load values when none are sent
+    # The person's own instruction — "keep every bullet, lead with Azure, UK
+    # spelling". Empty means the safe default: reorder, never remove.
+    prompt: str = ""
+
+
+class TailorPromptIn(BaseModel):
+    """A named instruction to keep. Both fields are the person's own words."""
+    name: str
+    body: str
+
+
+class TailorPromptOut(BaseModel):
+    id: int
+    name: str
+    body: str
+    use_count: int = 0
+    # What the parser makes of it, so a saved prompt can be checked without
+    # running a tailoring pass first.
+    notes: List[str] = []
+
+    class Config:
+        from_attributes = True
+
+
 class TailorResumeRequest(BaseModel):
     resume_id: int
     job_description: str
@@ -309,6 +410,12 @@ class TailorResumeRequest(BaseModel):
 
 
 # ---------- Job Applications ----------
+class JobEnrichIn(BaseModel):
+    """Just enough for the enricher: the text, and the title that sharpens it."""
+    job_description: str = ""
+    role_title: str = ""
+
+
 class JobCreate(BaseModel):
     company_name: str
     role_title: str
@@ -788,6 +895,28 @@ class JobHuntRunResult(BaseModel):
     matched: int
     new: int
     ran_at: Optional[datetime] = None
+    # "cache" once the daily sweep has run, "live" on the very first search of
+    # a fresh install, when there is nothing cached yet to read.
+    source: Optional[str] = None
+    cached_postings: Optional[int] = None
+    cache_updated_at: Optional[datetime] = None
+
+
+class BoardSweepOut(BaseModel):
+    """What the last sweep did. The Job Hunt tab shows this so "no new jobs"
+    can be told apart from "nothing has been fetched since Tuesday"."""
+    started_at: Optional[datetime] = None
+    finished_at: Optional[datetime] = None
+    kind: Optional[str] = None
+    boards_total: int = 0
+    boards_ok: int = 0
+    boards_failed: int = 0
+    postings_new: int = 0
+    postings_closed: int = 0
+    postings_purged: int = 0
+    open_postings: int = 0
+    next_run_utc: Optional[str] = None
+    retention_days: int = 7
 
 
 class ReferralBrief(BaseModel):
@@ -857,3 +986,129 @@ class ReferralContactOut(ReferralContactCreate):
 
     class Config:
         from_attributes = True
+
+
+class ApplicationProfileIn(BaseModel):
+    full_name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    city: Optional[str] = None
+    country: Optional[str] = None
+    linkedin: Optional[str] = None
+    github: Optional[str] = None
+    website: Optional[str] = None
+    work_auth_country: Optional[str] = None
+    right_to_work: Optional[bool] = None
+    visa_status: Optional[str] = None
+    needs_sponsorship: Optional[bool] = None
+    sponsorship_notes: Optional[str] = None
+    notice_period: Optional[str] = None
+    earliest_start: Optional[date] = None
+    salary_expectation: Optional[str] = None
+    salary_currency: Optional[str] = None
+    willing_to_relocate: Optional[bool] = None
+    remote_preference: Optional[str] = None
+    preferred_locations: Optional[str] = None
+    current_title: Optional[str] = None
+    current_company: Optional[str] = None
+    years_experience: Optional[int] = None
+    default_resume_id: Optional[int] = None
+    how_did_you_hear: Optional[str] = None
+
+
+class ApplicationProfileOut(ApplicationProfileIn):
+    id: int
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class LLMSettingsIn(BaseModel):
+    provider: Optional[str] = None
+    api_key: Optional[str] = None
+    model: Optional[str] = None
+    base_url: Optional[str] = None
+    tone: Optional[str] = None
+    length: Optional[str] = None
+    instructions: Optional[str] = None
+    temperature: Optional[str] = None
+
+
+class LLMSettingsOut(BaseModel):
+    configured: bool = False
+    provider: str = "openai"
+    model: str = ""
+    base_url: str = ""
+    key_hint: str = ""
+    tone: str = ""
+    length: str = "medium"
+    instructions: str = ""
+    temperature: str = "0.7"
+    last_ok_at: Optional[datetime] = None
+    last_error: Optional[str] = None
+
+
+class LLMTestResult(BaseModel):
+    ok: bool
+    reply: Optional[str] = None
+    model: Optional[str] = None
+    error: Optional[str] = None
+
+
+class LLMProviderOut(BaseModel):
+    id: str
+    label: str
+    api: str
+    base: str = ""
+    model: str = ""
+    keys: str = ""
+    # The same page as `keys`, with a scheme, so the panel can offer a button
+    # instead of an address to retype.
+    keys_url: str = ""
+    # Newline-separated "thing|explanation" steps, for a provider that is set
+    # up rather than keyed — Ollama, which has no key page at all.
+    setup: str = ""
+    note: str = ""
+    # "free" | "credits" | "paid" | "local" | "" — what it costs to run, which
+    # is the first thing anyone picking one wants to know.
+    cost: str = ""
+    cost_label: str = ""
+    cost_note: str = ""
+
+
+class LLMModelsOut(BaseModel):
+    ok: bool
+    models: List[str] = []
+    error: Optional[str] = None
+
+
+# ---------- Portfolio designer ----------
+class PortfolioDesignBase(BaseModel):
+    name: str
+    # A design document: { v, name, theme, blocks }. Untyped for the same
+    # reason Portfolio.data is — block types and their options are still
+    # moving, and pinning the shape here would fail validation on every
+    # design saved before the next block landed.
+    design: Optional[dict] = None
+
+
+class PortfolioDesignCreate(PortfolioDesignBase):
+    pass
+
+
+class PortfolioDesignUpdate(BaseModel):
+    name: Optional[str] = None
+    design: Optional[dict] = None
+
+
+class PortfolioDesignOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    id: int
+    name: str
+    design: Optional[dict] = None
+    # How many portfolios currently wear this design. The library shows it so
+    # deleting one is an informed decision rather than a surprise.
+    used_by: int = 0
+    created_at: datetime
+    updated_at: Optional[datetime] = None

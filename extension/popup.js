@@ -28,9 +28,18 @@ const els = {
   hdrRole: document.getElementById("hdr-role"),
   hdrSub: document.getElementById("hdr-sub"),
   jobLogo: document.getElementById("job-logo"),
-  resumePicker: document.getElementById("resume-picker"),
-  selectResumeBtn: document.getElementById("select-resume-btn"),
   atsCheckBtn: document.getElementById("ats-check-btn"),
+  atsResult: document.getElementById("ats-result"),
+  atsScoreVal: document.getElementById("ats-score-val"),
+  atsVerdict: document.getElementById("ats-verdict"),
+  atsBarFill: document.getElementById("ats-bar-fill"),
+  atsMissing: document.getElementById("ats-missing"),
+  sponBadge: document.getElementById("spon-badge"),
+  sponEnabled: document.getElementById("spon-enabled"),
+  sponMode: document.getElementById("spon-mode"),
+  sponHint: document.getElementById("spon-hint"),
+  sponRegister: document.getElementById("spon-register"),
+  sponRefresh: document.getElementById("spon-refresh"),
   quotaPill: document.getElementById("quota-pill"),
   upgradeVeil: document.getElementById("upgrade-veil"),
   upgradeTitle: document.getElementById("upgrade-title"),
@@ -41,6 +50,7 @@ const els = {
   resumeSelect: document.getElementById("resume-select"),
   resumeRefreshBtn: document.getElementById("resume-refresh-btn"),
   resumeStatus: document.getElementById("resume-status"),
+  autofillBtn: document.getElementById("autofill-btn"),
   generateResumeBtn: document.getElementById("generate-resume-btn"),
   generateCoverLetterBtn: document.getElementById("generate-cover-letter-btn"),
   chkTailor: document.getElementById("chk-tailor"),
@@ -49,7 +59,8 @@ const els = {
   captureStatus: document.getElementById("capture-status"),
   resultsSection: document.getElementById("results-section"),
   resumeResult: document.getElementById("resume-result"),
-  resumeDownloadLink: document.getElementById("resume-download-link"),
+  resumeDownloadBtn: document.getElementById("resume-download-btn"),
+  resumeDlName: document.getElementById("resume-dl-name"),
   coverLetterResult: document.getElementById("cover-letter-result"),
   coverLetterText: document.getElementById("cover-letter-text"),
   copyCoverLetterBtn: document.getElementById("copy-cover-letter-btn"),
@@ -178,6 +189,9 @@ async function init() {
   els.resultsSection.classList.add("hidden");
   els.captureStatus.textContent = "";
   els.aiRefineStatus.textContent = "";
+  // Needs the token, so it belongs here rather than at file scope — this also
+  // means it re-reads after a login rather than staying stuck on "unavailable".
+  loadSponsorRegisterStatus();
 
   const scrapePromise = send({ type: "MOMENTUM_SCRAPE_ACTIVE_TAB" });
   const resumesPromise = loadResumes();
@@ -264,18 +278,52 @@ function requireJobDescription() {
   return fields;
 }
 
+// Restores innerHTML, not textContent.
+//
+// The action buttons are three elements — icon, a title/subtitle pair, and a
+// chevron. Saving textContent flattened all of that into one string, so after
+// the first click the button permanently read "📄Generate Tailored CVA CV
+// matched to this job›": every child gone, both lines run together. It only
+// looked like a CSS bug because the two buttons nobody had clicked yet still
+// rendered correctly.
 async function withButtonBusy(btn, label, fn) {
-  const original = btn.textContent;
+  const original = btn.innerHTML;
   btn.disabled = true;
-  btn.innerHTML = `<span class="spinner"></span>${label}`;
+  btn.dataset.busy = "1";
+  btn.innerHTML = `<span class="act-busy"><span class="spinner"></span>${label}</span>`;
   try {
     await fn();
   } finally {
     btn.disabled = false;
-    btn.textContent = original;
+    delete btn.dataset.busy;
+    btn.innerHTML = original;
     updateGenerateButtonsState();
   }
 }
+
+// Autofill deliberately reports what it *couldn't* fill as prominently as what
+// it could. The failure mode of form autofill isn't a blank box you notice —
+// it's a required question you scroll past because the page looks complete.
+els.autofillBtn?.addEventListener("click", async () => {
+  const btn = els.autofillBtn;
+  btn.disabled = true;
+  els.captureStatus.textContent = "Filling the form…";
+  els.captureStatus.className = "status";
+  try {
+    const res = await chrome.runtime.sendMessage({ type: "MOMENTUM_AUTOFILL_FORM" });
+    if (!res || res.error) throw new Error(res?.error || "Autofill didn't respond.");
+    const gaps = res.unfilled || [];
+    els.captureStatus.textContent = gaps.length
+      ? `Filled ${res.filled} fields. ${gaps.length} still need you: ${gaps.slice(0, 3).join("; ")}${gaps.length > 3 ? "…" : ""}`
+      : `Filled ${res.filled} fields. Check it over, then submit.`;
+    els.captureStatus.className = gaps.length ? "status warn" : "status ok";
+  } catch (e) {
+    els.captureStatus.textContent = e.message || "Couldn't fill this form.";
+    els.captureStatus.className = "status err";
+  } finally {
+    btn.disabled = false;
+  }
+});
 
 els.generateResumeBtn.addEventListener("click", async () => {
   const fields = requireJobDescription();
@@ -293,9 +341,7 @@ els.generateResumeBtn.addEventListener("click", async () => {
       },
     });
     if (res?.ok) {
-      els.resumeDownloadLink.href = `${currentApiBase}/uploads/${res.data.filename}`;
-      els.resumeResult.classList.remove("hidden");
-      els.resultsSection.classList.remove("hidden");
+      showResumeDownload(res.data.filename, res.data.name);
       els.captureStatus.textContent = `✅ Tailored resume created: ${res.data.name}`;
       els.captureStatus.className = "status ok";
     } else if (res?.status === 401) {
@@ -324,9 +370,7 @@ els.generateCoverLetterBtn.addEventListener("click", async () => {
       },
     });
     if (res?.ok) {
-      els.coverLetterText.value = res.data.cover_letter;
-      els.coverLetterResult.classList.remove("hidden");
-      els.resultsSection.classList.remove("hidden");
+      showCoverLetter(res.data.cover_letter);
       els.captureStatus.textContent = `✅ Cover letter generated (${res.data.mode} mode).`;
       els.captureStatus.className = "status ok";
     } else if (res?.status === 401) {
@@ -408,13 +452,11 @@ els.captureBtn.addEventListener("click", async () => {
 
     let anyResult = false;
     if (res.data.tailored_resume?.filename) {
-      els.resumeDownloadLink.href = `${currentApiBase}/uploads/${res.data.tailored_resume.filename}`;
-      els.resumeResult.classList.remove("hidden");
+      showResumeDownload(res.data.tailored_resume.filename, res.data.tailored_resume.name);
       anyResult = true;
     }
     if (res.data.cover_letter) {
-      els.coverLetterText.value = res.data.cover_letter;
-      els.coverLetterResult.classList.remove("hidden");
+      showCoverLetter(res.data.cover_letter);
       anyResult = true;
     }
     els.resultsSection.classList.toggle("hidden", !anyResult);
@@ -486,6 +528,10 @@ function renderHeader() {
   } else {
     els.jobLogo.textContent = (company || "—").slice(0, 2).toUpperCase();
   }
+  // The header is redrawn every time the company can have changed — scrape,
+  // AI refine, SPA navigation — so it's the one place the sponsor check needs
+  // hooking into. checkSponsorship() no-ops when the name hasn't changed.
+  checkSponsorship();
 }
 ["previewRole", "previewCompany", "previewLocation"].forEach(k =>
   els[k].addEventListener("input", renderHeader));
@@ -548,18 +594,262 @@ async function loadBoards() {
     .join("") || `<option value="">Default board</option>`;
 }
 
-// ---- the resume picker is revealed rather than always shown -------------
-els.selectResumeBtn.addEventListener("click", () => {
-  els.resumePicker.classList.toggle("hidden");
-  if (!els.resumePicker.classList.contains("hidden")) els.resumeSelect.focus();
+// ---------------------------------------------------------------------------
+// ATS check
+// ---------------------------------------------------------------------------
+// The backend has scored resumes against job descriptions all along
+// (/api/ats/check, app/ats_scorer.py); the extension button just never called
+// it and apologised instead. It needs the same two things the tailoring
+// actions need — a chosen resume and a real description — so it fails the same
+// way when either is missing.
+els.atsCheckBtn.addEventListener("click", async () => {
+  const fields = requireJobDescription();
+  const resumeId = selectedResumeId();
+  if (!fields) return;
+  if (!resumeId) {
+    els.captureStatus.textContent = "Pick a resume in step 1 first — the score is that resume against this posting.";
+    els.captureStatus.className = "status warn";
+    els.resumeSelect.focus();
+    return;
+  }
+
+  await withButtonBusy(els.atsCheckBtn, "Scoring…", async () => {
+    const res = await send({
+      type: "MOMENTUM_ATS_CHECK",
+      payload: { resume_id: resumeId, job_description: fields.job_description },
+    });
+    if (res?.ok) {
+      renderAtsResult(res.data);
+      els.captureStatus.textContent = "";
+      els.captureStatus.className = "status";
+    } else if (res?.status === 401) {
+      await chrome.storage.local.remove(["token", "user"]);
+      showOnly(els.login);
+    } else {
+      els.atsResult.classList.add("hidden");
+      els.captureStatus.textContent = res?.error || "Couldn't score this resume.";
+      els.captureStatus.className = "status err";
+    }
+  });
 });
 
-// The ATS check runs against a resume and the description; both AI-assisted
-// actions above already have handlers. This one is left inert until the
-// scoring endpoint is wired up, and says so rather than failing silently.
-els.atsCheckBtn.addEventListener("click", () => {
-  els.captureStatus.textContent = "ATS scoring isn't wired up in the extension yet — save the job and run the check in the app.";
-  els.captureStatus.className = "status warn";
+function renderAtsResult(d) {
+  const score = Math.max(0, Math.min(100, Math.round(d.score ?? 0)));
+  els.atsScoreVal.textContent = score;
+  els.atsBarFill.style.width = `${score}%`;
+
+  // Thresholds match the app's own reading of the score, so the extension and
+  // the ATS page never disagree about whether a resume is in good shape.
+  const verdict = score >= 75 ? ["good", "Strong match"]
+    : score >= 50 ? ["mid", "Worth tightening"]
+    : ["low", "Needs work"];
+  els.atsVerdict.className = `ats-verdict ${verdict[0]}`;
+  els.atsVerdict.textContent = verdict[1];
+
+  // Missing hard skills are the actionable part — they're the terms the
+  // posting asks for by name. Plain keywords are noisier, so they only fill in
+  // when there are no hard skills to report.
+  const missing = (d.missing_hard_skills?.length ? d.missing_hard_skills : d.missing_keywords) || [];
+  if (missing.length) {
+    els.atsMissing.innerHTML = "";
+    const heading = document.createElement("b");
+    heading.textContent = d.missing_hard_skills?.length ? "Missing hard skills" : "Missing keywords";
+    els.atsMissing.appendChild(heading);
+    // Built as nodes, not innerHTML: these strings come from a scraped page.
+    missing.slice(0, 12).forEach(term => {
+      const chip = document.createElement("i");
+      chip.textContent = term;
+      els.atsMissing.appendChild(chip);
+    });
+  } else {
+    els.atsMissing.textContent = "Nothing obvious missing — this resume covers the terms in the posting.";
+  }
+  els.atsResult.classList.remove("hidden");
+}
+
+// ---------------------------------------------------------------------------
+// Downloads
+// ---------------------------------------------------------------------------
+// One place for everything generated, rather than a status line with a link
+// buried in it. Both entries land in the same panel with the same affordance.
+let tailoredResumeFile = null;
+
+function showResumeDownload(filename, name) {
+  tailoredResumeFile = filename || null;
+  els.resumeDlName.textContent = name || filename || "Ready";
+  els.resumeDownloadBtn.disabled = !filename;
+  els.resumeResult.classList.remove("hidden");
+  els.resultsSection.classList.remove("hidden");
+}
+
+function showCoverLetter(text) {
+  els.coverLetterText.value = text || "";
+  els.coverLetterResult.classList.remove("hidden");
+  els.resultsSection.classList.remove("hidden");
+}
+
+function safeFileStem(prefix) {
+  const company = (els.previewCompany.value || "job").replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+  const role = (els.previewRole.value || "").replace(/[^a-z0-9]+/gi, "-").toLowerCase();
+  return [prefix, company, role].filter(Boolean).join("-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+}
+
+// chrome.downloads rather than an <a download>: the file lives behind an
+// authenticated API on another origin, and a popup that closes mid-click
+// cancels an anchor navigation. The downloads API owns the transfer, so it
+// survives the popup closing.
+els.resumeDownloadBtn?.addEventListener("click", async () => {
+  if (!tailoredResumeFile) return;
+  const url = `${currentApiBase}/uploads/${encodeURIComponent(tailoredResumeFile)}`;
+  const ext = (tailoredResumeFile.match(/\.[a-z0-9]+$/i) || [".docx"])[0];
+  try {
+    await chrome.downloads.download({ url, filename: `${safeFileStem("resume")}${ext}`, saveAs: false });
+  } catch {
+    // Older Chrome, or the permission was declined — a new tab still works.
+    chrome.tabs.create({ url });
+  }
+});
+
+els.downloadCoverLetterBtn.addEventListener("click", () => {
+  const blob = new Blob([els.coverLetterText.value], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${safeFileStem("cover-letter")}.txt`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 10_000);
+});
+
+// ---------------------------------------------------------------------------
+// UK sponsor licence check
+// ---------------------------------------------------------------------------
+// Runs whenever the company changes. It's advisory: the register is a list of
+// organisations licensed to sponsor, not a promise that this particular role
+// carries sponsorship, and the wording says so.
+let lastSponsorshipQuery = null;
+
+async function checkSponsorship() {
+  const company = els.previewCompany.value.trim();
+  if (!company) { els.sponBadge.classList.add("hidden"); lastSponsorshipQuery = null; return; }
+  if (company === lastSponsorshipQuery) return;
+  lastSponsorshipQuery = company;
+
+  setSponBadge("pending", "Checking sponsor register…", "");
+  const res = await send({ type: "MOMENTUM_SPONSOR_CHECK", payload: { company } });
+  // A later company change may have overtaken this request.
+  if (els.previewCompany.value.trim() !== company) return;
+  if (!res?.ok) { els.sponBadge.classList.add("hidden"); return; }
+
+  const d = res.data || {};
+  if (d.status === "licensed") {
+    setSponBadge("yes", `Licensed sponsor — ${d.matched_name}`,
+      `Matched "${d.matched_name}" in the Home Office register${d.routes ? ` · ${d.routes}` : ""}. ` +
+      `A licence means the employer can sponsor, not that this role does.`);
+  } else if (d.status === "possible") {
+    setSponBadge("maybe", `Possible sponsor — ${d.matched_name}`,
+      `Closest register entry is "${d.matched_name}" (${d.confidence}% name similarity). Worth confirming.`);
+  } else if (d.status === "unknown") {
+    setSponBadge("no", "Register unavailable", d.detail || "The sponsor register hasn't been downloaded yet.");
+  } else {
+    setSponBadge("no", "Not on the sponsor register",
+      "No close match in the Home Office register of licensed worker sponsors. " +
+      "Subsidiaries are often listed under a different legal name.");
+  }
+}
+
+function setSponBadge(kind, label, title) {
+  els.sponBadge.className = `spon ${kind}`;
+  els.sponBadge.title = title || "";
+  els.sponBadge.innerHTML = "";
+  const dot = document.createElement("span");
+  dot.textContent = kind === "yes" ? "✓" : kind === "maybe" ? "~" : kind === "pending" ? "…" : "·";
+  const text = document.createElement("span");
+  text.textContent = label;
+  els.sponBadge.append(dot, text);
+  els.sponBadge.classList.remove("hidden");
+}
+
+els.previewCompany.addEventListener("change", checkSponsorship);
+
+// ---------------------------------------------------------------------------
+// In-page sponsor tags — the switch and the three modes
+// ---------------------------------------------------------------------------
+// The badge above answers for the posting you already opened. These controls
+// govern sponsor-badges.js, which answers the same question on the results
+// list, before the click. The setting is written to chrome.storage and every
+// open job tab picks the change up through storage.onChanged — nothing here
+// has to know which tabs exist, and a tab opened later reads the same value.
+const SPON_DEFAULTS = { enabled: true, mode: "badge" };
+const SPON_HINTS = {
+  badge: "Sponsors get a green tag. Everything else is left exactly as it is.",
+  dim: "Sponsors get a tag; employers with no licence on the register fade back.",
+  hide: "Only sponsors stay on the page. Cards with no licence are removed from the list.",
+};
+let sponSettings = { ...SPON_DEFAULTS };
+
+function renderSponControls() {
+  els.sponEnabled.checked = !!sponSettings.enabled;
+  els.sponMode.classList.toggle("off", !sponSettings.enabled);
+  els.sponMode.querySelectorAll("button").forEach(b => {
+    b.classList.toggle("on", b.dataset.mode === sponSettings.mode);
+  });
+  els.sponHint.textContent = sponSettings.enabled
+    ? (SPON_HINTS[sponSettings.mode] || "")
+    : "Job lists are left untouched.";
+}
+
+async function saveSponSettings(patch) {
+  sponSettings = { ...sponSettings, ...patch };
+  renderSponControls();
+  await chrome.storage.local.set({ sponsorBadges: sponSettings });
+}
+
+els.sponEnabled.addEventListener("change", () => {
+  saveSponSettings({ enabled: els.sponEnabled.checked });
+});
+els.sponMode.addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-mode]");
+  if (btn) saveSponSettings({ mode: btn.dataset.mode });
+});
+
+// The register is a ~100k-row download that has to happen once before any of
+// this can answer anything, so its state is shown rather than left to be
+// inferred from tags that never appear.
+async function loadSponsorRegisterStatus() {
+  const res = await send({ type: "MOMENTUM_SPONSOR_STATUS" });
+  if (!res?.ok) {
+    els.sponRegister.textContent = "Register status unavailable — is the backend running?";
+    return;
+  }
+  const { org_count: count, synced_at: synced } = res.data || {};
+  if (!count) {
+    els.sponRegister.textContent = "Register not downloaded yet — nothing can be checked until it is.";
+    return;
+  }
+  const when = synced
+    ? new Date(synced).toLocaleDateString(undefined, { day: "numeric", month: "short" })
+    : "unknown date";
+  els.sponRegister.textContent = `${count.toLocaleString()} licensed employers · synced ${when}`;
+}
+
+els.sponRefresh.addEventListener("click", async () => {
+  els.sponRefresh.disabled = true;
+  els.sponRegister.textContent = "Downloading the latest register from GOV.UK…";
+  const res = await send({ type: "MOMENTUM_SPONSOR_REFRESH" });
+  els.sponRefresh.disabled = false;
+  if (res?.ok) {
+    // A fresh register invalidates the badge above as well as the page tags.
+    lastSponsorshipQuery = null;
+    checkSponsorship();
+    await loadSponsorRegisterStatus();
+  } else {
+    els.sponRegister.textContent = res?.error || "Couldn't refresh the register.";
+  }
+});
+
+chrome.storage.local.get(["sponsorBadges"], (stored) => {
+  sponSettings = { ...SPON_DEFAULTS, ...(stored?.sponsorBadges || {}) };
+  renderSponControls();
 });
 
 loadBoards();

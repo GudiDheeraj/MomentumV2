@@ -1,0 +1,70 @@
+{
+  "data_scientist": [
+    {
+      "level": "early",
+      "headline": "Moved across from research, two years in",
+      "why": "A thin data-science history carried by projects and a quantitative PhD. Notice the order: the projects section sits above employment, because at this stage the work you chose to do says more than the job you happened to hold.",
+      "template_id": "academic_cv",
+      "data": {
+        "full_name": "Priya Raghunathan",
+        "title": "Data Scientist",
+        "location": "Cambridge, UK",
+        "phone": "+44 7700 900184",
+        "email": "p.raghunathan@example.com",
+        "linkedin": "linkedin.com/in/priya-raghunathan-example",
+        "website": "praghunathan.example.com",
+        "summary": "- Data scientist with a computational biology PhD, two years applying the same modelling to commercial problems.\n- Builds models that reach production: three of four projects below are running weekly, not sitting in notebooks.",
+        "skills": "Languages: Python, R, SQL\nModelling: scikit-learn, PyTorch, statsmodels, survival analysis, Bayesian hierarchical models\nData and deployment: dbt, Airflow, Docker, AWS SageMaker\nCommunication: matplotlib, Quarto, stakeholder briefings",
+        "experience": "Data Scientist | Wellspring Diagnostics | Cambridge, UK | Sep 2024 - Present\n- Built the patient no-show model now used to schedule six clinics, cutting unused appointment slots from 18% to 11% over two quarters.\n- Replaced a hand-tuned reorder rule with a demand forecast, reducing reagent write-off by £140k a year.\n- Set up the team's first model monitoring, catching a feature drift that had gone unnoticed for five weeks.\n---\nResearch Associate | University of Cambridge | Cambridge, UK | Oct 2020 - Aug 2024\n- Modelled protein-interaction networks across 40,000 samples, work that became two first-author papers.\n- Wrote the lab's analysis pipeline in Python and Nextflow; still in use by nine researchers.\n- Supervised four MSc students through their dissertation analyses.",
+        "education": "PhD, Computational Biology | University of Cambridge | Oct 2020 - Aug 2024\n---\nMSc, Statistics (Distinction) | University of Warwick | Sep 2019 - Sep 2020",
+        "projects": "Clinic No-Show Model: Gradient-boosted classifier on 400k appointments; deployed behind a FastAPI service, retrained monthly, AUC 0.81 against a 0.62 baseline.\n---\nReagent Demand Forecast: Hierarchical Bayesian model handling 200 low-volume items with sparse history, where a per-item ARIMA had failed.",
+        "publications": "Raghunathan P., et al. Sparse network inference in low-sample proteomics. Bioinformatics, 2023\n---\nRaghunathan P., Oyelaran T. Calibration of survival models under informative censoring. Statistics in Medicine, 2022",
+        "certifications": "AWS Certified Machine Learning - Specialty"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Four years, product data science",
+      "why": "Every bullet names the decision the work changed, not the technique used. Experiment design leads, because product data science is judged on whether you can tell a real effect from a wishful one.",
+      "template_id": "tech_clean_colorful",
+      "data": {
+        "full_name": "Callum Ferreira",
+        "title": "Data Scientist",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900427",
+        "email": "callum.ferreira@example.com",
+        "linkedin": "linkedin.com/in/callum-ferreira-example",
+        "website": "",
+        "summary": "- Product data scientist, four years across marketplace and subscription businesses.\n- Runs the experiment programme end to end: design, power, readout, and the argument with the PM when the result is flat.",
+        "skills": "Experimentation: A/B and switchback design, sequential testing, CUPED, power analysis\nLanguages: Python, SQL, some Scala\nModelling: scikit-learn, uplift modelling, causal inference (DiD, synthetic control)\nStack: Snowflake, dbt, Airflow, Looker, Amplitude",
+        "experience": "Data Scientist | Rowan Marketplace | Manchester, UK | Mar 2023 - Present\n- Rebuilt the experiment readout so results account for repeat buyers; three past \"wins\" turned out to be noise, and the roadmap changed accordingly.\n- Designed the switchback test for same-day delivery pricing, which found a 4.2% margin gain that a naive A/B had shown as flat.\n- Built the seller-churn model that now triggers account-manager outreach; retained sellers worth £2.1m GMV in its first year.\n- Cut the time from experiment stop to readout from nine days to under one by templating the analysis.\n---\nData Scientist | Northgate Media | Leeds, UK | Jul 2021 - Feb 2023\n- Owned the subscriber propensity model behind the winback campaign, lifting reactivation 12% on a £3m spend.\n- Found and fixed a tracking bug that had been inflating trial conversion by a third for two quarters.\n- Ran the weekly metrics review with product and finance.",
+        "education": "BSc, Mathematics and Statistics (First Class) | University of Sheffield | Sep 2018 - Jun 2021",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Nine years, now leading a team",
+      "why": "The tooling list shrinks and the scope grows. At this level a recruiter is reading for what you were trusted with and what changed because of you — so the bullets are about teams, decisions and money, and the modelling detail moves to a supporting line.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Ama Boateng",
+        "title": "Principal Data Scientist",
+        "location": "London, UK",
+        "phone": "+44 7700 900311",
+        "email": "ama.boateng@example.com",
+        "linkedin": "linkedin.com/in/ama-boateng-example",
+        "website": "",
+        "summary": "- Principal data scientist, nine years in lending and payments; currently leads a team of seven across risk and pricing models.\n- Took the credit-decisioning stack from a quarterly manual refresh to weekly automated retraining, under FCA model-governance rules.",
+        "skills": "Leadership: team of 7, hiring, model governance, regulator-facing documentation\nDomain: credit risk, pricing, fraud, PD/LGD, affordability\nTechnical: Python, SQL, Spark, MLflow, AWS; XGBoost, GLMs, monotonic constraints for explainability",
+        "experience": "Principal Data Scientist | Meridian Payments | London, UK | Jan 2022 - Present\n- Lead seven data scientists across credit risk and pricing; hired five of them and rebuilt the interview loop after a 40% first-year attrition problem.\n- Rebuilt credit decisioning on monotonic gradient boosting, improving Gini from 0.58 to 0.67 while keeping every feature explainable to the regulator.\n- Moved model retraining from a quarterly manual exercise to a governed weekly pipeline, cutting the lag between a market shift and a live model from months to days.\n- Chair the model risk committee; wrote the documentation standard the second-line reviewers now use.\n---\nSenior Data Scientist | Halden Bank | London, UK | Apr 2018 - Dec 2021\n- Built the affordability model covering 2.4m customers, which reduced default rates 90 days out by 15% at constant approval volume.\n- Led the migration of 30 legacy scorecards off SAS onto Python, retiring a £400k annual licence.\n- Mentored four juniors, two of whom now lead teams of their own.\n---\nData Scientist | Halden Bank | London, UK | Sep 2016 - Mar 2018\n- Fraud detection on card-present transactions; cut false positives 22% without missing more fraud.",
+        "education": "MSc, Operational Research | London School of Economics | Sep 2015 - Sep 2016\n---\nBSc, Economics | University of Ghana | Sep 2011 - Jun 2015",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ]
+}

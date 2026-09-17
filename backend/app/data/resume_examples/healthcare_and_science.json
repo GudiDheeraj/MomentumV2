@@ -1,0 +1,274 @@
+{
+  "nurse": [
+    {
+      "level": "early",
+      "headline": "Ten months registered, came up from care work",
+      "why": "A newly qualified nurse's evidence is mostly placement hours, so the placements are carried as their own block rather than buried in education. Note where the NMC PIN sits: in the opening line, because a nursing recruiter checks the register before reading anything else, and a CV without a PIN gets set aside.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Aleksandra Nowicka",
+        "title": "Registered Nurse (Adult), Band 5",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900612",
+        "email": "aleksandra.nowicka@example.com",
+        "linkedin": "linkedin.com/in/aleksandra-nowicka-example",
+        "website": "",
+        "summary": "- Adult nurse registered with the NMC in October 2025, PIN 25A1846E, ten months into a Band 5 post on a 32-bed acute medical unit.\n- Came to nursing through three years as a healthcare assistant, so preceptorship was spent on drug charts and escalation rather than on the basics of care.",
+        "skills": "Clinical: cannulation, venepuncture, ANTT, urinary catheterisation, 12-lead ECG recording, complex wound dressing\nAssessment and escalation: NEWS2, sepsis screening, ABCDE assessment, fluid balance, falls and pressure-ulcer risk\nMedicines: IV administration (competency signed off May 2026), controlled drugs second-checking, insulin and anticoagulant charts\nSystems: electronic patient record, EPMA, e-rostering, Datix",
+        "experience": "Staff Nurse (Band 5), Acute Medical Unit | Ashcombe Vale University Hospital | Leeds, UK | Oct 2025 - Present\n- Take a bay of six to eight acutely unwell medical patients on a 32-bed unit, 1:7 on days and 1:11 at night.\n- Completed the trust IV therapy and cannulation competencies four months ahead of the preceptorship timetable, taking most night-shift cannulation off the on-call doctor.\n- Escalated a patient at NEWS2 7 whose deterioration had been charted but not acted on; the case became a teaching point at the Friday ward huddle.\n- Volunteered as hydration link nurse after an audit found 18 of 32 fluid balance charts incomplete. The re-count six weeks later found four.\n---\nHealthcare Assistant | Marchford House Nursing Home | Leeds, UK | Jun 2022 - Sep 2025\n- Worked alternate weekends and nights through the degree on a 44-bed dementia and nursing unit.\n- Trained six new starters in moving and handling and in personal care for residents with advanced dementia.",
+        "education": "BSc (Hons) Nursing (Adult), 2:1 | University of Leeds | Sep 2022 - Jul 2025\n---\nAccess to Higher Education Diploma (Health), Distinction | Leeds City College | Sep 2021 - Jun 2022",
+        "projects": "Practice placements, 2,300 supervised hours: acute medical unit (12 weeks), respiratory (10), emergency department (6), community district nursing (8), orthopaedic theatres (6), and a final management placement on colorectal surgery (12).\n---\nDissertation - Fluid balance charting on acute medical wards: why charts get started and not finished. Graded 74.",
+        "publications": "",
+        "certifications": "NMC registration, Adult Nurse - first revalidation due October 2028\nImmediate Life Support (Resuscitation Council UK), May 2026\nSafeguarding Adults and Children, Level 2, March 2026\nManual handling, infection prevention and control, conflict resolution - current to March 2027"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, Band 6 in an emergency department",
+      "why": "Band 6 is where a nursing CV stops listing skills and starts naming caseload, acuity and who you are responsible for. Education has dropped to one line; what replaces it is the revalidation date, practice-assessor status under the NMC standards, and the audits this nurse actually ran rather than attended.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Joel Villanueva",
+        "title": "Senior Staff Nurse (Band 6), Emergency Department",
+        "location": "Portsmouth, UK",
+        "phone": "+44 7700 900238",
+        "email": "joel.villanueva@example.com",
+        "linkedin": "linkedin.com/in/joel-villanueva-example",
+        "website": "",
+        "summary": "- Band 6 emergency nurse, five years post-registration, NMC PIN 21J3062M, revalidated March 2024; nurse-in-charge of majors on a rotating basis.\n- Practice assessor under the NMC standards for student supervision and assessment, and has signed off eleven students to date.",
+        "skills": "Emergency practice: Manchester Triage System, adult and paediatric resus team, trauma reception, procedural sedation monitoring, Section 136 reception\nClinical: cannulation, arterial blood gas sampling, 12-lead ECG and rhythm recognition, wound closure, plaster of Paris, chest drain assist\nMedicines: IV administration, PGDs for analgesia, antiemetics and tetanus, controlled drugs checking\nEducation: NMC practice supervisor and assessor, ILS instructor, induction lead for internationally recruited nurses",
+        "experience": "Senior Staff Nurse (Band 6), Emergency Department | Thornleigh Bay Hospital Trust | Portsmouth, UK | Mar 2024 - Present\n- Run majors as nurse-in-charge across a 14-bay area seeing around 320 attendances a day, holding flow between triage, resus and the ambulance handover queue.\n- Moved the sepsis screening prompt so it fires at triage rather than at first nursing assessment; time to first antibiotic fell from 94 minutes to 61 over two quarters.\n- Built and run the four-week ED induction for internationally recruited nurses after two of the four who joined in 2024 left within six months. The 2025 cohort of nine has kept all nine.\n- Assess and sign off third-year students, and took the department's first two nursing associate trainees through their emergency competencies.\n---\nStaff Nurse (Band 5), Emergency Department and Acute Medical Unit | Calderbrook General Hospital | Southampton, UK | Sep 2021 - Feb 2024\n- Rotated between the acute medical unit and the emergency department, completing the trust minor injuries competency in year two.\n- One of three nurses who split paediatric triage into its own stream, cutting the wait to first assessment for under-5s from 42 minutes to 18.\n- Reported and investigated a recurring near-miss with look-alike ampoules; the storage change that followed went trust-wide.",
+        "education": "BSc (Hons) Nursing (Adult) | University of Portsmouth | Sep 2018 - Jul 2021",
+        "projects": "",
+        "publications": "",
+        "certifications": "NMC registration, Adult Nurse - revalidated March 2024, next due March 2027\nAdvanced Life Support and European Paediatric Advanced Life Support (Resuscitation Council UK)\nMinor injury and illness module, Level 7, 2023\nNMC Practice Assessor under the Standards for Student Supervision and Assessment, 2023\nSafeguarding Adults and Children, Level 3"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Ward manager, 34 beds and a pay budget",
+      "why": "A ward manager is judged on establishment, budget and safety metrics, not on cannulation, so the clinical block shrinks to a line and vacancy rate, agency spend and pressure-ulcer figures take its place. The registration line stays exactly where it was: in nursing it never comes off the CV, however senior the post.",
+      "template_id": "government_formal",
+      "data": {
+        "full_name": "Bronwen Hartnell",
+        "title": "Ward Manager (Band 7), Trauma and Orthopaedics",
+        "location": "Cardiff, UK",
+        "phone": "+44 7700 900755",
+        "email": "bronwen.hartnell@example.com",
+        "linkedin": "linkedin.com/in/bronwen-hartnell-example",
+        "website": "",
+        "summary": "- Ward manager of a 34-bed trauma and orthopaedic ward, accountable for an establishment of 48 WTE and a 2.6m pay budget. NMC PIN 12C4183R, revalidated September 2025.\n- Fourteen years in adult nursing, the last six in charge; took the ward off enhanced surveillance in 2023 after eighteen months on it.",
+        "skills": "Leadership: establishment and skill-mix planning, e-rostering, recruitment and appraisal for 48 WTE, sickness and capability casework, international recruitment\nGovernance: PSIRF investigation and after-action review, clinical audit, CQC inspection readiness, complaints and duty of candour, NICE guideline implementation\nClinical: trauma and orthopaedic pathways, enhanced recovery, complex wound and pin-site care, delirium care, Deprivation of Liberty Safeguards\nEducation: NMC practice assessor, ward preceptorship lead, link-nurse programme",
+        "experience": "Ward Manager (Band 7), Trauma and Orthopaedics | Kingsmere University Hospital Trust | Cardiff, UK | Apr 2020 - Present\n- Hold the pay budget for a 34-bed ward and 48 WTE. Agency spend fell from 417k to 96k a year after nine long-term agency shifts moved to a bank-first roster and eleven vacancies were filled substantively.\n- Registered nurse vacancy rate came down from 31% to 6% in two years, mostly by rebuilding the preceptorship offer and interviewing in cohorts rather than post by post.\n- Category 2 and above pressure ulcers fell from 19 a year to 4 after two-hourly repositioning boards and a daily skin round led by the nurse in charge.\n- Led the after-action review into a death following a delayed hip fracture repair; the resulting change to trauma list booking now applies across the directorate.\n- Chair the directorate practice assessor forum and sit on the trust nursing workforce group.\n---\nDeputy Ward Manager and Senior Staff Nurse (Band 6), Orthopaedics | Brackenfield General Hospital | Swansea, UK | Aug 2016 - Mar 2020\n- Deputised across a 28-bed elective and trauma ward, holding the roster and the off-duty escalation.\n- Set up the fascia iliaca block pathway with the anaesthetic team; median time to analgesia for hip fracture admissions went from 78 minutes to 34.\n---\nStaff Nurse (Band 5), Surgical and Orthopaedic Wards | Brackenfield General Hospital | Swansea, UK | Sep 2012 - Jul 2016\n- Rotated across three surgical wards and completed the trust advanced wound care and venepuncture competencies.",
+        "education": "MSc Nursing (Leadership and Management) | Cardiff University | Sep 2019 - Sep 2022\n---\nBSc (Hons) Nursing (Adult) | Swansea University | Sep 2009 - Jul 2012",
+        "projects": "",
+        "publications": "",
+        "certifications": "NMC registration, Adult Nurse - revalidated September 2025\nAdvanced Life Support (Resuscitation Council UK)\nILM Level 5 Certificate in Leadership and Management, 2021\nPSIRF investigation and after-action review training, 2023\nNMC Practice Assessor; Safeguarding Adults and Children, Level 3"
+      }
+    }
+  ],
+  "physician": [
+    {
+      "level": "early",
+      "headline": "Finishing FY2, applying to core training",
+      "why": "Every foundation doctor did the same six four-month rotations, so employment history proves almost nothing here. What separates this CV is a closed audit loop with a re-audit and a presentation, which is why the audit and QI work sits in its own block. The GMC number and full-registration date lead, because a panel verifies both before shortlisting.",
+      "template_id": "harvard_classic",
+      "data": {
+        "full_name": "Ines Salgado",
+        "title": "Foundation Year 2 Doctor",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900341",
+        "email": "ines.salgado@example.com",
+        "linkedin": "linkedin.com/in/ines-salgado-example",
+        "website": "",
+        "summary": "- Foundation Year 2 doctor completing August 2026. GMC 7812349, full registration with a licence to practise since 3 August 2025.\n- Applying for Internal Medicine Training: MRCP(UK) Part 1 passed at first sitting, two audits closed with a re-audit, and a regional presentation on the second.",
+        "skills": "Procedures: peripheral and arterial cannulation, blood gas sampling, urethral catheterisation, nasogastric tube insertion, ascitic tap; lumbar puncture and pleural aspiration supervised\nAcute care: adult and paediatric life support, acute unselected medical take, ceiling-of-treatment and DNACPR discussions\nAudit and improvement: full audit cycle including re-audit, PDSA cycles, run charts\nTeaching: bedside teaching for third- and fourth-year students, peer teaching programme",
+        "experience": "Foundation Year 2 Doctor | Northbourne General Hospital | Bristol, UK | Aug 2025 - Present\n- Rotations: Acute Internal Medicine (4 months), General Practice at Fernhill Road Surgery (4 months), Trauma and Orthopaedics (4 months).\n- Held the FY2 bleep on the acute medical take, clerking eight to twelve unselected admissions a night with registrar review.\n- Ran the ward round and discharge list for a 26-bed orthopaedic ward and took over the Monday trauma board handover.\n- Argued the case at the foundation trainee committee for the protected teaching hour that now runs on Thursdays.\n---\nFoundation Year 1 Doctor | Northbourne General Hospital | Bristol, UK | Aug 2024 - Aug 2025\n- Rotations: General Surgery (4 months), Care of the Elderly (4 months), Respiratory Medicine (4 months).\n- Rebuilt the surgical ward handover list into a single shared document after two jobs were lost between shifts.\n- Completed all FY1 procedural sign-offs by January and was signed off for full registration without extension.",
+        "education": "MB ChB | University of Bristol | Sep 2018 - Jul 2024\n---\nBSc (Hons) Infection and Immunity, First Class, intercalated | University of Bristol | Sep 2020 - Jul 2021",
+        "projects": "Audit - VTE risk assessment on emergency surgical admission: 214 admissions against NICE NG89, assessed within 14 hours in 61%. Added a clerking proforma prompt and a nightly on-call check; re-audit of 198 admissions found 92%.\n---\nQuality improvement - Discharge summaries on the acute medical unit: three PDSA cycles took median time from decision-to-discharge to summary sent from 31 hours to 6. Presented regionally, March 2026.",
+        "publications": "Salgado I., Whitcombe A. Delayed presentation of pituitary apoplexy in a patient on anticoagulation. Clinical Medicine, 2026\nSalgado I., Achebe N., Whitcombe A. Improving VTE risk assessment on emergency surgical admission. Poster, Royal College of Physicians annual conference, 2026",
+        "certifications": "GMC full registration with a licence to practise, reference 7812349, August 2025\nMRCP(UK) Part 1, passed May 2026\nAdvanced Life Support (Resuscitation Council UK), 2025\nGood Clinical Practice (NIHR), 2025\nSafeguarding Children, Level 3, 2024"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Registrar, first year of higher training",
+      "why": "A registrar CV is scored against a person specification rather than read for impression, so procedures, exams, audit, teaching and publications each get their own block instead of being blended into bullets. Notice the procedure list is specific to the specialty and says what level of supervision each was signed off at.",
+      "template_id": "academic_cv",
+      "data": {
+        "full_name": "Duncan Mureithi",
+        "title": "Specialty Registrar (ST4), Respiratory and General Internal Medicine",
+        "location": "Birmingham, UK",
+        "phone": "+44 7700 900496",
+        "email": "duncan.mureithi@example.com",
+        "linkedin": "linkedin.com/in/duncan-mureithi-example",
+        "website": "",
+        "summary": "- Respiratory registrar in the first year of higher training. GMC 7345098, National Training Number in respiratory medicine awarded August 2025.\n- MRCP(UK) full diploma 2024, ARCP outcome 1 at every review; medical registrar on call for a 640-bed hospital and runs the registrar pleural list.",
+        "skills": "Procedures: Seldinger and surgical chest drains, thoracocentesis, indwelling pleural catheters, thoracic ultrasound (BTS Level 1 signed off), diagnostic bronchoscopy (independent), EBUS (in training), central venous cannulation\nRespiratory: pleural disease, acute NIV, lung cancer MDT, asthma and COPD clinics, home oxygen\nGeneral internal medicine: acute unselected take, critical care escalation, ceiling-of-treatment decisions\nTeaching and research: mini-CEX, CbD and ACAT assessor, simulation faculty, GCP-trained sub-investigator",
+        "experience": "Specialty Registrar (ST4), Respiratory and General Internal Medicine | Aldergate University Hospital | Birmingham, UK | Aug 2025 - Present\n- Medical registrar on the acute take for a 640-bed hospital, roughly one in eight, taking referrals from the emergency department and from primary care.\n- Restarted the consultant-supervised registrar pleural list after it lapsed: 61 procedures in eleven months, and the median wait from chest X-ray to drainage fell from four days to under 24 hours.\n- Rewrote the ambulatory pneumothorax pathway with emergency medicine, detailed below.\n- Sub-investigator on two portfolio respiratory studies, 44 participants since September 2025.\n---\nInternal Medicine Trainee, IMT1 to IMT3 | Wrenbury Park Hospital | Coventry, UK | Aug 2022 - Aug 2025\n- Rotated through acute medicine, respiratory, cardiology, gastroenterology and care of the elderly, with twelve weeks of critical care and a four-month geriatric attachment.\n- Passed MRCP(UK) Part 1 in IMT1 and the full diploma including PACES by the end of IMT2.\n- Built the hospital's IMT teaching programme where there had been no protected timetable; attendance ran at 78% and the surgical trainees copied the format.\n---\nFoundation Doctor, FY1 to FY2 | Kelverdon Royal Infirmary | Leicester, UK | Aug 2020 - Aug 2022\n- Six four-month rotations across medicine, surgery and general practice; audited oxygen prescribing against BTS guidance and closed the loop after a drug chart change.",
+        "education": "MB BS | University of Leicester | Sep 2015 - Jul 2020",
+        "projects": "Quality improvement - Ambulatory management of primary spontaneous pneumothorax: 38 consecutive admissions reviewed, pathway rewritten around device-based management, re-measured over nine months. Mean length of stay 3.9 days to 1.2, no 30-day readmissions after the change.\n---\nAudit - Ceiling of treatment documented before ward-based NIV: 96 patients, 52% at first pass. A mandatory field on the NIV chart took the re-audit to 94%.",
+        "publications": "Mureithi D., Okonjo B., Palliser R. Ambulatory device management of primary spontaneous pneumothorax in a district general hospital. BMJ Open Respiratory Research, 2026\nMureithi D., Palliser R. A registrar-delivered pleural service: service evaluation over twelve months. Clinical Medicine, 2025",
+        "certifications": "GMC registration with a licence to practise, reference 7345098\nMRCP(UK), full diploma, 2024\nThoracic ultrasound, British Thoracic Society Level 1 sign-off, 2025\nAdvanced Life Support (Resuscitation Council UK), instructor candidate 2026\nGood Clinical Practice (NIHR), renewed 2025; Train the Trainers, Royal College of Physicians, 2025"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Consultant twelve years, now clinical director",
+      "why": "Notice what a consultant CV drops. The audit block that carried the early example is gone, and job planning, a directorate budget and mortality-review outcomes replace it. The registration line changes shape too: entry on the GMC Specialist Register with a CCT date, which is the thing that legally permits the appointment.",
+      "template_id": "executive_elegant",
+      "data": {
+        "full_name": "Devika Ramaswamy",
+        "title": "Consultant Cardiologist and Clinical Director for Medicine",
+        "location": "London, UK",
+        "phone": "+44 7700 900827",
+        "email": "devika.ramaswamy@example.com",
+        "linkedin": "linkedin.com/in/devika-ramaswamy-example",
+        "website": "d-ramaswamy.example.com",
+        "summary": "- Consultant cardiologist since 2014, on the GMC Specialist Register in cardiology, reference 6110482, CCT August 2014.\n- Clinical director for a medical directorate of 31 consultants with a 14.2m pay budget; interventional practice in primary PCI alongside the heart failure service, and Royal College tutor since 2021.",
+        "skills": "Directorate leadership: job planning for 31 consultants, 14.2m pay and 4.6m non-pay budget, advisory appointment committees, appraisal and revalidation\nGovernance: mortality and morbidity review, PSIRF investigation, GIRFT implementation, NICE technology appraisal adoption, CQC inspection lead for medicine\nClinical: primary and elective PCI, heart failure with device therapy, structural heart MDT, inherited cardiac conditions\nEducation: Royal College tutor, educational supervisor, chief investigator on two commercial studies",
+        "experience": "Consultant Cardiologist and Clinical Director for Medicine | Halewick Park University Hospital | London, UK | Oct 2019 - Present\n- Lead a directorate of 31 consultants across cardiology, respiratory, acute medicine and elderly care, holding the budget and chairing the monthly performance review.\n- Took primary PCI to 24/7 by rebuilding the on-call rota across two sites. Median call-to-balloon time went from 118 minutes to 79 and out-of-hours transfers to a third centre stopped.\n- Opened a nurse-led heart failure clinic with pharmacist prescribing after a mortality review found four-drug therapy optimised in 38% of patients at twelve weeks. It reached 81% within a year.\n- Cancelled clinics fell from 214 a year to 47 once leave approval moved into job planning rather than the clinic diary.\n- Chaired the response to a never event in the catheter laboratory; the resulting changes to the WHO checklist are now trust policy.\n---\nConsultant Cardiologist | Marchmont General Hospital | Nottingham, UK | Sep 2014 - Sep 2019\n- Established the inherited cardiac conditions clinic, which took 180 families off the tertiary centre waiting list in two years.\n- Clinical lead for cardiac imaging; brought stress perfusion CMR in-house and ended a 310k a year outsourcing contract.\n- Trained six registrars, four of whom are now consultants.\n---\nSpecialty Registrar and Clinical Research Fellow, Cardiology | Southgrove Hospitals Group | London, UK | Aug 2008 - Aug 2014\n- Higher specialist training with two years out of programme for research, leading to an MD(Res).",
+        "education": "MD(Res), Cardiovascular Medicine | Imperial College London | Oct 2010 - Dec 2013\n---\nMB BS | King's College London | Sep 1999 - Jul 2005",
+        "projects": "",
+        "publications": "Ramaswamy D., Ferndale H., Osoba K. Call-to-balloon time after consolidation of a two-site primary PCI rota. Heart, 2023\nRamaswamy D., Osoba K. Pharmacist-led titration in a nurse-delivered heart failure clinic: twelve-month outcomes. European Journal of Heart Failure, 2022\nSelected from 38 peer-reviewed publications; full list on request.",
+        "certifications": "GMC Specialist Register, Cardiology - CCT August 2014, reference 6110482\nFRCP, Royal College of Physicians of London, 2017; MRCP(UK), 2008\nRoyal College Tutor, 2021 to present\nTrained appraiser and advisory appointment committee panel member, 2018\nMSc Healthcare Leadership, NHS Leadership Academy Elizabeth Garrett Anderson programme, 2019"
+      }
+    }
+  ],
+  "pharmacist": [
+    {
+      "level": "early",
+      "headline": "One year registered, sole responsible pharmacist",
+      "why": "A newly registered pharmacist has one year of history, so the CV is carried by services delivered rather than posts held. The detail read first is which declarations of competence and patient group directions are current, because a superintendent cannot roster you onto vaccination or Pharmacy First until those are in place.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Wei-Lin Cheung",
+        "title": "Community Pharmacist",
+        "location": "Nottingham, UK",
+        "phone": "+44 7700 900573",
+        "email": "wei-lin.cheung@example.com",
+        "linkedin": "linkedin.com/in/wei-lin-cheung-example",
+        "website": "",
+        "summary": "- Registered pharmacist since September 2025, GPhC 2251094, working as sole responsible pharmacist in a branch dispensing around 1,100 items a week.\n- Delivers Pharmacy First, the New Medicine Service and seasonal vaccination under patient group direction, with declarations of competence current for all three.",
+        "skills": "Clinical services: Pharmacy First consultations across all seven pathways, New Medicine Service, Discharge Medicines Service, influenza and COVID-19 vaccination under PGD, emergency hormonal contraception under PGD\nClinical: medicines reconciliation on discharge, MAR chart review for two care homes, inhaler technique assessment, interaction and renal dosing checks, safeguarding referral\nGovernance: responsible pharmacist record, controlled drugs register and destruction, near-miss log and monthly safety review, SOP compliance, unlicensed specials\nSystems: ProScript Connect, Electronic Prescription Service, Summary Care Record, PharmOutcomes",
+        "experience": "Community Pharmacist | Byrewood Pharmacy Group | Nottingham, UK | Sep 2025 - Present\n- Sole responsible pharmacist four days a week in a branch dispensing around 1,100 items a week, working with two dispensers and an accuracy-checking technician.\n- Pharmacy First consultations went from 21 a month to 96 after I trained the counter team on the referral criteria and added a triage question to the till prompt.\n- Intercepted a methotrexate prescription written daily rather than weekly, resolved it with the prescriber before supply, and the case went into the group's monthly safety bulletin.\n- Branch near-miss rate fell by a third over six months after the picking shelf was reorganised for look-alike, sound-alike products.\n---\nFoundation Trainee Pharmacist | Byrewood Pharmacy Group | Nottingham, UK | Aug 2024 - Aug 2025\n- Fifty-two weeks of foundation training, including an eight-week hospital placement covering surgical wards and the aseptic unit.\n- Passed the GPhC registration assessment at the first sitting, June 2025.\n---\nDispensing Assistant, weekends | Byrewood Pharmacy Group | Nottingham, UK | Oct 2022 - Jul 2024\n- Worked alternate weekends through the third and fourth years of the MPharm.",
+        "education": "MPharm (Hons), 2:1 | University of Nottingham | Sep 2020 - Jul 2024",
+        "projects": "Care home MAR chart audit, delivered as the foundation-year practice project: 312 administration records across two homes checked for unexplained gaps and hand-written amendments. Gaps in 14% of records at first pass. A weekly reconciliation call and a printed amendment slip took the repeat audit four months later to 3%.",
+        "publications": "",
+        "certifications": "GPhC registration, pharmacist - registration number 2251094, renewed annually\nCPPE Declaration of Competence, seasonal influenza vaccination, 2025\nCPPE Declaration of Competence, Pharmacy First clinical pathways, 2025\nImmunisation and anaphylaxis update including basic life support, 2026\nSafeguarding children and adults, Level 2"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Seven years in hospital, prescribing since 2023",
+      "why": "The line that changes a hospital pharmacist's CV is the independent prescriber annotation, and it is worth stating with the date it was added and the scope of practice it covers, because that is what a rota can be built around. Everything under it is written as clinical governance: the incident, the audit, the change to the guideline.",
+      "template_id": "academic_cv",
+      "data": {
+        "full_name": "Ruben Castellanos",
+        "title": "Senior Clinical Pharmacist (Band 7), Acute Medicine",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900209",
+        "email": "ruben.castellanos@example.com",
+        "linkedin": "linkedin.com/in/ruben-castellanos-example",
+        "website": "",
+        "summary": "- Hospital clinical pharmacist, seven years post-registration, GPhC 2144873, annotated as a pharmacist independent prescriber since November 2023 with a scope covering acute and general internal medicine.\n- Leads the acute medical unit pharmacy service and sits on the antimicrobial stewardship group.",
+        "skills": "Clinical: medicines reconciliation and discharge counselling, therapeutic drug monitoring (gentamicin, vancomycin, phenytoin), anticoagulation including DOAC dosing in renal impairment, parenteral nutrition\nPrescribing: independent prescriber in acute and general internal medicine, patient group directions, supervision of two non-medical prescribing trainees\nGovernance: medication safety incident review and LFPSE reporting, National Patient Safety Alert assurance, controlled drugs, unlicensed and off-label medicines, omitted critical medicines audit\nStewardship and systems: restricted antimicrobial approval, IV-to-oral switch, MicroGuide formulary, EPMA (Cerner Millennium), JAC stock control",
+        "experience": "Senior Clinical Pharmacist (Band 7), Acute Medicine | Stonebridge Fields Hospital | Manchester, UK | Jun 2022 - Present\n- Cover a 54-bed acute medical unit and the ambulatory area. Medicines reconciliation within 24 hours of admission rose from 58% to 91% after the team moved to a technician-led first pass, for which I wrote the competency framework.\n- Prescribe under my own annotation on the post-take round, which removed roughly 40 signing interruptions a week from the medical registrar.\n- Chair the monthly omitted critical medicines review. Missed doses of Parkinson's medication fell from 74 a month to 11 over two years after a nurse-held stock change and a red-tray alert.\n- Restricted carbapenem use fell 28% in a year through a twice-weekly stewardship round with microbiology, with no change in 30-day mortality on the unit.\n---\nRotational Clinical Pharmacist (Band 6) | Hartsmere General Hospital | Liverpool, UK | Sep 2019 - May 2022\n- Rotated through surgery, critical care, paediatrics, the oncology day unit and medicines information.\n- Wrote the trust's first extended-interval gentamicin dosing guideline for critical care after an audit found 31% of levels taken outside the sampling window.\n- Answered around 300 medicines information enquiries a year and supervised two foundation trainee pharmacists.",
+        "education": "Independent Prescribing, PGCert | Liverpool John Moores University | Jan 2023 - Nov 2023\n---\nPGDip Clinical Pharmacy | University of Manchester | Sep 2020 - Jul 2022\n---\nMPharm (Hons), First Class | Cardiff University | Sep 2014 - Jul 2018",
+        "projects": "",
+        "publications": "Castellanos R., Adeyinka T. Technician-led first-pass medicines reconciliation on an acute medical unit. European Journal of Hospital Pharmacy, 2025\nCastellanos R. Reducing omitted doses of time-critical Parkinson's medication. Poster, UK Clinical Pharmacy Association autumn symposium, 2024",
+        "certifications": "GPhC registration, pharmacist - registration number 2144873\nPharmacist Independent Prescriber annotation, November 2023\nRoyal Pharmaceutical Society Core Advanced Curriculum - portfolio in progress, submission 2027\nAntimicrobial stewardship for hospital pharmacists (BSAC), 2023"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Chief pharmacist, 52m medicines budget",
+      "why": "At chief-pharmacist level the CV stops being clinical. What it carries instead is statutory accountability named in full: Controlled Drugs Accountable Officer, the MHRA licence the aseptic unit holds, the medicines budget. Those are what an appointing panel is legally handing over, and a CV that only lists clinical competence will not win the post.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Marianne Foxcroft",
+        "title": "Chief Pharmacist and Controlled Drugs Accountable Officer",
+        "location": "Sheffield, UK",
+        "phone": "+44 7700 900164",
+        "email": "marianne.foxcroft@example.com",
+        "linkedin": "linkedin.com/in/marianne-foxcroft-example",
+        "website": "",
+        "summary": "- Chief pharmacist accountable for a 52m medicines budget, a licensed aseptic unit and 78 WTE across dispensary, clinical, aseptic and procurement teams. GPhC 2038615.\n- Statutory Controlled Drugs Accountable Officer since 2021, independent prescriber since 2012, and a Royal Pharmaceutical Society credentialed consultant pharmacist.",
+        "skills": "Executive: 52m medicines budget and 6.1m pay budget, workforce and succession planning, board and finance committee reporting, procurement and homecare contracting\nStatutory and regulatory: Controlled Drugs Accountable Officer duties and local intelligence network, MHRA specials manufacturing licence for the aseptic unit, Section 10 exemption, GPhC premises standards, National Patient Safety Alert assurance\nMedicines optimisation: formulary and area prescribing committee chairing, NICE technology appraisal adoption, biosimilar switching, high-cost drugs approval\nClinical governance: medication safety officer oversight, PSIRF investigation, antimicrobial stewardship strategy, seven-day clinical pharmacy",
+        "experience": "Chief Pharmacist and Controlled Drugs Accountable Officer | Ravensmoor University Hospital Trust | Sheffield, UK | Feb 2020 - Present\n- Accountable for a 52m medicines budget across an acute and community trust, and for 78 WTE in four service lines.\n- Delivered 3.1m of recurrent savings over three years through biosimilar and best-value switching in rheumatology, gastroenterology and oncology, using a clinician-agreed switch protocol rather than a mandate.\n- Rebuilt the aseptic unit after an MHRA inspection found environmental monitoring deficiencies. Full compliance was restored in nine months and the unit now supplies two neighbouring trusts under a service agreement.\n- Moved clinical pharmacy to seven days on the acute pathway. Medicines reconciliation within 24 hours went from 54% to 88%, and pharmacy-attributable discharge delays fell by around 340 bed days a year.\n- Pharmacist vacancy rate fell from 22% to 5% after opening a rotational band 6 to 7 development post and funding the independent prescribing course for eight staff.\n---\nDeputy Chief Pharmacist, Medicines Optimisation | Cranmoor Vale Hospitals Trust | Leeds, UK | Apr 2015 - Jan 2020\n- Ran the formulary and high-cost drugs process for a two-site trust and chaired the drugs and therapeutics committee.\n- Led the electronic prescribing rollout across 31 wards; the audited prescribing error rate fell from 8.4% to 3.1% of orders in the first year.\n- Held deputy Controlled Drugs Accountable Officer duties and led two controlled drugs investigations reported to the local intelligence network.\n---\nPrincipal Pharmacist, Critical Care | Westmarch Hospital | Hull, UK | Aug 2010 - Mar 2015\n- Set up the pharmacist-led sedation and analgesia review, which cut mean ventilator days on the unit by 1.4.",
+        "education": "MSc Clinical Pharmacy, International Practice and Policy | UCL School of Pharmacy | Sep 2008 - Jul 2011\n---\nMPharm (Hons) | University of Strathclyde | Sep 2001 - Jul 2005",
+        "projects": "",
+        "publications": "Foxcroft M., Grieve S. Recovering a hospital aseptic unit after an MHRA inspection: what changed and what held. European Journal of Hospital Pharmacy, 2024\nFoxcroft M. Switching well: a clinician-agreed protocol for biosimilar transition. The Pharmaceutical Journal, 2022",
+        "certifications": "GPhC registration, pharmacist - registration number 2038615\nPharmacist Independent Prescriber annotation, 2012\nRoyal Pharmaceutical Society credentialed Consultant Pharmacist, 2021\nMSc Healthcare Leadership, NHS Leadership Academy Nye Bevan programme, 2019"
+      }
+    }
+  ],
+  "lab_technician": [
+    {
+      "level": "early",
+      "headline": "Thirteen months in, out of a placement degree",
+      "why": "A technician is hired for hands-on technique, so the skills block names instruments by model rather than saying 'PCR'. With barely a year of employment the placement year and the final-year project are load-bearing, and both are described by what this person can now run unsupervised rather than by what they were taught.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Dawit Bekele",
+        "title": "Research Technician, Molecular Biology",
+        "location": "Norwich, UK",
+        "phone": "+44 7700 900318",
+        "email": "dawit.bekele@example.com",
+        "linkedin": "linkedin.com/in/dawit-bekele-example",
+        "website": "",
+        "summary": "- Research technician in a bacterial genomics group, thirteen months in, running the lab's RT-qPCR and cloning work unsupervised.\n- Registered Science Technician with the Science Council and the named COSHH assessor for the group's Hazard Group 2 work.",
+        "skills": "Molecular: DNA and RNA extraction, RT-qPCR assay design and validation, restriction cloning and Gibson assembly, plasmid prep, Sanger submission and trace QC, SDS-PAGE, Western blot, ELISA\nMicrobiology and culture: aseptic technique in Class II cabinets, anaerobic culture, MIC by broth microdilution, strain library management, mycoplasma screening\nInstruments: Applied Biosystems QuantStudio 5, NanoDrop One, Qubit 4, Agilent TapeStation 4150, Bio-Rad ChemiDoc MP\nCompliance and data: COSHH assessment, GM Class 1 risk assessment, Containment Level 2 working, Benchling electronic lab notebook, GraphPad Prism, Fiji/ImageJ",
+        "experience": "Research Technician | Larchmere Institute for Infection Research | Norwich, UK | Jul 2025 - Present\n- Support four postdocs and six PhD students in a bacterial genomics group, running the shared molecular bench and the strain library.\n- Rebuilt the group's RT-qPCR workflow around a validated reference-gene panel after inter-plate variation made three months of expression data unusable. Coefficient of variation across plates is now under 8%.\n- Catalogued and re-racked a 4,200-isolate glycerol stock collection that had no working index, and moved it onto a barcoded inventory. Retrieval went from most of a morning to a few minutes.\n- Wrote the SOP and trained six users on the QuantStudio 5, now booked through a shared calendar rather than by asking around.\n---\nLaboratory Placement Student | Thurlow Biosciences | Cambridge, UK | Jul 2023 - Aug 2024\n- Twelve-month industrial placement in an antimicrobial discovery team.\n- Ran broth microdilution MICs on around 60 compounds a week against a six-strain Gram-negative panel, hand-checking plate reader calls against visual reads.\n- Wrote the assay's daily QC check, which caught a drifting reader lamp two weeks before it would have invalidated a compound series.",
+        "education": "BSc (Hons) Biomedical Science with Placement Year, 2:1 | University of East Anglia | Sep 2021 - Jul 2025",
+        "projects": "Final-year project - Efflux pump expression under sub-inhibitory tetracycline exposure in Klebsiella pneumoniae: designed and validated a four-target RT-qPCR panel, ran 96 isolate-condition pairs and wrote up a null result. Graded 78; the panel is still in use by the group.",
+        "publications": "Hallowes J., Bekele D., Ntanda P., Weir A. Reference gene selection for expression studies in stressed Enterobacteriaceae. Journal of Microbiological Methods, 2026",
+        "certifications": "Registered Science Technician (RSciTech), Science Council, 2026\nCOSHH risk assessor, 2025\nContainment Level 2 and GM Class 1 working, 2025\nGood Laboratory Practice awareness, 2024"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years registered, haematology and transfusion",
+      "why": "Two things make this a clinical laboratory CV rather than a generic science one: the HCPC registration number together with the IBMS route that produced it, and a quality block naming UKAS, ISO 15189, NEQAS and SHOT. A pathology manager is recruiting somebody who will not cost them an accreditation finding, and reads for that first.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Halima Sesay",
+        "title": "Specialist Biomedical Scientist (Band 6), Haematology and Blood Transfusion",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900682",
+        "email": "halima.sesay@example.com",
+        "linkedin": "linkedin.com/in/halima-sesay-example",
+        "website": "",
+        "summary": "- HCPC-registered biomedical scientist, BS148206, six years post-registration in haematology and blood transfusion, holding the IBMS Specialist Diploma.\n- Trained ISO 15189:2022 internal auditor and one of three staff covering the transfusion laboratory out of hours for a 620-bed hospital.",
+        "skills": "Haematology: full blood counts and differential review, blood film morphology, coagulation screen and factor assays, D-dimer, haemoglobinopathy screening by HPLC and sickle solubility\nTransfusion: ABO and D grouping, antibody screening and identification by column agglutination, cross-matching, electronic issue, major haemorrhage protocol, transfusion reaction investigation\nAnalysers: Sysmex XN-9000 and XN-1000, Sysmex CS-2500, Werfen ACL TOP 750, Bio-Rad Variant II, Grifols Erytra Eflexis\nQuality: ISO 15189:2022 internal audit, UKAS assessment preparation, UK NEQAS returns and non-conformance follow-up, internal QC and Westgard rules, SOP authoring, CAPA, SABRE and SHOT reporting\nSystems: Clinisys WinPath Enterprise, middleware autovalidation rules, Q-Pulse document control",
+        "experience": "Specialist Biomedical Scientist (Band 6), Haematology and Blood Transfusion | Netherfield Bay Hospital | Bristol, UK | Feb 2023 - Present\n- Cover the haematology and transfusion benches for a 620-bed hospital, around 900 samples a day, including lone working in transfusion at night.\n- Wrote the autovalidation rule set that now releases 61% of routine full blood counts without manual review, freeing roughly nine hours of scientist time a week. Every rule was validated against 2,000 retrospective results before go-live.\n- Investigated a transfusion reaction that traced back to a mislabelled sample from a ward area; the wrong-blood-in-tube event was reported through SHOT and the ward's sampling practice retrained.\n- Took the section through its 2025 UKAS surveillance visit with no major non-conformances, having closed nine of the eleven actions carried over from the previous assessment.\n- Train and sign off band 5 staff and two laboratory assistants against the transfusion competency framework.\n---\nBiomedical Scientist (Band 5), Haematology | Ferrenby Pathology Services | Bristol, UK | Sep 2019 - Jan 2023\n- Completed the IBMS Registration Training Portfolio in eleven months and gained HCPC registration in August 2020.\n- Set up a monthly film review session after two unsatisfactory NEQAS morphology returns in a year; there have been none since.\n- Handled the changeover from a Sysmex XN-1000 to an XN-9000, including method comparison and a 40-patient correlation study.",
+        "education": "MSc Biomedical Science (Haematology) | University of the West of England | Sep 2021 - Sep 2023\n---\nBSc (Hons) Biomedical Science, IBMS-accredited, 2:1 | University of Bristol | Sep 2016 - Jul 2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "HCPC registration, Biomedical Scientist - BS148206\nIBMS Certificate of Competence, 2020\nIBMS Specialist Diploma in Haematology and Transfusion Science, 2023\nInternal auditor, ISO 15189:2022, 2024"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Sixteen years, runs a 24-person core facility",
+      "why": "The instrument list survives into a senior lab CV but it has turned into a capital plan. What is new is regulatory accountability held by name - Designated Individual on the Human Tissue Authority licence, the Home Office establishment, the accreditation scope - and that is the difference between a lab manager and a very good senior technician.",
+      "template_id": "academic_cv",
+      "data": {
+        "full_name": "Radoslav Petrov",
+        "title": "Laboratory Manager, Translational Research Facility",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900447",
+        "email": "radoslav.petrov@example.com",
+        "linkedin": "linkedin.com/in/radoslav-petrov-example",
+        "website": "",
+        "summary": "- Runs a 24-person translational research facility covering flow cytometry, genomics and tissue banking, with a 2.1m consumables budget and a 4.8m capital replacement plan.\n- Designated Individual on the institute's Human Tissue Authority research licence, and named on 34 publications as technical author or contributor.",
+        "skills": "Leadership: 24 staff across three teams, 2.1m consumables and 4.8m capital plan, recruitment and appraisal, level 3 technician apprenticeship route, cost recovery and internal charging\nRegulatory: Designated Individual under a Human Tissue Authority research licence, Home Office establishment compliance under ASPA 1986, ISO 15189:2022 and ISO/IEC 17025 scopes, GCLP for trial samples, Containment Level 3 operations\nPlatforms: Illumina NovaSeq X and NextSeq 2000, 10x Genomics Chromium X, Cytek Aurora and BD FACSymphony A5, Agilent TapeStation, Hamilton liquid handling\nOperations: LIMS specification and implementation, chain of custody, instrument qualification and service contracting, capacity planning across 40 research groups",
+        "experience": "Laboratory Manager, Translational Research Facility | Ellersley Institute of Molecular Medicine | Manchester, UK | Sep 2019 - Present\n- Took three service labs that had been running independently and merged them into one facility with a shared booking system, a single charging model and a common induction.\n- Rebuilt Human Tissue Authority governance after a licence inspection raised three shortfalls. The follow-up inspection found none, and the consent audit now runs quarterly rather than annually.\n- Wrote the 4.8m capital replacement plan and made the case for sequencing in-house; external sequencing spend fell from 610k to 140k a year while turnaround went from six weeks to nine days.\n- Opened a level 3 laboratory technician apprenticeship route after two years of failed band 4 recruitment. Five apprentices have completed and four are still in post.\n- Chair the laboratory safety committee and led the recommissioning of the Containment Level 3 suite after a ventilation failure.\n---\nSenior Research Technician and Flow Cytometry Lead | Corradine Therapeutics | Oxford, UK | Jan 2014 - Aug 2019\n- Ran a six-instrument flow cytometry facility supporting preclinical immuno-oncology programmes, including all sorting for the lead programme.\n- Designed and validated a 22-colour spectral panel for tumour-infiltrating lymphocyte phenotyping that replaced three eight-colour panels and halved the tissue needed per study.\n- Held a Home Office personal licence and ran tissue processing for four regulated studies.\n---\nResearch Technician, Immunology | Kestrel Park Research Institute | Cambridge, UK | Oct 2010 - Dec 2013\n- Cell culture, multiparameter flow cytometry and tissue processing across two externally funded projects.",
+        "education": "MSc Immunology, part-time | University of Manchester | Sep 2013 - Sep 2016\n---\nBSc (Hons) Applied Biology, 2:1 | Manchester Metropolitan University | Sep 2006 - Jul 2010",
+        "projects": "",
+        "publications": "Petrov R., Lindfell A., Osei-Tutu M. A shared-charging model for core research facilities: three years of cost recovery data. Journal of Biomolecular Techniques, 2024\nAshworth-Kane P., Petrov R., et al. Spectral cytometry panel design for tumour-infiltrating lymphocyte phenotyping. Cytometry Part A, 2019\nSelected from 34 publications; full list on request.",
+        "certifications": "Registered Scientist (RSci), Science Council, 2016\nDesignated Individual, Human Tissue Authority research licence, 2021\nHome Office Personal Licence, PIL A and B, under ASPA 1986\nISO 15189:2022 lead auditor, 2022; IOSH Managing Safely, 2020"
+      }
+    }
+  ]
+}

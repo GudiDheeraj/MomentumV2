@@ -1,0 +1,206 @@
+{
+  "hr_recruiter": [
+    {
+      "level": "early",
+      "headline": "Agency to in-house, eighteen months in",
+      "why": "Recruitment CVs are read by recruiters, so use the numbers they use: time to hire, offer acceptance, the direct-sourcing ratio and the agency spend it displaced. Name the applicant tracking system you have actually worked in — it is a hard filter, and 'various ATS platforms' reads as none of them.",
+      "template_id": "pastel_soft",
+      "data": {
+        "full_name": "Kayleigh Broadbent",
+        "title": "Talent Acquisition Coordinator",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900233",
+        "email": "kayleigh.broadbent@example.com",
+        "linkedin": "linkedin.com/in/kayleigh-broadbent-example",
+        "website": "",
+        "summary": "- Eighteen months in recruitment, moved from an agency desk to an in-house talent team; runs twelve to fifteen live requisitions across engineering and customer operations.\n- 34 hires closed this year, 71% of them sourced directly, which took the agency bill from £96k to £24k.\n- CIPD Level 3 Foundation Certificate in People Practice completed 2025; Level 5 Associate Diploma starting September 2026.",
+        "skills": "Sourcing: LinkedIn Recruiter, Boolean search, GitHub and Stack Overflow sourcing, referral schemes, talent pooling and pipeline nurture\nProcess: structured interviewing, interview scorecards, panel training, offer negotiation, right to work checks, candidate care and rejection\nSystems: Greenhouse, Workday Recruiting, LinkedIn Recruiter, Bullhorn, HiBob\nMetrics: time to hire, offer acceptance rate, source of hire, stage conversion, cost per hire, agency spend",
+        "experience": "Talent Acquisition Coordinator | Ambrose Fielding | Leeds, UK | Mar 2025 - Present\n- Run twelve to fifteen live requisitions across engineering and customer operations; 34 hires closed to date with 71% sourced directly.\n- Cut time to hire from 48 days to 29 by booking first-stage interviews within 48 hours of application and holding hiring managers to a two-day feedback deadline.\n- Rewrote twenty adverts around what the person would actually do in their first six months; applications rose 40% and the proportion reaching first interview rose with them.\n- Built the structured interview scorecards and trained eighteen hiring managers to use them, which ended the practice of scoring candidates from memory.\n---\nRecruitment Consultant | Verekin Talent | Leeds, UK | Sep 2024 - Feb 2025\n- Worked a contract IT desk: nine contractors placed in five months against a target of eight.\n- Built and qualified the candidate pipeline for a public sector framework, around 40 qualified CVs a month.",
+        "education": "BA (Hons) Psychology, 2:1 | Leeds Beckett University | Sep 2021 - Jun 2024",
+        "projects": "",
+        "publications": "",
+        "certifications": "CIPD Level 3 Foundation Certificate in People Practice, 2025\nCIPD Level 5 Associate Diploma in People Management, starting September 2026\nLinkedIn Certified Professional Recruiter, 2025"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, HR business partnering and ER",
+      "why": "Employee relations is where an HR CV proves itself, and it needs specifics: case volume, case type, and how many reached a tribunal. Name the statutory processes you have run — TUPE, collective consultation under section 188, settlement agreements — because a hiring manager is checking whether you have done the hard version or only read the policy.",
+      "template_id": "twocolumn_sidebar",
+      "data": {
+        "full_name": "Eero Salminen",
+        "title": "HR Business Partner",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900111",
+        "email": "eero.salminen@example.com",
+        "linkedin": "linkedin.com/in/eero-salminen-example",
+        "website": "",
+        "summary": "- HR business partner to a 640-person operations division across four sites; six years in manufacturing and logistics.\n- Handles around 40 employee relations cases a year; two tribunal claims in six years, both defended successfully.\n- Assoc CIPD since 2022, currently studying the Level 7 Advanced Diploma.",
+        "skills": "Employee relations: disciplinary and grievance under the ACAS Code, performance management, long-term sickness and reasonable adjustments, settlement agreements, tribunal preparation and witness statements\nStatutory processes: TUPE transfers and measures letters, collective redundancy consultation under section 188, right to work and sponsor licence compliance, family leave and flexible working\nPartnering: workforce planning, restructure design, pay review and benchmarking, engagement survey action planning, trade union consultation\nPolicy and analytics: handbook drafting, job levelling, absence and turnover reporting in Power BI\nSystems: SAP SuccessFactors, HiBob, Personio, Power BI",
+        "experience": "HR Business Partner | Penvarrow Logistics | Bristol, UK | Nov 2023 - Present\n- Partner a 640-person operations division across four sites, working directly with the operations director and six site managers.\n- Carry around 40 employee relations cases a year; average case length fell from 61 days to 34 once managers had a decision template and stopped escalating cases they could hold themselves.\n- Ran the TUPE transfer of 84 warehouse staff into the business, including the measures letter, the consultation and the pay harmonisation that followed.\n- Cut night shift voluntary turnover from 44% to 19% by changing the shift pattern and the pay differential, after eleven exit interviews said the same thing.\n- Trained 32 line managers on the ACAS Code; formal grievances fell by a third the following year.\n---\nHR Advisor | Penvarrow Logistics | Bristol, UK | Jan 2022 - Oct 2023\n- First point of contact on employee relations for two sites; advised on and noted 25 disciplinary and grievance hearings.\n- Led the collective consultation on a 40-role restructure, including the election of employee representatives and the section 188 notification.\n---\nHR Administrator | Whitcombe Foods | Swindon, UK | Aug 2020 - Dec 2021\n- Onboarding, contracts and right to work checks for 300 staff across two seasonal peaks.",
+        "education": "BSc (Hons) Business and Human Resource Management, 2:1 | University of the West of England | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "Assoc CIPD — CIPD Level 5 Associate Diploma in People Management, 2022\nCIPD Level 7 Advanced Diploma in Strategic People Management, in progress, completing 2027\nMental Health First Aider, MHFA England, 2024"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "People director, 1,800 staff, four countries",
+      "why": "A people director is hired to change something the board has already noticed — a pay structure, a turnover figure, a culture problem. So the page carries headcount, budget and the two or three things that actually shifted, with the before and after attached. The CIPD grade becomes a post-nominal rather than a section of its own.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Yolanda Mkhize",
+        "title": "People Director",
+        "location": "London, UK",
+        "phone": "+44 7700 900864",
+        "email": "y.mkhize@example.com",
+        "linkedin": "linkedin.com/in/yolanda-mkhize-example",
+        "website": "",
+        "summary": "- People director for an 1,800-person services group across the UK, Ireland, Poland and South Africa; team of 22 across business partnering, talent, reward and people operations.\n- Chartered FCIPD. Fifteen years in HR, the last seven at director level, reporting to the chief executive and attending the remuneration committee.\n- Owns a £3.1m people budget and the reward framework covering every role in the group.",
+        "skills": "Strategy and governance: workforce strategy, remuneration committee reporting, gender pay gap reporting, employment risk on the board risk register, works council and union relationships\nReward and organisation design: job architecture and levelling, pay banding and benchmarking, bonus and long-term incentive design, TUPE at scale\nTalent: succession planning for the top 60 roles, leadership development, performance framework, engagement measurement\nLeadership: team of 22, £3.1m budget, four country HR leads",
+        "experience": "People Director | Ellinborough Services Group | London, UK | Jun 2021 - Present\n- Replaced fourteen inherited pay structures with a single job architecture of nine levels; the exercise cost £640k in uplifts, closed 82% of the unexplained pay differences it surfaced, and ended a run of pay-related grievances.\n- Took group turnover from 31% to 18% over three years, mostly by fixing the first ninety days: a paid induction week, a named buddy and a manager check-in that is measured rather than encouraged.\n- Led the people side of two acquisitions and one site closure, including collective consultation for 210 roles and a redeployment programme that placed 74 of them internally.\n- Moved gender pay gap reporting from a compliance exercise to a plan the board tracks quarterly; the median gap went from 18.4% to 9.1%.\n- Brought recruitment in house across four countries, saving £1.1m a year in agency fees and cutting time to hire by 21 days.\n---\nHead of HR, UK and Ireland | Ellinborough Services Group | London, UK | Sep 2018 - May 2021\n- Ran a team of nine covering 900 employees and built the business partner model that replaced a regional generalist structure.\n- Negotiated the group's first trade union recognition agreement at two sites, concluded without industrial action.\n---\nSenior HR Business Partner | Alverstoke Care Group | Manchester, UK | Apr 2014 - Aug 2018\n- Partnered a 1,200-person care business through a regulatory improvement programme, including the recruitment surge that took vacancy rates from 22% to 8%.",
+        "education": "MSc Human Resource Management | University of Manchester | Sep 2012 - Sep 2013\n---\nBCom Industrial Psychology | University of Cape Town | Feb 2007 - Nov 2010",
+        "projects": "",
+        "publications": "",
+        "certifications": "Chartered Fellow, Chartered Institute of Personnel and Development (Chartered FCIPD)\nHogan Assessments certified: HPI, HDS and MVPI"
+      }
+    }
+  ],
+  "executive_assistant": [
+    {
+      "level": "early",
+      "headline": "Reception to team assistant, eighteen months",
+      "why": "An early EA CV has to show judgement rather than tasks, so say how many people you support and what you are trusted to decide alone — a diary you own is a different job from a diary you book into. Systems matter more here than in most fields, because the travel and expense tools are usually the first screen.",
+      "template_id": "modern_minimalist",
+      "data": {
+        "full_name": "Reuben Adjei",
+        "title": "Executive Assistant",
+        "location": "London, UK",
+        "phone": "+44 7700 900319",
+        "email": "reuben.adjei@example.com",
+        "linkedin": "linkedin.com/in/reuben-adjei-example",
+        "website": "",
+        "summary": "- Eighteen months supporting a 40-person commercial team, now assistant to two directors; owns both diaries outright, including what gets moved when meetings clash.\n- Cleared a six-week expense backlog and set up a weekly submission routine, which ended a run of month-end accrual corrections.\n- No traveller has missed a connection or a meeting in fourteen months of booking international itineraries.",
+        "skills": "Diary and inbox: complex diary management across three time zones, delegate access to two inboxes, meeting prioritisation and rescheduling, minute taking and action tracking\nTravel and expenses: international itineraries, visa applications, Concur expense processing, corporate card reconciliation\nEvents: offsites and team events up to 60 people, venue sourcing, supplier booking, budget tracking\nSystems: Microsoft 365 (Outlook, Teams, SharePoint), Concur, TravelPerk, DocuSign, Salesforce, Slack",
+        "experience": "Team Assistant | Rothersay Partners | London, UK | Mar 2025 - Present\n- Support two commercial directors and a team of 40, with sole ownership of both diaries and the decision on what moves when something clashes.\n- Book international travel across Europe and the United States, including visa applications; no missed connections or meetings in fourteen months.\n- Cleared a six-week expense backlog and put the team on weekly submission, so expenses now close in the month they were incurred.\n- Ran the two-day sales offsite for 58 people, from venue to agenda pack, and delivered a £24k budget £1.8k under.\n---\nReceptionist and Office Coordinator | Rothersay Partners | London, UK | Sep 2023 - Feb 2025\n- Front of house for a 120-person office: meeting rooms, couriers, visitor security and the supplier rota.\n- Covered the partner assistants' diaries during holidays and peak periods, which is how the team assistant role came about.",
+        "education": "BA (Hons) Business and Events Management, 2:1 | University of Greenwich | Sep 2020 - Jun 2023",
+        "projects": "",
+        "publications": "",
+        "certifications": "Microsoft Office Specialist: Excel Associate, Microsoft 365\nSAP Concur expense administrator training, 2025\nEmergency First Aid at Work, 2025"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, EA to a chief executive",
+      "why": "The seniority of the people you support is the first thing read, so it belongs in the opening line with the size of the organisation. Board work is what separates this level from team support, and it needs counting: how many meetings, how big the packs, how far ahead they go out.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Petra Havlíková",
+        "title": "Executive Assistant to the Chief Executive",
+        "location": "Edinburgh, UK",
+        "phone": "+44 7700 900406",
+        "email": "petra.havlikova@example.com",
+        "linkedin": "linkedin.com/in/petra-havlikova-example",
+        "website": "",
+        "summary": "- Executive assistant to the chief executive of a 900-person renewable energy developer, and secretary to the executive committee.\n- Produces the board and committee packs: eight board and fourteen committee meetings a year, packs of 150 to 300 pages, issued five clear days ahead without exception.\n- Six years as an EA, three of them at chief executive level.",
+        "skills": "Executive support: sole diary ownership, inbox triage and drafting under delegate access, gatekeeping, briefing pack before every external meeting\nBoard and governance: agenda planning with the chair, pack production in Diligent Boards, executive committee minutes, action tracking to close\nTravel: multi-country itineraries across nine countries, commercial and private aviation, visas and ground logistics\nCommercial administration: expense approval to £25k, supplier onboarding, contract routing, confidential correspondence during two transactions\nSystems: Microsoft 365, Diligent Boards, Concur, Coupa, DocuSign, Egress secure email\nLanguages: Czech (native), German (working)",
+        "experience": "Executive Assistant to the Chief Executive | Sollenmuir Energy | Edinburgh, UK | Sep 2023 - Present\n- Sole ownership of the chief executive's diary in a 900-person business: around 30 meetings a week across four time zones, and the judgement calls on what moves.\n- Run the board cycle for eight main board and fourteen committee meetings a year; moved pack issue from two days ahead to five clear days by agreeing a paper deadline with the executive team and holding it.\n- Handled the confidential correspondence through a £180m refinancing and an acquisition, including the data room access list.\n- Cut the chief executive's meeting load by 22% by introducing a written pre-read requirement and declining anything without an agenda and an owner.\n- Minute the executive committee and track actions to close; the overdue list went from around 30 to under five.\n---\nExecutive Assistant | Sollenmuir Energy | Edinburgh, UK | Feb 2022 - Aug 2023\n- Supported the chief financial officer and the general counsel, including audit committee logistics and the annual report production timetable.\n- Set up the shared inbox and triage rules that the finance leadership team still uses.\n---\nTeam Assistant | Beauly Fen Advisory | Glasgow, UK | Jul 2020 - Jan 2022\n- Supported six consultants with diaries, travel and client billing administration.",
+        "education": "BA (Hons) International Business, 2:1 | Edinburgh Napier University | Sep 2016 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "Institute of Administrative Management Level 5 Diploma in Business and Administrative Management, 2023\nMinute Taking for Boards and Committees, Chartered Governance Institute UK and Ireland, 2023"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Fourteen years, EA into chief-of-staff territory",
+      "why": "A senior EA CV shows scope, not more of the same tasks. This page carries a team of assistants, a governance calendar and a budget — and the things a mid-level page lists, booking travel and filing expenses, have gone, because at this level nobody is asking whether you can do them.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Charmaine Alleyne",
+        "title": "Executive Business Partner to the Group Chief Executive",
+        "location": "London, UK",
+        "phone": "+44 7700 900788",
+        "email": "c.alleyne@example.com",
+        "linkedin": "linkedin.com/in/charmaine-alleyne-example",
+        "website": "",
+        "summary": "- Executive business partner to the group chief executive of a listed facilities group with 11,000 employees; also leads a team of six executive assistants.\n- Fourteen years in executive support, the last six at chief executive level in a listed environment: board calendar, AGM, results days and investor roadshows.\n- Manages a £480k budget covering executive travel, board meetings and the assistant team.",
+        "skills": "Executive partnership: diary and priorities, briefing and decision packs, following up the executive team's commitments, standing in at internal meetings\nGovernance: annual calendar across the board and four committees, AGM logistics, results-day timetable, non-executive director induction\nTeam leadership: six executive assistants across three sites; recruitment, cover planning, standards and development\nConfidentiality: two restructures, a chief executive succession and an internal investigation; disclosure discipline under listed company rules",
+        "experience": "Executive Business Partner to the Group Chief Executive | Fairholme Facilities Group | London, UK | Apr 2020 - Present\n- Partner the chief executive of an 11,000-person listed group: owns the diary, the priority list and the follow-up on everything the executive team has committed to.\n- Lead six executive assistants across three sites; introduced a cover model that ended the pattern of directors going unsupported over holidays, and promoted two of the team into board-level EA roles.\n- Own the annual governance calendar — eight board meetings, four committees, the AGM and two capital markets days — coordinated with the company secretary and investor relations.\n- Ran the logistics of a chief executive succession, including announcement day and the incoming chief executive's first hundred days, with no leak before the market announcement.\n- Cut executive travel spend by £210k a year by renegotiating the hotel programme and moving domestic travel to an advance booking policy.\n---\nExecutive Assistant to the Chief Operating Officer | Fairholme Facilities Group | London, UK | Jan 2016 - Mar 2020\n- Supported the chief operating officer through the integration of a 2,000-person acquisition, including a town hall programme across 40 sites.\n- Produced the monthly operating review pack for eleven regional directors.\n---\nExecutive Assistant | Aldwinter Estates | London, UK | Sep 2012 - Dec 2015\n- Supported two managing directors in a property investment business, including investor meeting logistics and the quarterly reporting pack.",
+        "education": "BA (Hons) English, 2:1 | Queen Mary University of London | Sep 2008 - Jun 2011",
+        "projects": "",
+        "publications": "",
+        "certifications": "Chartered Governance Institute UK and Ireland, Certificate in Corporate Governance, 2021\nILM Level 5 Award in Leadership and Management, 2019"
+      }
+    }
+  ],
+  "office_manager": [
+    {
+      "level": "early",
+      "headline": "Coordinator to office manager, 55-person studio",
+      "why": "Office management is judged on what stopped going wrong, so say what you took over and what changed: a supplier bill, a compliance file, a moving day. Name the health and safety duties you personally hold — fire warden, first aider, DSE assessor — because those are roles an employer is legally required to fill and a CV that lists them answers a question the advert was really asking.",
+      "template_id": "pastel_soft",
+      "data": {
+        "full_name": "Dev Chandarana",
+        "title": "Office Manager",
+        "location": "Leicester, UK",
+        "phone": "+44 7700 900177",
+        "email": "dev.chandarana@example.com",
+        "linkedin": "linkedin.com/in/dev-chandarana-example",
+        "website": "",
+        "summary": "- Office manager for a 55-person design and engineering studio, two years after joining as office coordinator.\n- Holds the practical health and safety duties: risk assessments, DSE assessments, fire warden and first aider.\n- Took £18k a year out of the supplier bill by renegotiating five contracts that had been rolling over unchecked.",
+        "skills": "Facilities: supplier and contractor management, cleaning and maintenance schedules, access control, space planning, desk and meeting room booking\nHealth and safety: risk assessments, DSE workstation assessments, fire warden duties and drills, accident book and RIDDOR reporting, PAT testing schedule\nAdministration and finance: purchase orders, invoice coding and approval in Xero, petty cash, £120k office budget\nPeople support: onboarding and inductions, right to work checks, holiday system administration, new starter equipment\nSystems: Microsoft 365, Xero, BrightHR, Envoy visitor management, Slack",
+        "experience": "Office Manager | Colthurst Studio | Leicester, UK | Jan 2025 - Present\n- Run the office for 55 people, including a £120k budget, six suppliers and the day-to-day relationship with the landlord.\n- Renegotiated five rolling contracts — cleaning, coffee, stationery, print and waste — for £18k a year less, after finding three had auto-renewed at increased rates nobody had approved.\n- Rebuilt the health and safety file from nothing: twelve risk assessments, a DSE assessment for every desk, two fire drills a year and a named warden per floor. The studio passed its insurer's inspection with no actions.\n- Onboard around twenty starters a year: equipment, accounts, right to work checks and the first-week induction.\n---\nOffice Coordinator | Colthurst Studio | Leicester, UK | Aug 2023 - Dec 2024\n- Front of house, post, supplies and meeting rooms for a growing office; set up the desk booking system when the studio moved to three days on site.\n- Coordinated the move to the current building, including the furniture order, the IT cutover weekend and the moving-day plan.",
+        "education": "BA (Hons) Business Administration, 2:1 | De Montfort University | Sep 2020 - Jun 2023",
+        "projects": "",
+        "publications": "",
+        "certifications": "IOSH Working Safely, 2024\nFirst Aid at Work (three-day), 2024\nFire Warden training, 2024\nDSE Assessor training, 2025"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Practice manager, GP surgery, 11,400 patients",
+      "why": "Office manager and practice manager are not the same job and the CV has to declare which. A practice CV carries the regulated things first — the registration you hold, the contract you work under, list size and the quality framework — because a panel screens on those before it reads a word about rotas or supplies.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Nia Caldecott",
+        "title": "Practice Manager",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900254",
+        "email": "nia.caldecott@example.com",
+        "linkedin": "linkedin.com/in/nia-caldecott-example",
+        "website": "",
+        "summary": "- Practice manager of a four-partner GP surgery with a list of 11,400 patients and 32 staff; CQC registered manager since 2022.\n- Seven years in practice management. Took the practice from 'Requires improvement' to 'Good' across all five CQC key questions inside fourteen months.\n- Runs a £2.4m budget under the GMS contract, including the QOF submission and the practice's Primary Care Network staffing.",
+        "skills": "Regulatory and contractual: CQC registered manager across all five key questions, GMS contract, QOF submission, enhanced services, Primary Care Network participation\nOperations: appointment system and access, capacity and demand modelling, rota for 4 GPs, 3 nurses and 12 administrative staff, significant event analysis, NHS complaints procedure\nFinance: £2.4m budget, partner drawings, claims through the Calculating Quality Reporting Service, ARRS reimbursement, payroll and NHS Pension administration\nInformation governance: Data Security and Protection Toolkit submission, subject access requests, Caldicott principles\nSystems: EMIS Web, Docman, Accurx, NHS e-Referral Service, Xero",
+        "experience": "Practice Manager | Ashton Rise Medical Centre | Bristol, UK | Apr 2021 - Present\n- Manage a four-partner practice with an 11,400 list and 32 staff, including a £2.4m budget under the GMS contract.\n- Moved the practice from 'Requires improvement' to 'Good' in all five CQC domains in fourteen months, by rebuilding the evidence folders, fixing the significant event process and running two mock inspections.\n- Redesigned the appointment system around demand data rather than habit; the share of patients waiting more than two weeks fell from 31% to 9%.\n- Achieved 98% of available QOF points in each of the last three years, up from 87% on arrival.\n- Brought in four ARRS roles through the Primary Care Network — a clinical pharmacist, two care coordinators and a first contact physiotherapist — taking around 140 appointments a month off the GPs.\n---\nDeputy Practice Manager | Ashton Rise Medical Centre | Bristol, UK | Jun 2019 - Mar 2021\n- Ran the rota, payroll input and NHS Pension administration for 28 staff.\n- Coordinated the practice's share of a PCN vaccination site, 6,200 doses over four months.\n---\nMedical Secretary | Longmoor Surgery | Bath, UK | Sep 2017 - May 2019\n- Referrals, correspondence and recall lists for a three-partner practice.",
+        "education": "BSc (Hons) Health and Social Care Management, 2:1 | University of the West of England | Sep 2014 - Jun 2017",
+        "projects": "",
+        "publications": "",
+        "certifications": "CQC Registered Manager, registered 2022\nAMSPAR Level 5 Diploma in Primary Care and Health Management, 2021\nIOSH Managing Safely, 2022\nSafeguarding Adults and Children, Level 3, refreshed 2025"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Head of workplace, five offices, £6m estate",
+      "why": "At the top of this ladder the job becomes property and money: leases, dilapidations, fit-out budgets and the people running each site. Notice that the health and safety qualification gets heavier as the scope does — a NEBOSH certificate is the line employers look for once you are accountable for compliance rather than assisting with it.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Marcus Ilesanmi",
+        "title": "Head of Workplace and Facilities",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900642",
+        "email": "marcus.ilesanmi@example.com",
+        "linkedin": "linkedin.com/in/marcus-ilesanmi-example",
+        "website": "",
+        "summary": "- Head of workplace and facilities for a 1,400-person professional services group across five UK offices and 118,000 sq ft.\n- Twelve years in workplace and office management; team of nine, £6.2m annual property and facilities budget.\n- Delivered three fit-outs and two lease exits, including the consolidation that took £1.9m a year out of the estate.",
+        "skills": "Property and estate: lease negotiation and break strategy, dilapidations settlement, service charge review, landlord relationships, fit-out programmes\nHealth, safety and compliance: statutory compliance regimes across fire risk assessment, water hygiene, asbestos register and lifting equipment; contractor permits, incident investigation, ISO 45001 support\nCommercial: £6.2m budget, tendering and contract management for cleaning, security, catering and maintenance, procurement authority to £500k\nLeadership: team of nine across five sites including two site office managers; business continuity and incident response",
+        "experience": "Head of Workplace and Facilities | Adderbury Cross Group | Manchester, UK | Feb 2022 - Present\n- Accountable for five offices, 118,000 sq ft and a £6.2m budget, with nine staff including two site office managers.\n- Led the consolidation from seven offices to five: two lease exits with dilapidations settled at £340k against a £900k landlord claim, and £1.9m a year off total occupancy cost.\n- Delivered the Manchester head office fit-out — 42,000 sq ft, £4.1m — on the planned occupation date, with the business working through the whole programme.\n- Rebuilt statutory compliance after an insurer audit found gaps; fire risk assessments, water hygiene and the asbestos register now sit on a tracked regime with no overdue actions in two years.\n- Tendered cleaning, security and maintenance as a single bundle, cutting £280k a year and putting one account manager across all five sites.\n---\nRegional Facilities Manager | Adderbury Cross Group | Manchester, UK | Aug 2018 - Jan 2022\n- Ran three northern offices and 600 people through the return to occupancy, including the desk booking model and the ventilation assessments.\n- Cut reactive maintenance spend by 34% by moving the two oldest buildings onto planned preventative maintenance.\n---\nOffice Manager | Bramhope Loxley | Leeds, UK | Sep 2014 - Jul 2018\n- Managed a 220-person office: facilities, reception, suppliers and a £700k operating budget.",
+        "education": "BSc (Hons) Estate Management, 2:1 | Sheffield Hallam University | Sep 2010 - Jun 2013",
+        "projects": "",
+        "publications": "",
+        "certifications": "NEBOSH National General Certificate in Occupational Health and Safety, 2019\nIWFM Level 5 Diploma in Facilities Management, 2021\nMember, Institute of Workplace and Facilities Management (MIWFM)"
+      }
+    }
+  ]
+}

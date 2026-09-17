@@ -1,0 +1,342 @@
+{
+  "marketing_manager": [
+    {
+      "level": "early",
+      "headline": "Placement year, then eighteen months in",
+      "why": "An early marketing CV is judged on whether you can carry one campaign end to end — brief, budget, agency, readout — not on how many channels you have touched. Two campaigns with real money attached beat a list of ten tools, and the placement year is written up as a job because that is what it was.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Nadia Kowalczyk",
+        "title": "Marketing Executive",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900512",
+        "email": "nadia.kowalczyk@example.com",
+        "linkedin": "linkedin.com/in/nadia-kowalczyk-example",
+        "website": "",
+        "summary": "- Marketing executive in FMCG, eighteen months in-house after a placement year agency-side.\n- Has run two campaigns from brief to readout on budgets under £20k, and reports on both weekly.\n- Part-qualified with CIM; studying the Level 4 certificate alongside the job.",
+        "skills": "Campaign: briefing, agency liaison, in-store activation, sampling, print and POS\nDigital: Meta Ads Manager, Google Ads, Mailchimp, GA4, Later\nAnalysis: Excel (pivots, lookups), Looker Studio, Nielsen category reports\nTrade: retailer one-pagers, listing presentations, promotional calendars",
+        "experience": "Marketing Executive | Bramblewick Foods | Leeds, UK | Sep 2024 - Present\n- Ran the £14k spring sampling campaign end to end — brief, agency, 40 store activations and the readout; 4,100 trial packs handed out against a 3,000 target.\n- Rewrote the retailer-facing product one-pagers, which the commercial team credited in a regional grocer listing worth £90k of annual revenue.\n- Split the single email list into four by purchase recency; unsubscribe rate fell from 0.9% to 0.4% and click rate roughly doubled.\n- Own the weekly performance report to the commercial director — took it from a folder of screenshots to one page with a recommendation on it.\n---\nMarketing Assistant (placement year) | Copperbeech Studio | Leeds, UK | Jul 2022 - Jul 2023\n- Built competitor and keyword briefs for eleven new-business pitches; six converted.\n- Ran the agency's own LinkedIn for six months on no budget, tripling weekly impressions.",
+        "education": "BA (Hons) Marketing Management, 2:1 (with placement year) | University of Leeds | Sep 2020 - Jun 2024",
+        "projects": "Gravelane Cycles rebrand (university live brief, 2023): Led a team of four on a repositioning for an independent bike retailer; the shop adopted the new identity and the shopfront signage.\n---\nCategory teardown series: Monthly write-up of one supermarket category — pricing, facings, own-label share — started to learn the trade side properly. Shared internally at Bramblewick since March.",
+        "publications": "",
+        "certifications": "CIM Level 4 Certificate in Professional Marketing (two of four modules passed)\nGoogle Analytics Certification\nMeta Certified Digital Marketing Associate"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years of B2B demand generation",
+      "why": "Demand generation is read for what reached the pipeline, not what reached an audience — so each campaign bullet lands on a sales-accepted number. The budget owned is stated plainly and early: a marketing manager who cannot say what they spent reads as somebody handed a channel rather than a plan.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Femi Adebanjo",
+        "title": "Marketing Manager",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900268",
+        "email": "femi.adebanjo@example.com",
+        "linkedin": "linkedin.com/in/femi-adebanjo-example",
+        "website": "",
+        "summary": "- B2B marketing manager, five years across software and insurance; owns a £480k budget and a marketing-sourced pipeline target.\n- Works to a sales-accepted definition of a lead rather than a form fill, which is why the lead-quality argument stopped.\n- Manages two executives, a content agency and the events calendar.",
+        "skills": "Demand generation: paid search, ABM, webinars, field events, partner co-marketing\nPipeline: lead scoring, MQL/SQL definitions, attribution, sales service-level agreements\nMartech: HubSpot, Salesforce, Demandbase, Webflow, Looker Studio\nCommercial: £480k budget ownership, agency selection and review, quarterly board reporting",
+        "experience": "Marketing Manager | Orrery Software | Bristol, UK | Feb 2023 - Present\n- Marketing-sourced pipeline grew from £2.1m to £5.8m across two years, on a budget that rose 12%.\n- Reallocated a third of the budget out of trade shows once two years of attribution showed them sourcing 6% of pipeline for 31% of spend; the finance director now asks for that analysis by name.\n- Rebuilt lead scoring with the sales floor rather than for them — MQL-to-SQL acceptance went from 34% to 61%.\n- Launched partner co-marketing with nine resellers; £700k sourced in year one against a £400k plan.\n- Manage two marketing executives and a three-person content agency.\n---\nSenior Marketing Executive | Castlebrook Insurance | Bristol, UK | Aug 2020 - Jan 2023\n- Took the renewals email programme from one reminder to a five-stage sequence; retention on the motor book rose 3.4 points, worth roughly £900k of retained premium.\n- Built the company's first paid social from a £500 test to £12k a month at a cost per quote below the direct-mail control.\n- Ran the broker newsletter and the quarterly product briefings to 300 intermediaries.",
+        "education": "BSc (Hons) Business and Management, 2:1 | University of Bristol | Sep 2016 - Jun 2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "CIM Level 6 Diploma in Professional Marketing\nHubSpot Marketing Software Certification"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Eleven years, nine people, £6.4m budget",
+      "why": "A senior marketing CV stops listing channels and starts naming the calls: what was cut, what was bet on, what the money bought. The tools section has almost disappeared here on purpose — nobody hires a head of marketing for Google Ads proficiency, and leaving it in suggests nothing bigger ever happened.",
+      "template_id": "magazine_editorial",
+      "data": {
+        "full_name": "Elspeth Mair",
+        "title": "Head of Marketing",
+        "location": "Edinburgh, UK",
+        "phone": "+44 7700 900731",
+        "email": "elspeth.mair@example.com",
+        "linkedin": "linkedin.com/in/elspeth-mair-example",
+        "website": "",
+        "summary": "- Head of marketing for a 62-store retail group; nine people across brand, performance, CRM and studio, and a £6.4m annual budget.\n- Eleven years in consumer retail, the last six accountable for the brand as well as the acquisition number.\n- Built a CRM function from nothing after showing the board what a four-point gain in repeat rate was worth.",
+        "skills": "Leadership: team of 9, hiring and structure, agency roster, quarterly board reporting\nAccountability: £6.4m budget, brand health tracking, blended CAC, repeat-purchase rate\nScope: brand and rebrand, loyalty, retail and DTC, new-market launch",
+        "experience": "Head of Marketing | Silvermoor Retail Group | Edinburgh, UK | Mar 2021 - Present\n- Lead nine across brand, performance, CRM and an in-house studio; hired six of them.\n- Ran the rebrand across 62 stores, the site and the packaging. A year after launch, unprompted awareness in Scotland had moved from 19% to 31%.\n- Consolidated five agencies to two at the 2023 review, taking £310k out of fees with paid performance flat quarter on quarter.\n- Turned the loyalty scheme from a discount card into a tiered programme; members are now 54% of revenue against 38% at launch.\n- Own £6.4m of annual spend and defend it to the board each quarter, including the year I asked to hold budget flat and spend it differently.\n---\nSenior Marketing Manager | Northshore Outfitters | Glasgow, UK | Jun 2018 - Feb 2021\n- Built the performance function from scratch — three hires, £2m of annual spend, blended CAC down 26% in eighteen months.\n- Opened the Republic of Ireland market on a £400k launch budget and hit the year-one revenue plan a quarter early.\n- Introduced weekly trading meetings between marketing, buying and stores.\n---\nMarketing Manager | Tanglewood Brewing | Glasgow, UK | Sep 2015 - May 2018\n- Grew direct-to-consumer from 4% to 17% of revenue over three years.\n- Ran the taproom events programme, which paid for itself in its second year.",
+        "education": "MSc Marketing | University of Edinburgh | Sep 2014 - Sep 2015\n---\nMA (Hons) Economics and Politics | University of Aberdeen | Sep 2010 - Jun 2014",
+        "projects": "",
+        "publications": "",
+        "certifications": "Chartered Marketer, Chartered Institute of Marketing"
+      }
+    }
+  ],
+  "digital_marketer": [
+    {
+      "level": "early",
+      "headline": "One channel, learned properly, two years",
+      "why": "Growth roles are bought on channel economics, so an early CV wins by owning one channel deeply rather than naming six. The account here is small and the budget is stated anyway — a real £9k a month with a CAC attached is far more credible than 'multi-channel campaigns', and platform certifications still earn their place at this level.",
+      "template_id": "startup_energetic",
+      "data": {
+        "full_name": "Rohan Sequeira",
+        "title": "Digital Marketing Executive",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900395",
+        "email": "rohan.sequeira@example.com",
+        "linkedin": "linkedin.com/in/rohan-sequeira-example",
+        "website": "",
+        "summary": "- Two years in paid social and lifecycle for a direct-to-consumer skincare brand, reporting against a CAC ceiling rather than a ROAS target.\n- Runs £9k a month of acquisition spend and the creative testing calendar behind it.\n- Came in agency-side, so knows how an account looks when it has been neglected.",
+        "skills": "Paid social: Meta Ads Manager, TikTok Ads Manager, creative testing, audience structure\nSearch and shopping: Google Ads, Merchant Center, Performance Max\nLifecycle: Klaviyo flows and segmentation, SMS, list hygiene\nMeasurement: GA4, Shopify analytics, post-purchase surveys, UTM discipline\nCreative: Figma, CapCut, briefing a freelance editor",
+        "experience": "Digital Marketing Executive | Verity Skin Co. | Manchester, UK | Nov 2024 - Present\n- Run £9k a month of Meta and TikTok acquisition spend; blended CAC came down from £31 to £22 over two quarters, mostly by killing broad prospecting and rebuilding around three creative angles that survived testing.\n- Set up the creative calendar — six concepts a month, judged on cost per purchase and thumbstop rate — so a losing ad dies in a week instead of a quarter.\n- Rebuilt the Klaviyo welcome flow into four branches by acquisition source; flow revenue went from 11% to 19% of email revenue.\n- Report weekly on CAC by channel against the £26 payback ceiling the founder set, including the months it was missed.\n---\nPaid Media Assistant | Copperbeech Studio | Manchester, UK | Aug 2023 - Oct 2024\n- Built and audited Google Ads accounts for eleven small e-commerce clients.\n- Wrote the agency's GA4 migration checklist after running four migrations myself.",
+        "education": "BSc (Hons) Marketing with Digital Media, First Class | Manchester Metropolitan University | Sep 2020 - Jun 2023",
+        "projects": "Gravelane Cycles (freelance, 2024): Took £1.2k of monthly Google Shopping spend from a 1.4 ROAS to 3.1 by fixing the product feed — titles, GTINs and a custom label for margin tier — before touching bids.\n---\nCreative teardown log: 60 direct-to-consumer ads a month annotated for hook, offer and format, kept since 2023. It is where most of the tested angles at Verity came from.",
+        "publications": "",
+        "certifications": "Google Ads Search Certification\nGoogle Analytics Certification\nMeta Certified Digital Marketing Associate\nKlaviyo Product Certification"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Four years, paid and lifecycle together",
+      "why": "This is what channel economics looks like written down: spend managed, CAC payback, and cohorts rather than campaign counts. The geo holdout bullet is the one that matters — it shows the candidate knows the difference between attributed and incremental, which is the line between a media buyer and a growth marketer.",
+      "template_id": "diagonal_split",
+      "data": {
+        "full_name": "Marta Ionescu",
+        "title": "Growth Marketing Manager",
+        "location": "Brighton, UK",
+        "phone": "+44 7700 900604",
+        "email": "marta.ionescu@example.com",
+        "linkedin": "linkedin.com/in/marta-ionescu-example",
+        "website": "",
+        "summary": "- Growth marketer, four years across furniture and homeware; owns £2.4m of annual paid spend and the payback target attached to it.\n- Runs acquisition and lifecycle as one number, because the channels that look cheapest on first order are rarely the cheapest by month six.\n- Tests channels against holdouts before defending them in a budget meeting.",
+        "skills": "Paid: Google Ads, Meta, Reddit, Pinterest; feed management, budget pacing\nMeasurement: geo holdouts, incrementality testing, cohort LTV, GA4, Northbeam, Looker Studio\nLifecycle: Klaviyo, triggered flows, win-back, subscription retention\nAnalysis: SQL, cohort and payback modelling in Sheets, contribution-margin reporting",
+        "experience": "Growth Marketing Manager | Loomcraft | Brighton, UK | Jan 2024 - Present\n- Own £2.4m of annual paid spend across Google, Meta and Reddit; CAC payback moved from 7.5 months to 4.9 while spend grew 60%.\n- Ran the company's first geo holdout on brand search. Thirty-eight per cent of the conversions the platform was claiming happened anyway, and the £180k released went into prospecting.\n- Built the cohort view finance now uses for LTV against CAC by acquisition channel; two channels that looked cheap on first-order ROAS were losing money by month six and were cut.\n- Replaced batch email sends with eight triggered flows; repeat purchase inside 90 days rose from 21% to 29%.\n- Present the acquisition number monthly alongside the finance team, in their format rather than a marketing one.\n---\nPerformance Marketing Executive | Halyard Home | London, UK | Sep 2021 - Dec 2023\n- Scaled Meta prospecting from £40k to £160k a month while holding ROAS above 2.8.\n- Brought paid search in-house from the agency: £96k a year saved with performance flat over the following two quarters.\n- Set the UTM and naming convention that made channel reporting possible at all.",
+        "education": "BA (Hons) Economics, 2:1 | University of Sussex | Sep 2018 - Jun 2021",
+        "projects": "",
+        "publications": "",
+        "certifications": "Google Ads Measurement Certification\nKlaviyo Product Certification"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Nine years, owns the acquisition P&L",
+      "why": "At growth-lead level the CV stops reporting channel performance and starts reporting unit economics — payback period, contribution margin, and the spending decisions behind them. Note that the channel list has collapsed to a single line, and that one bullet is about a programme that was killed: senior growth is judged on what you stopped funding as much as what you scaled.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Jonah Vandermeer",
+        "title": "Director of Growth",
+        "location": "Austin, TX",
+        "phone": "+1 (512) 555-0142",
+        "email": "jonah.vandermeer@example.com",
+        "linkedin": "linkedin.com/in/jonah-vandermeer-example",
+        "website": "",
+        "summary": "- Growth director carrying a $14M acquisition budget and the CAC payback target that comes with it; eleven people across paid, lifecycle, SEO and analytics.\n- Nine years in subscription and direct-to-consumer, the last four accountable for contribution margin rather than channel ROAS.\n- Settles measurement arguments with experiments instead of attribution windows.",
+        "skills": "Accountability: $14M acquisition budget, team of 11, CAC payback and contribution margin per new customer\nMeasurement: geo experiments, incrementality testing, media mix modelling, cohort economics\nChannels: paid search and social, lifecycle and retention, affiliate, SEO",
+        "experience": "Director of Growth | Riverkeep | Austin, TX | Apr 2022 - Present\n- Own a $14M annual acquisition budget; payback stayed under six months through two years of rising auction prices and a pricing change.\n- Contribution margin per new customer rose 41% while new-customer volume grew 18% — the first year the two had moved in the same direction.\n- Ended a $3.1M influencer programme after a four-market holdout found no measurable lift, and moved the money into paid search and retention.\n- Rebuilt measurement around a media mix model with geo experiments as the referee, which closed a two-year argument with finance about what marketing was worth.\n- Lead eleven; made the case for the first dedicated analyst by showing attribution disputes were costing more than the salary.\n---\nHead of Performance Marketing | Sandpiper Supply Co. | Denver, CO | Feb 2019 - Mar 2022\n- Grew paid spend from $2M to $8.5M while blended CAC fell 23%.\n- Built retention from nothing to 34% of revenue in two years, chiefly through a replenishment programme.\n- Hired and ran a team of five.\n---\nSenior Performance Marketing Manager | Ashgrove Media | Chicago, IL | Jul 2016 - Jan 2019\n- Ran paid acquisition for three subscription titles; cost per trial down 31% over two years.",
+        "education": "BA, Economics | The University of Texas at Austin | Aug 2012 - May 2016",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "content_writer": [
+    {
+      "level": "early",
+      "headline": "NCTJ-trained, first year in-house writing",
+      "why": "A writer's CV is never read on its own — it is read next to the work — so the portfolio link belongs in the header and the clips get a section of their own. The layout is deliberately plain: anything decorative competes with the only thing actually being assessed, which is the prose.",
+      "template_id": "newspaper_columns",
+      "data": {
+        "full_name": "Isla Ferrante",
+        "title": "Content Writer",
+        "location": "Glasgow, UK",
+        "phone": "+44 7700 900147",
+        "email": "isla.ferrante@example.com",
+        "linkedin": "linkedin.com/in/isla-ferrante-example",
+        "website": "islaferrante.example.com",
+        "summary": "- Content writer with a newsroom training, eighteen months in-house at an education technology company.\n- Writes to a brief and a deadline; came from a weekly title where three to five stories a week was the floor.\n- Clips and full portfolio at islaferrante.example.com.",
+        "skills": "Writing: long-form guides, explainers, case studies, help-centre copy, headlines\nReporting: interviewing, sourcing, fact-checking, media law and public affairs (NCTJ)\nSEO: keyword research, search intent, internal linking; Ahrefs, Search Console\nTools: WordPress, Google Docs suggestions, Trello, GA4",
+        "experience": "Content Writer | Wayfinder Learning | Glasgow, UK | Feb 2025 - Present\n- Write four long-form guides a month for a study-skills audience; nine of the twenty-two published so far rank on page one for their target term.\n- Cut the help centre from 60 articles to 34 by merging and rewriting; support tickets on those topics fell by a fifth over the next quarter.\n- Interview two customers a month and turn them into case studies the sales team actually sends out.\n- Argued for and now run a monthly readability pass on older pages, which nobody owned before.\n---\nTrainee Reporter | The Bellwether | Glasgow, UK | Sep 2023 - Jan 2025\n- Filed three to five stories a week on the further-education beat, including a four-part series on college mergers that the editor led the paper on twice.\n- Subbed the letters page and wrote headlines to fit a fixed measure.\n- Covered evening council meetings and turned them round for the next morning.",
+        "education": "NCTJ Diploma in Journalism | Glasgow Clyde College | Sep 2022 - Jun 2023\n---\nMA (Hons) English Literature, 2:1 | University of Glasgow | Sep 2018 - Jun 2022",
+        "projects": "Margins (personal newsletter): Fortnightly essays on how people read; 1,900 subscribers and a 46% open rate, written, edited and sent alone since 2023.",
+        "publications": "The colleges that merged and the courses that vanished — The Bellwether, four-part series, March 2024\nWhat a revision planner actually needs to do — Wayfinder Learning, 2025\nEvening classes are closing quietly — The Bellwether, September 2024",
+        "certifications": "NCTJ Shorthand, 100wpm\nGoogle Analytics Certification"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years writing for B2B software",
+      "why": "B2B content is judged on pipeline rather than pageviews, and this CV shows what that difference looks like in a bullet. It also names the subject-matter interview habit, which is the thing separating writers who can cover a technical product from writers who paraphrase the documentation.",
+      "template_id": "magazine_editorial",
+      "data": {
+        "full_name": "Sunil Varadarajan",
+        "title": "Content Marketing Manager",
+        "location": "London, UK",
+        "phone": "+44 7700 900822",
+        "email": "sunil.varadarajan@example.com",
+        "linkedin": "linkedin.com/in/sunil-varadarajan-example",
+        "website": "sunilwrites.example.com",
+        "summary": "- Five years writing for B2B software buyers — payroll, then security — and three of them owning the content programme rather than filling it.\n- Interviews engineers and customers rather than rewriting the docs, which is why the technical series gets cited in deals.\n- Selected work, including the pieces that pulled links, at sunilwrites.example.com.",
+        "skills": "Writing: long-form, technical explainers, customer stories, annual research reports, email\nEditorial: style guide ownership, freelance briefing and editing, commissioning\nSEO: content audits, keyword and intent mapping, internal linking; Ahrefs, Semrush, Clearscope\nTools: WordPress, Contentful, HubSpot, Search Console, Figma",
+        "experience": "Content Marketing Manager | Sablefield Software | London, UK | May 2023 - Present\n- Own the blog, the customer stories and two annual research reports; content is now first touch on 28% of sourced pipeline, up from 9%.\n- Rewrote 40 thin posts into 12 substantial ones and redirected the rest — organic sessions went from 18k to 47k a month over a year with no increase in publishing.\n- Interview four engineers or customers a month, which is the only reason the encryption series reads like it was written by somebody who had asked.\n- Wrote the style guide and brief template three freelancers work to; the edit on a freelance draft dropped from three passes to one.\n---\nContent Writer | Pallas Payroll | London, UK | Jun 2020 - Apr 2023\n- Wrote the off-payroll legislation explainer series, which became the most-linked thing on the site and still holds 340 referring domains.\n- Produced the quarterly customer magazine, 24 pages, from commissioning through to print sign-off.\n- Took the newsletter from 4,000 to 19,000 subscribers over three years.",
+        "education": "BA (Hons) English and Linguistics, 2:1 | University of Nottingham | Sep 2016 - Jun 2019",
+        "projects": "",
+        "publications": "What payroll teams get wrong about off-payroll rules — The Thornbury Review, 2022\nWriting for engineers who would rather read the docs — Kindling Quarterly, 2024\nThe State of Small-Business Payroll (annual report, lead author) — Pallas Payroll, 2022 and 2023",
+        "certifications": "HubSpot Content Marketing Certification\nSemrush SEO Toolkit Certification"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Twelve years, editor turned content lead",
+      "why": "A senior content CV has to answer the question a portfolio cannot: could this person run a publishing operation. So the bullets are about commissioning budgets, a freelance bench and editorial standards, and the writing itself shrinks to a link and three lines — the work is assumed by now.",
+      "template_id": "executive_elegant",
+      "data": {
+        "full_name": "Meredith Ashcroft",
+        "title": "Head of Content",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900239",
+        "email": "meredith.ashcroft@example.com",
+        "linkedin": "linkedin.com/in/meredith-ashcroft-example",
+        "website": "meredithashcroft.example.com",
+        "summary": "- Head of content for a health-information publisher read by 1.2m people a month; six staff and a £340k commissioning budget.\n- Twelve years in editorial, half of it running schedules and freelance benches rather than filing to them.\n- Grew traffic mostly by retiring pages, which is the argument this CV is built to make.",
+        "skills": "Leadership: team of 6, £340k commissioning budget, freelance bench of 20, editorial standards group\nEditorial: commissioning, schedules, house style, clinical and legal sign-off, accuracy audit\nStrategy: content pruning and consolidation, search-led planning, syndication and partnerships",
+        "experience": "Head of Content | Everden Health | Manchester, UK | Aug 2021 - Present\n- Run a team of six and a £340k commissioning budget across a clinical-information site with 1.2m monthly readers.\n- Took organic sessions from 260k to 1.2m a month over three years, largely by retiring 900 pages and consolidating what was left rather than publishing more.\n- Introduced clinician sign-off on every medical page; the site passed its first external accuracy audit with no findings, which is what made two commissioning partnerships possible.\n- Built a bench of 20 specialist freelancers and a published rate card — commissioning a specialist piece now takes four days rather than three weeks.\n- Chair the editorial standards group with legal and clinical, and hold the final call on corrections.\n---\nManaging Editor | Nettlefold Publishing | Manchester, UK | Mar 2017 - Jul 2021\n- Ran a 14-title schedule and its freelance budget; 11 of 14 shipped on date in my second year, against 6 the year I arrived.\n- Hired and trained four junior editors, three of whom are still commissioning elsewhere.\n- Renegotiated the freelance rate card, which raised standard rates 18% and still came in under budget by dropping two underperforming titles.\n---\nSenior Writer | The Thornbury Review | London, UK | Sep 2013 - Feb 2017\n- Wrote the fortnightly business column and the annual sector survey.\n- Deputised on the news desk for two months during a maternity cover.",
+        "education": "BA (Hons) Journalism, 2:1 | University of Sheffield | Sep 2010 - Jun 2013",
+        "projects": "",
+        "publications": "Selected writing and the full commissioning record at meredithashcroft.example.com\nWhy we deleted nine hundred pages — Kindling Quarterly, 2024\nThe annual sector survey, lead author 2014 to 2017 — The Thornbury Review",
+        "certifications": ""
+      }
+    }
+  ],
+  "sales_executive": [
+    {
+      "level": "early",
+      "headline": "Retail floor to SaaS SDR, eighteen months",
+      "why": "An SDR CV is read for activity that became pipeline, not for closing — so the numbers are meetings held, opportunities the account executives actually accepted, and the conversion between the two. The shop job stays on the page because it is where the objection handling came from, and it has a turnover figure attached.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Bethan Lloyd-Price",
+        "title": "Sales Development Representative",
+        "location": "Cardiff, UK",
+        "phone": "+44 7700 900456",
+        "email": "bethan.lloyd-price@example.com",
+        "linkedin": "linkedin.com/in/bethan-lloyd-price-example",
+        "website": "",
+        "summary": "- Sales development representative, eighteen months outbound into UK primary-care and dental practices after three years managing a bike shop.\n- 112% of the meetings-held target across four quarters, and £610k of qualified pipeline sourced in year one.\n- Wants an account executive seat and is ramping on MEDDPICC with the team lead.",
+        "skills": "Prospecting: outbound calling, multi-channel sequencing, list building, LinkedIn Sales Navigator\nQualification: BANT, early MEDDPICC, discovery call structure\nStack: Salesforce, Outreach, Gong, ZoomInfo\nSector: practice-management software for UK primary care and dentistry",
+        "experience": "Sales Development Representative | Ormsby Health | Cardiff, UK | Mar 2025 - Present\n- Hit 112% of the meetings-held target across four quarters: 68 meetings held, 41 accepted as opportunities by the account executive team.\n- Sourced £610k of qualified pipeline in the first year, of which £180k has closed so far.\n- Hold a 9% cold connect rate against a 6% team average on roughly 60 dials a day.\n- Wrote the practice-manager sequence the whole team now runs — 11% reply rate against 4% on the one it replaced.\n---\nAssistant Store Manager | Gravelane Cycles | Cardiff, UK | Jul 2022 - Feb 2025\n- Ran a shop of six staff and £480k of annual turnover.\n- Grew servicing revenue 22% by booking the first service at the point of sale rather than waiting for the customer to call.\n- Trained four new starters on the till, the fitting process and the returns conversation.",
+        "education": "BA (Hons) Business Management, 2:1 | Cardiff Metropolitan University | Sep 2019 - Jun 2022",
+        "projects": "",
+        "publications": "",
+        "certifications": "Salesforce Certified Associate\nSandler Foundations"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Four years closing, three quotas beaten",
+      "why": "Sales CVs are read for two things — quota attainment and deal size — and almost everything else is context. Attainment is therefore given year by year with the quota number beside it, so a reader can tell a 137% on £780k from a 137% on £200k, and the segment, cycle length and win rate say what kind of selling it was.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Yusuf Karadeniz",
+        "title": "Account Executive, Mid-Market",
+        "location": "London, UK",
+        "phone": "+44 7700 900673",
+        "email": "yusuf.karadeniz@example.com",
+        "linkedin": "linkedin.com/in/yusuf-karadeniz-example",
+        "website": "",
+        "summary": "- Mid-market account executive, four years closing UK software deals between £25k and £200k ACV.\n- Attainment: 137% of £780k in 2025, 118% of £700k in 2024, 94% of £520k in the 2023 ramp year.\n- President's Club 2025, sixth of 54 reps. Sources 38% of my own pipeline.",
+        "skills": "Segment: UK mid-market, 200 to 2,000 seats, £25k to £200k ACV, 10 to 16 week cycles\nMethodology: MEDDPICC, Challenger; mutual action plans, multi-threading, commercial negotiation\nStack: Salesforce, Outreach, Gong, LinkedIn Sales Navigator, Chili Piper\nMotion: new business led, with expansion into installed base",
+        "experience": "Account Executive, Mid-Market | Aldermoor Systems | London, UK | Jan 2023 - Present\n- 2025: 137% of a £780k quota. 2024: 118% of £700k. 2023, ramp year: 94% of £520k.\n- Average deal £41k ACV on a twelve-week cycle, with a 27% win rate on qualified opportunities against a 21% team average.\n- Largest close £186k — a four-site rollout needing finance, IT and clinical governance in the room. Ran it on MEDDPICC and had the economic buyer on a call in week two.\n- Source 38% of my own pipeline rather than working only what the SDR team allocates.\n- President's Club 2025, sixth of 54 reps globally.\n---\nAccount Executive, SMB | Brackenhill Software | London, UK | Feb 2021 - Dec 2022\n- Closed £412k against a £360k quota in 2022, at 114%.\n- Ran 60 to 70 closed deals a year at a £9k average ACV and a 21-day cycle — volume selling, which is where the discovery discipline came from.\n- Highest demo-to-close rate on the team for five consecutive months.\n---\nSales Development Representative | Brackenhill Software | London, UK | Aug 2019 - Jan 2021\n- Promoted to account executive after four quarters, all above target.",
+        "education": "BA (Hons) Politics, 2:1 | University of Manchester | Sep 2016 - Jun 2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "MEDDPICC Masterclass, certified 2023\nSalesforce Certified Administrator"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Twelve years, now carries a team number",
+      "why": "The moment a seller starts managing, the CV has to carry both numbers: what the team delivered against its target and what the individual quota history was before that. Drop the personal history and a hiring VP cannot tell whether you can still sell; drop the team number and they cannot tell whether you can lead.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Camille Baptiste",
+        "title": "Director of Enterprise Sales",
+        "location": "Chicago, IL",
+        "phone": "+1 (312) 555-0119",
+        "email": "camille.baptiste@example.com",
+        "linkedin": "linkedin.com/in/camille-baptiste-example",
+        "website": "",
+        "summary": "- Enterprise sales director; eight account executives against a $22M annual number, delivered at 104% in FY24 and 111% in FY25.\n- Twelve years selling, seven of them personally at or above quota on $1.6M to $2.2M carries, two-time President's Club.\n- Took a segment from a $118k average deal to $260k by retiring the low end rather than chasing it.",
+        "skills": "Leadership: team of 8, hiring and scorecards, ramp design, pipeline and forecast reviews\nDeals: $250k to $1.5M TCV, 9 to 14 month cycles, procurement, security review, legal redlines\nMethodology and stack: MEDDPICC, Command of the Message; Salesforce, Clari, Gong",
+        "experience": "Director of Enterprise Sales | Riverkeep | Chicago, IL | Feb 2022 - Present\n- Team of eight enterprise account executives against a $22M annual number: 104% in FY24, 111% in FY25, with six of eight reps at or above quota in both years.\n- Moved the segment upmarket — average ACV from $118k to $260k across three years — by retiring the sub-$50k tier and handing those accounts to partners.\n- Cut new-hire ramp from seven months to four and a half by rebuilding onboarding around three recorded deal reviews instead of a product exam.\n- Forecast accuracy inside 6% for eight consecutive quarters; the CRO now anchors the board number on this segment's call.\n- Hired nine, lost two. The scorecard I wrote for the segment was adopted across the sales org in 2024.\n---\nEnterprise Account Executive | Halvorsen Systems | Chicago, IL | Mar 2018 - Jan 2022\n- Averaged 128% of quota over four years carrying $1.6M to $2.2M; President's Club twice, top 5% of 240 sellers.\n- Closed the largest deal in the company's history at that point: $1.4M TCV over three years, an eleven-month cycle and fourteen stakeholders.\n- Opened three of the segment's five named logos in healthcare payers.\n---\nAccount Executive, Mid-Market | Halvorsen Systems | Chicago, IL | Jun 2015 - Feb 2018\n- 119% of a $900k quota in 2017; promoted to enterprise after two full years above target.",
+        "education": "BS, Marketing | DePaul University | Sep 2009 - Jun 2013",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "customer_success": [
+    {
+      "level": "early",
+      "headline": "Support desk to customer success, two years",
+      "why": "Customer success hires out of support constantly, and the CV has to show the shift from closing tickets to owning renewals. The number doing the work here is gross retention on a named book, not ticket volume — support metrics stay, but they sit under the retention ones rather than above them.",
+      "template_id": "pastel_soft",
+      "data": {
+        "full_name": "Joon-Ho Park",
+        "title": "Customer Success Associate",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900918",
+        "email": "joonho.park@example.com",
+        "linkedin": "linkedin.com/in/joon-ho-park-example",
+        "website": "",
+        "summary": "- Customer success associate carrying a pooled book of 140 SMB accounts worth £890k ARR; 91% gross retention over four quarters against an 88% team baseline.\n- Moved across from the support desk, so brings the product knowledge and had to learn the commercial conversation.\n- Ran 40 renewal conversations in the first year, including four saves.",
+        "skills": "Retention: onboarding and kickoff, adoption reviews, renewal conversations, escalation handling\nAnalysis: health scoring inputs, usage reporting, churn reason coding\nTools: Salesforce, Zendesk, Totango, Metabase, Loom\nSegment: SMB pooled book, UK and Ireland healthcare practices",
+        "experience": "Customer Success Associate | Hartsmere Software | Manchester, UK | Apr 2025 - Present\n- Carry 140 SMB accounts worth £890k ARR; gross retention 91% across four quarters, three points above the team baseline.\n- Cut time to first value from 26 days to 14 by replacing the hour-long kickoff call with a 20-minute setup session and a checklist customers actually finish.\n- Found the drop-off pattern that now feeds the health score: accounts that never make a second admin login churn at roughly three times the base rate.\n- Saved four at-risk accounts worth £61k by getting product to commit to two fixes in writing before the renewal date.\n---\nTechnical Support Specialist | Hartsmere Software | Manchester, UK | Sep 2023 - Mar 2025\n- Handled 60 to 80 tickets a week at 94% CSAT, with first response under 40 minutes.\n- Wrote 30 help-centre articles that cut repeat billing tickets by about a third.\n- Ran the Tuesday handover with engineering on open escalations.",
+        "education": "BSc (Hons) Psychology, 2:1 | University of Manchester | Sep 2020 - Jun 2023",
+        "projects": "",
+        "publications": "",
+        "certifications": "SuccessCOACHING CCSM Level 1\nZendesk Support Administrator"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, a book worth £4.2m",
+      "why": "Customer success is read as a revenue role now, so book size, net retention and gross retention belong in the first three lines. Both retention figures are given deliberately — a strong net number concealing heavy churn plus heavy expansion is a completely different job from a book that simply does not leave.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Aoife Brennan",
+        "title": "Customer Success Manager, Mid-Market",
+        "location": "Belfast, UK",
+        "phone": "+44 7700 900570",
+        "email": "aoife.brennan@example.com",
+        "linkedin": "linkedin.com/in/aoife-brennan-example",
+        "website": "",
+        "summary": "- Mid-market customer success manager: 42 accounts, £4.2m ARR under management, 118% net revenue retention and 96% gross in FY25.\n- Six years in SaaS, the last two carrying an expansion target alongside the renewal one.\n- Sourced and closed £610k of expansion last year jointly with the account executive team.",
+        "skills": "Retention: renewal negotiation, save plans, escalation management, executive business reviews\nExpansion: seat and module upsell, joint account planning, commercial framing with sales\nOperations: health scoring, churn forecasting, onboarding templates, customer advisory board\nTools: Gainsight, Salesforce, Looker, Pendo, Zoom\nSegment: UK and Ireland mid-market, £40k to £250k ARR accounts",
+        "experience": "Customer Success Manager, Mid-Market | Marchmont Systems | Belfast, UK | Jun 2023 - Present\n- 42 accounts and £4.2m ARR under management: 118% net revenue retention, 96% gross, in FY25.\n- Turned the quarterly review from a usage deck into a value review built on the customer's own operating numbers; six of last year's eleven expansions opened in one of them.\n- Took the three largest at-risk accounts, £720k combined, through structured save plans — two renewed flat and one expanded 15%.\n- Closed £610k of expansion with the account executive team, mostly seat growth and the reporting module.\n- Rebuilt the health score on four signals rather than eleven, which now surfaces churn risk about six weeks earlier.\n---\nCustomer Success Manager | Tidewell Software | Belfast, UK | Sep 2019 - May 2023\n- Grew a 60-account SMB book from £1.1m to £1.8m ARR over three and a half years.\n- Cut onboarding from eight weeks to five by scrapping bespoke implementation plans for three templates.\n- Ran the customer advisory board — 14 members, three product changes shipped out of it.",
+        "education": "BA (Hons) Business Studies, 2:1 | Queen's University Belfast | Sep 2016 - Jun 2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "SuccessCOACHING CCSM Level 2\nGainsight Certified Administrator (Level 1)"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Ten years, runs retention for the business",
+      "why": "At director level the CV is answering whether you can hold a retention number across a whole customer base, so it names the book, the team and the segmentation decisions rather than individual accounts. Note the bullet on gross retention: net is easy to flatter with expansion, and senior interviewers go looking for the harder number first.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Larissa Nakamura",
+        "title": "Director of Customer Success",
+        "location": "London, UK",
+        "phone": "+44 7700 900285",
+        "email": "larissa.nakamura@example.com",
+        "linkedin": "linkedin.com/in/larissa-nakamura-example",
+        "website": "",
+        "summary": "- Accountable for £38m of ARR across 380 customers and a team of 19; net revenue retention 114%, gross 93%.\n- Ten years in customer success, the last six building functions rather than working inside them.\n- Split the base into three service tiers on cost-to-serve, which is how the digital-touch tier now covers 240 accounts with two people.",
+        "skills": "Accountability: £38m ARR, team of 19, net and gross retention targets, renewals forecast\nOperating model: segmentation and cost-to-serve, digital touch, health scoring, executive sponsorship\nCommercial: pricing and packaging input, renewal negotiation, board and investor reporting",
+        "experience": "Director of Customer Success | Wyndlow Software | London, UK | Sep 2022 - Present\n- Own £38m of ARR across 380 customers with a team of 19: twelve customer success managers, four onboarding specialists, two renewals managers and an operations lead.\n- Net revenue retention rose from 101% to 114% in three years. Gross went from 87% to 93%, which was the harder half and needed a packaging change rather than a playbook.\n- Segmented the base into three service tiers after modelling cost-to-serve; the digital-touch tier now covers 240 accounts with two people and retains at 89%.\n- Stood up renewals as a separate team, which took commercial negotiation off the customer success managers and brought renewal forecast accuracy inside 4%.\n- Cut customer success manager attrition from 38% to 11%, mostly by fixing a book allocation that had left four people carrying half the revenue.\n- Sit on the product council; the three churn drivers I brought with evidence in 2023 had all been shipped against by mid-2024.\n---\nHead of Customer Success, EMEA | Thorncastle Systems | London, UK | Jan 2019 - Aug 2022\n- Built the EMEA function from two people to nine, including German and French coverage.\n- Took EMEA gross retention from 84% to 91% over three years on a £14m book.\n- Introduced the executive sponsor programme for the top 30 accounts.\n---\nCustomer Success Manager, then Senior | Thorncastle Systems | London, UK | Jul 2015 - Dec 2018\n- Grew an enterprise book from £200k to £1.4m ARR; four of the original eight accounts are still customers.",
+        "education": "BSc (Hons) Management, 2:1 | University of Warwick | Sep 2011 - Jun 2014",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ]
+}

@@ -8,13 +8,14 @@ stored, which is what keeps the tab itself instant.
 from datetime import datetime
 from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from .. import models, schemas
 from ..auth import get_current_user
 from ..database import get_db
-from ..jobhunt import registry, search as search_engine
+from ..jobhunt import registry, search as search_engine, sweep as sweep_engine
+from ..jobhunt import scheduler as sweep_scheduler
 
 router = APIRouter(prefix="/api/job-hunt", tags=["job-hunt"])
 
@@ -68,6 +69,74 @@ def run_now(db: Session = Depends(get_db),
     if not (row.roles or "").strip():
         raise HTTPException(422, "Tell me what role you're looking for first.")
     return search_engine.run_search(db, current_user.id, row)
+
+
+# ---------------------------------------------------------------------------
+# The cache behind the search
+# ---------------------------------------------------------------------------
+# /run answers from a locally cached copy of every board, refreshed once a day
+# by the sweep. These two endpoints are how the tab can say when that copy was
+# last refreshed, and how somebody can force a refresh without waiting for
+# tomorrow.
+
+@router.get("/sweep", response_model=schemas.BoardSweepOut)
+def sweep_status(db: Session = Depends(get_db),
+                 current_user: models.User = Depends(get_current_user)):
+    last = (db.query(models.BoardSweep)
+              .filter(models.BoardSweep.finished_at.isnot(None))
+              .order_by(models.BoardSweep.started_at.desc()).first())
+    hour, minute = sweep_scheduler.sweep_time_utc()
+    payload = {
+        "open_postings": search_engine.cache_size(db),
+        "next_run_utc": f"{hour:02d}:{minute:02d}",
+        "retention_days": sweep_engine.retention_days(),
+    }
+    if last:
+        payload.update({
+            "started_at": last.started_at, "finished_at": last.finished_at,
+            "kind": last.kind, "boards_total": last.boards_total,
+            "boards_ok": last.boards_ok, "boards_failed": last.boards_failed,
+            "postings_new": last.postings_new,
+            "postings_closed": last.postings_closed,
+            "postings_purged": last.postings_purged,
+        })
+    return payload
+
+
+def _background_sweep(limit: int | None) -> None:
+    """Its own session. The request's session is closed the moment the response
+    goes out, and a background task holding it would be writing through a
+    connection that has already been returned to the pool."""
+    from ..database import SessionLocal
+
+    db = SessionLocal()
+    try:
+        sweep_engine.sweep(db, kind="manual", limit=limit)
+    except sweep_engine.SweepBusy:
+        pass
+    except Exception:                                    # noqa: BLE001
+        import logging
+        logging.getLogger("momentum.jobhunt").exception("manual sweep failed")
+    finally:
+        db.close()
+
+
+@router.post("/sweep", response_model=schemas.BoardSweepOut)
+def sweep_now(background: BackgroundTasks,
+              limit: int = Query(0, ge=0, le=5000),
+              db: Session = Depends(get_db),
+              current_user: models.User = Depends(get_current_user)):
+    """Start a refresh now, and answer immediately with the current state.
+
+    Backgrounded rather than awaited. A full sweep of two thousand boards takes
+    minutes, and a request held open that long is a request the browser gives
+    up on: the work would still finish, but the person watching would be told
+    it had failed.
+    """
+    if sweep_engine.is_running():
+        raise HTTPException(409, "A refresh is already running. Give it a few minutes.")
+    background.add_task(_background_sweep, limit or None)
+    return sweep_status(db=db, current_user=current_user)
 
 
 # ---------------------------------------------------------------------------
@@ -229,3 +298,50 @@ def remove_referral(contact_id: int, db: Session = Depends(get_db),
     db.delete(row)
     db.commit()
     return {"ok": True}
+
+
+# ---------------------------------------------------------------------------
+# Application profile
+# ---------------------------------------------------------------------------
+# Read by the Chrome extension to fill a live application form. It is a plain
+# authenticated GET rather than anything cleverer, because the extension
+# already holds the user's token for the capture feature it has always had.
+
+@router.get("/profile", response_model=schemas.ApplicationProfileOut)
+def get_profile(db: Session = Depends(get_db),
+                current_user: models.User = Depends(get_current_user)):
+    row = db.query(models.ApplicationProfile).filter(
+        models.ApplicationProfile.user_id == current_user.id
+    ).first()
+    if not row:
+        # Seeded from the account so the form starts half-filled rather than
+        # empty — the name and email are already known.
+        row = models.ApplicationProfile(
+            user_id=current_user.id,
+            full_name=current_user.name,
+            email=current_user.email,
+            phone=getattr(current_user, "phone", None),
+            city=getattr(current_user, "location", None),
+            linkedin=getattr(current_user, "linkedin", None),
+            website=getattr(current_user, "website", None),
+        )
+        db.add(row)
+        db.commit()
+        db.refresh(row)
+    return row
+
+
+@router.put("/profile", response_model=schemas.ApplicationProfileOut)
+def update_profile(payload: schemas.ApplicationProfileIn, db: Session = Depends(get_db),
+                   current_user: models.User = Depends(get_current_user)):
+    row = db.query(models.ApplicationProfile).filter(
+        models.ApplicationProfile.user_id == current_user.id
+    ).first()
+    if not row:
+        row = models.ApplicationProfile(user_id=current_user.id)
+        db.add(row)
+    for field, value in payload.model_dump(exclude_unset=True).items():
+        setattr(row, field, value)
+    db.commit()
+    db.refresh(row)
+    return row

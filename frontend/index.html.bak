@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- ?v= is not decoration: browsers cache a favicon far more stubbornly
+       than any other asset, and without a new URL the old mark stays in the
+       tab strip through reloads, restarts and a hard refresh. Bump it
+       whenever the artwork changes. -->
+  <link rel="icon" type="image/png" href="favicon.png?v=2026-08-mark" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=2026-08-mark" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- The entry document must never be cached. styles.css and app.js carry a
+     version token, but the browser only learns about a new token by re-reading
+     THIS file — so a cached index.html pins the whole app to an old build, which
+     is what made a series of fixes look like they never landed. -->
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<title>Momentum Tracker</title>
+<!-- Build stamp: printed to the console at startup so it is possible to tell
+     at a glance whether the browser is running the current files.
+     Written by frontend/tools/stamp.js — do not edit by hand. -->
+<meta name="app-build" content="e9176a35">
+<!-- Prebuilt Tailwind, replacing <script src="https://cdn.tailwindcss.com">.
+     The CDN build is ~400KB of JavaScript that compiles CSS in the browser by
+     scanning the DOM on every page load — the Tailwind docs say plainly that
+     it is for development only. The same utilities are 20KB as a stylesheet,
+     4.8KB gzipped, and cost the browser nothing to apply.
+     Must stay ABOVE styles.css: the runtime injected its <style> at this point
+     in the document, and styles.css deliberately overrides some utilities.
+     Regenerate with the command in tailwind.css after adding new classes. -->
+<link rel="stylesheet" href="tailwind.css?v=1e2882e3" />
+<!-- Chart.js, d3 and topojson used to sit here as render-blocking scripts:
+     ~900KB that every page load waited on, whether or not the customer ever
+     opened a chart. d3 and topojson serve exactly one function in the whole
+     app (the applications-by-location map), so nearly everyone was paying
+     ~500KB for something they never saw. They are now fetched on first use —
+     see loadScriptOnce() / ensureChartJs() / ensureGeoLibs() in app.js.
+     preconnect keeps the handshake off the critical path when they are
+     eventually needed. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+<!-- Asset versions. These tokens are the first eight characters of a hash of
+     the file each one points at, written by frontend/tools/stamp.js. They used
+     to be a date typed in by hand, with a comment here asking whoever edited
+     app.js or styles.css to remember to bump it — and three separate fixes
+     shipped without it, each one arriving at a browser that went on serving the
+     old file. A stale asset looks exactly like a bug that was never fixed, and
+     a rule enforced only by remembering is not enforced.
+
+       node frontend/tools/stamp.js           after editing any of them
+       node frontend/tools/stamp.js --check   fails if a stamp is stale
+
+     Do not edit these tokens by hand. -->
+<link rel="stylesheet" href="styles.css?v=923456a5" />
+<!-- pdf.js is 1.33MB across the module and its worker, and the resume preview
+     cannot draw its first pixel until both have arrived. Importing it lazily at
+     first use kept it off the boot path but put the whole download in front of
+     the first preview, which is the wait customers were feeling in the builder.
+     Fetching it at low priority from here moves it off both: it downloads while
+     the app is idle, and by the time anyone opens the builder it is in cache.
+     The résumé PDFs themselves are 3-5KB and the server renders one in ~10ms —
+     this library was almost the entire cost of showing a preview. -->
+<link rel="modulepreload" href="vendor/pdfjs/pdf.min.js" />
+<link rel="prefetch" as="worker" href="vendor/pdfjs/pdf.worker.min.js" />
+<!-- Environment config — edit env.js to point at your backend, not this file -->
+<script src="env.js?v=2dee5731"></script>
+<!-- The `tailwind.config = {...}` block that used to sit here configured the
+     CDN runtime compiler. With the runtime gone there is no `tailwind` global
+     for it to assign to, and leaving it would throw on load. The same theme —
+     the brand colours, the three font families and the 90%-scaled type ramp —
+     now lives in tailwind.config.js and is baked into tailwind.css. -->
+</head>
+<body class="bg-pagebg bg-mesh font-sans text-navy antialiased">
+  <div id="backend-status-banner" class="hidden fixed top-0 inset-x-0 z-[100] bg-red-600 text-white text-sm px-4 py-3 flex items-center justify-center gap-2"></div>
+  <!-- Auth screen: full marketing/landing page with an embedded login card -->
+  <div id="auth-screen" class="min-h-screen bg-pagebg">
+    <!-- ============================================================
+         MARKETING LANDING PAGE
+         Every number here is checked against the code: 36 comes from
+         resume_pdf.TEMPLATES, 60 from the extension's JOB_PORTALS. Claims
+         about local inference and self-hosting were removed — this is a
+         hosted product and no model ships with it.
+         ============================================================ -->
+    <div id="marketing-landing">
+
+    <!-- ============== NAV ============== -->
+    <header class="sticky top-0 z-40" style="backdrop-filter:blur(14px) saturate(160%); background:rgba(246,245,240,0.85); border-bottom:1px solid var(--lp-border);">
+      <div class="max-w-6xl mx-auto px-5 sm:px-6 py-4 flex items-center justify-between">
+        <a href="#top" class="flex items-center gap-2 shrink-0" style="font-family:var(--lp-disp); font-weight:700; font-size:15.5px; color:var(--lp-ink);">
+          <img class="mm-mark" src="assets/momentum-mark.png" alt="" aria-hidden="true">
+          Momentum Tracker
+        </a>
+        <nav class="hidden md:flex items-center gap-7 text-sm" style="color:var(--lp-ink-mute);">
+          <a href="#modules" class="hover:opacity-70 transition-opacity">Product</a>
+          <a href="#proof" class="hover:opacity-70 transition-opacity">Momentum</a>
+          <a href="#ai" class="hover:opacity-70 transition-opacity">Scoring</a>
+          <a href="#extension" class="hover:opacity-70 transition-opacity">Extension</a>
+          <a href="#setup" class="hover:opacity-70 transition-opacity">How it works</a>
+        </nav>
+        <div class="flex items-center gap-1 shrink-0">
+          <button type="button" class="lp-theme-toggle-nav" id="lp-nav-theme-toggle" title="Toggle dark mode">🌙</button>
+          <button data-nav-auth="login" class="btn btn-ghost text-xs sm:text-sm">Log In</button>
+          <button data-nav-auth="signup" class="btn btn-accent text-xs sm:text-sm">Create account</button>
+        </div>
+      </div>
+    </header>
+
+    <main id="top">
+
+      <!-- ============== HERO ============== -->
+      <section class="lp-hero" style="padding:88px 0 0;">
+        <div class="lp-hero-blob" id="lp-hero-blob" aria-hidden="true"></div>
+        <div class="lp-hero-grid-bg" aria-hidden="true"></div>
+        <div class="max-w-6xl mx-auto px-5 sm:px-6" style="position:relative; z-index:1;">
+          <div class="grid lg:grid-cols-2 gap-12 items-center mb-14">
+            <div class="lp-reveal">
+              <div class="lp-momentum-chip">
+                <span class="lp-dots"><span></span><span></span><span></span></span>
+                <span style="font-size:11px; color:var(--lp-ink-mute); font-weight:500;">Habits · Study · Jobs — one board</span>
+              </div>
+              <div class="lp-hero-flow-note">
+                <span>that's the difference</span>
+                <svg width="18" height="22" viewBox="0 0 20 24" aria-hidden="true"><path d="M10,2 L10,16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><path d="M4,11 L10,18 L16,11" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <h1 class="lp-handwritten-headline" style="letter-spacing:0.01em; line-height:1.15; font-size:clamp(30px,4.6vw,52px); color:var(--lp-ink); margin:10px 0 22px; text-transform:uppercase;">
+                A kanban board that knows <em style="font-style:normal; background:linear-gradient(92deg,var(--lp-blue),var(--lp-ember)); -webkit-background-clip:text; background-clip:text; color:transparent;">why</em> a card moved.
+              </h1>
+              <p style="font-size:15px; color:var(--lp-ink-mute); max-width:480px; margin-bottom:28px; line-height:1.65;">
+                A job search is a pipeline, a stack of resumes, and the habits that keep you at it. Momentum keeps all three in one place: a real application board, a resume builder with 36 templates, deterministic ATS scoring, and a browser extension that captures a posting from 60 job sites in one click. One account, one board, everything in it.
+              </p>
+              <div class="flex gap-3 flex-wrap">
+                <button data-nav-auth="signup" class="btn btn-primary">Create your account →</button>
+                <a href="#modules" class="btn btn-ghost">See what it does</a>
+              </div>
+            </div>
+
+            <div style="position:relative;">
+              <div class="lp-toast lp-toast-1"><span>🔥</span><span style="color:var(--lp-ember); font-family:'Permanent Marker',cursive; transform:rotate(-2deg); display:inline-block;">Streak — 12 days</span></div>
+              <div class="lp-toast lp-toast-2"><span>✨</span><span style="color:var(--lp-purple); font-family:'Permanent Marker',cursive; transform:rotate(1.5deg); display:inline-block;">Cover letter drafted</span></div>
+              <div class="lp-toast lp-toast-3"><span>📄</span><span style="color:var(--lp-blue); font-family:'Permanent Marker',cursive; transform:rotate(-1.5deg); display:inline-block;">Resume tailored · ATS 91</span></div>
+
+              <div class="lp-kanban-shell lp-reveal">
+                <div class="lp-kanban-toolbar">
+                  <div class="lp-dots-os">
+                    <span style="background:#FF6259"></span>
+                    <span style="background:#E0A93E"></span>
+                    <span style="background:#1FAE6B"></span>
+                  </div>
+                  <div class="lp-title">Job Applications — Board</div>
+                  <div style="width:60px"></div>
+                </div>
+                <div class="lp-kanban-board">
+                  <div class="lp-kcol" data-col="1">
+                    <div class="lp-kcol-head"><h4>Saved</h4><span class="lp-count">3</span></div>
+                    <div class="lp-kcard"><div class="lp-logo">AC</div><div class="lp-role">Data Analyst</div><div class="lp-co">Arcline Co.</div><div class="lp-foot"><span class="ats-pill ats-mid">ATS 68</span><span class="lp-salary">$95k</span></div></div>
+                    <div class="lp-kcard"><div class="lp-logo">VX</div><div class="lp-role">Growth Marketer</div><div class="lp-co">Vertex Labs</div><div class="lp-foot"><span class="ats-pill ats-high">ATS 84</span><span class="lp-salary">$88k</span></div></div>
+                    <div class="lp-kcard lp-ghost"><div class="lp-role" style="color:var(--lp-ink-faint)">+ Add role</div></div>
+                  </div>
+                  <div class="lp-kcol" data-col="2">
+                    <div class="lp-kcol-head"><h4>Applied</h4><span class="lp-count">2</span></div>
+                    <div class="lp-kcard"><div class="lp-logo">NW</div><div class="lp-role">Product Designer</div><div class="lp-co">Northwind Systems</div><div class="lp-foot"><span class="ats-pill ats-high">ATS 91</span><span class="lp-salary">$150k</span></div></div>
+                  </div>
+                  <div class="lp-kcol" data-col="3">
+                    <div class="lp-kcol-head"><h4>Interview</h4><span class="lp-count" id="lp-interview-count">1</span></div>
+                    <div class="lp-kcard"><div class="lp-logo">HL</div><div class="lp-role">Backend Engineer</div><div class="lp-co">Harlow Inc.</div><div class="lp-foot"><span class="ats-pill ats-high">ATS 88</span><span class="lp-salary">$132k</span></div></div>
+                  </div>
+                  <div class="lp-kcol" data-col="4">
+                    <div class="lp-kcol-head"><h4>Offer</h4><span class="lp-count">1</span></div>
+                    <div class="lp-kcard"><div class="lp-logo">QN</div><div class="lp-role">UX Researcher</div><div class="lp-co">Quinby Health</div><div class="lp-foot"><span class="ats-pill ats-high">ATS 95</span><span class="lp-salary">$118k</span></div></div>
+                  </div>
+                  <div class="lp-drag-card" id="lp-drag-card" aria-hidden="true">
+                    <div class="lp-logo">PX</div><div class="lp-role">Frontend Engineer</div><div class="lp-co">Pixelworks</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="lp-stat-row lp-reveal">
+            <div class="lp-stat"><div class="lp-num" data-count="60">0</div><div class="lp-label">job sites the extension reads</div></div>
+            <div class="lp-stat"><div class="lp-num" data-count="36">0</div><div class="lp-label">resume templates</div></div>
+            <div class="lp-stat"><div class="lp-num" data-count="4">0</div><div class="lp-label">trackers in one board</div></div>
+            <div class="lp-stat"><div class="lp-num" data-count="0">0</div><div class="lp-label">things to install to start</div></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="lp-ticker-band" aria-hidden="true">
+        <div class="lp-ticker-track" id="lp-ticker-track">
+          <span>HABIT STREAKS</span><span>STUDY SESSIONS</span><span>TASK LISTS</span><span>JOB PIPELINE</span><span>RESUME BUILDER</span><span>ATS SCORING</span><span>COVER LETTERS</span><span>LOCAL AI ASSISTANT</span><span>CHROME EXTENSION</span><span>SELF-HOSTED</span>
+          <span>HABIT STREAKS</span><span>STUDY SESSIONS</span><span>TASK LISTS</span><span>JOB PIPELINE</span><span>RESUME BUILDER</span><span>ATS SCORING</span><span>COVER LETTERS</span><span>LOCAL AI ASSISTANT</span><span>CHROME EXTENSION</span><span>SELF-HOSTED</span>
+        </div>
+      </div>
+
+      <!-- ============== PROBLEM ============== -->
+      <section class="py-16 md:py-20">
+        <div class="max-w-6xl mx-auto px-5 sm:px-6 grid lg:grid-cols-2 gap-14 items-center">
+          <div class="lp-reveal">
+            <div class="lp-eyebrow">Why not just use a job board</div>
+            <h2 style="font-family:var(--lp-disp); font-weight:600; font-size:clamp(24px,3vw,34px); color:var(--lp-ink); margin:14px 0 16px;">Most job trackers only watch the last mile.</h2>
+            <p style="color:var(--lp-ink-mute); font-size:14px; line-height:1.7; margin-bottom:14px;">A kanban board of "Applied / Interview / Offer" tells you where a role stands — but it has no idea whether you studied for the interview, kept up the habit of applying daily, or tailored the resume that got you the callback.</p>
+            <p style="color:var(--lp-ink-mute); font-size:14px; line-height:1.7;">Momentum Tracker treats the job search as what it actually is: one output of a bigger system of habits, tasks, and study time. Everything feeds the same board, the same score, the same streak.</p>
+          </div>
+          <div class="lp-compare-card lp-reveal">
+            <div class="lp-compare-row lp-head"><span>Capability</span><span>Job-only trackers</span><span>Momentum</span></div>
+            <div class="lp-compare-row"><span>Application pipeline board</span><span class="lp-cross">–</span><span class="lp-tick">✓</span></div>
+            <div class="lp-compare-row"><span>Habit &amp; daily streak tracking</span><span class="lp-cross">✕</span><span class="lp-tick">✓</span></div>
+            <div class="lp-compare-row"><span>Study sessions &amp; tasks</span><span class="lp-cross">✕</span><span class="lp-tick">✓</span></div>
+            <div class="lp-compare-row"><span>Resume builder with ATS score</span><span class="lp-cross">✕</span><span class="lp-tick">✓</span></div>
+            <div class="lp-compare-row"><span>Cover-letter drafting</span><span class="lp-cross">✕</span><span class="lp-tick">✓</span></div>
+            <div class="lp-compare-row"><span>Habits, tasks and study in the same board</span><span class="lp-cross">✕</span><span class="lp-tick">✓</span></div>
+            <div class="lp-compare-row"><span>One-click capture extension</span><span class="lp-tick">✓</span><span class="lp-tick">✓</span></div>
+            <div class="lp-compare-row"><span>Export everything you have put in</span><span class="lp-cross">✕</span><span class="lp-tick">✓</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== MODULES ============== -->
+      <section id="modules" class="py-16 md:py-20">
+        <div class="max-w-6xl mx-auto px-5 sm:px-6">
+          <div class="max-w-xl mb-10 lp-reveal">
+            <div class="lp-eyebrow">Six modules, one score</div>
+            <h2 style="font-family:var(--lp-disp); font-weight:600; font-size:clamp(24px,3.2vw,36px); color:var(--lp-ink); margin:14px 0 12px;">Everything that builds momentum, in <span class="lp-squiggle-underline">one place</span>.</h2>
+            <p style="color:var(--lp-ink-mute); font-size:14px; line-height:1.65;">Each module writes to the same account — a completed study block and a tailored application are the same kind of event: forward motion.</p>
+          </div>
+
+          <!-- How the pieces connect. Drawn rather than described, because the
+               point of the product is that these four things share one account
+               and a list of features does not show that. -->
+          <div class="lp-loop lp-reveal" aria-hidden="false">
+            <svg viewBox="0 0 980 250" role="img" style="width:100%;height:auto;">
+              <title>How Momentum fits together</title>
+              <desc>Capture a posting, tailor a resume, apply and track it, and the habits and study blocks that feed the same account.</desc>
+              <defs>
+                <marker id="lp-arw" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </marker>
+              </defs>
+
+              <rect x="14" y="52" width="196" height="96" rx="16" fill="#E3F4F1" stroke="#C7CCF7"/>
+              <text x="36" y="84" font-size="14" font-weight="600" fill="#16302C">1 &#183; Capture</text>
+              <text x="36" y="106" font-size="12.5" fill="#5A5F86">Extension reads the posting</text>
+              <text x="36" y="126" font-size="12.5" fill="#5A5F86">from 60 job sites</text>
+
+              <rect x="256" y="52" width="196" height="96" rx="16" fill="#E7F8EF" stroke="#B4E3CB"/>
+              <text x="278" y="84" font-size="14" font-weight="600" fill="#14452F">2 &#183; Score</text>
+              <text x="278" y="106" font-size="12.5" fill="#3D6B55">ATS match against your</text>
+              <text x="278" y="126" font-size="12.5" fill="#3D6B55">resume, with the gaps listed</text>
+
+              <rect x="498" y="52" width="196" height="96" rx="16" fill="#FEF3E2" stroke="#F0D3A4"/>
+              <text x="520" y="84" font-size="14" font-weight="600" fill="#5C3D0E">3 &#183; Tailor</text>
+              <text x="520" y="106" font-size="12.5" fill="#8A6428">Rebuild the resume in any</text>
+              <text x="520" y="126" font-size="12.5" fill="#8A6428">of 36 templates</text>
+
+              <rect x="740" y="52" width="196" height="96" rx="16" fill="#F1EEFE" stroke="#D2C9F5"/>
+              <text x="762" y="84" font-size="14" font-weight="600" fill="#123A36"/>
+              <text x="762" y="84" font-size="14" font-weight="600" fill="#123A36">4 &#183; Track</text>
+              <text x="762" y="106" font-size="12.5" fill="#5E5190">The board that remembers</text>
+              <text x="762" y="126" font-size="12.5" fill="#5E5190">why a card moved</text>
+
+              <path d="M212 100H252" stroke="#A9AECF" stroke-width="1.6" fill="none" marker-end="url(#lp-arw)"/>
+              <path d="M454 100H494" stroke="#A9AECF" stroke-width="1.6" fill="none" marker-end="url(#lp-arw)"/>
+              <path d="M696 100H736" stroke="#A9AECF" stroke-width="1.6" fill="none" marker-end="url(#lp-arw)"/>
+
+              <path d="M838 152V196H112V152" stroke="#A9AECF" stroke-width="1.6" fill="none" stroke-dasharray="5 5" marker-end="url(#lp-arw)"/>
+              <rect x="352" y="176" width="256" height="40" rx="12" fill="#FFFFFF" stroke="#E2E1DA"/>
+              <text x="480" y="201" font-size="12.5" fill="#5A5F86" text-anchor="middle">habits &#183; tasks &#183; study feed the same streak</text>
+            </svg>
+          </div>
+          <div class="lp-modules lp-reveal">
+            <div class="lp-module">
+              <div class="lp-icon" style="background:var(--lp-blue-soft); color:var(--lp-blue);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/><path d="M7 14l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="lp-tag">habits</span>
+              <h3>Habit streaks</h3>
+              <p>Daily and weekly habits with streak counters, so applying, practicing, and studying stay visible instead of falling off after a good week.</p>
+            </div>
+            <div class="lp-module">
+              <div class="lp-icon" style="background:var(--lp-purple-soft); color:var(--lp-purple);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11" stroke-linecap="round"/><circle cx="4" cy="6" r="1.6"/><circle cx="4" cy="12" r="1.6"/><circle cx="4" cy="18" r="1.6"/></svg></div>
+              <span class="lp-tag">tasks</span>
+              <h3>Tasks</h3>
+              <p>The follow-ups, prep work, and errands around a search — due dates and priority, without a separate to-do app.</p>
+            </div>
+            <div class="lp-module">
+              <div class="lp-icon" style="background:var(--lp-amber-soft); color:var(--lp-amber);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+              <span class="lp-tag">study</span>
+              <h3>Study sessions</h3>
+              <p>Log focused prep time — system design, a language, an interview loop — and see it sit right next to the applications it's supporting.</p>
+            </div>
+            <div class="lp-module">
+              <div class="lp-icon" style="background:var(--lp-ember-soft); color:var(--lp-ember);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="4" width="6" height="16" rx="1.4"/><rect x="10.5" y="4" width="6" height="10" rx="1.4"/><rect x="18" y="4" width="3" height="7" rx="1"/></svg></div>
+              <span class="lp-tag">jobs</span>
+              <h3>Job applications</h3>
+              <p>A real pipeline board from saved through offer, populated by hand or by the Chrome extension in one click.</p>
+            </div>
+            <div class="lp-module">
+              <div class="lp-icon" style="background:var(--lp-blue-soft); color:var(--lp-blue);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M15 2v5h5" stroke-linejoin="round"/><path d="M9 13h6M9 17h6" stroke-linecap="round"/></svg></div>
+              <span class="lp-tag">resume</span>
+              <h3>Resume builder</h3>
+              <p>36 print-ready templates, generated as PDF, tailored per application with an ATS keyword and skill match score.</p>
+            </div>
+            <div class="lp-module">
+              <div class="lp-icon" style="background:var(--lp-purple-soft); color:var(--lp-purple);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 4h16v14H8l-4 4z"/><path d="M8 9h8M8 13h5" stroke-linecap="round"/></svg></div>
+              <span class="lp-tag">cover letters</span>
+              <h3>Cover letters &amp; ATS gaps</h3>
+              <p>A cover letter drafted against this posting and the resume you chose, plus an ATS breakdown that names the keywords you are missing rather than only giving you a number.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== PROOF: heatmap + resume stack ============== -->
+      <section id="proof" class="lp-proof-section">
+        <div class="max-w-6xl mx-auto px-5 sm:px-6">
+          <div class="max-w-xl mx-auto text-center mb-10 lp-reveal">
+            <div class="lp-eyebrow" style="justify-content:center;">What momentum actually looks like</div>
+            <h2 style="font-family:var(--lp-disp); font-weight:600; font-size:clamp(24px,3.2vw,34px); color:var(--lp-ink); margin:14px 0 12px;">Not a status field. A visible pattern.</h2>
+            <p style="color:var(--lp-ink-mute); font-size:14px; line-height:1.65;">A streak you can see, and a resume that visibly adapts per application — both pulled from the same activity feed you'll see on your own Analytics tab.</p>
+          </div>
+          <div class="lp-proof-grid lp-reveal">
+            <div class="lp-proof-card">
+              <div class="lp-ph"><h4>Application streak — last 26 weeks</h4><span style="font-family:'Permanent Marker',cursive; font-size:12.5px; color:var(--lp-green); transform:rotate(-2deg); display:inline-block;">current: 12 days</span></div>
+              <div class="lp-heatmap" id="lp-landing-heatmap"></div>
+              <div class="lp-heatmap-foot">
+                <span>Less</span>
+                <span class="lp-heatmap-legend"><i></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i></span>
+                <span>More</span>
+              </div>
+            </div>
+            <div class="lp-proof-card">
+              <div class="lp-ph"><h4>Resume builder — per-role tailoring</h4><span class="lp-ph-hint">hover to fan out</span></div>
+              <div class="lp-resume-stack" tabindex="0" aria-label="Three resumes tailored to different roles">
+                <div class="lp-resume-sheet rs1">
+                  <div class="lp-name">Base resume</div>
+                  <div class="lp-bar w2"></div><div class="lp-bar w3"></div>
+                  <div class="lp-bar w1"></div><div class="lp-bar w2"></div>
+                  <span class="lp-resume-tag muted">ATS 68</span>
+                </div>
+                <div class="lp-resume-sheet rs2">
+                  <div class="lp-name">Harlow &#183; Backend</div>
+                  <div class="lp-bar w2"></div><div class="lp-bar w1"></div>
+                  <div class="lp-bar w3"></div><div class="lp-bar w1"></div>
+                  <span class="lp-resume-tag">ATS 87</span>
+                </div>
+                <div class="lp-resume-sheet rs3">
+                  <div class="lp-name">Northwind &#183; Product</div>
+                  <div class="lp-bar w1"></div><div class="lp-bar w3"></div>
+                  <div class="lp-bar w2"></div><div class="lp-bar w3"></div>
+                  <span class="lp-resume-tag">ATS 91</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== AI SECTION ============== -->
+      <!-- The scoring moment. The old version of this section was three bullet
+           rows and a decorative neural-net graphic that stood for nothing.
+           What actually sells this feature is watching a score move and being
+           told exactly which words moved it, so that is what is drawn. -->
+      <section id="ai" class="lp-score-section">
+        <div class="max-w-6xl mx-auto px-5 sm:px-6">
+          <div class="lp-score-head lp-reveal">
+            <div class="lp-eyebrow">Applicant tracking systems</div>
+            <h2>Watch the number move — and know<br class="hidden sm:block" /> which three words moved it.</h2>
+            <p>Most tools hand you a score and leave you guessing. Momentum matches the posting against your resume, names the keywords you are missing and where they belong, then re-scores the moment you fix them.</p>
+          </div>
+
+          <div class="lp-score-stage lp-reveal">
+            <div class="lp-score-card">
+              <div class="lp-score-card-top">
+                <div>
+                  <div class="lp-score-role">Product Designer</div>
+                  <div class="lp-score-co">Northwind Systems &#183; London</div>
+                </div>
+                <span class="lp-score-chip">ATS report</span>
+              </div>
+
+              <div class="lp-score-body">
+                <div class="lp-score-dials">
+                  <div class="lp-dial">
+                    <svg viewBox="0 0 120 120" aria-hidden="true">
+                      <circle cx="60" cy="60" r="50" fill="none" stroke="#EDEEF4" stroke-width="12"/>
+                      <circle class="lp-dial-arc lp-dial-before" cx="60" cy="60" r="50" fill="none"
+                              stroke="#C9CDDB" stroke-width="12" stroke-linecap="round"
+                              transform="rotate(-90 60 60)"/>
+                    </svg>
+                    <div class="lp-dial-num"><b>68</b><span>before</span></div>
+                  </div>
+                  <div class="lp-dial-arrow" aria-hidden="true">
+                    <svg viewBox="0 0 44 24"><path d="M4 12h32M28 4l8 8-8 8" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="lp-delta">+23</span>
+                  </div>
+                  <div class="lp-dial">
+                    <svg viewBox="0 0 120 120" aria-hidden="true">
+                      <circle cx="60" cy="60" r="50" fill="none" stroke="#EDEEF4" stroke-width="12"/>
+                      <circle class="lp-dial-arc lp-dial-after" cx="60" cy="60" r="50" fill="none"
+                              stroke="#16A34A" stroke-width="12" stroke-linecap="round"
+                              transform="rotate(-90 60 60)"/>
+                    </svg>
+                    <div class="lp-dial-num"><b>91</b><span>after</span></div>
+                  </div>
+                </div>
+
+                <div class="lp-score-keys">
+                  <div class="lp-keys-label">Missing from your resume</div>
+                  <div class="lp-keys">
+                    <span class="lp-key miss">design systems<i>&#215;</i></span>
+                    <span class="lp-key miss">Figma<i>&#215;</i></span>
+                    <span class="lp-key miss">usability testing<i>&#215;</i></span>
+                  </div>
+                  <div class="lp-keys-label" style="margin-top:16px;">Already matched</div>
+                  <div class="lp-keys">
+                    <span class="lp-key hit">prototyping<i>&#10003;</i></span>
+                    <span class="lp-key hit">design ops<i>&#10003;</i></span>
+                    <span class="lp-key hit">accessibility<i>&#10003;</i></span>
+                    <span class="lp-key hit">user research<i>&#10003;</i></span>
+                  </div>
+                  <p class="lp-keys-note">All three sit in your Skills list but never appear in Experience — where parsers weight them most.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="lp-score-side">
+              <div class="lp-side-item">
+                <div class="lp-side-ico" style="background:#E3F4F1;color:#0E9384;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h7" stroke-linecap="round"/></svg>
+                </div>
+                <div><h4>Gaps, not just a number</h4><p>Every miss is named, with the section it should live in.</p></div>
+              </div>
+              <div class="lp-side-item">
+                <div class="lp-side-ico" style="background:#E7F8EF;color:#16A34A;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+                <div><h4>Repeatable</h4><p>Same resume, same posting, same number — so a change in score is a real change.</p></div>
+              </div>
+              <div class="lp-side-item">
+                <div class="lp-side-ico" style="background:#FEF3E2;color:#D97706;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true"><path d="M12 3v13m0 0l-4.5-4.5M12 16l4.5-4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 20h16" stroke-linecap="round"/></svg>
+                </div>
+                <div><h4>Straight into the builder</h4><p>Fix it in any of 36 templates and re-score without leaving the page.</p></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== EXTENSION ============== -->
+      <section id="extension" class="py-16 md:py-20">
+        <div class="max-w-6xl mx-auto px-5 sm:px-6 grid lg:grid-cols-2 gap-14 items-center">
+          <div class="lp-browser-mock lp-reveal">
+            <div class="lp-browser-bar">
+              <span class="lp-dot" style="background:#FF6259"></span>
+              <span class="lp-dot" style="background:#E0A93E"></span>
+              <span class="lp-dot" style="background:#1FAE6B"></span>
+              <div class="lp-browser-url">linkedin.com/jobs/view/…</div>
+            </div>
+            <div class="lp-browser-body">
+              <div class="lp-job-card">
+                <div class="lp-role">Senior Product Designer</div>
+                <div class="lp-co">Northwind Systems · Remote</div>
+                <div class="lp-meta"><span>$140k–$170k</span><span>Full-time</span><span>Posted 2d ago</span></div>
+                <div class="lp-capture-btn"><img class="mm-mark" src="assets/momentum-mark.png" alt="" aria-hidden="true">Capture This Job</div>
+              </div>
+              <div class="lp-platform-row">
+                <span>LinkedIn</span><span>Indeed</span><span>Glassdoor</span><span>Greenhouse</span><span>Lever</span><span>Workday</span><span>+ generic fallback</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lp-reveal">
+            <div class="lp-eyebrow">One click, from any job board</div>
+            <h2 style="font-family:var(--lp-disp); font-weight:600; font-size:clamp(24px,3.2vw,34px); color:var(--lp-ink); margin:14px 0 20px;">Capture the posting without leaving the tab.</h2>
+            <div class="lp-flow-steps">
+              <div class="lp-flow-step"><span class="lp-flow-num">01</span><div><h4>Scrape</h4><p>Role, company, location, salary, and description are pulled straight off the page you're already reading — AI-assisted, so it works on any job site.</p></div></div>
+              <div class="lp-flow-step"><span class="lp-flow-num">02</span><div><h4>Save</h4><p>It lands directly in your Job Applications board — no copy-paste, no separate tab.</p></div></div>
+              <div class="lp-flow-step"><span class="lp-flow-num">03</span><div><h4>Tailor</h4><p>Rebuilds your resume against the posting's keywords, in whichever template you set as the default.</p></div></div>
+              <div class="lp-flow-step"><span class="lp-flow-num">04</span><div><h4>Draft</h4><p>Generates a first-pass cover letter for the role, ready to edit before you send it.</p></div></div>
+            </div>
+            <div class="mt-6">
+              <button data-nav-auth="signup" class="btn btn-accent">Get started to download the extension →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============== HOW IT WORKS ============== -->
+      <!-- Replaced the old self-host/cost section outright. Both were built on
+           a premise that no longer holds: this is a hosted product, so there is
+           no .env to configure and no inference bill to compare against. -->
+      <section id="setup" class="py-16 md:py-20" style="background:var(--lp-surface-alt, #F7F6F2);">
+        <div class="max-w-6xl mx-auto px-5 sm:px-6">
+          <div class="max-w-xl mb-10 lp-reveal">
+            <div class="lp-eyebrow">How it works</div>
+            <h2 style="font-family:var(--lp-disp); font-weight:600; font-size:clamp(24px,3vw,32px); color:var(--lp-ink); margin:14px 0 12px;">Three minutes to your first tracked application.</h2>
+            <p style="color:var(--lp-ink-mute); font-size:14px; line-height:1.65;">No install, no configuration. Create an account and the board is waiting; add the browser extension when you want one-click capture.</p>
+          </div>
+
+          <div class="lp-steps3 lp-reveal">
+            <div class="lp-step3">
+              <div class="lp-step3-n">01</div>
+              <svg viewBox="0 0 220 120" class="lp-step3-art" aria-hidden="true">
+                <rect x="26" y="18" width="168" height="84" rx="12" fill="#fff" stroke="#E4E2DA"/>
+                <rect x="42" y="36" width="80" height="9" rx="4.5" fill="#D9DCEB"/>
+                <rect x="42" y="56" width="136" height="13" rx="6.5" fill="#F1F2F7" stroke="#E4E2DA"/>
+                <rect x="42" y="78" width="60" height="13" rx="6.5" fill="#0E9384"/>
+              </svg>
+              <h4>Create your account</h4>
+              <p>Email or Google. Your board, resumes and history live with the account.</p>
+            </div>
+            <div class="lp-step3">
+              <div class="lp-step3-n">02</div>
+              <svg viewBox="0 0 220 120" class="lp-step3-art" aria-hidden="true">
+                <rect x="26" y="18" width="168" height="84" rx="12" fill="#fff" stroke="#E4E2DA"/>
+                <rect x="26" y="18" width="168" height="22" rx="12" fill="#F1F2F7"/>
+                <rect x="26" y="30" width="168" height="10" fill="#F1F2F7"/>
+                <circle cx="40" cy="29" r="3" fill="#C9CCDD"/><circle cx="50" cy="29" r="3" fill="#C9CCDD"/>
+                <!-- What the toolbar actually shows once installed: the same
+                     white tile and teal mark as extension/icons/icon48.png. -->
+                <rect x="150" y="50" width="34" height="34" rx="10" fill="#fff" stroke="#E4E2DA"/>
+                <image href="assets/momentum-mark.png" x="155" y="60" width="24" height="14"/>
+                <rect x="42" y="52" width="92" height="8" rx="4" fill="#E4E6F0"/>
+                <rect x="42" y="66" width="70" height="8" rx="4" fill="#E4E6F0"/>
+                <rect x="42" y="80" width="84" height="8" rx="4" fill="#E4E6F0"/>
+              </svg>
+              <h4>Add the extension</h4>
+              <p>A button appears on 60 job sites. One click pulls the role, company, location and full description.</p>
+            </div>
+            <div class="lp-step3">
+              <div class="lp-step3-n">03</div>
+              <svg viewBox="0 0 220 120" class="lp-step3-art" aria-hidden="true">
+                <rect x="18" y="26" width="52" height="68" rx="10" fill="#E3F4F1" stroke="#C7CCF7"/>
+                <rect x="84" y="26" width="52" height="68" rx="10" fill="#E7F8EF" stroke="#B4E3CB"/>
+                <rect x="150" y="26" width="52" height="68" rx="10" fill="#FEF3E2" stroke="#F0D3A4"/>
+                <rect x="28" y="38" width="32" height="7" rx="3.5" fill="#B9BFEA"/>
+                <rect x="28" y="52" width="24" height="7" rx="3.5" fill="#CDD2F2"/>
+                <rect x="94" y="38" width="32" height="7" rx="3.5" fill="#A6DCC0"/>
+                <rect x="160" y="38" width="32" height="7" rx="3.5" fill="#EBC98F"/>
+                <path d="M74 60h6M140 60h6" stroke="#B9BCCB" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              <h4>Work the board</h4>
+              <p>Score against the posting, tailor a resume, move the card. Every stage change is kept.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+    </div><!-- /#marketing-landing -->
+    <!-- ============== LOGIN / SIGNUP ============== -->
+    <section id="get-started" class="max-w-6xl mx-auto px-5 sm:px-6 py-16 md:py-20 grid md:grid-cols-2 gap-12 items-center">
+      <div class="hidden md:block">
+        <!-- The one place the full lockup fits: signing in is where a product
+             introduces itself, and there is room here for the wordmark and the
+             line under it that the 20px mark elsewhere cannot carry. -->
+        <img class="mm-lockup" src="assets/momentum-logo.png" alt="Momentum — move forward">
+        <h2 class="font-display text-2xl sm:text-3xl font-medium text-navy mb-4">One account.<br/>Every goal, in one place.</h2>
+        <ul class="space-y-3 text-sm text-gray-600">
+          <li class="flex items-start gap-2.5"><span class="text-mint font-bold">✓</span>Free to use — habits, tasks, study plans, and job tracking included</li>
+          <li class="flex items-start gap-2.5"><span class="text-mint font-bold">✓</span>Your data, exportable any time as a branded PDF report</li>
+          <li class="flex items-start gap-2.5"><span class="text-mint font-bold">✓</span>Resume templates for the US, UK, Europe, and India</li>
+          <li class="flex items-start gap-2.5"><span class="text-mint font-bold">✓</span>Sign in with Google or email — your choice</li>
+        </ul>
+      </div>
+      <div class="w-full max-w-sm mx-auto md:mx-0">
+        <div class="mb-5 md:hidden text-center">
+          <img class="mm-lockup mm-lockup-sm" src="assets/momentum-logo.png" alt="Momentum — move forward">
+          <p class="font-display text-lg font-medium text-navy">Start your streak</p>
+          <p class="text-xs text-gray-400 mt-1">Build momentum, one day at a time.</p>
+        </div>
+        <div class="card p-6" id="auth-card">
+          <h2 class="font-display text-xl font-medium mb-1" id="auth-heading">Welcome back</h2>
+          <p class="text-sm text-gray-500 mb-5" id="auth-subheading">Log in to pick up where you left off.</p>
+
+          <div id="google-signin-container" class="hidden mb-4">
+            <div id="google-signin-btn" class="flex justify-center"></div>
+            <div class="flex items-center gap-3 my-4">
+              <div class="h-px bg-gray-200 flex-1"></div>
+              <span class="text-xs text-gray-400">or</span>
+              <div class="h-px bg-gray-200 flex-1"></div>
+            </div>
+          </div>
+
+          <div class="flex mb-5 rounded-lg bg-gray-100 p-1 text-sm font-semibold">
+            <button id="auth-tab-login" class="flex-1 py-1.5 rounded-md">Log In</button>
+            <button id="auth-tab-signup" class="flex-1 py-1.5 rounded-md">Sign Up</button>
+          </div>
+          <form id="auth-form" class="space-y-3" autocomplete="off">
+            <div id="auth-name-field" class="hidden">
+              <input type="text" name="name" placeholder="Full name" autocomplete="off" data-lpignore="true" data-1p-ignore />
+            </div>
+            <input type="email" name="email" placeholder="Email address" required autocomplete="off" data-lpignore="true" data-1p-ignore />
+            <input type="password" name="password" id="auth-password" placeholder="Password" required autocomplete="new-password" data-lpignore="true" data-1p-ignore />
+            <button type="submit" class="btn btn-primary w-full justify-center" id="auth-submit">Log In</button>
+          </form>
+          <p id="auth-error" class="text-red-600 text-xs mt-3 hidden"></p>
+          <p class="text-xs text-gray-400 mt-4 text-center">Demo login: demo@momentum.app / demo123</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============== FOOTER ============== -->
+    <footer class="bg-navy-dark text-white/40 text-xs py-8 border-t border-white/10">
+      <div class="max-w-6xl mx-auto px-5 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <!-- The knockout mark: the footer is navy, and the mark is dark
+               teal, so the full-colour file would be a smudge here. -->
+          <img class="mm-mark mm-mark-sm" src="assets/momentum-mark-light.png" alt="" aria-hidden="true">
+          <span>© <span id="footer-year"></span> Momentum Tracker</span>
+        </div>
+        <div class="flex gap-5">
+          <a href="#modules" class="hover:text-white/70">Product</a>
+          <a href="#ai" class="hover:text-white/70">Scoring</a>
+          <a href="#extension" class="hover:text-white/70">Extension</a>
+          <a href="#setup" class="hover:text-white/70">How it works</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Main app shell (hidden until logged in) -->
+  <div id="app" class="hidden flex min-h-screen">
+    <!-- Backdrop for mobile drawer -->
+    <div id="sidebar-backdrop" class="hidden fixed inset-0 bg-black/40 z-30 lg:hidden"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar-glass w-72 sm:w-60 text-white flex flex-col shrink-0 fixed lg:sticky lg:top-0 inset-y-0 lg:inset-y-auto left-0 lg:h-screen z-40 -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-out">
+      <button id="sidebar-collapse-toggle" class="sidebar-collapse-btn hidden lg:flex" title="Collapse sidebar" aria-label="Collapse sidebar">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="sidebar-header px-5 py-6 border-b border-white/10 flex items-center justify-between">
+        <div class="min-w-0">
+          <h1 id="sidebar-brand" class="text-lg font-extrabold tracking-tight whitespace-nowrap cursor-pointer select-none" title="Open sidebar / go to Dashboard"><img class="mm-mark" src="assets/momentum-mark.png" alt="" aria-hidden="true"><span class="sidebar-label">Momentum</span></h1>
+          <p class="text-xs text-white/50 mt-1 sidebar-label whitespace-nowrap">Goals &amp; Job Tracker</p>
+        </div>
+        <button id="sidebar-close" class="lg:hidden text-white/60 hover:text-white text-xl leading-none sidebar-label">✕</button>
+      </div>
+      <nav id="nav" class="flex-1 px-3 py-4 space-y-1 text-sm overflow-y-auto overflow-x-hidden"></nav>
+      <div class="sidebar-footer px-4 py-3 border-t border-white/10 space-y-3">
+        <button id="ext-panel-btn" class="btn btn-ghost w-full justify-center !bg-white/10 !text-white text-xs" title="Chrome Extension"><span class="nav-icon">🧩</span><span class="sidebar-label">&nbsp;Chrome Extension</span></button>
+        <span id="theme-toggle-icon" hidden>🌙</span>
+      </div>
+      <!-- Upgrade card. Hidden for paid accounts by renderNav(), so a Pro user
+           never sees an advert for something they already bought. -->
+      <div class="sidebar-upgrade hidden" id="sidebar-upgrade">
+        <div class="su-head">
+          <span class="su-spark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z" fill="currentColor"/><path d="M18.5 15l.8 2.2 2.2.8-2.2.8-.8 2.2-.8-2.2-2.2-.8 2.2-.8z" fill="currentColor" opacity=".65"/></svg>
+          </span>
+          <span class="su-title">Momentum Pro</span>
+        </div>
+        <p class="su-sub" id="su-sub">Level up your job search</p>
+        <button class="su-cta" id="sidebar-upgrade-btn">Upgrade Now</button>
+      </div>
+
+      <!-- One chip: who you are, and the way into everything about your account.
+           The name and email stacked over a Log out link took four lines to say
+           less, and buried the only settings entrance in the app. -->
+      <div class="sidebar-user px-4 py-3 border-t border-white/10">
+        <div class="user-chip" id="user-chip">
+          <button class="user-chip-main" id="user-chip-main" title="Your profile">
+            <span class="sidebar-avatar" id="sidebar-avatar"></span>
+            <span class="user-chip-name sidebar-label" id="sidebar-user-name"></span>
+          </button>
+          <button class="user-chip-gear" id="user-chip-gear" aria-haspopup="menu"
+                  aria-expanded="false" aria-label="Account menu" title="Account">
+            <!-- Eight-tooth cog drawn as radial strokes plus a ring: the
+                 single-path version of this icon collapses into a blob below
+                 about 20px, which is exactly the size it's used at here. -->
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="3.4" stroke="currentColor" stroke-width="2"/>
+              <g stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M12 2.6v3"/><path d="M12 18.4v3"/>
+                <path d="M2.6 12h3"/><path d="M18.4 12h3"/>
+                <path d="M5.4 5.4l2.1 2.1"/><path d="M16.5 16.5l2.1 2.1"/>
+                <path d="M18.6 5.4l-2.1 2.1"/><path d="M7.5 16.5l-2.1 2.1"/>
+              </g>
+            </svg>
+          </button>
+          <div class="user-menu" id="user-menu" role="menu">
+            <div class="user-menu-head">
+              <span class="sidebar-avatar user-menu-avatar" id="user-menu-avatar"></span>
+              <span style="min-width:0">
+                <span class="user-menu-name" id="user-menu-name"></span>
+                <span class="user-menu-mail" id="user-menu-mail"></span>
+              </span>
+            </div>
+            <div class="user-menu-group">Library</div>
+            <button role="menuitem" data-usermenu="profile" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left">
+              <svg style="width:16px;height:16px;flex:0 0 16px" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="8.2" r="3.6" stroke="currentColor" stroke-width="1.8"/><path d="M4.8 20.2a7.4 7.4 0 0 1 14.4 0" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              Profile
+            </button>
+            <button role="menuitem" data-usermenu="documents" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left">
+              <svg style="width:16px;height:16px;flex:0 0 16px" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 3.2h7.4L18.6 8v12.8H6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M13.2 3.4V8.4h5" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 13h6M9 16.4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              Documents
+            </button>
+            <div class="user-menu-sep"></div>
+            <button role="menuitem" data-usermenu="export"
+                    style="display:flex;align-items:center;gap:10px;width:100%;text-align:left">
+              <svg style="width:16px;height:16px;flex:0 0 16px" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.6v10m0 0 3.6-3.6M12 13.6 8.4 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M4.4 16.4v2.2a1.8 1.8 0 0 0 1.8 1.8h11.6a1.8 1.8 0 0 0 1.8-1.8v-2.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+              Export to PDF
+            </button>
+            <button role="menuitem" data-usermenu="theme" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left">
+              <svg style="width:16px;height:16px;flex:0 0 16px" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 13.2A8 8 0 1 1 10.8 4a6.4 6.4 0 0 0 9.2 9.2Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+              Toggle theme
+            </button>
+            <button role="menuitem" data-usermenu="logout" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left" class="user-menu-danger">
+              <svg style="width:16px;height:16px;flex:0 0 16px" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14.6 7.4V5.6a1.6 1.6 0 0 0-1.6-1.6H5.6A1.6 1.6 0 0 0 4 5.6v12.8a1.6 1.6 0 0 0 1.6 1.6H13a1.6 1.6 0 0 0 1.6-1.6v-1.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M9.4 12h10.2m0 0-2.8-2.8M19.6 12l-2.8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Log out
+            </button>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 min-w-0 w-full">
+      <header class="topbar-glass px-4 sm:px-8 py-2.5 sm:py-3 flex items-center justify-between sticky top-0 z-20 gap-3 flex-wrap">
+        <!-- Three zones: what am I editing (left) · how am I editing it (centre)
+             · what state is it in and what can I do (right). The centre slot is
+             empty on every page except the résumé builder, where it holds the
+             pane tabs; empty, it simply absorbs the slack the way the old
+             justify-between gap did. -->
+        <div class="flex items-center gap-3 min-w-0 hdr-zone hdr-zone-left">
+          <button id="sidebar-open" class="lg:hidden text-navy text-2xl leading-none shrink-0">☰</button>
+          <h2 id="page-title" class="text-lg sm:text-xl font-bold truncate"></h2>
+          <div id="view-tabs-slot"></div>
+        </div>
+        <div id="view-center-slot" class="hdr-zone-center"></div>
+        <div class="flex items-center gap-2 hdr-zone hdr-zone-right">
+          <div id="header-status" class="hdr-status-slot"></div>
+          <button id="global-search-trigger" class="global-search-trigger" aria-label="Search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <span class="hidden sm:inline">Search</span>
+            <span class="global-search-kbd hidden sm:inline">Ctrl K</span>
+          </button>
+          <div id="header-controls" class="flex items-center gap-2 flex-wrap"></div>
+        </div>
+      </header>
+      <div id="page-content" class="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto"></div>
+    </main>
+  </div>
+
+  <!-- Global search overlay -->
+  <div id="global-search-overlay" class="hidden fixed inset-0 z-[60] flex items-start justify-center pt-[12vh] px-4">
+    <div class="global-search-backdrop" data-search-backdrop></div>
+    <div class="global-search-box">
+      <div class="global-search-input-row">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="global-search-input" placeholder="Search tasks, jobs, habits..." autocomplete="off" />
+        <span class="global-search-kbd">Esc</span>
+      </div>
+      <div id="global-search-results"></div>
+    </div>
+  </div>
+
+  <!-- Modal root (used instead of native prompt/confirm) -->
+  <div id="modal-root" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4"></div>
+
+  <!-- Chrome Extension side panel -->
+  <div id="ext-panel-backdrop" class="ext-panel-backdrop hidden"></div>
+  <aside id="ext-panel" class="ext-panel" aria-hidden="true">
+    <div class="ext-panel-head">
+      <h2>🧩 Chrome Extension</h2>
+      <button id="ext-panel-close" class="ext-panel-close" aria-label="Close">✕</button>
+    </div>
+    <div class="ext-panel-body" id="ext-panel-body"></div>
+  </aside>
+
+  <!-- Toast notifications -->
+  <!-- Every confirmation, warning and failure in this app is delivered as a
+       toast, and this container had no ARIA at all — so a screen-reader user
+       got no feedback whatsoever that a save succeeded or a request failed.
+       role="status" with aria-live="polite" announces each toast as it appears
+       without interrupting whatever is being read; error and warning toasts
+       additionally carry role="alert" on the toast itself (see showToast) so
+       failures are announced immediately rather than queued.
+       aria-atomic="false" so only the new toast is read, not every toast still
+       on screen. -->
+  <div id="toast-container" role="status" aria-live="polite" aria-atomic="false"
+       class="fixed bottom-24 right-4 left-4 sm:left-auto z-40 flex flex-col gap-2 items-end sm:items-end"></div>
+
+  <!-- Momentum Assistant — floating chat widget -->
+  <div id="chat-widget" class="hidden fixed bottom-5 right-5 z-[65] flex flex-col items-end">
+    <div id="chat-panel" class="hidden chat-panel-glass w-[340px] sm:w-[380px] h-[500px] max-h-[70vh] flex flex-col mb-3 overflow-hidden">
+      <div class="chat-panel-header flex items-center justify-between shrink-0">
+        <span class="flex items-center gap-2">
+          <span class="chat-avatar">
+            <svg viewBox="0 0 60 60" width="22" height="22" aria-hidden="true">
+              <circle cx="30" cy="30" r="26" fill="#0E9384"/>
+              <circle class="mascot-eye" cx="21" cy="27" r="3.6" fill="#0F1216"/>
+              <circle class="mascot-eye" cx="39" cy="27" r="3.6" fill="#0F1216"/>
+              <path d="M19 37 Q30 46 41 37" stroke="#0F1216" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span>
+            <span class="block text-sm font-bold leading-tight">Momentum Assistant</span>
+            <span class="flex items-center gap-1.5 text-[9px] font-normal text-white/60 leading-tight" id="chat-status-line">
+              <span id="chat-status-dot" class="w-1.5 h-1.5 rounded-full bg-white/40 inline-block"></span>
+              <span id="chat-status-text">checking…</span>
+            </span>
+          </span>
+        </span>
+        <button id="chat-close" class="text-white/60 hover:text-white text-lg leading-none">✕</button>
+      </div>
+      <div id="chat-messages" class="flex-1 overflow-y-auto p-3.5 space-y-3"></div>
+      <div id="chat-input-area" class="chat-input-bar shrink-0">
+        <textarea id="chat-input" rows="1" placeholder="Ask about your habits, jobs, or resume..."></textarea>
+        <button id="chat-send" class="chat-send-btn" aria-label="Send">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        </button>
+      </div>
+    </div>
+    <button id="chat-toggle" class="chat-toggle-btn" aria-label="Open Momentum Assistant">
+      <svg id="chat-toggle-face" viewBox="0 0 60 60" width="30" height="30" aria-hidden="true">
+        <circle cx="30" cy="30" r="26" fill="transparent"/>
+        <circle class="mascot-eye" cx="21" cy="27" r="4" fill="#fff"/>
+        <circle class="mascot-eye" cx="39" cy="27" r="4" fill="#fff"/>
+        <path d="M19 37 Q30 46 41 37" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
+      </svg>
+      <svg id="chat-toggle-x" class="hidden" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+    </button>
+  </div>
+
+  <script src="app.js?v=2835ff2b"></script>
+  <script>
+    // Landing-page-only decorations (scoped to lp- classes, so this is a
+    // harmless no-op once the user is logged in and #marketing-landing
+    // isn't in the DOM/visible).
+    (function () {
+      // Build the 26-week streak grid. This was lost when the old cost/gauge
+      // animators were removed, leaving an empty card. Weighted so recent weeks
+      // are denser than early ones — a job search that is picking up, which is
+      // the pattern the section is claiming to show.
+      (function buildHeatmap() {
+        const host = document.getElementById("lp-landing-heatmap");
+        if (!host || host.children.length) return;
+        const WEEKS = 26, DAYS = 7;
+        const cells = [];
+        for (let d = 0; d < DAYS; d++) {
+          for (let w = 0; w < WEEKS; w++) {
+            const recency = w / (WEEKS - 1);
+            const r = Math.random() * (0.35 + recency * 0.9);
+            let lvl = "";
+            if (r > 0.86) lvl = "l4";
+            else if (r > 0.62) lvl = "l3";
+            else if (r > 0.4) lvl = "l2";
+            else if (r > 0.2) lvl = "l1";
+            cells.push({ w, d, lvl });
+          }
+        }
+        // Column-major fill so the grid populates left to right on reveal.
+        cells.sort((a, b) => a.d - b.d || a.w - b.w);
+        const frag = document.createDocumentFragment();
+        cells.forEach(c => {
+          const i = document.createElement("i");
+          if (c.lvl) i.className = c.lvl;
+          i.style.setProperty("--lp-cell-delay", (c.w * 18 + c.d * 4) + "ms");
+          frag.appendChild(i);
+        });
+        host.appendChild(frag);
+        const hio = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add("is-in"); hio.unobserve(e.target); }
+          });
+        }, { threshold: 0.25 });
+        hio.observe(host);
+      })();
+
+      const revealEls = document.querySelectorAll(".lp-reveal");
+      if (!revealEls.length) return;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add("lp-in"); io.unobserve(e.target); } });
+      }, { threshold: 0.12 });
+      revealEls.forEach(el => io.observe(el));
+
+      // The before/after dials draw themselves when the section is reached.
+      // Tied to its own observer rather than the shared .lp-reveal class so the
+      // arcs start from zero every time regardless of how the card faded in.
+      const scoreStage = document.querySelector(".lp-score-stage");
+      if (scoreStage) {
+        const scoreIO = new IntersectionObserver((entries) => {
+          entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add("is-in"); scoreIO.unobserve(e.target); }
+          });
+        }, { threshold: 0.35 });
+        scoreIO.observe(scoreStage);
+      }
+
+
+      // subtle parallax on the hero blob following the pointer
+      const blob = document.getElementById("lp-hero-blob");
+      if (blob && window.matchMedia("(pointer:fine)").matches) {
+        window.addEventListener("mousemove", (e) => {
+          const x = (e.clientX / window.innerWidth - 0.5) * 40;
+          const y = (e.clientY / window.innerHeight - 0.5) * 24;
+          blob.style.transform = `translate(calc(-50% + ${x}px), ${y}px)`;
+        });
+      }
+
+      // sync the drag-card landing animation with the Interview column count
+      const dragCardEl = document.getElementById("lp-drag-card");
+      const interviewCountEl = document.getElementById("lp-interview-count");
+      if (dragCardEl && interviewCountEl && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const CYCLE_MS = 7000, LAND_AT = CYCLE_MS * 0.78, RESET_AT = CYCLE_MS * 0.97;
+        function runCycle() {
+          setTimeout(() => { interviewCountEl.textContent = "2"; }, LAND_AT);
+          setTimeout(() => { interviewCountEl.textContent = "1"; }, RESET_AT);
+        }
+        runCycle();
+        setInterval(runCycle, CYCLE_MS);
+      }
+
+      // dark-mode toggle — reuses the same function and localStorage key as
+      // the dashboard sidebar, so a choice made here carries straight
+      // through after signing in.
+      const navThemeToggle = document.getElementById("lp-nav-theme-toggle");
+      if (navThemeToggle && typeof toggleTheme !== "undefined") {
+        navThemeToggle.textContent = document.documentElement.getAttribute("data-theme") === "dark" ? "☀️" : "🌙";
+        navThemeToggle.addEventListener("click", () => {
+          toggleTheme();
+          navThemeToggle.textContent = document.documentElement.getAttribute("data-theme") === "dark" ? "☀️" : "🌙";
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

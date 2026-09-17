@@ -1,0 +1,657 @@
+{
+  "teacher": [
+    {
+      "level": "early",
+      "stage": "Early Career Teacher",
+      "headline": "First full year in post, induction under way",
+      "why": "A headteacher reads a teacher's CV for three things before any of the prose: what you can legally be employed to teach, which key stages you have actually stood in front of, and whether you are safe to leave with children. QTS, the teacher reference number and induction status therefore sit in plain sight. Every placement here names its year group, the school's intake and what came out of it, because \"placement in a primary school\" tells a timetabler nothing.",
+      "template_id": "pastel_soft",
+      "data": {
+        "full_name": "Caitlin Sowerby",
+        "title": "Primary Teacher (Key Stage 2)",
+        "location": "York, UK",
+        "phone": "+44 7700 900233",
+        "email": "caitlin.sowerby@example.com",
+        "linkedin": "linkedin.com/in/caitlin-sowerby-example",
+        "website": "",
+        "summary": "- Primary teacher one year into induction under the Early Career Teacher Entitlement, currently on Year 4 and previously Year 2 and Year 5 on placement.\n- Trained in systematic synthetic phonics and running the Key Stage 2 catch-up reading group; six of the ten pupils in it no longer need the intervention.\n- Qualified Teacher Status awarded July 2025, TRN 4218736. Enhanced DBS on the Update Service and Part 1 of Keeping Children Safe in Education refreshed each September.",
+        "skills": "Key stages and year groups: Key Stage 2 (Years 4 and 5), Key Stage 1 (Year 2), one week of Early Years Foundation Stage observation\nCurriculum strengths: early reading and systematic synthetic phonics, primary mathematics taught for mastery, science enquiry, PE\nAssessment: statutory Year 4 multiplication tables check, phonics screening check, Key Stage 2 teacher assessment frameworks, half-termly gap analysis and moderation\nInclusion: adapting for pupils with EHCPs and SEN support, directing two teaching assistants, new arrivals with English as an additional language\nSafeguarding and pastoral: KCSIE Part 1, Prevent duty, recording on CPOMS, first point of contact for a class of 30",
+        "experience": "Class Teacher, Year 4 | Brackenmere Primary School | York, UK | Sep 2025 - Present\n- Teach a mixed-attainment Year 4 class of 30 across the full primary curriculum; 24 of them scored 20 or more in the statutory multiplication tables check, against 11 at the December practice.\n- Run the Key Stage 2 catch-up reading group four mornings a week; average reading age across the ten pupils rose 16 months over ten months of teaching.\n- Rebuilt the Year 4 science medium-term plan around practical enquiry after the subject lead's book scrutiny found written work outweighing investigation three to one.\n- First point of contact for safeguarding concerns in the class: log on CPOMS and hand over to the designated safeguarding lead the same day, with four referrals escalated to early help this year.\n---\nTrainee Teacher, two assessed placements | Thornfield Vale Primary School and Kestrel Lane Primary School | York and Selby, UK | Sep 2024 - Jun 2025\n- Taught in schools with deliberately different intakes, one at 9% pupil premium and one at 46%, and was assessed against the same standards in both.\n- Held the full Year 5 timetable for the final six weeks, including whole-class reading and daily mathematics, and led a parents' evening.\n---\nTeaching Assistant, Key Stage 1 | Ashlyn Meadows Primary School | Leeds, UK | Sep 2022 - Aug 2024\n- Delivered daily phonics interventions to groups of four to six Year 1 pupils; 14 of 18 passed the phonics screening check at the first attempt.\n- Supported two pupils with EHCPs in class, working from their outcomes with the SENCO.",
+        "education": "PGCE Primary (5-11) with Qualified Teacher Status | Kelsmere University | Sep 2024 - Jun 2025\n---\nBA (Hons) English Literature, 2:1 | University of Wendlebury | Sep 2019 - Jun 2022",
+        "projects": "Placement A, Year 2 (Key Stage 1), Thornfield Vale Primary School: Eight weeks in a two-form-entry school at 9% pupil premium. Taught daily phonics and the place-value sequence, and assessed a group against the phonics screening check criteria.\n---\nPlacement B, Year 5 (Key Stage 2), Kestrel Lane Primary School: Twelve weeks in a one-form-entry school at 46% pupil premium with 21 pupils learning English as an additional language. Held the full timetable for the last six weeks and ran the class's contribution to the summer production.\n---\nEarly Years observation week, Ashlyn Meadows Primary School: Five days in Reception, arranged to see how continuous provision feeds into the Key Stage 1 curriculum; wrote the transition notes the Year 1 team now use in September.",
+        "publications": "",
+        "certifications": "Qualified Teacher Status, awarded July 2025 (TRN 4218736)\nEarly Career Teacher Entitlement: year one of induction completed July 2026, second year beginning September 2026\nKeeping Children Safe in Education Part 1 and Prevent duty awareness, refreshed September 2025\nEnhanced DBS certificate, registered with the Update Service\nPaediatric first aid, 12 hours, valid to 2027\nNational Professional Qualification for Leading Literacy, cohort starting October 2026",
+        "custom_sections": [
+          {
+            "title": "Pupil Outcomes, 2025-26",
+            "items": [
+              {
+                "heading": "Multiplication tables check, Year 4",
+                "meta": "June 2026",
+                "text": "24 of 30 pupils scored 20 or above, against 11 in the December practice check."
+              },
+              {
+                "heading": "Key Stage 2 catch-up reading group",
+                "meta": "Sep 2025 - Jul 2026",
+                "text": "Ten pupils; average reading age up 16 months, and six no longer need the intervention."
+              },
+              {
+                "heading": "Writing at age-related expectations",
+                "meta": "July 2026",
+                "text": "Class moved from 18 of 30 to 25 of 30 across the year, moderated with the Key Stage 2 team."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, biology, and an AP programme rebuilt",
+      "why": "An American teaching CV is a licence document first: the state, the grade band and the subject endorsement decide what a principal can put on your timetable, so they go near the top with the number and the expiry date. The results are written to show access as well as attainment - the pass rate rose while the number of students sitting the exam nearly tripled, which is the harder achievement and the one a hiring committee will ask about.",
+      "template_id": "modern_minimalist",
+      "data": {
+        "full_name": "Darnell Whitaker",
+        "title": "High School Biology Teacher",
+        "location": "Columbus, Ohio",
+        "phone": "+1 (614) 555-0138",
+        "email": "darnell.whitaker@example.com",
+        "linkedin": "linkedin.com/in/darnell-whitaker-example",
+        "website": "",
+        "summary": "- Six years teaching high school biology and AP Biology. Ohio Professional Educator License, grades 7-12 integrated science, valid to June 2029.\n- National Board Certified in Adolescence and Young Adulthood Science since 2024, and a trained mentor under the state resident educator programme.\n- Took AP Biology from one section of 22 to three sections of 61 while the share of students scoring 3 or higher rose from 51% to 78%.",
+        "skills": "Courses taught: AP Biology, Biology I (state end-of-course), Anatomy and Physiology, Environmental Science, ninth-grade Physical Science\nInstruction: three-dimensional science teaching to the Ohio Learning Standards, phenomenon-based unit design, laboratory safety and dissection protocols, MTSS tier 2 intervention\nInclusion: co-teaching with intervention specialists, IEP and 504 accommodations, supports for multilingual learners\nAssessment and data: end-of-course exam item analysis, common formative assessments, a standards-based grading pilot across two sections\nSystems: Canvas, PowerSchool, Google Workspace for Education, Vernier probeware, FERPA",
+        "experience": "Biology Teacher and Science PLC Lead | Marlowe Ridge High School, Ravenwood City Schools | Columbus, Ohio | Aug 2021 - Present\n- Rebuilt the AP Biology pipeline with the counselling office, dropping the prerequisite grade requirement and adding a summer bridge week: enrolment went from 22 students in one section to 61 across three, and scores of 3 or higher rose from 51% to 78%.\n- Biology I students scoring proficient or above on the state end-of-course exam moved from 64% to 83% over four administrations, and the gap between students with IEPs and their peers narrowed from 29 points to 11.\n- Lead the six-teacher science professional learning community, which rewrote the freshman course around common formative assessments and now reviews item-level data every two weeks.\n- Coach Science Olympiad; the team qualified for the state tournament in 2024 and 2025 and finished in the top ten both years.\n- Mentor first-year teachers through the state resident educator programme and host two student teachers a year.\n---\nBiology and Physical Science Teacher | Cedar Hollow High School, Pinewater Local Schools | Zanesville, Ohio | Aug 2020 - Jul 2021\n- Taught five sections across two preparations in a rural district, moving the whole course online and back inside one academic year.\n- Wrote the district's first shared pacing guide for freshman physical science, still in use across its three high schools.",
+        "education": "Master of Education, Curriculum and Instruction | Weyland State University | Aug 2018 - May 2020\n---\nBachelor of Science, Biology, minor in Education | Cedarline University | Aug 2014 - May 2018",
+        "projects": "Freshman Biology course rewrite: Led the professional learning community through a full rebuild of Biology I around eight anchoring phenomena and a shared bank of formative assessments. Every section in the building now teaches from the same materials.\n---\nVertical alignment with the middle school: Ran four joint planning sessions with eighth-grade science teachers to close the gap between middle-school life science and the ninth-grade course. Incoming students' pre-test scores rose 12 points the following year.",
+        "publications": "",
+        "certifications": "Ohio Professional Educator License, grades 7-12 Integrated Science, licence no. OH-1147302, valid to June 2029\nNational Board Certification, Adolescence and Young Adulthood Science (NBPTS), 2024\nOhio Resident Educator mentor, trained 2023\nPraxis II Biology: Content Knowledge, passed 2018\nCPR, AED and first aid, current\nBCI and FBI background checks, current",
+        "custom_sections": [
+          {
+            "title": "Leadership and Service",
+            "items": [
+              {
+                "heading": "Science professional learning community lead",
+                "meta": "2023 - present",
+                "text": "Six teachers; sets the common assessment calendar and runs the fortnightly data review."
+              },
+              {
+                "heading": "Resident educator mentor",
+                "meta": "2023 - present",
+                "text": "Two first-year teachers supported through state induction; both retained."
+              },
+              {
+                "heading": "District 9-12 science curriculum committee",
+                "meta": "2024 - present",
+                "text": "One of nine members rewriting the high school science sequence."
+              },
+              {
+                "heading": "Science Olympiad head coach",
+                "meta": "2021 - present",
+                "text": ""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Assistant Headteacher",
+      "headline": "Head of maths, now on the leadership team",
+      "why": "A leadership CV keeps the classroom evidence and adds the data you are personally accountable for. Notice how precisely things are named: the mathematics element of Progress 8 rather than \"improved results\", the inspection evaluation area rather than \"good Ofsted\", and the TLR and leadership responsibilities kept apart from the teaching, because a governing body reads those as different jobs on different pay.",
+      "template_id": "government_formal",
+      "data": {
+        "full_name": "Sunita Chaudhary",
+        "title": "Assistant Headteacher and Head of Mathematics",
+        "location": "Leicester, UK",
+        "phone": "+44 7700 900718",
+        "email": "s.chaudhary@example.com",
+        "linkedin": "linkedin.com/in/sunita-chaudhary-example",
+        "website": "",
+        "summary": "- Assistant headteacher holding Key Stage 4 outcomes and quality of teaching, and head of a mathematics department of eleven teachers and three teaching assistants.\n- Fourteen years in comprehensive secondary schools; the mathematics element of Progress 8 moved from -0.21 to +0.34 across four cohorts.\n- Deputy designated safeguarding lead since 2022, NPQSL completed 2023, NPQH in progress for 2027.\n- AQA GCSE Mathematics examiner since 2015 and a team leader since 2022.",
+        "skills": "Leadership: line management of 11 teachers and 3 teaching assistants, appraisal and capability, a £52k departmental budget, mathematics timetabling across Years 7 to 13\nKey stages and qualifications: Key Stages 3, 4 and 5; GCSE Mathematics higher and foundation, A-level Mathematics and Further Mathematics, Level 3 Core Maths, post-16 resits\nWhole-school brief: Key Stage 4 outcomes, quality of teaching, early career teacher induction, curriculum intent reviews, exam access arrangements and appeals\nSafeguarding: deputy designated safeguarding lead, KCSIE, Prevent, Operation Encompass, oversight of pupils in alternative provision\nData: Progress 8 and Attainment 8, question-level analysis, forecast accuracy tracking, trust-level moderation",
+        "experience": "Assistant Headteacher and Head of Mathematics | Wraymoor Academy | Leicester, UK | Sep 2021 - Present\n- Grade 4 and above in GCSE mathematics rose from 61% to 78%, and grade 5 and above from 38% to 54%, across four cohorts of roughly 210 pupils.\n- Took the mathematics element of Progress 8 from -0.21 to +0.34, mostly by rebuilding Years 7 and 8 around fewer topics taught for longer and putting the two lowest-attaining sets with the most experienced teachers.\n- Joined the senior leadership team in 2023 with Key Stage 4 outcomes and quality of teaching in the brief; the March 2026 inspection report card rated curriculum and teaching at the strong standard and named mathematics in the commentary.\n- Restarted Further Mathematics in 2023 after two years without it; the sixth-form mathematics cohort has grown from 24 to 51.\n- Run the school's early career teacher programme, seven teachers over two years. All six who have completed induction passed, and five are still at the school.\n---\nSecond in Mathematics, TLR2b | Netherfold High School | Nottingham, UK | Sep 2016 - Aug 2021\n- Ran Key Stage 3 mathematics for a five-form-entry school and wrote the mastery scheme of work that replaced a three-tier setting system.\n- Coordinated intervention on the grade 3 to 4 borderline; 44 of 61 targeted pupils reached grade 4 in 2019.\n- Coached four teachers through the department's lesson-study cycles, two of whom are now heads of department elsewhere.\n---\nTeacher of Mathematics | Netherfold High School | Nottingham, UK | Sep 2012 - Aug 2016\n- Taught across Key Stages 3 to 5 and was form tutor to the same group from Year 7 through to Year 11.\n- Became an AQA GCSE Mathematics examiner in 2015, marking around 400 scripts each summer.",
+        "education": "National Professional Qualification for Senior Leadership (NPQSL) | Ellerdine Teaching School Hub | Sep 2022 - Jul 2023\n---\nPGCE Secondary Mathematics with Qualified Teacher Status | Brindley University | Sep 2011 - Jul 2012\n---\nBSc (Hons) Mathematics, 2:1 | Ashlyn University | Sep 2008 - Jun 2011",
+        "projects": "",
+        "publications": "",
+        "certifications": "Qualified Teacher Status, awarded July 2012 (TRN 3907154)\nNational Professional Qualification for Headship (NPQH), in progress, completing 2027\nDesignated safeguarding lead training, two days, renewed 2025; deputy DSL since 2022\nAQA GCSE Mathematics examiner since 2015, team leader since 2022\nEnhanced DBS certificate on the Update Service",
+        "custom_sections": [
+          {
+            "title": "Whole-School and Trust Responsibilities",
+            "items": [
+              {
+                "heading": "Key Stage 4 outcomes and quality of teaching",
+                "meta": "2023 - present",
+                "text": "Senior leadership brief covering forecasting, intervention and the quality-assurance calendar."
+              },
+              {
+                "heading": "Mathematics lead, Ellerdine Learning Trust",
+                "meta": "2024 - present",
+                "text": "Chairs the termly subject network across the trust's four secondary schools and moderates GCSE forecasts between them."
+              },
+              {
+                "heading": "Early career teacher induction tutor",
+                "meta": "2022 - present",
+                "text": "Seven ECTs; runs mentor training jointly with the teaching school hub."
+              },
+              {
+                "heading": "Curriculum link governor, primary phase",
+                "meta": "2023 - present",
+                "text": "At a trust primary school, chosen to see the Key Stage 2 to 3 transition from the other side."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "professor": [
+    {
+      "level": "early",
+      "stage": "Lecturer",
+      "headline": "First permanent post after a postdoc",
+      "why": "An academic CV is not a resume and is not meant to be short: a panel reads it for completeness and scores four things separately - outputs, funding, teaching recognition and supervision. At lecturer stage the honest move is to list the small grants and to state your role and share on the large one somebody else holds, because £9,842 as principal investigator and £412,000 as one of five co-investigators are read very differently.",
+      "template_id": "harvard_classic",
+      "data": {
+        "full_name": "Eleni Stavrakis",
+        "title": "Lecturer in Human Geography",
+        "location": "Plymouth, UK",
+        "phone": "+44 7700 900465",
+        "email": "e.stavrakis@example.com",
+        "linkedin": "linkedin.com/in/eleni-stavrakis-example",
+        "website": "estavrakis.example.com",
+        "summary": "- Lecturer in human geography, two years into a first permanent post, working on how coastal households and their insurers respond to repeated flooding.\n- Nine peer-reviewed articles, six as lead author, in Global Environmental Change, Climate Policy, Environmental Research Letters, Climatic Change and Geoforum.\n- £37,542 held as principal investigator across three small grants, plus a £96,000 work package on a £412,000 ESRC award led elsewhere.\n- Fellow of the Higher Education Academy since 2025. ORCID 0000-0002-4471-8830.",
+        "skills": "Research methods: qualitative longitudinal interviewing, three-wave household panel design, participatory scenario workshops, policy and document analysis, mixed-methods integration\nTechnical: R for survey weighting and visualisation, QGIS, NVivo, Stata, reproducible workflows in Quarto\nTeaching and supervision: module convenorship, residential fieldwork leadership, MSc dissertation supervision, marking moderation, FHEA\nLanguages: Greek (first language), English (native-equivalent), French (reading, for insurance and civil-protection sources)",
+        "experience": "Lecturer in Human Geography | Wexmoor University | Plymouth, UK | Sep 2024 - Present\n- Convene the second-year module on environment and society, 96 students, and contribute nine lectures to two others; module evaluations of 4.4 of 5 in both years against a school average of 4.0.\n- Second supervisor to two doctoral students and first supervisor to nine MSc dissertations, three of which became co-authored papers.\n- Won a British Academy and Leverhulme Small Research Grant in the first round after appointment, and lead the coastal work package on the school's ESRC project.\n- Admissions tutor for the MSc in Environment and Development: applications rose from 61 to 94 after the entry criteria and the offer-holder day were reworked.\n---\nPostdoctoral Research Associate | Kelsmere University | Sheffield, UK | Oct 2021 - Aug 2024\n- Ran the three-wave household panel on flood recovery in two estuary towns, 480 households, including the fieldwork design and 62 of the interviews.\n- Produced four of the project's eight papers and the practitioner report that two local authority partners drew on for their adaptation plans.\n- Taught two seminar groups a year alongside the research post and completed the postgraduate certificate in higher education.",
+        "education": "PhD, Human Geography | Kelsmere University | Oct 2017 - Sep 2021\n---\nMSc, Environment and Development, Distinction | Brindley University | Sep 2016 - Sep 2017\n---\nBA, Geography, First Class | University of Wendlebury | Sep 2013 - Jun 2016",
+        "projects": "British Academy and Leverhulme Small Research Grant, principal investigator, £9,842, 2025-2026: Interviews with insurers and brokers on the withdrawal of flood cover from repeatedly flooded coastal streets.\n---\nESRC, Living with Repeat Flooding, co-investigator and work package lead, £96,000 of a £412,000 award, 2024-2027: One of five co-investigators; leads the household panel work package and supervises the project research assistant.\n---\nWexmoor University Research Development Fund, principal investigator, £24,600, 2025: Pilot of a participatory scenario method with two coastal parish councils, producing the preliminary data behind the current UKRI application.\n---\nRoyal Geographical Society small research grant, principal investigator, £3,100, 2023: Fieldwork costs for the second panel wave.",
+        "publications": "Stavrakis E., Ogundele B. (2026) Insurance retreat and the limits of household adaptation on eroding coasts. Global Environmental Change, 88, 102994.\nStavrakis E. (2025) What repeat flooding does to the idea of recovery. Environmental Research Letters, 20(4), 044017.\nStavrakis E., Thackeray-Oduro N., Ogundele B. (2025) Participatory scenarios and the parish council: scale mismatch in local adaptation planning. Climate Policy, 25(2), 188-203.\nStavrakis E., Hollingworth R. (2024) Three waves and a flood: a qualitative longitudinal design for slow-onset hazards. Geoforum, 152, 103998.\nHollingworth R., Stavrakis E., et al. (2023) Who moves and who cannot: displacement intentions after estuary flooding. Climatic Change, 176, 41.\nStavrakis E. (2023) Reading adaptation plans against the households they describe. WIREs Climate Change, 14(3), e826.\nFull list of nine articles and two book chapters at estavrakis.example.com",
+        "certifications": "Fellow of the Higher Education Academy (FHEA), 2025\nPostgraduate Certificate in Higher Education, Kelsmere University, 2024\nFellow of the Royal Geographical Society (FRGS), 2023\nFieldwork leader award and outdoor first aid, renewed 2025\nORCID 0000-0002-4471-8830",
+        "custom_sections": [
+          {
+            "title": "Teaching and Supervision",
+            "items": [
+              {
+                "heading": "Environment and Society, second year, 96 students",
+                "meta": "2024 - present",
+                "text": "Module convenor; replaced the single essay with a policy brief and a reflective portfolio."
+              },
+              {
+                "heading": "Doctoral supervision",
+                "meta": "2025 - present",
+                "text": "Second supervisor to two students, on flood insurance withdrawal and on managed realignment."
+              },
+              {
+                "heading": "MSc dissertations",
+                "meta": "2024 - present",
+                "text": "Nine supervised to completion; three developed into co-authored papers."
+              },
+              {
+                "heading": "Residential field course, second year",
+                "meta": "2025 and 2026",
+                "text": "Led the week for 54 students in both years, including risk assessment and staffing."
+              }
+            ]
+          },
+          {
+            "title": "Service, Review and Esteem",
+            "items": [
+              {
+                "heading": "Admissions tutor, MSc Environment and Development",
+                "meta": "2025 - present",
+                "text": ""
+              },
+              {
+                "heading": "Peer review",
+                "meta": "2022 - present",
+                "text": "Reviewer for Global Environmental Change, Climatic Change, Climate Policy and three others; 19 reviews to date."
+              },
+              {
+                "heading": "Conference organisation",
+                "meta": "2025",
+                "text": "Convened a two-session panel on insurance and adaptation at the RGS-IBG annual conference."
+              },
+              {
+                "heading": "Invited talks",
+                "meta": "2024 - 2026",
+                "text": "Four departmental seminars and a briefing to a regional flood partnership."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Senior Lecturer",
+      "headline": "One monograph out, a second under contract",
+      "why": "Humanities CVs are counted differently from science ones, and this is where candidates lose marks. The monograph is the unit of account, not the paper, so the book comes first with its press and its reviews. Research languages, palaeography and archive access are hiring criteria in their own right and belong in the skills block. And the funding here buys time rather than equipment, so every grant says what it bought: a year of teaching relief is an output, not a line of income.",
+      "template_id": "academic_cv",
+      "data": {
+        "full_name": "Alasdair Penhaligon",
+        "title": "Senior Lecturer in Medieval History",
+        "location": "Lincoln, UK",
+        "phone": "+44 7700 900802",
+        "email": "a.penhaligon@example.com",
+        "linkedin": "linkedin.com/in/alasdair-penhaligon-example",
+        "website": "penhaligon.example.org",
+        "summary": "- Senior lecturer in medieval history, eleven years post-doctorate, working on trade, credit and obligation in the North Sea world between 1150 and 1350.\n- First monograph published by Boydell & Brewer in 2023 and reviewed in three journals including the English Historical Review; a second is under contract for 2028.\n- Leverhulme Trust Research Fellow 2024-25. Three doctoral completions as primary supervisor and four students in progress.\n- Programme director for the MA in Medieval Studies and Fellow of the Royal Historical Society.",
+        "skills": "Research languages: Latin, documentary and literary; Middle Dutch; Old Norse; Middle English; French and German for scholarship\nArchival skills: Latin palaeography to the fourteenth century, diplomatic, sigillography, editing and translating unpublished charters and account rolls\nDigital methods: TEI-XML encoding, network analysis in R, GIS reconstruction of trade routes, prosopographical database design\nTeaching and academic leadership: module design, MA programme direction, doctoral supervision, external examining, SFHEA",
+        "experience": "Senior Lecturer in Medieval History | Northmoor University | Lincoln, UK | Sep 2021 - Present\n- Published The Salt Roads: Trade and Obligation in the North Sea World, 1180-1320 with Boydell & Brewer in 2023; reviewed in the English Historical Review, Speculum and the Journal of Medieval History, and now on reading lists at eleven universities.\n- Direct the MA in Medieval Studies. Recruitment rose from 9 students to 24 over four years after the programme was rebuilt around a taught palaeography strand and a placement with a cathedral archive.\n- Three doctoral completions as primary supervisor, all submitted inside four years and all three now in academic or archival posts; four students currently in progress.\n- Led the department's REF 2029 impact case study on the schools palaeography programme, which has trained 340 sixth-formers across nineteen schools.\n- Convene two modules and contribute to the first-year survey; module evaluations of 4.7 and 4.5 of 5.\n---\nLecturer in Medieval History | Carrickfell University | Carrickfell, UK | Sep 2017 - Aug 2021\n- Wrote and convened three new modules, including the department's first taught Latin option, which has run at capacity every year since.\n- Published five peer-reviewed articles and edited a volume of eleven essays for Brill.\n- Ran the department's research seminar for three years on a £4,200 annual speaker budget.\n---\nLeverhulme Early Career Fellow | Brindley University | Nottingham, UK | Oct 2014 - Sep 2017\n- Three-year fellowship on merchant credit networks; the research became four articles and the core of the first monograph.\n- Transcribed and calendared 1,140 unpublished charters from three cathedral archives; the dataset is open and has since been cited by eleven other researchers.",
+        "education": "PhD, Medieval History | Brindley University | Oct 2010 - Jul 2014\n---\nMSt, Medieval Studies, Distinction | University of Wendlebury | Oct 2009 - Sep 2010\n---\nBA, History, First Class | Carrickfell University | Oct 2006 - Jun 2009",
+        "projects": "Leverhulme Trust Research Fellowship, principal investigator, £62,400, 2024-2025: Bought a full year of teaching relief and eleven weeks of archive travel; produced the draft of the second monograph and two articles.\n---\nAHRC Research Networking Grant, principal investigator, £38,900, 2022-2024: Four workshops on North Sea trade records across three countries; the resulting edited volume appears with Brill in 2027.\n---\nAHRC Collaborative Doctoral Partnership studentship, supervisor and co-applicant, £78,000, 2023-2027: A funded doctorate held jointly with a cathedral archive; the student is cataloguing its medieval account rolls.\n---\nNorthmoor University Public Engagement Fund, principal investigator, £14,500, 2023-2025: Established the schools palaeography programme now used as a REF impact case study.\n---\nRoyal Historical Society research grant, principal investigator, £1,800, 2021: Two weeks of archive work in the Low Countries, which became the Past & Present article.",
+        "publications": "MONOGRAPHS\nPenhaligon A. (2023) The Salt Roads: Trade and Obligation in the North Sea World, 1180-1320. Woodbridge: Boydell & Brewer, 388 pp.\nPenhaligon A. (under contract, 2028) Debt, Kinship and the Coastal Parish. Woodbridge: Boydell & Brewer.\nEDITED VOLUMES\nPenhaligon A., Kerrigan-Doust M., eds (2020) Writing the Northern Sea: Records and Their Makers, 1100-1400. Leiden: Brill, eleven essays.\nPEER-REVIEWED ARTICLES\nPenhaligon A. (2025) Obligation without coin: credit language in coastal charters. Past & Present, 268, 3-41.\nPenhaligon A. (2024) The account roll as narrative. Journal of Medieval History, 50(2), 201-224.\nPenhaligon A., Ilves K. (2022) Salt, herring and the limits of the staple. Early Medieval Europe, 30(4), 512-538.\nPenhaligon A. (2021) Reading seals against their charters. Speculum, 96(3), 671-698.\nPenhaligon A. (2019) Merchant credit and the parish church. English Historical Review, 134(569), 823-851.\nBOOK CHAPTERS AND EDITIONS\nSix chapters in edited volumes, 2016-2025, and a critical edition of the Wrenmouth customs roll. Full list at penhaligon.example.org",
+        "certifications": "Fellow of the Royal Historical Society (FRHistS), 2021\nSenior Fellow of the Higher Education Academy (SFHEA), 2023\nPostgraduate Certificate in Academic Practice, Carrickfell University, 2018\nExternal examiner, BA History, Rothwell Metropolitan University, 2023-2027\nAHRC Peer Review College member, 2024-present",
+        "custom_sections": [
+          {
+            "title": "Doctoral Supervision and Examining",
+            "items": [
+              {
+                "heading": "Primary supervisor, three completions",
+                "meta": "2018 - 2025",
+                "text": "Theses on Hanse credit instruments, cathedral estate management and vernacular account-keeping; all submitted within four years."
+              },
+              {
+                "heading": "Primary or joint supervisor, four in progress",
+                "meta": "2023 - present",
+                "text": "Including one AHRC Collaborative Doctoral Partnership student placed with a cathedral archive."
+              },
+              {
+                "heading": "Doctoral examining",
+                "meta": "2020 - present",
+                "text": "Internal examiner five times; external examiner at four other universities."
+              },
+              {
+                "heading": "MA dissertations",
+                "meta": "2017 - present",
+                "text": "Twenty-two supervised to completion."
+              }
+            ]
+          },
+          {
+            "title": "Editorial, Review and Public Work",
+            "items": [
+              {
+                "heading": "Reviews editor, Medieval Northern Studies",
+                "meta": "2022 - present",
+                "text": "Commissions and edits roughly 30 reviews a year."
+              },
+              {
+                "heading": "Peer review",
+                "meta": "2017 - present",
+                "text": "Reader for Past & Present, Speculum, the Journal of Medieval History and four others; manuscript reader for two university presses."
+              },
+              {
+                "heading": "Invited lectures",
+                "meta": "2021 - 2026",
+                "text": "Nine, including a county record society annual lecture and two overseas keynotes."
+              },
+              {
+                "heading": "Schools palaeography programme",
+                "meta": "2023 - present",
+                "text": "340 sixth-formers across nineteen schools; the basis of the department's REF 2029 impact case study."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Professor & Head of School",
+      "headline": "Chair in materials chemistry, running a school",
+      "why": "By professorial level the CV is scored on money brought in, people trained and things run, and the publication list becomes a selection with the full one appended - 182 entries printed out in full stop being read. Two conventions carry the document: state your role and the share that reached your institution on every grant, and keep the leadership record apart from the research record, because a head-of-school appointment and a chair are decided by different panels asking different questions.",
+      "template_id": "executive_elegant",
+      "data": {
+        "full_name": "Ashwini Kulkarni",
+        "title": "Professor of Materials Chemistry",
+        "location": "Newcastle upon Tyne, UK",
+        "phone": "+44 7700 900147",
+        "email": "a.kulkarni@example.com",
+        "linkedin": "linkedin.com/in/ashwini-kulkarni-example",
+        "website": "kulkarni-group.example.com",
+        "summary": "- Professor of materials chemistry and head of a school of 96 academic staff with a £41m annual turnover; twenty-two years on solid-state electrolytes and battery interfaces.\n- £19.4m of research funding awarded since 2010, of which £8.7m reached the institution on grants held as principal investigator, including a £6.4m EPSRC programme grant across four universities.\n- 182 peer-reviewed papers, h-index 54; 24 doctoral completions and 19 postdoctoral researchers supervised.\n- Co-founder of a university spin-out licensing the group's solid-electrolyte coating, which raised £11m of Series A funding in 2024.",
+        "skills": "Research leadership: programme grants and multi-institution consortia, industrial partnerships, spin-out formation and licensing, national facility access, research integrity\nInstitutional leadership: head of school, 96 academic staff and 340 postgraduate researchers on a £41m turnover; REF unit of assessment lead; promotions and probation; Athena Swan\nTechnical: solid-state electrolytes, thin-film deposition, operando synchrotron and neutron diffraction, impedance spectroscopy, electron microscopy\nExternal: funding panel membership and chairing, journal editing, doctoral examining, industry advisory boards",
+        "experience": "Head of School of Chemistry | Harrowfield University | Newcastle upon Tyne, UK | Aug 2023 - Present\n- Accountable for 96 academic staff, 340 postgraduate researchers and a £41m turnover; closed a £2.1m recurrent deficit in two years without compulsory redundancy, mainly by rebuilding the taught postgraduate portfolio.\n- Unit of assessment lead for REF 2029; internal review moved 41% of outputs up a grade band after a two-year mentoring programme for early-career staff.\n- Rewrote promotions and probation guidance to weight supervision and teaching alongside grant income. Women at senior lecturer and above rose from 21% to 34% in three years and the school held its Athena Swan silver award at renewal.\n- Negotiated a £4.8m five-year strategic partnership with a battery manufacturer, including six funded studentships and a shared characterisation facility.\n---\nProfessor of Materials Chemistry | Harrowfield University | Newcastle upon Tyne, UK | Oct 2018 - Present\n- Lead a group of fourteen: seven doctoral students, five postdoctoral researchers and two technicians.\n- Principal investigator on the £6.4m EPSRC programme grant on solid-state battery interfaces, coordinating four universities and three industrial partners; renewed for a second phase in 2025.\n- Co-founded Voltaris Materials Ltd in 2021 around the group's coating patent. Three group alumni work there and the licence returns royalties to the university.\n- Published 74 papers in the period, including the work in Nature Materials and Joule on dendrite suppression that has been cited more than 900 times.\n---\nSenior Lecturer, then Reader in Inorganic Chemistry | Kelsmere University | Sheffield, UK | Sep 2008 - Sep 2018\n- Built the solid-state electrolyte group from a single studentship to eleven people and £3.9m of funding.\n- Directed the doctoral training programme in energy materials, 42 students across two cohorts, and secured its second round of funding.\n- Won the university teaching prize in 2014 for the redesigned second-year inorganic laboratory, which is still taught from those materials.",
+        "education": "PhD, Solid State Chemistry | Kelsmere University | Oct 2004 - Sep 2008\n---\nMSc, Materials Science, Distinction | Brindley University | Sep 2003 - Sep 2004\n---\nBSc, Chemistry, First Class | Marchbank University | Sep 2000 - Jun 2003",
+        "projects": "EPSRC Programme Grant, principal investigator and consortium director, £6.4m of which £2.9m to Harrowfield, 2021-2027: Solid-state battery interfaces across four universities and three industrial partners; renewed for a second phase in 2025.\n---\nHorizon Europe consortium, UK principal investigator, £2.2m of an €18m award, 2023-2028: Work-package lead on scalable electrolyte deposition, one of eleven partners.\n---\nFaraday Institution project, co-investigator, £1.4m to Harrowfield, 2020-2026: Degradation mechanisms in solid-state cells.\n---\nStrategic industrial partnership, principal investigator, £4.8m over five years, 2024-2029: Six studentships, two postdoctoral posts and a shared characterisation facility.\n---\nRoyal Society Industry Fellowship, £186,000, 2019-2021: Two years part-time inside a manufacturer's research group; produced the patent behind the spin-out.",
+        "publications": "SELECTED PUBLICATIONS - full list of 182 at kulkarni-group.example.com\nKulkarni A., Vestergaard T., et al. (2026) Interfacial fluorination suppresses dendrite nucleation in sulfide electrolytes. Nature Materials, 25, 388-396.\nAdeyinka O., Kulkarni A. (2025) Operando neutron diffraction of the buried interface during fast charge. Joule, 9(4), 1122-1140.\nKulkarni A., Rawat P., Vestergaard T. (2024) A design rule for grain-boundary chemistry in oxide electrolytes. Journal of the American Chemical Society, 146(31), 21344-21356.\nKulkarni A., et al. (2023) Scalable solution deposition of thin sulfide electrolytes. Energy & Environmental Science, 16, 2984-2997.\nRawat P., Kulkarni A. (2022) What impedance spectroscopy cannot tell you about solid electrolytes. Chemistry of Materials, 34(9), 3877-3890.\nKulkarni A., Ferrand-Beaulieu J. (2020) Pressure history and the mechanics of composite cathodes. Advanced Materials, 32, 2001188.\nPATENTS\nCoating method for sulfide solid electrolytes. GB granted 2021, US granted 2023. Named inventor, one of three; licensed to Voltaris Materials Ltd.",
+        "certifications": "Fellow of the Royal Society of Chemistry (FRSC), 2017\nSenior Fellow of the Higher Education Academy (SFHEA), 2019\nAssociate editor, Journal of Materials Chemistry A, 2021-present\nEPSRC Peer Review College, 2019-present; chaired two prioritisation panels\nChair's Medal, International Battery Materials Society, 2023\nORCID 0000-0001-7712-4409",
+        "custom_sections": [
+          {
+            "title": "Research Group and Doctoral Training",
+            "items": [
+              {
+                "heading": "Doctoral completions",
+                "meta": "2011 - 2026",
+                "text": "Twenty-four as primary supervisor, submitting at 3.9 years on average; nine now hold academic posts and four work in the spin-out or its supply chain."
+              },
+              {
+                "heading": "Postdoctoral researchers",
+                "meta": "2010 - present",
+                "text": "Nineteen supervised; six have gone on to win independent fellowships."
+              },
+              {
+                "heading": "Current group",
+                "meta": "2026",
+                "text": "Seven doctoral students, five postdoctoral researchers, two technicians."
+              },
+              {
+                "heading": "Doctoral examining",
+                "meta": "2012 - present",
+                "text": "External examiner twenty-one times, at fourteen universities in five countries."
+              }
+            ]
+          },
+          {
+            "title": "Leadership, Service and Esteem",
+            "items": [
+              {
+                "heading": "Head of School of Chemistry",
+                "meta": "2023 - present",
+                "text": "96 academic staff, £41m turnover, three heads of department reporting."
+              },
+              {
+                "heading": "REF 2029 unit of assessment lead",
+                "meta": "2024 - present",
+                "text": ""
+              },
+              {
+                "heading": "Associate editor, Journal of Materials Chemistry A",
+                "meta": "2021 - present",
+                "text": "Handles roughly 90 manuscripts a year."
+              },
+              {
+                "heading": "Funding panels",
+                "meta": "2019 - present",
+                "text": "EPSRC Peer Review College; six prioritisation panels, two of them chaired."
+              },
+              {
+                "heading": "Invited and keynote lectures",
+                "meta": "2018 - 2026",
+                "text": "Forty-one, including plenaries at three international battery conferences."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "civil_servant": [
+    {
+      "level": "early",
+      "stage": "HEO",
+      "headline": "Three years in, promoted to HEO",
+      "why": "Civil service recruitment scores a CV against Success Profiles, so this one names its grade and maps its evidence to the behaviours an advert will list. The other habit worth copying is what the bullets claim: not that submissions were drafted but what the submission did - that the minister agreed it, that the consultation changed a rule. A submission nobody acted on is a piece of typing.",
+      "template_id": "uk_cv",
+      "data": {
+        "full_name": "Ayesha Mirza",
+        "title": "Policy Adviser, Higher Executive Officer",
+        "location": "London, UK",
+        "phone": "+44 7700 900520",
+        "email": "ayesha.mirza@example.com",
+        "linkedin": "linkedin.com/in/ayesha-mirza-example",
+        "website": "",
+        "summary": "- Policy adviser at Higher Executive Officer grade in the Department for Skills and Lifelong Learning, promoted from Executive Officer in January 2025.\n- Came in from the voluntary sector rather than the Fast Stream; three years in, and the last two on adult retraining policy.\n- Ran the analysis of a 2,410-response consultation whose findings changed two of the scheme's eligibility rules, and drafts roughly one ministerial submission a fortnight.\n- Security cleared to SC since 2025.",
+        "skills": "Policy craft: ministerial submissions, briefing for oral and written parliamentary questions, consultation design and analysis, stakeholder roundtables, ministerial correspondence\nAnalysis: Green Book appraisal principles, Magenta Book evaluation design, Excel to pivot and lookup level, R for survey coding, qualitative coding of free-text consultation responses\nGovernance: Civil Service Code, Freedom of Information Act 2000, Public Sector Equality Duty and equality impact assessment, handling of policy material at OFFICIAL-SENSITIVE\nWorking relationships: departmental analysts and lawyers, communications, an arm's-length body, sector representative groups",
+        "experience": "Policy Adviser, Adult Retraining Team, Higher Executive Officer | Department for Skills and Lifelong Learning | London, UK | Jan 2025 - Present\n- Ran the analysis of a public consultation with 2,410 responses, coded the free text and wrote the government response; two eligibility rules were changed as a direct result and the response was published inside the twelve-week commitment.\n- Draft about one submission a fortnight to the minister. Fourteen of the last sixteen were agreed without a request for further advice.\n- Own the team's parliamentary handling: 38 written parliamentary questions and nine oral briefing packs last session, all cleared to deadline.\n- Set up the quarterly roundtable with sector bodies that replaced ad hoc correspondence; attendance has held at 18 to 22 organisations across four meetings.\n---\nExecutive Officer, Correspondence and Casework | Department for Skills and Lifelong Learning | London, UK | Sep 2023 - Dec 2024\n- Cleared 340 pieces of ministerial correspondence on further education funding, 97% inside the twenty working day target against a team average of 88%.\n- Rewrote the twelve most-used standard responses after finding that a third of follow-up letters were asking the same unanswered question.\n---\nPolicy and Research Assistant | Brightpath Education Trust | Manchester, UK | Oct 2021 - Aug 2023\n- Wrote the charity's responses to three government consultations and its briefing for a Westminster Hall debate.\n- Built and maintained the adult learner enrolment dataset behind the trust's annual report.",
+        "education": "BA (Hons) Politics and Sociology, 2:1 | Rothwell Metropolitan University | Sep 2018 - Jun 2021",
+        "projects": "",
+        "publications": "",
+        "certifications": "Policy Profession Standards, foundation level, 2024\nIntroduction to policy appraisal (Green Book) and evaluation (Magenta Book), 2025\nSecurity clearance: BPSS 2023, SC granted 2025\nCMI Level 3 Award in Principles of Management, 2022",
+        "custom_sections": [
+          {
+            "title": "Success Profiles: Behaviours Evidenced",
+            "items": [
+              {
+                "heading": "Communicating and Influencing",
+                "meta": "HEO",
+                "text": "Wrote the government response to a 2,410-response consultation and the announcement briefing; published to the committed timetable."
+              },
+              {
+                "heading": "Making Effective Decisions",
+                "meta": "HEO",
+                "text": "Recommended two changes to eligibility rules on the consultation evidence, costing each option; both were accepted."
+              },
+              {
+                "heading": "Delivering at Pace",
+                "meta": "HEO",
+                "text": "38 written PQs and nine oral briefing packs cleared to deadline in one session alongside a fortnightly submission cycle."
+              },
+              {
+                "heading": "Working Together",
+                "meta": "EO to HEO",
+                "text": "Established the quarterly sector roundtable and chairs the analyst, lawyer and policy triage meeting on scheme design."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "SEO",
+      "headline": "Seven years, now owning a policy area",
+      "why": "The step from HEO to SEO is the step from drafting to owning, and this CV shows it by naming the machinery: who cleared what, the impact assessment rating, the size of the consultation, the committee stage the minister was briefed for. That is not jargon for its own sake. A panel uses it to work out whether you have run something across Whitehall or only contributed to it.",
+      "template_id": "government_formal",
+      "data": {
+        "full_name": "Ewan Kilbride",
+        "title": "Policy Manager, Senior Executive Officer",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900693",
+        "email": "ewan.kilbride@example.com",
+        "linkedin": "linkedin.com/in/ewan-kilbride-example",
+        "website": "",
+        "summary": "- Senior Executive Officer in the Office for Regional Growth, leading a team of four on the £340m town centre investment programme.\n- Seven years across two departments. Took the programme's secondary legislation from policy instructions to laid instrument and its impact assessment through to a green rating.\n- Ran the 6,300-response consultation on the successor scheme and the government response that followed it.",
+        "skills": "Policy and delivery: programme policy design, secondary legislation and instructions to lawyers, impact assessments, business cases to the Green Book five-case model, consultation and government response\nWhitehall machinery: cross-government write-rounds and collective agreement, bill team support and committee-stage briefing, accounting officer advice, arm's-length body sponsorship\nPeople and resource: line management of three HEOs and one EO, a £340m programme budget, grant recipient and supplier assurance\nAnalysis: benefit-cost ratios, evaluation design with departmental analysts, management information and exception reporting to a programme board",
+        "experience": "Policy Manager, Town Centre Investment, Senior Executive Officer | Office for Regional Growth | Manchester, UK | Apr 2023 - Present\n- Own the policy behind a £340m grant programme covering 96 places. The scheme design that replaced competitive bidding with a formula allocation cut the median time from award to first spend from 14 months to five.\n- Took the programme's statutory instrument from policy instructions to laid, with the lawyers and the parliamentary team; it was made without objection and the impact assessment was green rated.\n- Ran the consultation on the successor scheme: 6,300 responses, a published government response, and two changes to the eligibility formula that followed directly from local authority evidence.\n- Briefed the minister through eleven committee sittings as part of the bill team and drafted the four government amendments tabled at report stage.\n- Line manage three HEOs and an EO. Two have since been promoted and the team's engagement score sits eleven points above the departmental average.\n---\nSenior Policy Adviser, Coastal Communities, Higher Executive Officer | Office for Regional Growth | Manchester, UK | Jun 2021 - Mar 2023\n- Wrote the appraisal that moved £48m from an underspending strand to coastal flood resilience, including the accounting officer advice that went with it.\n- Redeployed for four months to the departmental incident response during the 2022 winter flooding, running the daily situation report to ministers.\n- Replaced a forty-page narrative programme board pack with an eight-page exception report, which the directorate then adopted for its other two programmes.\n---\nPolicy Adviser, Higher Executive Officer | Department for Skills and Lifelong Learning | London, UK | Sep 2019 - May 2021\n- Supported the apprenticeship funding review, including the analysis of 900 employer responses.\n- Handled the team's parliamentary business through a general election period and the machinery-of-government transfer that followed it.",
+        "education": "MSc Public Policy | Ashlyn University | Sep 2018 - Sep 2019\n---\nBA (Hons) Economics and Politics, 2:1 | Carrickfell University | Sep 2015 - Jun 2018",
+        "projects": "",
+        "publications": "",
+        "certifications": "Policy Profession Standards, practitioner level, 2023\nBetter Regulation and impact assessment training, 2022\nGreen Book five-case model business case training, foundation and practitioner, 2024\nManaging Successful Programmes (MSP) Foundation, 2023\nSecurity clearance: SC, granted 2020 and renewed 2025",
+        "custom_sections": [
+          {
+            "title": "Success Profiles: Behaviours Evidenced",
+            "items": [
+              {
+                "heading": "Seeing the Big Picture",
+                "meta": "SEO",
+                "text": "Redesigned a £340m programme around departmental regional objectives rather than the bidding process it inherited, and defended the change at the programme board."
+              },
+              {
+                "heading": "Leadership",
+                "meta": "SEO",
+                "text": "Four direct reports, two promoted; runs the team's induction and the department's SEO peer support group."
+              },
+              {
+                "heading": "Making Effective Decisions",
+                "meta": "SEO",
+                "text": "Recommended a £48m mid-year reallocation on appraisal evidence, with accounting officer advice attached."
+              },
+              {
+                "heading": "Managing a Quality Service",
+                "meta": "HEO to SEO",
+                "text": "6,300 consultation responses analysed and answered inside the published timetable; statutory instrument laid without objection."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Grade 6",
+      "headline": "Grade 6, leading a team of fourteen",
+      "why": "At Grade 6 a panel is reading for what you were the accountable name against: the spending settlement, the legislation, the select committee, the thing that would have carried your name if it had gone wrong. Keep the CV factual and let the separate statement of suitability carry the behaviours. Sending the same evidence twice is the commonest mistake at this grade, and the CV is the half that gets skimmed.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Delroy Panton",
+        "title": "Head of Energy Resilience Policy, Grade 6",
+        "location": "London, UK",
+        "phone": "+44 7700 900371",
+        "email": "delroy.panton@example.com",
+        "linkedin": "linkedin.com/in/delroy-panton-example",
+        "website": "",
+        "summary": "- Grade 6 heading energy resilience policy in the Department for Energy Resilience: fourteen staff including three Grade 7 team leaders, and policy responsibility for £1.2bn of programme spend.\n- Sixteen years in the civil service across two departments and an agency, from Higher Executive Officer to Grade 6. Nine of those years were in operational delivery rather than policy.\n- Led the department's evidence to a select committee inquiry and its legislative package through Commons committee and Lords report stage.\n- Developed Vetting clearance held since 2019.",
+        "skills": "Policy leadership: directorate-level policy ownership, legislative programme management, spending review bids and settlements, ministerial and select committee handling, accounting officer advice\nDelivery and assurance: major-projects assurance reviews, business cases to the Green Book five-case model, Managing Public Money, arm's-length body sponsorship and framework agreements\nPeople and organisation: three Grade 7 direct reports in a team of fourteen, restructure and redeployment, capability building, Policy Profession Standards assessor\nPublic and parliamentary: select committee evidence, statutory inquiry disclosure, Freedom of Information and public interest tests, handling with the press office",
+        "experience": "Head of Energy Resilience Policy, Grade 6 | Department for Energy Resilience | London, UK | Feb 2023 - Present\n- Accountable for the policy behind £1.2bn of programme spend. Secured £480m at the last spending settlement against an opening allocation of £190m, by rebuilding the bid around avoided-cost evidence rather than capacity targets.\n- Took the department's legislative package through Commons committee across fourteen sittings, with nine government amendments and two concessions negotiated at Lords report stage.\n- Led the written and oral evidence to a select committee inquiry; the committee adopted four of the department's five recommendations and the government response was published in nine weeks.\n- Restructured an area of 22 posts into 14 after a machinery-of-government transfer, redeploying every affected member of staff without a compulsory exit; the engagement score rose nine points the following year.\n- Chair the cross-government working group on resilience standards, five departments and two regulators, which agreed the first shared standard in 2025.\n---\nDeputy Head of Networks Policy, Grade 7 | Department for Energy Resilience | London, UK | Sep 2019 - Jan 2023\n- Ran the write-round and collective agreement for the resilience strategy, clearing eleven departmental interests in six weeks.\n- Owned the sponsorship relationship with an arm's-length body on a £310m budget, including the framework agreement rewrite and two assurance reviews.\n- Led the response to a two-week supply disruption, including the submission that recommended not triggering emergency powers and set out what would have changed that advice.\n---\nOperations Manager to Senior Operations Manager, HEO to Grade 7 | Coastal Communities Agency | Bristol, UK | Sep 2010 - Aug 2019\n- Managed a caseworking operation of 60 staff handling 40,000 applications a year, and cleared a backlog of 11,000 cases in eight months without additional headcount.\n- Introduced the quality assurance sampling that took the overturn rate at internal review from 19% to 6%.",
+        "education": "MSc Public Administration, part-time | Rothwell Metropolitan University | Sep 2016 - Sep 2018\n---\nBSc (Hons) Geography, 2:1 | Marchbank University | Sep 2007 - Jun 2010",
+        "projects": "",
+        "publications": "",
+        "certifications": "Developed Vetting (DV) clearance, held since 2019\nPolicy Profession Standards, expert level; accredited assessor since 2024\nProject Leadership Programme, 2021\nGreen Book five-case model, practitioner level, 2022\nCIPFA Certificate in Public Financial Management, 2020",
+        "custom_sections": [
+          {
+            "title": "Parliamentary and Public Accountability",
+            "items": [
+              {
+                "heading": "Select committee inquiry",
+                "meta": "2025",
+                "text": "Led the written evidence and prepared the director for oral evidence; four of five departmental recommendations adopted in the committee's report."
+              },
+              {
+                "heading": "Legislation",
+                "meta": "2024 - 2025",
+                "text": "Commons committee, fourteen sittings; nine government amendments; two concessions at Lords report stage."
+              },
+              {
+                "heading": "Spending settlement",
+                "meta": "2025",
+                "text": "£480m secured against an opening allocation of £190m."
+              },
+              {
+                "heading": "Statutory inquiry",
+                "meta": "2023 - 2024",
+                "text": "Departmental disclosure lead: 41,000 documents reviewed and two witness statements prepared."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "social_worker": [
+    {
+      "level": "early",
+      "stage": "Newly qualified (ASYE)",
+      "headline": "Newly qualified, first year in children's services",
+      "why": "Two things decide whether a social work application is read at all: the Social Work England registration number and whether you can drive to a visit. Both belong on the first page. The rest of a newly qualified CV is carried by placements, and placements only help if they name the setting, the statutory work and the days - 170 days of assessed practice learning is a regulated quantity and a team manager knows it.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Melissa Ncube",
+        "title": "Social Worker, Assessed and Supported Year in Employment",
+        "location": "London, UK",
+        "phone": "+44 7700 900956",
+        "email": "melissa.ncube@example.com",
+        "linkedin": "linkedin.com/in/melissa-ncube-example",
+        "website": "",
+        "summary": "- Newly qualified children's social worker in the Assessed and Supported Year in Employment. Social Work England registration SW1094782.\n- Protected caseload grown from 9 to 15 children over the year, across child in need and child protection plans, including two sets of care proceedings.\n- Signs of Safety trained and using it in practice. Full UK driving licence, own car and business insurance.",
+        "skills": "Statutory practice: Children Act 1989 sections 17, 20 and 47; Working Together to Safeguard Children 2023; child in need and child protection planning; strategy discussions; initial and review conferences\nAssessment and direct work: single assessment inside 45 working days, chronologies, genograms, Three Houses and wishes and feelings work with children, motivational interviewing\nCourt: statements of evidence under supervision, Public Law Outline pre-proceedings meetings, working alongside the children's guardian\nMulti-agency: MASH referrals, core groups, school and health liaison, step-up and step-down to early help\nRecording and regulation: Liquidlogic, recording to timescale, reflective supervision, CPD logging for Social Work England",
+        "experience": "Social Worker, Family Support and Child Protection, ASYE | London Borough of Wrenmarsh | London, UK | Sep 2025 - Present\n- Hold a protected caseload that has grown from 9 to 15 children on child in need and child protection plans; 96% of statutory visits completed within timescale.\n- Completed 22 single assessments, 19 inside the 45 working day limit; the three that ran over were extended with the team manager's agreement and recorded as such.\n- Co-authored a statement of evidence in care proceedings for two siblings and gave oral evidence in the family court once, on contact arrangements.\n- Stepped four families down to early help at the end of their plans with a written handover in each case; none has been re-referred within six months.\n---\nFamily Support Worker | Harbourlight Family Centre | London, UK | Sep 2021 - Aug 2023\n- Ran two parenting groups a week and supervised contact for families in pre-proceedings.\n- Wrote the contact observation notes used in evidence in three sets of care proceedings.",
+        "education": "MA Social Work, course approved by Social Work England | Ashlyn University | Sep 2023 - Jun 2025\n---\nBSc (Hons) Psychology, 2:1 | Marchbank University | Sep 2018 - Jun 2021",
+        "projects": "First practice placement, 70 days, adult mental health team, Calderfen Borough Council: Care Act 2014 assessments under supervision, two Mental Capacity Act assessments and joint visits with the community mental health team. Taken outside children's services deliberately, to meet the breadth requirement.\n---\nFinal practice placement, 100 days, locality safeguarding team, Elmsworth County Council: Caseload of six children under supervision, four single assessments, and one section 47 enquiry co-worked from strategy discussion through to initial child protection conference.\n---\nSkills days, 30 days, Ashlyn University: Court skills taught by a practising barrister, communication with children, and a simulated child protection conference assessed by a panel of people with care experience.",
+        "publications": "",
+        "certifications": "Social Work England registration SW1094782, renewal due 30 November 2026\nAssessed and Supported Year in Employment: portfolio past the mid-point review, on track for sign-off in October 2026\nSigns of Safety practitioner training, 2025\nSafeguarding children and adults, level 3, 2025\nSocial Work England CPD: five records logged this year, one with peer reflection, against a minimum of two\nEnhanced DBS certificate on the Update Service\nFull UK driving licence, own vehicle with business insurance"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "LCSW, six years",
+      "headline": "Six years across hospital and outpatient work",
+      "why": "An American clinical social work CV is a licensure document: the state, the licence number and the expiry decide whether you can be hired and billed for, so they belong at the top rather than in a footer. The other convention that matters is separating clinical hours from case management and naming who supervised them - a manager checking your route to independent licensure wants the 3,000 hours and the supervisor's credential, not a description of the caseload.",
+      "template_id": "modern_minimalist",
+      "data": {
+        "full_name": "Danielle Boudreaux",
+        "title": "Licensed Clinical Social Worker",
+        "location": "Nashville, Tennessee",
+        "phone": "+1 (615) 555-0174",
+        "email": "danielle.boudreaux@example.com",
+        "linkedin": "linkedin.com/in/danielle-boudreaux-example",
+        "website": "",
+        "summary": "- Licensed Clinical Social Worker in Tennessee, licence no. 7-14208, expiring December 2027; independently licensed since 2023 after 3,120 supervised clinical hours.\n- Six years across inpatient medical social work and outpatient behavioral health. Current caseload of 28 clients plus two crisis shifts a week.\n- Clinical supervisor to two associate-level social workers and field instructor for a CSWE-accredited MSW program.",
+        "skills": "Clinical: cognitive behavioral therapy, dialectical behavior therapy skills groups, EMDR to EMDRIA-approved basic training, motivational interviewing, trauma-focused CBT, grief and adjustment work\nAssessment: biopsychosocial assessment, DSM-5-TR diagnosis, Columbia Suicide Severity Rating Scale, SBIRT screening, safety planning, capacity and civil commitment evaluation\nMedical social work: discharge planning, hospice and palliative referral, guardianship and advance directives, mandated reporting to child and adult protective services, family meetings\nAdministration: Epic documentation, CPT coding for 90791 and 90837, Medicaid and Medicare authorization, HIPAA, accreditation survey readiness\nSupervision and teaching: clinical supervision toward associate licensure, MSW field instruction, nursing in-service training",
+        "experience": "Clinical Social Worker, Outpatient Behavioral Health | Bellhaven Community Counseling | Nashville, Tennessee | Mar 2023 - Present\n- Carry an active caseload of 28 clients, mostly trauma, anxiety and adjustment presentations. Moving intake to a same-week model took the no-show rate on my caseload to 9%, against a clinic average of 21%.\n- Built the DBT skills group that now runs twice a week; 34 clients have completed a full cycle and self-reported distress scores fell an average of 31% between intake and discharge.\n- Supervise two associate-level social workers toward independent licensure and sign off their hours.\n- Field instructor for two MSW interns a year, and a member of the clinic's utilization review committee.\n---\nMedical Social Worker, Inpatient Medicine and Emergency Department | Harlow Creek Medical Center | Nashville, Tennessee | Jul 2020 - Feb 2023\n- Managed discharge planning for a 32-bed medical unit, 12 to 15 discharges a week. Thirty-day readmissions on the unit fell from 18% to 12% after the post-discharge call protocol I wrote was adopted.\n- Completed around 200 emergency department behavioral health assessments a year, including capacity and involuntary commitment evaluations.\n- Rewrote the unit's mandated reporting guidance after an accreditation survey finding and trained 60 nursing staff on it.",
+        "education": "Master of Social Work, CSWE-accredited | Cedarline University | Aug 2018 - May 2020\n---\nBachelor of Arts, Psychology | Weyland State University | Aug 2014 - May 2018",
+        "projects": "",
+        "publications": "",
+        "certifications": "Licensed Clinical Social Worker, Tennessee, licence no. 7-14208, expires December 2027\nLicensed Master Social Worker, Tennessee, 2020 to 2023, superseded\nASWB Clinical examination passed, 2023\nEMDR basic training, EMDRIA-approved, 40 hours plus 10 hours of consultation, 2024\nState-approved clinical supervisor, 2025\nContinuing education: 41 hours in the current renewal cycle, including the required ethics and suicide prevention hours\nBasic Life Support, current",
+        "custom_sections": [
+          {
+            "title": "Clinical Hours and Supervision",
+            "items": [
+              {
+                "heading": "Supervised hours toward LCSW",
+                "meta": "2020 - 2023",
+                "text": "3,120 hours, of which 1,940 were direct client contact, with 108 hours of individual supervision from a state-approved LCSW supervisor."
+              },
+              {
+                "heading": "Supervision provided",
+                "meta": "2025 - present",
+                "text": "Two associate-level social workers in weekly individual supervision, with hours signed off toward independent licensure."
+              },
+              {
+                "heading": "Field instruction",
+                "meta": "2024 - present",
+                "text": "Two MSW interns a year for a CSWE-accredited program; wrote the clinic's learning contract template."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Team Manager",
+      "headline": "Fifteen years, running a child protection team",
+      "why": "A senior social work CV is judged on the practice you are accountable for and on the regulatory record around it: the registration, the inspection your service sits under, and the timescale data you answer for at every performance meeting. Name the statutory framework you actually work to. Safeguarding on its own reads as a word, while section 47 to initial conference inside 15 working days reads as somebody who has run a team.",
+      "template_id": "government_formal",
+      "data": {
+        "full_name": "Patrice Bediako",
+        "title": "Team Manager, Child Protection and Court Team",
+        "location": "Calderfen, UK",
+        "phone": "+44 7700 900284",
+        "email": "p.bediako@example.com",
+        "linkedin": "linkedin.com/in/patrice-bediako-example",
+        "website": "",
+        "summary": "- Team manager of a child protection and court team of nine social workers and two ASYEs, with oversight of 163 children, 47 on child protection plans and 24 in care proceedings.\n- Fifteen years in statutory children's social work, the last five in management. Social Work England registration SW0872341.\n- Practice Educator Stage 2 and ASYE assessor: eleven students assessed and seven newly qualified social workers signed off.\n- Care proceedings in the team now average 29 weeks from issue to final order, down from 41 when the team was formed.",
+        "skills": "Statutory frameworks: Children Act 1989 and 2004, Working Together to Safeguard Children 2023, the Public Law Outline, Care Planning and Case Review Regulations 2010, Children and Families Act 2014, Adoption and Children Act 2002\nCourt and legal: legal planning meetings, letters before proceedings, statements of evidence and final care plans, giving evidence in the family court, instructing experts, working with children's guardians\nManagement: supervision and appraisal of eleven staff, caseload weighting and allocation, performance and quality assurance, complaints and member enquiries, recruitment, agency budget\nPractice and quality: Signs of Safety, restorative practice, family group conferences, case file audit, acting on local child safeguarding practice reviews\nMulti-agency: MASH, MARAC, MAPPA, child protection conferences, contextual safeguarding panels, health and police liaison",
+        "experience": "Team Manager, Child Protection and Court Team | Calderfen Borough Council | Calderfen, UK | Apr 2021 - Present\n- Manage nine social workers and two ASYEs holding 163 children between them. Average caseload is held at 16 against a service target of 18, by weighting a case in proceedings as two.\n- Reduced average care proceedings duration from 41 weeks to 29, mostly by moving legal planning meetings earlier and requiring the parenting assessment to be commissioned before issue rather than after.\n- Cut agency staffing in the team from five posts to one over three years, worth about £310,000 a year, by converting the ASYE pipeline into permanent posts; nine of the last eleven newly qualified social workers stayed beyond two years.\n- Chair the monthly case file audit. Files rated good or better rose from 54% to 81% over eight cycles, and the 2025 inspection of children's services named the court team's assessment quality as a strength.\n- Deputise for the service manager across three teams, including out-of-hours duty one week in six for the whole borough.\n---\nAdvanced Practitioner, Safeguarding | Elmsworth County Council | Elmsworth, UK | Sep 2017 - Mar 2021\n- Held the twelve most complex cases in the team alongside practice leadership, including three sets of proceedings involving fabricated or induced illness.\n- Practice Educator to six students and mentor to four newly qualified social workers.\n- Wrote the county's pre-proceedings guidance after an audit found that a third of letters before proceedings had gone out without a legal planning meeting.\n---\nSocial Worker, Children in Care | Elmsworth County Council | Elmsworth, UK | Sep 2011 - Aug 2017\n- Held a caseload of up to 20 children in long-term care, including permanence planning and special guardianship assessments.\n- Gave evidence in the family court on eleven occasions, including two contested final hearings.",
+        "education": "Practice Educator Professional Standards, Stage 2 | Northmoor University | Sep 2018 - Jun 2019\n---\nMA Social Work | Selwood University | Sep 2009 - Jun 2011\n---\nBA (Hons) Sociology, 2:1 | Marchbank University | Sep 2005 - Jun 2008",
+        "projects": "",
+        "publications": "",
+        "certifications": "Social Work England registration SW0872341, renewed annually, next renewal 30 November 2026\nPractice Educator Professional Standards Stage 2, 2019; ASYE assessor since 2020\nChairing child protection conferences, 2023\nSigns of Safety leadership programme, 2022\nSystemic practice, foundation level, one year, 2021\nEnhanced DBS certificate on the Update Service; full UK driving licence",
+        "custom_sections": [
+          {
+            "title": "Team Performance, 2025-26",
+            "items": [
+              {
+                "heading": "Statutory visits within timescale",
+                "meta": "Team, 2025-26",
+                "text": "94%, against a service target of 90%."
+              },
+              {
+                "heading": "Single assessments inside 45 working days",
+                "meta": "Team, 2025-26",
+                "text": "91%, up from 74% when the team was formed."
+              },
+              {
+                "heading": "Section 47 to initial child protection conference",
+                "meta": "Team, 2025-26",
+                "text": "88% within 15 working days."
+              },
+              {
+                "heading": "Care proceedings duration",
+                "meta": "Team, 2025-26",
+                "text": "29 weeks average from issue to final order, against the 26-week statutory timetable."
+              },
+              {
+                "heading": "Repeat child protection plans within two years",
+                "meta": "Team, 2025-26",
+                "text": "8%, down from 17%."
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

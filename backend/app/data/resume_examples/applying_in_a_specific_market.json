@@ -1,0 +1,570 @@
+{
+  "market_us": [
+    {
+      "level": "early",
+      "stage": "One page, no photo",
+      "headline": "US resume, early career",
+      "why": "The US resume is one page and it is not a CV. No photo, no date of birth, no marital status, no nationality — all four are illegal or near-illegal for an employer to consider, so including them marks you out as foreign. Dates are month/year, spelling is American, and the word 'CV' means an academic document.",
+      "template_id": "us_chronological",
+      "data": {
+        "full_name": "Braxton Willoughby",
+        "title": "Marketing Coordinator",
+        "location": "Austin, TX",
+        "phone": "+1 (512) 555-0147",
+        "email": "braxton.willoughby@example.com",
+        "linkedin": "linkedin.com/in/braxton-willoughby-example",
+        "website": "",
+        "summary": "- Marketing coordinator with two years in B2B SaaS, focused on demand generation and event marketing.\n- Comfortable owning a channel end to end, from budget through to the pipeline number it produced.",
+        "skills": "Marketing: email marketing, paid social, event management, content calendars\nTools: HubSpot, Salesforce, Google Ads, Canva, Asana\nAnalysis: campaign reporting, Excel, basic SQL",
+        "experience": "Marketing Coordinator | Brightfold Software | Austin, TX | 06/2024 - Present\n- Own the webinar program: 18 events in the past year averaging 240 registrants, up from 90 under the prior format.\n- Rebuilt the nurture sequence for trial users, lifting trial-to-paid conversion from 4.1% to 6.8%.\n- Manage a $180K annual event budget across four regional conferences.\n---\nMarketing Associate | Brightfold Software | Austin, TX | 08/2023 - 05/2024\n- Ran the social calendar and built the first competitor tracking sheet the team used.",
+        "education": "B.B.A. Marketing | University of Texas at Austin | 08/2019 - 05/2023",
+        "projects": "",
+        "publications": "",
+        "certifications": "HubSpot Inbound Marketing Certification\nGoogle Ads Search Certification"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "ATS-safe, mid-level",
+      "headline": "Built to survive the applicant tracking system",
+      "why": "Large US employers screen through an ATS before a person sees anything. That means one column, no tables, no text boxes, standard section headings, and the exact words from the posting appearing in the text. It looks plain because plain is what parses.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Shanice Delacroix-Webb",
+        "title": "Senior Financial Analyst",
+        "location": "Chicago, IL",
+        "phone": "+1 (312) 555-0192",
+        "email": "s.delacroixwebb@example.com",
+        "linkedin": "linkedin.com/in/shanice-delacroix-webb-example",
+        "website": "",
+        "summary": "- Senior financial analyst with six years in FP&A across manufacturing and consumer goods.\n- Own the annual operating plan for a $340M business unit and the monthly forecast behind it.",
+        "skills": "Financial Planning and Analysis: annual operating plan, rolling forecast, variance analysis, scenario modeling\nSystems: SAP, Hyperion, Anaplan, Excel (advanced), Power BI, SQL\nReporting: monthly business review, board materials, capital expenditure analysis\nAccounting: US GAAP, month-end close, accruals",
+        "experience": "Senior Financial Analyst | Kettleborough Consumer Brands | Chicago, IL | 03/2022 - Present\n- Own the annual operating plan for a $340M business unit, coordinating inputs from seven functional leaders.\n- Cut forecast variance from 8.4% to 2.9% by rebuilding the model to forecast at SKU-family level rather than in aggregate.\n- Built the capital expenditure approval model now used company-wide for requests over $250K.\n- Identified $4.2M in annual freight overspend through a route-level margin analysis nobody had run before.\n---\nFinancial Analyst | Marchetti Industrial | Milwaukee, WI | 07/2019 - 02/2022\n- Supported month-end close for three plants and produced the monthly business review pack.\n- Automated a manual reporting process, reducing close by two business days.",
+        "education": "B.S. Finance | University of Illinois Urbana-Champaign | 08/2015 - 05/2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "Certified Corporate FP&A Professional (FPAC)"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Two pages, senior",
+      "headline": "The one time a US resume runs long",
+      "why": "The one-page rule is real but it is not absolute: past roughly fifteen years, two pages is expected and cramming is the error. What stays fixed is everything else — no photo, no personal details, month/year dates. Note the summary is three lines, not a paragraph.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Roderick Vanterpool",
+        "title": "Vice President of Engineering",
+        "location": "Seattle, WA",
+        "phone": "+1 (206) 555-0173",
+        "email": "r.vanterpool@example.com",
+        "linkedin": "linkedin.com/in/roderick-vanterpool-example",
+        "website": "",
+        "summary": "- Engineering executive with 18 years building and running platform organizations, currently 140 engineers across nine teams.\n- Scaled two companies through hypergrowth and one through an acquisition.\n- Known for fixing reliability without slowing delivery, and for making that tradeoff explicit rather than implied.",
+        "skills": "Leadership: organizations to 140, seven direct reports, $28M budget, hiring at scale, performance management\nTechnical: distributed systems, cloud migration, platform architecture, SRE practice, security posture\nBusiness: board reporting, technical due diligence, build-versus-buy analysis, vendor negotiation",
+        "experience": "Vice President of Engineering | Calderwood Logistics Technology | Seattle, WA | 01/2021 - Present\n- Grew engineering from 45 to 140 across nine teams while reducing voluntary attrition from 22% to 9%.\n- Led the migration off a single-region monolith to a multi-region platform, cutting p99 latency by 61% and eliminating the annual peak-season outage that had cost roughly $3M each year.\n- Established the SRE function and error budget policy; unplanned downtime fell from 41 hours to under 3 hours annually.\n- Ran technical due diligence on four acquisition targets; recommended against two, both of which were later abandoned by the acquirer that proceeded.\n---\nSenior Director of Engineering | Calderwood Logistics Technology | Seattle, WA | 04/2018 - 12/2020\n- Built the platform organization from scratch, hiring 30 engineers in 18 months.\n---\nDirector of Engineering | Pinehaven Commerce | Portland, OR | 06/2013 - 03/2018\n- Ran three teams through a period that took the company from $12M to $95M in revenue.\n---\nEngineering Manager, then Staff Engineer | Ashgrove Systems | San Jose, CA | 08/2007 - 05/2013",
+        "education": "M.S. Computer Science | University of Washington | 09/2005 - 06/2007\n---\nB.S. Computer Engineering | Purdue University | 08/2001 - 05/2005",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "market_uk": [
+    {
+      "level": "early",
+      "stage": "Two pages, British CV",
+      "headline": "UK CV, first proper role",
+      "why": "The UK CV runs to two pages and opens with a personal statement — both the opposite of US practice. No photo and no date of birth; 'References available on request' is now considered dead wood and is left off. Dates are written out, spelling is British, and A-levels stay on until you have a few years behind you.",
+      "template_id": "uk_cv",
+      "data": {
+        "full_name": "Niamh Kilbracken",
+        "title": "HR Advisor",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900255",
+        "email": "n.kilbracken@example.com",
+        "linkedin": "linkedin.com/in/niamh-kilbracken-example",
+        "website": "",
+        "summary": "- CIPD Level 5 HR advisor with three years' generalist experience in a 400-person manufacturing business.\n- Handle employee relations casework end to end, including two tribunal-track cases resolved before hearing.",
+        "skills": "Employee relations: disciplinary and grievance, performance management, TUPE, redundancy consultation\nEmployment law: Employment Rights Act, ACAS Code of Practice, right-to-work checks, GDPR in an HR context\nSystems: Sage HR, BreatheHR, Excel, Microsoft 365\nOther: CIPD Level 5 Associate, mental health first aider",
+        "experience": "HR Advisor | Wraysbury Precision Components | Leeds, UK | March 2024 - Present\n- Advise four line managers on employee relations across a 400-person site, carrying about 15 live cases at a time.\n- Reduced average case duration from 41 days to 22 by introducing a case tracker and a weekly review with managers.\n- Ran the consultation for a 26-role restructure; no claims arose.\n- Rewrote the family leave policies after the 2024 changes, and ran the briefings for all 30 line managers.\n---\nHR Assistant | Wraysbury Precision Components | Leeds, UK | September 2022 - February 2024\n- Administered the full employee lifecycle for 400 staff.\n- Introduced electronic right-to-work checks, cutting onboarding admin by roughly a day per hire.",
+        "education": "CIPD Level 5 Associate Diploma in People Management | Leeds Beckett University | September 2022 - July 2023\n---\nBA (Hons) Business and Human Resource Management, 2:1 | University of Huddersfield | September 2019 - June 2022\n---\nA-levels: Sociology (A), English Language (B), Psychology (B) | Horsforth Sixth Form | September 2017 - June 2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "CIPD Associate Member (Assoc CIPD)\nMental Health First Aid England"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Civil Service format",
+      "headline": "Written against published criteria",
+      "why": "UK public sector applications are scored against published criteria, usually the Civil Service Behaviours, and are frequently anonymised — so the name and education come off before a panel sees it. Each behaviour gets its own worked example in STAR shape. It reads like a form because it is being marked like one.",
+      "template_id": "government_formal",
+      "data": {
+        "full_name": "Desmond Achterberg",
+        "title": "Senior Policy Adviser",
+        "location": "London, UK",
+        "phone": "+44 7700 900393",
+        "email": "d.achterberg@example.com",
+        "linkedin": "linkedin.com/in/desmond-achterberg-example",
+        "website": "",
+        "summary": "- Grade 7 policy adviser with seven years across two departments, currently leading on freight decarbonisation policy.\n- Applying at Grade 6; the examples below are written against the Civil Service Behaviours at that level.",
+        "skills": "Behaviours evidenced below: Seeing the Big Picture, Making Effective Decisions, Communicating and Influencing, Delivering at Pace\nPolicy: primary and secondary legislation, consultation design, impact assessment, Green Book appraisal\nAnalysis: cost-benefit analysis, evidence review, stakeholder mapping\nSecurity clearance: SC (current, expires 2028)",
+        "experience": "Senior Policy Adviser (Grade 7) | Department for Transport Decarbonisation Directorate | London, UK | April 2022 - Present\n- Seeing the Big Picture: led the freight decarbonisation evidence review across four modes, identifying that 60% of projected emissions savings depended on a single unproven technology; the strategy was rewritten with a hedged pathway.\n- Making Effective Decisions: recommended against a £40m grant scheme after appraisal showed deadweight of around 70%; the decision was accepted by ministers and funds redirected.\n- Communicating and Influencing: negotiated a joint position with two other departments over eleven weeks, unblocking a consultation that had stalled for a year.\n- Delivering at Pace: delivered a ministerial commitment eight weeks early by restructuring the workstream and dropping two low-value analytical strands.\n---\nPolicy Adviser (HEO, then SEO) | Department for Business and Trade | London, UK | September 2018 - March 2022\n- Led on regulatory reform for the logistics sector; drafted two statutory instruments.\n- Managed a public consultation attracting 1,400 responses and wrote the government response.",
+        "education": "MSc Public Policy | University College London | September 2017 - September 2018\n---\nBA (Hons) History, 2:1 | University of Manchester | September 2014 - June 2017",
+        "projects": "",
+        "publications": "",
+        "certifications": "Civil Service Policy Profession - Advanced Practitioner"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Kept to one page",
+      "headline": "Senior, deliberately short",
+      "why": "Two pages is the UK norm, not a quota to fill. A senior candidate with a well-known career can run to one page and be stronger for it — the discipline of choosing forces the four things that matter to the front. Note what is missing: no skills inventory, no methodology list, nothing that a peer would assume.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Persephone Wolstenholme",
+        "title": "Commercial Director",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900718",
+        "email": "p.wolstenholme@example.com",
+        "linkedin": "linkedin.com/in/persephone-wolstenholme-example",
+        "website": "",
+        "summary": "- Commercial director with fifteen years in food manufacturing, currently accountable for £310m of grocery revenue.\n- Have led three of the four largest customer negotiations in the business's history.",
+        "skills": "Commercial: multiple-retailer negotiation, pricing and promotional strategy, category management, joint business planning\nLeadership: commercial team of 22, board membership, cross-functional programme sponsorship",
+        "experience": "Commercial Director | Falconbridge Foods | Bristol, UK | June 2021 - Present\n- Hold £310m of grocery revenue across the four largest UK retailers, with a commercial team of 22.\n- Rebuilt the promotional model after analysis showed 40% of promotions were value-destructive; promotional profitability improved by £14m annually with volume broadly held.\n- Led the renegotiation of the largest customer contract in the company's history, retaining it on improved terms after a competitive tender.\n- Sponsored the move to joint business planning with two retailers, replacing annual price fights with three-year plans.\n---\nHead of National Accounts | Falconbridge Foods | Bristol, UK | March 2017 - May 2021\n- Grew a £90m account portfolio to £145m over four years.\n---\nNational Account Manager | Corryvale Dairy | Somerset, UK | January 2011 - February 2017",
+        "education": "BSc (Hons) Food Marketing, 2:1 | Harper Adams University | September 2007 - June 2010",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "market_eu": [
+    {
+      "level": "early",
+      "stage": "Europass, EU portals",
+      "headline": "The format EU institutions expect",
+      "why": "Europass is the standard the EU institutions and many public bodies ask for by name, and its distinguishing feature is the language section: the Common European Framework levels are expected in the A1-C2 form, not as 'fluent' or 'conversational'. Nationality appears because EU employers may need to establish right to work.",
+      "template_id": "europass_cv",
+      "data": {
+        "full_name": "Matthias Vandenbroucke",
+        "title": "Project Officer",
+        "location": "Brussels, Belgium",
+        "phone": "+44 7700 900825",
+        "email": "m.vandenbroucke@example.com",
+        "linkedin": "linkedin.com/in/matthias-vandenbroucke-example",
+        "website": "",
+        "summary": "- Project officer with three years in EU-funded programme delivery, currently on a Horizon Europe consortium.\n- Belgian national; working languages Dutch, French, English and German.",
+        "skills": "Languages: Dutch (C2, native), French (C1), English (C1), German (B2), Spanish (A2)\nProgramme delivery: Horizon Europe, Interreg, grant agreement management, consortium coordination\nFinance: budget reporting, eligible cost rules, audit preparation\nTools: SyGMa, Microsoft Project, Excel, SharePoint",
+        "experience": "Project Officer | Meridiaan Consortium Services | Brussels, Belgium | September 2023 - Present\n- Coordinate a Horizon Europe consortium of eleven partners across seven member states, €4.2m budget.\n- Run the periodic reporting cycle; the first two reports were accepted without a request for clarification, against a consortium average of two rounds.\n- Rebuilt the partner timesheet process after an audit finding; the subsequent audit closed with no findings.\n---\nJunior Project Assistant | Meridiaan Consortium Services | Brussels, Belgium | October 2022 - August 2023\n- Supported two Interreg projects with reporting and partner communications.",
+        "education": "Master in European Studies | KU Leuven | September 2020 - June 2022\n---\nBachelor in Political Science | Universiteit Gent | September 2017 - June 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "EU Financial Regulation for Grants - certificate of attendance"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Nordic, plain and short",
+      "headline": "Scandinavian conventions",
+      "why": "Nordic hiring is the least formal in Europe: short, plain, no photo in Sweden or Norway by convention, and a strong preference for describing what the team achieved rather than what you personally claimed. The flat tone here is deliberate — grandiosity reads badly in this market.",
+      "template_id": "modern_minimalist",
+      "data": {
+        "full_name": "Astrid Hjelmeland",
+        "title": "Product Manager",
+        "location": "Oslo, Norway",
+        "phone": "+44 7700 900490",
+        "email": "astrid.hjelmeland@example.com",
+        "linkedin": "linkedin.com/in/astrid-hjelmeland-example",
+        "website": "",
+        "summary": "- Product manager, five years, working on public-sector digital services.\n- Prefer small teams with real users close by; most of what follows was done with four to six other people.",
+        "skills": "Product: discovery, user research, roadmap, prioritisation, accessibility (WCAG 2.2 AA, universal design requirements)\nTools: Figma, Jira, Amplitude, Maze\nLanguages: Norwegian (native), English (C1), Swedish (understood)\nDomain: public sector digitalisation, GDPR, Altinn and ID-porten integrations",
+        "experience": "Product Manager | Fjordlys Digital | Oslo, Norway | January 2023 - Present\n- Work with a team of six on a benefits application service used by around 90,000 people a year.\n- We took the application completion rate from 54% to 79%, mostly by removing two questions that turned out not to be needed.\n- Ran the accessibility work that took the service to full universal design compliance ahead of the deadline.\n---\nProduct Owner | Nordvik Systems | Bergen, Norway | August 2020 - December 2022\n- Owned an internal case-handling tool used by 300 caseworkers.\n- The team cut average handling time by 31% by redesigning the search that everyone complained about.",
+        "education": "Master in Informatics | Universitetet i Oslo | August 2018 - June 2020\n---\nBachelor in Informatics | NTNU Trondheim | August 2015 - June 2018",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Southern Europe, formal",
+      "headline": "France, Italy and Spain",
+      "why": "Southern European hiring keeps formalities the north has dropped: a photo is normal, education carries more weight for longer, and the grande école or named university remains a signal decades in. The two-column layout is common in France in particular, where the CV is expected to fit one page even at senior level.",
+      "template_id": "twocolumn_sidebar",
+      "data": {
+        "full_name": "Ludovic Peyrelongue",
+        "title": "Directeur des Opérations",
+        "location": "Lyon, France",
+        "phone": "+44 7700 900266",
+        "email": "l.peyrelongue@example.com",
+        "linkedin": "linkedin.com/in/ludovic-peyrelongue-example",
+        "website": "",
+        "summary": "- Operations director with sixteen years in industrial distribution, currently across France and Iberia.\n- Accountable for eleven distribution centres, 640 staff and €290m of throughput.",
+        "skills": "Operations: multi-site distribution, WMS implementation, network design, transport procurement\nLeadership: 640 staff, seven site directors, works council (CSE) relationships\nLanguages: French (native), English (C1), Spanish (B2), Italian (B1)\nQualifications: Diplôme d'ingénieur, Six Sigma Black Belt",
+        "experience": "Directeur des Opérations, France et Ibérie | Groupe Vernaison Distribution | Lyon, France | March 2020 - Present\n- Run eleven distribution centres across France, Spain and Portugal: 640 staff, €290m of throughput.\n- Consolidated a nine-site French network into six, cutting cost to serve by 18% while improving next-day coverage from 82% to 94% of the population.\n- Led the WMS replacement across all eleven sites in fourteen months with no missed customer commitment during cutover.\n- Negotiated the annual transport framework covering €48m of spend, holding cost flat across two inflationary years.\n---\nDirecteur de Site | Groupe Vernaison Distribution | Toulouse, France | June 2015 - February 2020\n- Ran the group's largest site: 190 staff, €95m throughput.\n---\nResponsable Logistique | Ateliers Framboisier | Grenoble, France | September 2009 - May 2015",
+        "education": "Diplôme d'ingénieur, Génie Industriel | INSA Lyon | September 2004 - June 2009",
+        "projects": "",
+        "publications": "",
+        "certifications": "Lean Six Sigma Black Belt\nCertificat de capacité professionnelle - transport de marchandises"
+      }
+    }
+  ],
+  "market_de": [
+    {
+      "level": "early",
+      "stage": "Lebenslauf, tabellarisch",
+      "headline": "The German tabular CV",
+      "why": "The German Lebenslauf is the strictest format in this list. It is tabular, reverse-chronological, and it carries a professional photo and date of birth — both of which would be a mistake almost anywhere else. Every school and every gap is accounted for; an unexplained period reads as concealment rather than as private business.",
+      "template_id": "europass_cv",
+      "data": {
+        "full_name": "Katharina Obermeier-Ruhland",
+        "title": "Wirtschaftsingenieurin",
+        "location": "München, Deutschland",
+        "phone": "+44 7700 900138",
+        "email": "k.obermeier@example.com",
+        "linkedin": "linkedin.com/in/katharina-obermeier-ruhland-example",
+        "website": "",
+        "summary": "- Wirtschaftsingenieurin, zwei Jahre Berufserfahrung im Bereich Supply Chain bei einem Automobilzulieferer.\n- Industrial engineer, two years in automotive supply chain; German native, English C1, French B1.",
+        "skills": "Fachkenntnisse: Supply-Chain-Planung, Lieferantenmanagement, Lean Production, REFA-Grundlagen\nSoftware: SAP MM und PP, Excel (sehr gut), Python (Grundkenntnisse), Minitab\nSprachen: Deutsch (Muttersprache), Englisch (C1), Französisch (B1)\nPersönliche Daten: geboren am 14.03.2000 in Regensburg",
+        "experience": "Supply Chain Planerin | Steinhauser Automotive Systeme GmbH | Ingolstadt, Deutschland | 09/2024 - heute\n- Verantwortlich für die Materialplanung von 240 Teilenummern für zwei Montagelinien.\n- Bestandsreichweite von 34 auf 21 Tage reduziert, ohne dass es zu einem Bandstillstand kam.\n- Einführung eines wöchentlichen Lieferantenreviews für die zwölf kritischsten Lieferanten.\n---\nWerkstudentin Logistik | Steinhauser Automotive Systeme GmbH | Ingolstadt, Deutschland | 04/2023 - 08/2024\n- Unterstützung bei der Einführung eines neuen Kanban-Systems in der Vormontage.\n---\nPraktikum Produktion | Lindenmayer Maschinenbau AG | Augsburg, Deutschland | 08/2022 - 02/2023\n- Sechsmonatiges Pflichtpraktikum im Rahmen des Studiums.",
+        "education": "M.Sc. Wirtschaftsingenieurwesen, Note 1,7 | Technische Universität München | 10/2022 - 08/2024\n---\nB.Sc. Wirtschaftsingenieurwesen, Note 2,1 | Universität Regensburg | 10/2018 - 09/2022\n---\nAbitur, Note 1,9 | Albertus-Magnus-Gymnasium Regensburg | 09/2010 - 06/2018",
+        "projects": "",
+        "publications": "",
+        "certifications": "REFA-Grundausbildung 4.0\nSAP MM Anwenderzertifikat"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Swiss and Austrian",
+      "headline": "Similar format, different expectations",
+      "why": "Switzerland and Austria share the German format but not all of its habits: Swiss CVs expect the work permit category stated plainly, and references are named with contact details rather than withheld. Both are things a German or British applicant routinely omits and is then asked for.",
+      "template_id": "modern_minimalist",
+      "data": {
+        "full_name": "Reto Baumgartner-Sciarra",
+        "title": "Senior Compliance Officer",
+        "location": "Zürich, Schweiz",
+        "phone": "+44 7700 900571",
+        "email": "r.baumgartner@example.com",
+        "linkedin": "linkedin.com/in/reto-baumgartner-sciarra-example",
+        "website": "",
+        "summary": "- Senior compliance officer, seven years in private banking, focused on cross-border and AML.\n- Swiss citizen, no permit required. Available at three months' notice.",
+        "skills": "Compliance: AMLA and GwG, FINMA circulars, cross-border rules, KYC and enhanced due diligence, sanctions screening\nSystems: Actimize, World-Check, Fenergo, Avaloq\nLanguages: German (native), Swiss German (native), English (C1), Italian (B2), French (B2)\nReferences: named referees provided on the second page, as is customary here",
+        "experience": "Senior Compliance Officer | Bankhaus Rüttimann AG | Zürich, Schweiz | 04/2021 - heute\n- Own the cross-border framework for 14 markets; rewrote the country rulebook after two FINMA circulars changed the basis.\n- Cleared a backlog of 900 periodic reviews in seven months by re-risk-rating the book, which showed 40% could go to a simplified cycle.\n- Led the remediation after an internal audit finding on source-of-wealth documentation; closed with no repeat finding.\n---\nCompliance Officer | Bankhaus Rüttimann AG | Zürich, Schweiz | 09/2018 - 03/2021\n- Ran KYC onboarding for the Italian and German desks.\n---\nJunior Compliance Analyst | Weissenbach Privatbank | Basel, Schweiz | 08/2016 - 08/2018",
+        "education": "MAS in Financial Compliance | Hochschule Luzern | 09/2019 - 06/2021\n---\nB.A. Betriebsökonomie | Zürcher Hochschule für Angewandte Wissenschaften | 09/2012 - 07/2016",
+        "projects": "",
+        "publications": "",
+        "certifications": "Certified Anti-Money Laundering Specialist (CAMS)\nCAS Cross-Border Banking, Universität St. Gallen"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Senior, English-language",
+      "headline": "German employer, applying in English",
+      "why": "International companies in Germany often recruit in English, and the safe move is to keep the German structural conventions while dropping the ones that would be unlawful for a UK or US employer to consider. Here the photo and date of birth stay because the employer is German; the language stays English because the job is.",
+      "template_id": "europass_cv",
+      "data": {
+        "full_name": "Emilia Sonnenschein-Vogt",
+        "title": "Head of Manufacturing Quality",
+        "location": "Stuttgart, Germany",
+        "phone": "+44 7700 900456",
+        "email": "e.sonnenschein@example.com",
+        "linkedin": "linkedin.com/in/emilia-sonnenschein-vogt-example",
+        "website": "",
+        "summary": "- Head of manufacturing quality, thirteen years in automotive and industrial production.\n- Currently responsible for quality across four German plants and one in Czechia, 2,100 staff in scope.\n- German native speaker, English C2. Date of birth 22.07.1988, Bad Cannstatt.",
+        "skills": "Quality: IATF 16949, VDA 6.3, APQP and PPAP, 8D problem solving, statistical process control\nLeadership: 48 quality staff across five plants, matrix leadership of production teams\nSystems: SAP QM, Minitab, Q-DAS, Babtec\nLanguages: German (native), English (C2), Czech (A2)",
+        "experience": "Head of Manufacturing Quality | Hollerbach Antriebstechnik GmbH | Stuttgart, Germany | 02/2021 - present\n- Responsible for quality across five plants and 2,100 production staff, with a team of 48.\n- Reduced customer PPM from 340 to 61 over three years, principally by moving inspection upstream into the supplier base.\n- Led the IATF 16949 recertification across all five sites with zero major nonconformities.\n- Cut cost of poor quality by €6.8m annually, most of it from a single scrap driver nobody had traced to a fixture tolerance.\n---\nQuality Manager | Hollerbach Antriebstechnik GmbH | Sindelfingen, Germany | 06/2017 - 01/2021\n- Ran quality for the largest plant: 700 staff, 12 production lines.\n---\nSupplier Quality Engineer | Meisenbach Komponenten AG | Ulm, Germany | 09/2012 - 05/2017\n- Audited and developed 40 suppliers across Germany, Poland and Turkey.",
+        "education": "Dipl.-Ing. Maschinenbau, Note 1,8 | Universität Stuttgart | 10/2007 - 07/2012\n---\nAbitur, Note 2,0 | Wirtemberg-Gymnasium Stuttgart | 09/1999 - 06/2007",
+        "projects": "",
+        "publications": "",
+        "certifications": "VDA 6.3 Certified Process Auditor\nIATF 16949 Lead Auditor\nSix Sigma Black Belt"
+      }
+    }
+  ],
+  "market_in": [
+    {
+      "level": "early",
+      "stage": "Fresher, campus placement",
+      "headline": "Indian fresher resume",
+      "why": "The Indian fresher resume leads with academic percentages and CGPA, which nowhere else does — and for campus and early-career hiring those numbers are a genuine filter. Class X and XII marks stay on until a few years of experience displace them. A career objective is still expected here, unlike in the UK or US.",
+      "template_id": "india_resume",
+      "data": {
+        "full_name": "Harshavardhan Kulkarni-Joshi",
+        "title": "Software Engineer",
+        "location": "Pune, Maharashtra, India",
+        "phone": "+44 7700 900303",
+        "email": "h.kulkarnijoshi@example.com",
+        "linkedin": "linkedin.com/in/harshavardhan-kulkarni-joshi-example",
+        "website": "",
+        "summary": "- B.E. Computer Engineering graduate, CGPA 8.94/10, seeking a software engineering role in backend development.\n- Two internships and three projects; comfortable with Java, Spring Boot and SQL.",
+        "skills": "Programming: Java, Python, C++, SQL, JavaScript\nFrameworks: Spring Boot, Hibernate, React, Node.js\nDatabases: MySQL, PostgreSQL, MongoDB\nTools: Git, Docker, Postman, Jenkins, AWS (EC2, S3)\nCoursework: Data Structures, DBMS, Operating Systems, Computer Networks, Machine Learning",
+        "experience": "Software Engineering Intern | Aranyaka Technologies | Pune, India | Jan 2026 - Jun 2026\n- Built the notification microservice handling around 200,000 messages a day, using Spring Boot and RabbitMQ.\n- Reduced API response time for the search endpoint from 1.8s to 340ms by adding composite indexes and a Redis cache layer.\n- Wrote unit tests taking module coverage from 34% to 81%.\n---\nSummer Intern | Vidyaranya Softech | Bengaluru, India | May 2025 - Jul 2025\n- Developed an internal admin dashboard in React consumed by 40 operations staff.",
+        "education": "B.E. Computer Engineering, CGPA 8.94/10 | Savitribai Phule Pune University | Aug 2022 - Jun 2026\n---\nHSC (Class XII), 89.2% | Maharashtra State Board, Fergusson Junior College | Jun 2020 - Mar 2022\n---\nSSC (Class X), 94.6% | Maharashtra State Board, Nutan Vidyalaya | Jun 2019 - Mar 2020",
+        "projects": "Campus Placement Portal: Full-stack application handling registration, eligibility filtering and interview scheduling for 1,200 students; adopted by the college placement cell.\n---\nRegional Language OCR: Trained a CRNN model to read printed Marathi text, reaching 91% character accuracy on a 12,000-image test set.\n---\nRealtime Bus Tracker: Android app using the Pune municipal transport feed; around 3,000 installs.",
+        "publications": "",
+        "certifications": "AWS Certified Cloud Practitioner\nNPTEL - Data Structures and Algorithms (Elite + Silver)"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "IT services, mid-career",
+      "headline": "Experienced, moving between service firms",
+      "why": "In Indian IT services the details that get you shortlisted are specific to that industry: notice period, current and expected CTC, and the client engagement rather than the employer. Notice period in particular is asked on every application, and stating it up front saves a round of email.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Lakshmipriya Venkataraghavan",
+        "title": "Senior Data Engineer",
+        "location": "Hyderabad, Telangana, India",
+        "phone": "+44 7700 900636",
+        "email": "l.venkataraghavan@example.com",
+        "linkedin": "linkedin.com/in/lakshmipriya-venkataraghavan-example",
+        "website": "",
+        "summary": "- Senior data engineer with 6 years in IT services, currently on a European retail banking engagement.\n- Notice period: 60 days (negotiable to 45). Open to Hyderabad, Bengaluru or Pune.",
+        "skills": "Big data: Spark (Scala and PySpark), Kafka, Hive, Airflow, Delta Lake\nCloud: Azure (Data Factory, Databricks, Synapse), some AWS (Glue, EMR)\nLanguages: Python, Scala, SQL, Shell\nPractice: CI/CD for data pipelines, data quality frameworks, Agile delivery, client-facing estimation",
+        "experience": "Senior Data Engineer | Chandragiri Consulting Services | Hyderabad, India | Apr 2023 - Present\n- Client: European retail bank. Lead a team of five on the regulatory reporting data platform.\n- Rebuilt the daily ingest from 14 source systems on Databricks; the run went from 6 hours to 70 minutes and stopped missing its regulatory cut-off.\n- Introduced a data quality framework with 200+ automated checks, catching an upstream schema change that would previously have surfaced as a failed submission.\n- Onboarded and mentored four engineers new to Spark; three now run their own modules.\n---\nData Engineer | Chandragiri Consulting Services | Hyderabad, India | Jul 2020 - Mar 2023\n- Clients: US insurance carrier, then an Australian telecom.\n- Built and maintained around 60 Airflow DAGs across the two engagements.",
+        "education": "B.Tech Information Technology, CGPA 8.6/10 | Jawaharlal Nehru Technological University Hyderabad | Aug 2016 - May 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "Microsoft Certified: Azure Data Engineer Associate (DP-203)\nDatabricks Certified Data Engineer Professional"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Senior, international move",
+      "headline": "Applying abroad from India",
+      "why": "Applying overseas from India means dropping half the domestic conventions and adding one: visa status. Percentages, photo, date of birth, marital status and father's name all come off; work authorisation goes on, stated plainly, because it is the first thing an overseas recruiter needs to resolve.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Bhaskaran Muthukrishnan",
+        "title": "Engineering Manager",
+        "location": "Chennai, India (open to relocation)",
+        "phone": "+44 7700 900871",
+        "email": "b.muthukrishnan@example.com",
+        "linkedin": "linkedin.com/in/bhaskaran-muthukrishnan-example",
+        "website": "",
+        "summary": "- Engineering manager with eleven years in product companies, currently leading 22 engineers across three teams.\n- Seeking a UK or EU role. Would require sponsorship; eligible for the UK Global Talent and Skilled Worker routes.",
+        "skills": "Leadership: 22 engineers, three team leads, hiring, performance and levelling\nTechnical: distributed systems, Java and Go, Kubernetes, event-driven architecture, AWS\nDelivery: quarterly planning, incident management, technical roadmap, stakeholder management across time zones",
+        "experience": "Engineering Manager | Kaveri Commerce Platforms | Chennai, India | Jan 2022 - Present\n- Lead 22 engineers across order management, payments and fulfilment, with three team leads reporting in.\n- Took the platform through a 6x traffic increase across two festival peaks with no Sev-1 incidents, having had four in the previous year.\n- Reduced deployment lead time from nine days to under four hours by splitting a monolith along three genuine service boundaries.\n- Hired 14 engineers in two years with 12 still in post, having rebuilt an interview loop that had a 40% offer decline rate.\n---\nTech Lead, then Senior Engineer | Kaveri Commerce Platforms | Chennai, India | Jun 2017 - Dec 2021\n- Led the payments integration work across seven gateways and three countries.\n---\nSoftware Engineer | Nilgiri Softworks | Bengaluru, India | Jul 2014 - May 2017",
+        "education": "B.Tech Computer Science and Engineering | National Institute of Technology Tiruchirappalli | Jul 2010 - May 2014",
+        "projects": "",
+        "publications": "",
+        "certifications": "AWS Certified Solutions Architect - Professional\nCertified Kubernetes Administrator (CKA)"
+      }
+    }
+  ],
+  "market_ca": [
+    {
+      "level": "early",
+      "stage": "Canadian, entry level",
+      "headline": "Close to US practice, with differences",
+      "why": "A Canadian resume looks American at a glance and differs in two ways that matter: work authorisation is stated because it is the first screening question for anyone not obviously local, and bilingual capability is a genuine asset well beyond Quebec. No photo, no date of birth, Canadian spelling.",
+      "template_id": "canadian_resume",
+      "data": {
+        "full_name": "Océane Charbonneau-Reid",
+        "title": "Junior Accountant",
+        "location": "Ottawa, ON",
+        "phone": "+1 (613) 555-0129",
+        "email": "o.charbonneaureid@example.com",
+        "linkedin": "linkedin.com/in/oceane-charbonneau-reid-example",
+        "website": "",
+        "summary": "- Junior accountant with two years in public practice, working towards the CPA designation.\n- Canadian citizen, fully bilingual in English and French, eligible to work across all provinces.",
+        "skills": "Accounting: bookkeeping, working papers, GST/HST and QST returns, T2 and T1 preparation, ASPE\nSoftware: QuickBooks Online, Sage 50, CaseWare, TaxPrep, Excel\nLanguages: English (native), French (native)\nDesignation: CPA candidate, PEP modules Core 1 and Core 2 completed",
+        "experience": "Staff Accountant | Rideau Valley Chartered Professional Accountants | Ottawa, ON | 05/2024 - Present\n- Prepare year-end files for a portfolio of about 40 owner-managed clients under ASPE.\n- Handle GST/HST and QST filings for 25 clients, including several with operations in both Ontario and Quebec.\n- Rebuilt the firm's working paper template, cutting review notes per file by roughly a third.\n---\nAccounting Assistant | Rideau Valley Chartered Professional Accountants | Ottawa, ON | 09/2023 - 04/2024\n- Bookkeeping and payroll for 30 small business clients.",
+        "education": "Bachelor of Commerce, Accounting | University of Ottawa | 09/2019 - 04/2023",
+        "projects": "",
+        "publications": "",
+        "certifications": "CPA Professional Education Program - Core 1 and Core 2 completed"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Newcomer to Canada",
+      "headline": "Foreign credentials, first Canadian role",
+      "why": "The hardest Canadian application is the first one after arriving. Two things do the work: stating status so nobody has to guess, and translating foreign qualifications through an assessment body — because 'the recruiter will not know what your degree is worth' is the actual barrier, and a WES assessment resolves it in one line.",
+      "template_id": "us_chronological",
+      "data": {
+        "full_name": "Oleksandr Tymoshenko-Bilyk",
+        "title": "Mechanical Engineer",
+        "location": "Calgary, AB",
+        "phone": "+1 (403) 555-0164",
+        "email": "o.tymoshenko@example.com",
+        "linkedin": "linkedin.com/in/oleksandr-tymoshenko-bilyk-example",
+        "website": "",
+        "summary": "- Mechanical engineer with nine years in oil and gas equipment design, arrived in Canada in 2025.\n- Permanent resident, no sponsorship required. Engineer-in-Training with APEGA; P.Eng application in progress.\n- Degree assessed by WES as equivalent to a Canadian Bachelor of Engineering.",
+        "skills": "Design: pressure vessels (ASME VIII Div 1), piping (ASME B31.3), rotating equipment, FEA\nSoftware: SolidWorks, AutoCAD, ANSYS, PV Elite, Caesar II\nStandards: ASME, API 610 and 682, CSA B51, ISO 9001\nLanguages: Ukrainian (native), English (IELTS 7.5), Russian, Polish (working)",
+        "experience": "Mechanical Designer (contract) | Bow River Process Equipment | Calgary, AB | 03/2025 - Present\n- Design separator vessels and skid packages to ASME VIII Div 1 and CSA B51 for Alberta operators.\n- Completed the first two packages ahead of schedule, which converted the contract into an ongoing arrangement.\n---\nSenior Mechanical Engineer | Dnipro Machine Works | Dnipro, Ukraine | 06/2019 - 12/2024\n- Led design for pressure vessel and heat exchanger packages, typically $1M to $4M per project.\n- Redesigned a standard separator internal that had a recurring erosion failure; the revision has run four years without recurrence.\n- Supervised four designers and reviewed all outgoing calculation packages.\n---\nMechanical Engineer | Dnipro Machine Works | Dnipro, Ukraine | 08/2015 - 05/2019",
+        "education": "Master of Science, Mechanical Engineering | Dnipro University of Technology | 09/2010 - 06/2015\n- Assessed by World Education Services as equivalent to a Canadian Bachelor of Engineering, 2025.",
+        "projects": "",
+        "publications": "",
+        "certifications": "APEGA Engineer-in-Training (P.Eng application submitted)\nWES Educational Credential Assessment (2025)"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Federal government",
+      "headline": "Public Service applications",
+      "why": "Canadian federal hiring is its own system: applications are screened against published merit criteria, security clearance level matters, and the linguistic profile is written in the government's own notation — BBB, CBC and so on. Writing 'bilingual' where the posting asks for CBC is the commonest way to be screened out.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Geneviève Lapointe-Osborne",
+        "title": "Senior Policy Analyst",
+        "location": "Gatineau, QC",
+        "phone": "+1 (819) 555-0186",
+        "email": "g.lapointeosborne@example.com",
+        "linkedin": "linkedin.com/in/genevieve-lapointe-osborne-example",
+        "website": "",
+        "summary": "- Senior policy analyst, EC-06, eleven years in the federal public service across two departments.\n- Linguistic profile CBC/CBC. Secret clearance, valid to 2029. Applying at EC-07.",
+        "skills": "Policy: Memoranda to Cabinet, Treasury Board submissions, regulatory impact analysis statements, GBA Plus\nAnalysis: program evaluation, cost-benefit analysis, Statistics Canada microdata\nGovernance: interdepartmental negotiation, ministerial briefing, parliamentary committee support\nLanguages: French (native), English (native); official languages profile CBC/CBC",
+        "experience": "Senior Policy Analyst (EC-06) | Employment and Social Development Programs Branch | Gatineau, QC | 04/2021 - Present\n- Lead analyst on a $340M benefit program serving roughly 180,000 recipients annually.\n- Authored the Memorandum to Cabinet that secured renewal of the program, including the GBA Plus analysis that reshaped its eligibility criteria.\n- Chaired an interdepartmental working group of five departments over 14 months to a signed common position.\n- Supported the Deputy Minister through two parliamentary committee appearances.\n---\nPolicy Analyst (EC-04, then EC-05) | Regional Economic Development Agency | Ottawa, ON | 09/2015 - 03/2021\n- Program design and evaluation for regional funding streams totalling $90M annually.\n- Led the evaluation that recommended discontinuing a stream with 4% incrementality; recommendation accepted.",
+        "education": "Maîtrise en administration publique | École nationale d'administration publique | 09/2013 - 06/2015\n---\nBaccalauréat en science politique | Université Laval | 09/2010 - 05/2013",
+        "projects": "",
+        "publications": "",
+        "certifications": "Government of Canada Secret security clearance (valid to 2029)\nCanada School of Public Service - Policy Community Development Program"
+      }
+    }
+  ],
+  "market_gulf": [
+    {
+      "level": "early",
+      "stage": "Gulf, early career",
+      "headline": "UAE, Saudi and Qatar conventions",
+      "why": "Gulf CVs carry personal details that would be unlawful to consider in the UK or US: nationality, date of birth, marital status, visa status and a photo are all routine, and visa status in particular decides how quickly you can start. A driving licence is worth stating — in much of the Gulf it is a practical requirement.",
+      "template_id": "gulf_cv",
+      "data": {
+        "full_name": "Yasmine El-Khoury-Haddad",
+        "title": "HR Coordinator",
+        "location": "Dubai, United Arab Emirates",
+        "phone": "+44 7700 900211",
+        "email": "y.elkhouryhaddad@example.com",
+        "linkedin": "linkedin.com/in/yasmine-el-khoury-haddad-example",
+        "website": "",
+        "summary": "- HR coordinator with three years in hospitality, based in Dubai.\n- Nationality: Lebanese. Date of birth: 09 May 2001. Marital status: single.\n- Visa: UAE employment visa, transferable, 30 days' notice. UAE driving licence held.",
+        "skills": "HR: onboarding, visa and labour card processing, WPS payroll coordination, employee records\nEmployment law: UAE Labour Law, MOHRE procedures, DIFC basics\nSystems: Oracle HCM, Microsoft 365, Bayzat\nLanguages: Arabic (native), English (fluent), French (intermediate)",
+        "experience": "HR Coordinator | Al Marsa Hospitality Group | Dubai, UAE | 02/2024 - Present\n- Coordinate onboarding for a 320-staff hotel group with employees of 24 nationalities.\n- Manage visa applications and renewals; reduced average onboarding-to-badge time from 21 days to 12 by pre-clearing medicals.\n- Run the monthly WPS payroll submission for 320 staff with no rejections in 18 months.\n---\nHR Assistant | Al Marsa Hospitality Group | Dubai, UAE | 06/2023 - 01/2024\n- Maintained employee records and supported recruitment for seasonal hiring peaks.",
+        "education": "Bachelor of Business Administration, Human Resources | American University in Dubai | 09/2019 - 06/2023",
+        "projects": "",
+        "publications": "",
+        "certifications": "CIPD Level 3 Foundation Certificate in People Practice"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Saudi, localisation aware",
+      "headline": "Saudi Arabia and Saudization",
+      "why": "Saudi hiring runs on the Nitaqat localisation programme, so nationality is not a formality on the form — it determines which quota a hire counts against. Experience of Vision 2030 programmes and of working in mixed Saudi and expatriate teams is a specific, stateable asset here.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Faisal Al-Muhaideb",
+        "title": "Project Engineer",
+        "location": "Riyadh, Saudi Arabia",
+        "phone": "+44 7700 900344",
+        "email": "f.almuhaideb@example.com",
+        "linkedin": "linkedin.com/in/faisal-al-muhaideb-example",
+        "website": "",
+        "summary": "- Project engineer with six years on infrastructure programmes in the Kingdom.\n- Nationality: Saudi. Date of birth: 17 November 1997. Married.\n- Saudi Council of Engineers registered. Available at 60 days' notice.",
+        "skills": "Project delivery: FIDIC contracts, programme scheduling, cost control, contractor management\nTechnical: civil infrastructure, utilities coordination, quality assurance, HSE oversight\nSoftware: Primavera P6, AutoCAD Civil 3D, Aconex, MS Project\nLanguages: Arabic (native), English (fluent)",
+        "experience": "Project Engineer | Wadi Nakheel Infrastructure Company | Riyadh, Saudi Arabia | 03/2022 - Present\n- Manage delivery of utilities packages worth SAR 180m within a Vision 2030 mixed-use development.\n- Recovered a package running 11 weeks late by resequencing works around a delayed substation energisation; handed over on the contractual date.\n- Coordinate four contractors and roughly 600 site personnel across Saudi and expatriate teams.\n- Chair the weekly interface meeting between utilities, roads and building packages.\n---\nSite Engineer | Wadi Nakheel Infrastructure Company | Jeddah, Saudi Arabia | 08/2019 - 02/2022\n- Supervised roadworks and drainage packages on a SAR 90m corridor upgrade.",
+        "education": "Bachelor of Science, Civil Engineering | King Fahd University of Petroleum and Minerals | 09/2015 - 06/2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "Saudi Council of Engineers - Associate Engineer\nPMI Project Management Professional (PMP)\nNEBOSH International General Certificate"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Expatriate executive",
+      "headline": "Senior expatriate hire",
+      "why": "At executive level in the Gulf, two facts do disproportionate work: how long you have already been in the region, and whether you have run mixed-nationality organisations. Both answer the question every board is actually asking, which is whether you will still be there in three years.",
+      "template_id": "gulf_cv",
+      "data": {
+        "full_name": "Gareth Fotheringham-Dowd",
+        "title": "Chief Operating Officer",
+        "location": "Doha, Qatar",
+        "phone": "+44 7700 900593",
+        "email": "g.fotheringham@example.com",
+        "linkedin": "linkedin.com/in/gareth-fotheringham-dowd-example",
+        "website": "",
+        "summary": "- Chief operating officer with 22 years in logistics, the last nine in the GCC.\n- Nationality: British. Date of birth: 03 February 1979. Married, two dependants resident in Qatar.\n- Qatar residence permit held; family sponsored. Available at three months' notice.",
+        "skills": "Executive: COO of a 2,400-person operation, board reporting, P&L of QAR 1.1bn, joint venture governance\nRegional: nine years across Qatar, UAE and Oman; multinational workforces of 30+ nationalities\nOperational: port and terminal operations, freight forwarding, warehousing, fleet\nCompliance: GCC customs, Qatarization targets, ISO 9001 and 45001",
+        "experience": "Chief Operating Officer | Al Dafna Logistics Company | Doha, Qatar | 05/2020 - Present\n- Run operations for a QAR 1.1bn logistics business with 2,400 staff of 31 nationalities across three sites.\n- Took operating margin from 6.1% to 13.4% over four years, principally through fleet utilisation and a warehouse consolidation.\n- Met the Qatarization target two years early by building a graduate development scheme with two local universities; 14 of 18 participants remain with the business.\n- Led the joint venture with an international freight group that opened the transhipment business, now 22% of revenue.\n---\nGeneral Manager, Gulf | Brentwood Freight International | Dubai, UAE | 09/2016 - 04/2020\n- Ran the UAE and Oman business: AED 400m revenue, 700 staff.\n---\nOperations Director, UK and Ireland | Brentwood Freight International | Manchester, UK | 01/2010 - 08/2016",
+        "education": "MBA | Manchester Business School | 09/2007 - 07/2010\n---\nBSc (Hons) Transport Management, 2:1 | Aston University | 09/1997 - 06/2000",
+        "projects": "",
+        "publications": "",
+        "certifications": "Chartered Fellow, Chartered Institute of Logistics and Transport (FCILT)"
+      }
+    }
+  ],
+  "market_jp": [
+    {
+      "level": "early",
+      "stage": "Rirekisho, standard form",
+      "headline": "The Japanese standard-form CV",
+      "why": "The rirekisho is unlike anything else here: it is a prescribed form, not a document you design. Education and employment are one continuous chronological table starting from middle school, entries are formulaic rather than persuasive, and the motivation section carries the weight that bullet points carry elsewhere.",
+      "template_id": "japan_rirekisho",
+      "data": {
+        "full_name": "Tomoko Shiraishi",
+        "title": "Sales Representative",
+        "location": "Yokohama, Kanagawa, Japan",
+        "phone": "+44 7700 900122",
+        "email": "t.shiraishi@example.com",
+        "linkedin": "",
+        "website": "",
+        "summary": "- Sales representative, three years at a precision instruments manufacturer, covering the Kanto region.\n- Seeking to move into technical sales in the semiconductor equipment sector.\n- Date of birth: 12 August 1999. Commuting time to Yokohama Station: 25 minutes.",
+        "skills": "Business skills: corporate sales, customer visits, quotation preparation, exhibition support\nQualifications: Regular driving licence (Class 1), TOEIC 810, Bookkeeping Level 2 (Nissho Boki)\nSoftware: Salesforce, Microsoft Office, kintone\nLanguages: Japanese (native), English (business level, TOEIC 810)",
+        "experience": "Sales Representative | Kashiwazaki Precision Instruments Co., Ltd. | Yokohama, Japan | April 2023 - Present\n- Responsible for 45 existing corporate accounts in the Kanto region.\n- Achieved 112% of annual sales target in the most recent fiscal year.\n- Introduced a monthly technical newsletter to existing customers; three dormant accounts resumed ordering.\n---\nPart-time Staff | Midorigaoka Bookstore | Yokohama, Japan | April 2021 - March 2023\n- Customer service and stock management while studying.",
+        "education": "Bachelor of Economics | Yokohama City University | April 2018 - March 2022\n---\nUpper Secondary School | Kanagawa Prefectural Sakuragaoka High School | April 2015 - March 2018\n---\nLower Secondary School | Yokohama Municipal Midorigaoka Junior High School | April 2012 - March 2015",
+        "projects": "",
+        "publications": "",
+        "certifications": "TOEIC 810 (2024)\nNissho Bookkeeping Level 2\nRegular Driving Licence, Class 1"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Shokumu keirekisho",
+      "headline": "The career-history document",
+      "why": "Japanese mid-career applications need a second document alongside the rirekisho: the shokumu keirekisho, which is where achievements and numbers actually live. This is that document. The rirekisho says who you are; this says what you did, and applying with only the first is the standard mistake.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Kenjiro Matsubayashi",
+        "title": "Production Management Specialist",
+        "location": "Nagoya, Aichi, Japan",
+        "phone": "+44 7700 900667",
+        "email": "k.matsubayashi@example.com",
+        "linkedin": "linkedin.com/in/kenjiro-matsubayashi-example",
+        "website": "",
+        "summary": "- Production management specialist, nine years at an automotive components manufacturer.\n- Career history document (shokumu keirekisho) submitted alongside the rirekisho.\n- Currently seeking a production management role in the electric vehicle supply chain.",
+        "skills": "Production management: production planning, kanban and JIT, kaizen facilitation, supplier development\nQuality: IATF 16949, QC seven tools, A3 problem solving\nSystems: SAP PP and MM, Excel (advanced), Minitab\nQualifications: QC Kentei Level 2, Toyota Production System internal trainer",
+        "experience": "Assistant Manager, Production Management | Tsurugaoka Auto Components Co., Ltd. | Nagoya, Japan | April 2021 - Present\n- Responsible for production planning across three lines producing 1.2 million units annually.\n- Reduced work-in-process inventory by 38% over two years by resizing kanban loops after a flow analysis.\n- Led 14 kaizen activities; the largest reduced changeover time on the main line from 47 minutes to 12.\n- Trained 30 staff as internal TPS facilitators.\n---\nProduction Engineer | Tsurugaoka Auto Components Co., Ltd. | Toyota City, Japan | April 2017 - March 2021\n- Line-side engineering support for two assembly lines.\n- Led the countermeasure for a recurring press defect, reducing scrap from 2.4% to 0.3%.",
+        "education": "Bachelor of Engineering, Mechanical Engineering | Nagoya Institute of Technology | April 2013 - March 2017",
+        "projects": "",
+        "publications": "",
+        "certifications": "QC Kentei (Quality Control Certification) Level 2\nTOEIC 720"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Bilingual, foreign employer",
+      "headline": "Global firm hiring in Japan",
+      "why": "Foreign-affiliated firms in Japan hire on an international-style resume in English, and the domestic conventions drop away — but two things stay because they are still the real questions: Japanese language level in JLPT terms, and visa status. This is the only Japanese variant where a Western achievement-led format is correct.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Ingrid Sørensen-Takahashi",
+        "title": "Country Manager, Japan",
+        "location": "Tokyo, Japan",
+        "phone": "+44 7700 900780",
+        "email": "i.sorensentakahashi@example.com",
+        "linkedin": "linkedin.com/in/ingrid-sorensen-takahashi-example",
+        "website": "",
+        "summary": "- Country manager with fourteen years in Japan, currently running the Japanese business of a European software firm.\n- Japanese: JLPT N1, business fluent. Permanent residence held; no sponsorship required.\n- Have built two Japanese subsidiaries from a standing start.",
+        "skills": "Leadership: country P&L to ¥4.8bn, teams to 85, subsidiary establishment, board reporting to a European parent\nCommercial: enterprise sales in Japan, keiretsu and SI partner channels, public sector procurement\nCross-cultural: bridging Japanese customer expectations and European product roadmaps\nLanguages: Danish (native), English (native level), Japanese (JLPT N1)",
+        "experience": "Country Manager, Japan | Nordhaven Software KK | Tokyo, Japan | June 2020 - Present\n- Run the Japanese subsidiary: ¥4.8bn revenue, 85 staff, full country P&L.\n- Grew revenue from ¥900m to ¥4.8bn in five years, principally by building an SI partner channel that now carries 60% of new business.\n- Established the KK entity, the office and the first 12 hires personally in the first eight months.\n- Persuaded the European product organisation to build three Japan-specific compliance features, which unlocked the financial services segment.\n---\nSales Director, Japan | Bergstrand Enterprise Systems KK | Tokyo, Japan | April 2015 - May 2020\n- Built the direct sales team from two to 22; grew revenue 6x over five years.\n---\nAccount Executive, then Manager | Bergstrand Enterprise Systems | Copenhagen, Denmark | September 2011 - March 2015",
+        "education": "MSc International Business | Copenhagen Business School | September 2009 - June 2011\n---\nBA Japanese Studies | University of Copenhagen | September 2006 - June 2009",
+        "projects": "",
+        "publications": "",
+        "certifications": "JLPT N1 (Japanese Language Proficiency Test, highest level)\nJapanese Permanent Residence"
+      }
+    }
+  ]
+}

@@ -1,0 +1,428 @@
+{
+  "student_graduate": [
+    {
+      "level": "early",
+      "stage": "No experience yet",
+      "headline": "Finishing a degree, never employed",
+      "why": "The hardest CV to write, and the one people get most wrong by apologising for it. Nothing here pretends to be a job: coursework, a society treasurership and a dissertation are set out as evidence because at this point that is what evidence is. Education leads, and there is no summary of a career that has not started.",
+      "template_id": "graduate_entry",
+      "data": {
+        "full_name": "Orla Fennessy",
+        "title": "Graduate Marketing Assistant",
+        "location": "Cardiff, UK",
+        "phone": "+44 7700 900612",
+        "email": "orla.fennessy@example.com",
+        "linkedin": "linkedin.com/in/orla-fennessy-example",
+        "website": "",
+        "summary": "- Final-year Business Management student, graduating July 2026, looking for a first marketing role.\n- Ran a student society's social accounts for two years and its £4,000 budget for one — the closest thing to the job, and treated as such below.",
+        "skills": "Marketing: Meta and TikTok ad manager (society budget), Canva, Mailchimp, basic SEO\nAnalysis: Excel to intermediate level, Google Analytics 4, survey design\nWriting: copy for social, event listings, committee papers\nLanguages: English (native), Welsh (conversational)",
+        "experience": "Marketing Officer, then Treasurer | Cardiff University Enterprise Society | Cardiff, UK | Oct 2023 - Present\n- Grew society Instagram from 340 to 2,100 followers in a year by posting member stories rather than event flyers.\n- Managed a £4,000 annual budget as Treasurer; came in £260 under, having previously overspent two years running.\n- Organised a careers evening with nine local firms and 140 attendees, the society's largest.\n---\nBar Staff | The Gwendoline Arms | Cardiff, UK | Jun 2024 - Present\n- Weekend shifts alongside full-time study; trained four new starters on till and cellar work.",
+        "education": "BSc Business Management (predicted 2:1) | Cardiff University | Sep 2023 - Jul 2026\n---\nA-levels: Business (A), Geography (A), English Literature (B) | Ysgol Bro Taf | Sep 2021 - Jun 2023",
+        "projects": "Dissertation — Why independent cafés fail in their second year: Interviewed eleven owners across South Wales and analysed three years of Companies House filings; found undercapitalised second sites, not competition, as the common thread.\n---\nSociety Rebrand: Redesigned the society's visual identity and templates, still in use by the current committee.",
+        "publications": "",
+        "certifications": "Google Analytics 4 Certification\nHootsuite Platform Certification"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "With a placement year",
+      "headline": "Sandwich degree, one year in industry",
+      "why": "A placement year is the single most valuable thing on a graduate CV, so it is set out as a proper job — employer, dates, outcomes — rather than buried under Education. Note that the degree has moved below it: once you have done the work, the work leads.",
+      "template_id": "modern_minimalist",
+      "data": {
+        "full_name": "Theodore Ashby-Crane",
+        "title": "Graduate Software Engineer",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900745",
+        "email": "t.ashbycrane@example.com",
+        "linkedin": "linkedin.com/in/theodore-ashby-crane-example",
+        "website": "tashby.example.com",
+        "summary": "- Computer Science graduate with a year in industry, shipping to production rather than to a marking rubric.\n- Spent that year on a payments team: on-call shadowing, code review, and two features still running.",
+        "skills": "Languages: Java, Python, TypeScript, SQL\nFrameworks: Spring Boot, React, JUnit, Playwright\nTooling: Git, Docker, GitHub Actions, PostgreSQL, AWS (EC2, S3)\nPractice: code review, pair programming, TDD, Agile ceremonies",
+        "experience": "Software Engineering Placement | Halcyon Payments | Bristol, UK | Jul 2024 - Aug 2025\n- Built the refund-reason capture flow now used on roughly 3,000 refunds a month, which cut \"reason unknown\" from 61% to 9% and gave support something to act on.\n- Cut the integration test suite from 22 minutes to 7 by parallelising it and replacing four end-to-end tests with contract tests.\n- Fixed a currency-rounding bug that had been quietly costing about £400 a month on multi-currency refunds.\n- Reviewed roughly 15 pull requests a month by the end of the placement, having reviewed none at the start.\n---\nStudent Ambassador | University of Bristol | Bristol, UK | Sep 2023 - Jun 2024\n- Ran campus tours and coding taster sessions for sixth-form groups.",
+        "education": "BSc Computer Science with Year in Industry (predicted First) | University of Bristol | Sep 2022 - Jul 2026",
+        "projects": "Allotment Watering Scheduler: Raspberry Pi and Python service that reads soil moisture and Met Office rainfall forecasts; has run unattended for 14 months across two growing seasons.\n---\nUniversity Timetable Diff: Small tool that emails students when their timetable changes, after a room move nobody was told about; used by around 200 students on the course.",
+        "publications": "",
+        "certifications": "AWS Certified Cloud Practitioner"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Master's and internships",
+      "headline": "Postgraduate, two summers of internships",
+      "why": "Two internships and a master's is a strong hand played badly by most people, who list all three as equals. Here the internships carry outcomes, the master's carries the technical depth, and the undergraduate degree is one line — because nobody is hiring on it any more.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Simisola Adegboyega",
+        "title": "Graduate Analyst",
+        "location": "London, UK",
+        "phone": "+44 7700 900288",
+        "email": "s.adegboyega@example.com",
+        "linkedin": "linkedin.com/in/simisola-adegboyega-example",
+        "website": "",
+        "summary": "- MSc Economics graduate with two summers of analyst internships, one in consulting and one in a regulator.\n- Comfortable being the person who checks whether the number is right before it goes in the deck.",
+        "skills": "Analysis: Stata, R, Python (pandas), advanced Excel, econometric modelling\nData: SQL, Power BI, ONS and Eurostat sources\nWriting: policy notes, client-ready slides, technical appendices\nMethods: difference-in-differences, panel regression, cost-benefit appraisal",
+        "experience": "Summer Analyst | Thornbury Economics | London, UK | Jun 2025 - Sep 2025\n- Built the counterfactual for a transport appraisal covering 40 local authorities; the approach was carried into the final client report.\n- Found an indexing error in an inherited model that had overstated a benefit figure by about 12%, and rebuilt the affected section.\n- Wrote the methodology annex for a published report, which went out with two rounds of review rather than the usual four.\n---\nPolicy Intern | Office of the Small Business Commissioner | London, UK | Jun 2024 - Sep 2024\n- Analysed 1,800 late-payment complaints to find where in the supply chain delays actually originated.\n- Drafted a briefing note that became part of the evidence pack for a consultation response.",
+        "education": "MSc Economics (Distinction) | University of Warwick | Sep 2024 - Sep 2025\n---\nBSc Economics and Statistics (First Class) | University of Nottingham | Sep 2021 - Jun 2024",
+        "projects": "MSc Dissertation — Late payment and small-firm survival: Panel study of 26,000 UK firms; found the effect concentrated in firms with under twelve months of cash cover, which is not where policy attention had been.",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "intern": [
+    {
+      "level": "early",
+      "stage": "Coursework only",
+      "headline": "First application, nothing but studies",
+      "why": "Applying for an internship with no work history at all. The trick is not to inflate anything — it is to describe coursework the way you would describe work: what the problem was, what you did, what came out. A hiring manager can tell the difference between a modest true CV and a padded one.",
+      "template_id": "graduate_entry",
+      "data": {
+        "full_name": "Mariam Toure-Camara",
+        "title": "Engineering Intern",
+        "location": "Sheffield, UK",
+        "phone": "+44 7700 900931",
+        "email": "m.tourecamara@example.com",
+        "linkedin": "linkedin.com/in/mariam-toure-camara-example",
+        "website": "",
+        "summary": "- Second-year Mechanical Engineering student looking for a summer internship in design or manufacturing.\n- No industry experience yet; the projects below are university work, described honestly as such.",
+        "skills": "CAD and analysis: SolidWorks, Fusion 360, basic ANSYS\nWorkshop: lathe and mill (university-certified), 3D printing, hand tools\nSoftware: MATLAB, Python, Excel\nOther: full UK driving licence, French (fluent)",
+        "experience": "Course Representative | University of Sheffield | Sheffield, UK | Oct 2025 - Present\n- Elected by a cohort of 96; take issues to staff-student committee and report back.\n- Pushed for lab session times to be published a fortnight ahead after a scheduling clash affected 30 students; now standard.\n---\nSales Assistant | Wexley Hardware | Sheffield, UK | Jul 2024 - Present\n- Weekend and holiday work in a trade counter; advise customers on tools and fixings.\n- Reorganised the fixings aisle by size rather than brand, which the manager kept.",
+        "education": "MEng Mechanical Engineering (Year 2, on track for 2:1) | University of Sheffield | Sep 2024 - Jun 2028\n---\nA-levels: Maths (A*), Physics (A), Design Technology (A) | Silverdale College | Sep 2022 - Jun 2024",
+        "projects": "Year 2 Design Project — Bench-top press for composite samples: Team of four; I owned the frame design and the FEA. Redesigned the crosshead after analysis showed 4mm deflection under load, which would have made the samples useless.\n---\nFormula Student (Aerodynamics subteam): Ran wind-tunnel sessions on three rear-wing profiles and wrote up the comparison for the team's design report.",
+        "publications": "",
+        "certifications": "University Workshop Certification — lathe, mill, bandsaw"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "One placement behind them",
+      "headline": "Applying for a second internship",
+      "why": "The second internship application is a different document from the first: you now have a thing that happened, so it goes first and everything else supports it. Notice how the previous internship's bullets say what changed rather than what tasks were assigned.",
+      "template_id": "modern_minimalist",
+      "data": {
+        "full_name": "Casper Nyholm",
+        "title": "Product Design Intern",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900357",
+        "email": "casper.nyholm@example.com",
+        "linkedin": "linkedin.com/in/casper-nyholm-example",
+        "website": "caspernyholm.example.com",
+        "summary": "- Design student with one summer internship behind me, looking for a second before final year.\n- Last summer's work shipped: two flows are live and one research finding changed a roadmap decision.",
+        "skills": "Design: Figma, prototyping, design systems, accessibility basics (WCAG AA)\nResearch: moderated usability sessions, survey design, affinity mapping\nOther: HTML and CSS to a working level, After Effects, Danish (native)",
+        "experience": "Product Design Intern | Larkfield Software | Manchester, UK | Jun 2025 - Sep 2025\n- Redesigned the onboarding flow after usability sessions showed six of eight users could not find the import step; drop-off at that step fell from 34% to 11%.\n- Ran the first accessibility audit the product had had, finding 23 issues; the 9 blocking ones were fixed before I left.\n- Built the first version of the component library in Figma, replacing a file where three buttons existed in eleven variants.\n---\nFreelance Design Work | Self-employed | Manchester, UK | Jan 2024 - Present\n- Occasional identity and web work for three local clients, mostly by referral.",
+        "education": "BA Product Design (Year 3, predicted First) | Manchester Metropolitan University | Sep 2023 - Jun 2027",
+        "projects": "Bus Stop Wayfinding Study: Observed 60 passengers at four Manchester stops and redesigned the timetable panel; tested version cut the time to find a departure from 22 seconds to 9.\n---\nCharity Shop Stock App (concept): Design-only project with a local charity; explored what a volunteer with ten minutes of training could actually operate.",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Career-switch placement",
+      "headline": "Older applicant, changing direction",
+      "why": "Interns are not all twenty-one. Somebody moving into a new field takes the internship route with a decade of real work behind them, and the mistake is to hide it. Here the previous career is kept, short, and framed for what it transfers — the point being that it is an asset, not an awkwardness.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Grainne Ballantyne",
+        "title": "Data Analyst Intern",
+        "location": "Glasgow, UK",
+        "phone": "+44 7700 900806",
+        "email": "g.ballantyne@example.com",
+        "linkedin": "linkedin.com/in/grainne-ballantyne-example",
+        "website": "",
+        "summary": "- Ten years in pharmacy dispensing, retrained in data analysis, applying for a placement to make the switch properly.\n- Bring something most interns do not: a decade of working to protocol in a setting where a mistake matters.",
+        "skills": "Data: SQL, Python (pandas), Power BI, Excel to advanced level\nStatistics: descriptive analysis, A/B basics, data quality assessment\nDomain: NHS data structures, clinical governance, information governance and patient confidentiality\nCertification: Level 4 Data Analyst apprenticeship (completed 2025)",
+        "experience": "Dispensary Manager | Rowanbank Pharmacy | Glasgow, UK | Mar 2019 - Present\n- Run a dispensary handling around 9,000 items a month with a team of five.\n- Built the stock forecasting spreadsheet that cut expired-stock write-off by roughly £11,000 a year — the work that led to retraining.\n- Redesigned the controlled-drugs check process after a near miss; no recurrences in four years.\n---\nPharmacy Technician | Rowanbank Pharmacy | Glasgow, UK | Sep 2016 - Feb 2019\n- Dispensing and patient counselling; qualified as an accuracy checking technician in 2018.",
+        "education": "Level 4 Data Analyst (Distinction) | Glasgow Clyde College | Sep 2024 - Jun 2025\n---\nBTEC Level 3 Pharmaceutical Science | Glasgow Clyde College | Sep 2014 - Jun 2016",
+        "projects": "Dispensing Error Analysis: Analysed 400 near-miss records from my own dispensary in SQL and Power BI; found two thirds clustered in the hour after the lunchtime handover, which changed how the rota is written.",
+        "publications": "",
+        "certifications": "Microsoft Certified: Power BI Data Analyst Associate\nAccuracy Checking Pharmacy Technician"
+      }
+    }
+  ],
+  "career_changer": [
+    {
+      "level": "early",
+      "stage": "Adjacent move",
+      "headline": "Teaching to instructional design",
+      "why": "A short jump, where most of the old job is the new job under a different name. The right move is to describe the previous work in the target field's vocabulary — without inventing anything — so that the reader recognises the skill instead of the job title.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Rosalind Threlfall",
+        "title": "Instructional Designer",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900164",
+        "email": "r.threlfall@example.com",
+        "linkedin": "linkedin.com/in/rosalind-threlfall-example",
+        "website": "",
+        "summary": "- Seven years teaching secondary science, now designing learning for adults.\n- The work barely changes: assess what people already know, sequence what comes next, and find out whether it landed.",
+        "skills": "Learning design: curriculum sequencing, formative assessment, scaffolding, accessibility in materials\nTools: Articulate Storyline, Rise, Camtasia, Figma, Google Workspace\nEvaluation: Kirkpatrick levels 1-3, pre/post assessment design, learner interviews\nSubject: science, data literacy, safeguarding and compliance training",
+        "experience": "Head of Science | Ashgrove Academy | Leeds, UK | Sep 2022 - Present\n- Rewrote the Key Stage 3 science curriculum for 480 pupils; the proportion reaching the expected standard rose from 62% to 74% over two years.\n- Designed and ran the department's CPD programme — eleven sessions a year for nine teachers, with follow-up observation rather than a feedback form.\n- Built the shared assessment bank the department now uses, replacing tests written individually and inconsistently.\n---\nScience Teacher | Ashgrove Academy | Leeds, UK | Sep 2019 - Aug 2022\n- Taught chemistry and biology to GCSE; led the Year 10 intervention group.",
+        "education": "PGCE Secondary Science | University of Leeds | Sep 2018 - Jul 2019\n---\nBSc Chemistry (2:1) | University of York | Sep 2015 - Jun 2018",
+        "projects": "Safeguarding Refresher (freelance): Rebuilt a trust's annual safeguarding training in Rise after completion rates stalled at 58%; cut it from 90 minutes to 35 and completion reached 94% in the first cycle.\n---\nScience Practical Video Library: Filmed and edited 40 short technique videos, now used across three schools in the trust.",
+        "publications": "",
+        "certifications": "Articulate Storyline 360 - Certified\nQualified Teacher Status (QTS)"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Distant move",
+      "headline": "Armed forces to project delivery",
+      "why": "A long jump, where the old vocabulary means nothing to the new reader. Every military term here has been translated — rank into scope, deployment into programme, and so on — and the format is skills-first, because a chronological list would lead with a job title the reader cannot price.",
+      "template_id": "functional_skills",
+      "data": {
+        "full_name": "Wendell Ogunbiyi",
+        "title": "Project Manager",
+        "location": "Portsmouth, UK",
+        "phone": "+44 7700 900573",
+        "email": "w.ogunbiyi@example.com",
+        "linkedin": "linkedin.com/in/wendell-ogunbiyi-example",
+        "website": "",
+        "summary": "- Twelve years as a Royal Navy logistics officer, now moving into civilian project delivery.\n- Have run supply operations for a ship's company of 200 and a £6m annual budget; the terminology is different, the work is not.",
+        "skills": "Delivery: programme planning, risk registers, stakeholder reporting, change control, resource scheduling\nCommercial: £6m budget accountability, contract management, supplier negotiation, inventory control\nLeadership: teams of up to 24, performance management, training design, operating under time pressure\nQualifications: PRINCE2 Practitioner, Agile Project Management Foundation, MS Project, Jira",
+        "experience": "Logistics Officer (Lieutenant Commander) | Royal Navy | Portsmouth, UK | Jan 2020 - Present\n- Accountable for a £6m annual supply budget across a ship's company of 200, delivered under budget in each of the last four years.\n- Planned and executed the storing programme for three overseas deployments, each involving 40+ suppliers and fixed, immovable sailing dates.\n- Led a 24-person department; introduced a stock-check rotation that cut discrepancies at annual audit by roughly 70%.\n- Rebuilt the department's handover documentation after a poor transition; it became the model used across the flotilla.\n---\nSupply Officer | Royal Navy | Various | Sep 2014 - Dec 2019\n- Progressive responsibility across three vessels and one shore establishment.\n- Managed inventory for a squadron of aircraft, including a fleet-wide parts recall completed inside eight days.",
+        "education": "MSc Logistics and Supply Chain Management | University of Portsmouth | Sep 2021 - Sep 2023\n---\nBSc Geography (2:1) | University of Exeter | Sep 2011 - Jun 2014",
+        "projects": "",
+        "publications": "",
+        "certifications": "PRINCE2 Practitioner\nAPM Project Management Qualification\nAgile Project Management Foundation"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Senior, starting again",
+      "headline": "Twenty years in retail, moving to charity",
+      "why": "Changing sector late is not the same problem as changing job. The seniority is real and must not be thrown away, so this leads with scope and accountability; what changes is which of those two decades of achievements get airtime — the ones a charity board would recognise, not the ones a retailer would.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Bernadette Ollerenshaw",
+        "title": "Operations Director",
+        "location": "Nottingham, UK",
+        "phone": "+44 7700 900249",
+        "email": "b.ollerenshaw@example.com",
+        "linkedin": "linkedin.com/in/bernadette-ollerenshaw-example",
+        "website": "",
+        "summary": "- Twenty years in retail operations, the last six as a regional director with P&L for 46 stores and 1,400 staff.\n- Moving to the charity sector: the trustee work below is four years old, not a recent conversion.",
+        "skills": "Leadership: multi-site operations, 1,400 staff, senior team of 8, restructuring and TUPE\nFinancial: £180m regional P&L, budget setting, cost programmes, capital investment cases\nGovernance: charity trustee since 2022, audit and risk committee, safeguarding oversight\nPeople: union negotiation, engagement programmes, succession planning",
+        "experience": "Regional Operations Director | Halcombe Retail Group | Nottingham, UK | Apr 2020 - Present\n- Hold P&L for 46 stores and 1,400 staff across the East Midlands, £180m annual turnover.\n- Took regional employee turnover from 41% to 24% over three years by fixing rota predictability, which the engagement survey had been saying for two years.\n- Led the closure of nine underperforming stores with 96% of affected staff redeployed rather than made redundant.\n- Sponsored the region's community partnership programme, which now supports 30 local food banks.\n---\nTrustee and Chair of Audit | Meadowvale Family Support | Nottingham, UK | Jun 2022 - Present\n- One of seven trustees of a £2.4m children's charity; chair the audit and risk committee.\n- Led the recruitment of the current chief executive.\n---\nArea Manager | Halcombe Retail Group | Various, UK | Mar 2013 - Mar 2020\n- Ran clusters of 8 to 12 stores; consistently top-quartile on both sales and staff retention.",
+        "education": "MBA | Nottingham Trent University | Sep 2016 - Jul 2019\n---\nBA Business Studies (2:1) | De Montfort University | Sep 2002 - Jun 2005",
+        "projects": "",
+        "publications": "",
+        "certifications": "Institute of Directors - Certificate in Company Direction"
+      }
+    }
+  ],
+  "returner": [
+    {
+      "level": "early",
+      "stage": "Two years out",
+      "headline": "Back after parental leave",
+      "why": "The break is stated in one line, in the employment history, without apology or explanation beyond the fact of it. That is the whole technique: an unexplained two-year hole invites the reader to invent a reason, and a plain line closes the question in four words.",
+      "template_id": "modern_minimalist",
+      "data": {
+        "full_name": "Verity Lansdowne",
+        "title": "Marketing Manager",
+        "location": "Norwich, UK",
+        "phone": "+44 7700 900418",
+        "email": "v.lansdowne@example.com",
+        "linkedin": "linkedin.com/in/verity-lansdowne-example",
+        "website": "",
+        "summary": "- Marketing manager with six years in B2B software, returning after two years of full-time childcare.\n- Kept current through freelance work and a certification; ready for a full-time role from September.",
+        "skills": "Marketing: campaign planning, demand generation, content strategy, product marketing\nTools: HubSpot, Salesforce, Google Ads, GA4, Webflow, Figma\nAnalysis: attribution reporting, funnel analysis, budget forecasting\nOther: line management of 3, agency management",
+        "experience": "Career break — full-time childcare | Norwich, UK | Sep 2023 - Present\n- Two years out to care for two young children. Took freelance projects from early 2025 and completed a HubSpot certification.\n---\nFreelance Marketing Consultant | Self-employed | Norwich, UK | Feb 2025 - Present\n- Two retained clients: a legal-tech startup and a manufacturing firm.\n- Rebuilt one client's email programme; open rate went from 14% to 31% by segmenting a list that had been sent to as one block.\n---\nMarketing Manager | Brackenhill Software | Norwich, UK | Jan 2020 - Aug 2023\n- Owned demand generation for a £4m ARR product; grew marketing-sourced pipeline 45% in two years.\n- Managed three people and a £320k annual budget.\n- Launched the partner co-marketing programme that became a fifth of new pipeline by 2023.",
+        "education": "BA Marketing and Communications (2:1) | University of East Anglia | Sep 2013 - Jun 2016",
+        "projects": "",
+        "publications": "",
+        "certifications": "HubSpot Marketing Software Certification (2025)\nGoogle Ads Search Certification"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Five years out",
+      "headline": "Long break, deliberate re-entry",
+      "why": "A long absence needs more than a line — it needs evidence that the skills are current, which is what the retraining and volunteering are doing here. The format is skills-first because a reverse-chronological list would put a five-year gap in the most prominent position on the page.",
+      "template_id": "functional_skills",
+      "data": {
+        "full_name": "Cormac Featherstone",
+        "title": "Finance Business Partner",
+        "location": "Belfast, UK",
+        "phone": "+44 7700 900682",
+        "email": "c.featherstone@example.com",
+        "linkedin": "linkedin.com/in/cormac-featherstone-example",
+        "website": "",
+        "summary": "- Qualified accountant with nine years in industry finance, returning after five years caring for a parent.\n- Practising certificate maintained throughout; CPD current; treasurer of a housing charity for the last three of those years.",
+        "skills": "Financial: management accounts, budgeting and forecasting, variance analysis, statutory reporting under FRS 102\nSystems: SAP, Sage 200, Power BI, Excel including Power Query\nBusiness partnering: budget-holder support, investment appraisal, board reporting\nGovernance: charity SORP, audit liaison, internal controls",
+        "experience": "Career break — full-time carer | Belfast, UK | Mar 2020 - Present\n- Five years caring for a parent with dementia. Kept ACA membership and CPD current throughout.\n---\nHonorary Treasurer | Lagan Valley Housing Trust | Belfast, UK | Jan 2022 - Present\n- Treasurer of a charity with a £1.8m turnover and 40 units of supported housing.\n- Rebuilt the management accounts pack the board sees monthly; the previous one was a single spreadsheet nobody read.\n- Led the tender that changed auditor and cut the audit fee by 22%.\n---\nFinance Business Partner | Crannog Manufacturing | Belfast, UK | Jun 2016 - Feb 2020\n- Partnered three operations managers with a combined £24m cost base.\n- Built the standard costing model that exposed a loss-making product line, since discontinued.\n- Cut the monthly close from nine working days to five.\n---\nManagement Accountant | Crannog Manufacturing | Belfast, UK | Sep 2011 - May 2016",
+        "education": "ACA, Institute of Chartered Accountants in England and Wales | Qualified 2014\n---\nBSc Accounting (2:1) | Queen's University Belfast | Sep 2007 - Jun 2010",
+        "projects": "",
+        "publications": "",
+        "certifications": "ACA (member in good standing, CPD current)"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Returning at a senior level",
+      "headline": "Back from a sabbatical, senior role",
+      "why": "At senior level the break is barely the story — the scope is. The gap is stated once and then the CV gets on with two decades of accountability. Compare this with the early-career returner above: the more you have done, the less the absence needs to be managed.",
+      "template_id": "graduate_entry",
+      "data": {
+        "full_name": "Adeline Marchetti-Hale",
+        "title": "Director of Engineering",
+        "location": "Edinburgh, UK",
+        "phone": "+44 7700 900537",
+        "email": "a.marchettihale@example.com",
+        "linkedin": "linkedin.com/in/adeline-marchetti-hale-example",
+        "website": "",
+        "summary": "- Engineering director with sixteen years in payments and infrastructure, three of them leading a group of 60.\n- Took an eighteen-month sabbatical from mid-2024; returning to a director-level role.",
+        "skills": "Leadership: engineering groups to 60, four direct reports, hiring and levelling frameworks, budget to £7m\nTechnical: distributed systems, payments infrastructure, platform migration, incident management\nOrganisational: team topology, on-call design, technical strategy, board-level reporting",
+        "experience": "Sabbatical | Edinburgh, UK | Jul 2024 - Present\n- Eighteen months out by choice after a long build. Mentored three engineering managers through a returners programme during it.\n---\nDirector of Engineering | Silverbank Payments | Edinburgh, UK | Feb 2021 - Jun 2024\n- Led an engineering group of 60 across five teams, with a £7m budget and four managers reporting in.\n- Took the core ledger through a migration off a 14-year-old mainframe dependency, delivered in 20 months with no customer-visible downtime.\n- Rebuilt levelling and promotion after an internal review found women were being promoted a median of nine months later; the gap closed within two cycles.\n- Cut change failure rate from 18% to 4% by making deployment continuous rather than fortnightly.\n---\nHead of Platform Engineering | Silverbank Payments | Edinburgh, UK | Aug 2017 - Jan 2021\n- Built the platform function from three engineers to eighteen.\n---\nEngineering Manager, then Senior Engineer | Cairnhill Systems | Edinburgh, UK | Sep 2009 - Jul 2017",
+        "education": "BEng Software Engineering (First Class) | University of Edinburgh | Sep 2005 - Jun 2009",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "executive_clevel": [
+    {
+      "level": "early",
+      "stage": "Divisional managing director",
+      "headline": "Running one division of a group",
+      "why": "The first genuinely executive CV. Everything is P&L, headcount and the decisions nobody else could make — but it still names the operational detail, because a divisional MD is close enough to the work to be asked about it. The two-page format is expected at this level, not a failure of editing.",
+      "template_id": "executive_twopage",
+      "data": {
+        "full_name": "Peregrine Ashworth-Blane",
+        "title": "Managing Director",
+        "location": "Birmingham, UK",
+        "phone": "+44 7700 900775",
+        "email": "p.ashworthblane@example.com",
+        "linkedin": "linkedin.com/in/peregrine-ashworth-blane-example",
+        "website": "",
+        "summary": "- Managing director of the industrial division of a listed group: £240m revenue, 900 staff, four sites.\n- Took the division from a £6m operating loss to £19m operating profit across four years without closing a site.",
+        "skills": "Commercial: £240m P&L, pricing strategy, key account negotiation, M&A integration\nOperational: four manufacturing sites, lean transformation, capital programmes to £30m\nPeople: 900 staff, executive team of 7, union relationships across three recognised unions\nGovernance: group board reporting, health and safety accountability, ESG reporting",
+        "experience": "Managing Director, Industrial Division | Kestrel Industries plc | Birmingham, UK | Mar 2021 - Present\n- Turned a £6m operating loss into £19m operating profit over four years on broadly flat revenue, through pricing discipline and the exit of two loss-making product families.\n- Led the £30m capital programme that consolidated three ageing lines into one automated facility; payback came in at 3.1 years against a 4.5-year business case.\n- Renegotiated the group's three largest supply agreements, taking £8m out of annual input cost.\n- Reduced reportable safety incidents from 31 a year to 6, having made it the first item on every management meeting agenda rather than the last.\n- Integrated a £40m acquisition in eleven months; the retention rate of acquired senior staff was 89% at two years.\n---\nOperations Director, Industrial Division | Kestrel Industries plc | Birmingham, UK | Jan 2018 - Feb 2021\n- Ran four sites and 700 staff; took OEE from 58% to 74%.\n- Led the response to a major customer quality escalation that had put a £30m contract at risk; contract retained and extended.\n---\nGeneral Manager | Thornaby Precision | Middlesbrough, UK | Apr 2013 - Dec 2017\n- Ran a single 180-person site through a period of rapid growth in aerospace demand.",
+        "education": "MBA | Warwick Business School | Sep 2011 - Jul 2014\n---\nBEng Manufacturing Engineering (First Class) | University of Birmingham | Sep 1999 - Jun 2003",
+        "projects": "",
+        "publications": "",
+        "certifications": "Chartered Engineer (CEng), IMechE\nNEBOSH National General Certificate"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Group CFO",
+      "headline": "CFO of a listed group",
+      "why": "A functional chief officer, where credibility comes from the transactions and the governance rather than from operational detail. The financing events are named with sizes because that is the currency of the role — and the audit and board work is not decoration, it is half of what a CFO is hired for.",
+      "template_id": "executive_elegant",
+      "data": {
+        "full_name": "Rosamund Thackeray-Vaux",
+        "title": "Chief Financial Officer",
+        "location": "London, UK",
+        "phone": "+44 7700 900902",
+        "email": "r.thackerayvaux@example.com",
+        "linkedin": "linkedin.com/in/rosamund-thackeray-vaux-example",
+        "website": "",
+        "summary": "- Group CFO of a listed business services company: £680m revenue, 5,000 staff, main market listing.\n- Have taken a company through an IPO, two refinancings and one contested takeover approach.",
+        "skills": "Capital markets: IPO, secondary raises, £400m refinancing, rating agency relationships, investor relations\nGovernance: plc audit committee, FRC and TCFD reporting, internal audit, risk framework\nTransactions: nine acquisitions, two disposals, one contested approach defended\nFinance function: 140 staff across six countries, shared service design, ERP transformation",
+        "experience": "Group Chief Financial Officer | Wentworth Services plc | London, UK | Sep 2020 - Present\n- Took the group to a main market IPO in 2022, raising £185m at a valuation of £820m; the shares have traded above issue since.\n- Refinanced £400m of debt in 2024, extending maturity by four years and cutting the blended cost of debt by 140 basis points.\n- Led the defence against an unsolicited approach in 2023; the board rejected it and the share price is 34% above the offer at the time of writing.\n- Rebuilt a finance function of 140 across six countries into a shared service model, reducing cost as a percentage of revenue from 1.9% to 1.1%.\n- Completed nine bolt-on acquisitions totalling £210m, with post-acquisition synergy targets met on seven.\n---\nDeputy CFO, then Group Financial Controller | Wentworth Services plc | London, UK | Jun 2016 - Aug 2020\n- Led the IFRS 16 and IFRS 15 transitions and the readiness programme for the listing.\n---\nFinance Director, International | Bellhaven Group | London, UK | Apr 2011 - May 2016\n- Finance lead for 14 markets outside the UK, £190m revenue.",
+        "education": "ACA, Institute of Chartered Accountants in England and Wales | Qualified 2006\n---\nBA Philosophy, Politics and Economics (First Class) | University of Oxford | Sep 2000 - Jun 2003",
+        "projects": "",
+        "publications": "",
+        "certifications": "ACA\nNon-Executive Director, Hartsmere Water (Audit Committee Chair), 2021 - present"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Chief executive",
+      "headline": "CEO, whole-company accountability",
+      "why": "The shortest and hardest to write. A chief executive's CV is a list of the four or five things that would not have happened otherwise, and nothing else — no tools, no methods, no adjectives. Note the board and non-executive roles: at this level those are qualifications, not hobbies.",
+      "template_id": "consulting_premium",
+      "data": {
+        "full_name": "Isadora Kenningham",
+        "title": "Chief Executive Officer",
+        "location": "London, UK",
+        "phone": "+44 7700 900140",
+        "email": "i.kenningham@example.com",
+        "linkedin": "linkedin.com/in/isadora-kenningham-example",
+        "website": "",
+        "summary": "- Chief executive of a £1.2bn healthcare services group, 11,000 staff across the UK and Ireland.\n- Took the business through a turnaround, a strategic repositioning and the succession of two-thirds of the executive team.",
+        "skills": "Board: plc board, remuneration and nomination committees, shareholder engagement, regulator relationships\nStrategy: turnaround, portfolio repositioning, market entry, cultural change at scale\nSector: healthcare services, regulated environments (CQC, HIQA), public and private payors",
+        "experience": "Chief Executive Officer | Ardenmere Health Group | London, UK | Jan 2019 - Present\n- Inherited a business losing £34m a year and took it to £96m operating profit within four years, without selling the core estate.\n- Exited three non-core businesses for £280m and reinvested in the community services division, which has since tripled in revenue.\n- Rebuilt the executive team, replacing six of nine roles; the top 100 leaders' engagement score rose from the 21st to the 78th percentile.\n- Took the group's CQC ratings from 11 sites requiring improvement to 2, over three inspection cycles.\n- Held the business through a national workforce crisis with agency spend down 40% while vacancy rates fell.\n---\nChief Operating Officer | Ardenmere Health Group | London, UK | Mar 2016 - Dec 2018\n- Ran operations for 240 sites and 9,000 staff.\n---\nManaging Director, UK | Corvallis Care | Manchester, UK | Feb 2011 - Feb 2016\n- Grew the UK business from £90m to £310m revenue, organically and through four acquisitions.",
+        "education": "MBA | London Business School | Sep 2007 - Jun 2009\n---\nBSc Nursing | King's College London | Sep 1995 - Jun 1998",
+        "projects": "",
+        "publications": "",
+        "certifications": "Non-Executive Director, Brightwater Housing Association, 2020 - present\nMember, Royal College of Nursing"
+      }
+    }
+  ],
+  "freelancer": [
+    {
+      "level": "early",
+      "stage": "Building a client list",
+      "headline": "Two years out on their own",
+      "why": "A freelance CV has a problem an employed one does not: a list of short engagements can read as instability. The fix here is to group the work by what it was rather than by employer, and to name the client type — sector and size — where the client itself cannot be named.",
+      "template_id": "tech_clean_colorful",
+      "data": {
+        "full_name": "Torsten Hebblethwaite",
+        "title": "Freelance Frontend Developer",
+        "location": "Brighton, UK",
+        "phone": "+44 7700 900359",
+        "email": "torsten@example.com",
+        "linkedin": "linkedin.com/in/torsten-hebblethwaite-example",
+        "website": "torstenh.example.com",
+        "summary": "- Freelance frontend developer, two years independent after four years employed.\n- Fourteen projects delivered for eleven clients; six have come back for more work, which is the number that matters.",
+        "skills": "Frontend: React, TypeScript, Next.js, Tailwind, Astro\nQuality: Playwright, Vitest, Lighthouse and Core Web Vitals, WCAG AA\nBackend enough to be useful: Node, Postgres, Vercel, Cloudflare Workers\nWorking practice: fixed-scope quotes, weekly written updates, handover documentation",
+        "experience": "Freelance Frontend Developer | Self-employed | Brighton, UK | Sep 2024 - Present\n- Rebuilt the booking flow for a regional hotel group (nine properties); mobile conversion rose 26% and the old flow's 11 form fields became 5.\n- Delivered a marketing site for a Series A fintech that scores 98+ on Lighthouse across all four metrics, replacing one that scored 44.\n- Took over an abandoned React codebase for a logistics SME, cleared 340 TypeScript errors and got it deploying again in three weeks.\n- Six of eleven clients have commissioned further work; two are on retainer.\n---\nFrontend Developer | Selsey Digital | Brighton, UK | Jul 2020 - Aug 2024\n- Agency work across roughly 20 client projects; led frontend on the six largest.\n- Built the agency's component library, which cut new-project setup from three days to half a day.",
+        "education": "BSc Computer Science (2:1) | University of Sussex | Sep 2017 - Jun 2020",
+        "projects": "Open source — astro-a11y-audit: Accessibility checking plugin for Astro builds; around 1,200 weekly downloads.\n---\nSeaside Tide Times: Small progressive web app for the Sussex coast, about 4,000 monthly users, built to learn offline-first patterns properly.",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Established practice",
+      "headline": "Eight years, named clients and rates",
+      "why": "An established freelance is selling a practice, not a job history. This one leads with what it costs to engage them and what they are hired to do — the clarity a prospective client actually wants — and the portfolio piece is treated as the evidence rather than the employment dates.",
+      "template_id": "layered_papercard",
+      "data": {
+        "full_name": "Anouk Verstraeten",
+        "title": "Brand and Editorial Designer",
+        "location": "Amsterdam, Netherlands",
+        "phone": "+44 7700 900468",
+        "email": "anouk@example.com",
+        "linkedin": "linkedin.com/in/anouk-verstraeten-example",
+        "website": "anoukverstraeten.example.com",
+        "summary": "- Independent brand and editorial designer, eight years, working mainly with cultural institutions and publishers.\n- Typically engaged for three to six month identity projects; day rate €650, project quotes preferred.",
+        "skills": "Design: brand identity, editorial and print, typography, art direction, packaging\nTools: InDesign, Illustrator, Figma, After Effects, Glyphs\nProduction: print specification, paper and finish selection, press supervision\nLanguages: Dutch (native), English (fluent), German (working)",
+        "experience": "Independent Designer | Self-employed | Amsterdam, Netherlands | Mar 2018 - Present\n- Rebranded a national dance company across identity, signage, print and digital; the work ran for four seasons and won a Dutch Design Award nomination.\n- Art-directed a quarterly architecture journal for five years and 20 issues; subscriptions grew 40% over that period.\n- Designed identity and packaging for an independent coffee roaster now stocked in 60 shops; the original brief was for a logo alone.\n- Regular collaborators: two studios I subcontract to, and a printer I have used for six years — the relationships that make deadlines survivable.\n---\nSenior Designer | Studio Havermans | Rotterdam, Netherlands | Sep 2015 - Feb 2018\n- Editorial and identity work for cultural clients; led four projects in the final year.",
+        "education": "BA Graphic Design (cum laude) | Willem de Kooning Academy | Sep 2011 - Jun 2015",
+        "projects": "Nationaal Danshuis — full identity: Wordmark, motion identity, season campaigns, wayfinding and 40+ print pieces across four seasons.\n---\nKwartaal Architectuur — art direction: Twenty issues; established the grid and typographic system still in use.\n---\nSelf-initiated — Letters of the Low Countries: Ongoing photographic archive of vernacular Dutch shop lettering, exhibited twice.",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Contractor, day rate",
+      "headline": "Interim, inside and outside IR35",
+      "why": "Contracting is not the same trade as freelancing, and the CV differs accordingly: it is written for an agency and a hiring manager filling a specific gap. Availability, rate, notice and IR35 status are stated up front, because those four facts decide whether the rest gets read at all.",
+      "template_id": "modern_minimalist",
+      "data": {
+        "full_name": "Lachlan Pemberton-Quaye",
+        "title": "Interim Programme Director",
+        "location": "Reading, UK",
+        "phone": "+44 7700 900620",
+        "email": "l.pembertonquaye@example.com",
+        "linkedin": "linkedin.com/in/lachlan-pemberton-quaye-example",
+        "website": "",
+        "summary": "- Interim programme director, eleven years contracting on ERP and finance transformation.\n- Available from April 2026, four weeks' notice, £850/day, engagements considered inside or outside IR35.",
+        "skills": "Programmes: ERP implementation (SAP S/4HANA, Oracle Fusion), finance transformation, PMO establishment, recovery of failing programmes\nCommercial: budgets to £45m, systems integrator management, contract renegotiation\nSectors: utilities, manufacturing, higher education, local government\nQualifications: MSP Practitioner, PRINCE2 Practitioner, Managing Benefits",
+        "experience": "Interim Programme Director | Thameswater Regional Utilities | Reading, UK | Jan 2025 - Present\n- Brought in to recover an S/4HANA programme 14 months late and £11m over; replanned to a phased go-live and delivered phase one within six months.\n- Renegotiated the systems integrator contract, converting time-and-materials to a fixed-price outcome and taking £4.2m out of the remaining cost.\n---\nInterim Transformation Director | Brayford University | Lincoln, UK | Mar 2023 - Dec 2024\n- Led finance and HR systems replacement for a 19,000-student institution, £16m programme, delivered on time.\n- Established the PMO the university retained after I left.\n---\nInterim Programme Manager | Calderstone Manufacturing | Leeds, UK | Jun 2021 - Feb 2023\n- Oracle Fusion rollout across seven sites in four countries; £45m programme.\n---\nEarlier contracts | Various clients | UK | Jun 2015 - May 2021\n- Six engagements across utilities and local government; references available for each.",
+        "education": "BSc Information Systems (2:1) | Loughborough University | Sep 2007 - Jun 2010",
+        "projects": "",
+        "publications": "",
+        "certifications": "MSP Practitioner\nPRINCE2 Practitioner\nManaging Benefits Practitioner"
+      }
+    }
+  ]
+}

@@ -1,0 +1,481 @@
+{
+  "mechanical_engineer": [
+    {
+      "level": "early",
+      "headline": "Graduate scheme, a year in industry behind her",
+      "why": "A graduate mechanical CV is read for whether you can be signed off toward registration, so the development scheme and the accrediting body sit in the opening lines rather than at the bottom. The placement year does the heavy lifting: those drawings went to a shop floor, not to a marker.",
+      "template_id": "swiss_grid",
+      "data": {
+        "full_name": "Erin Prendergast",
+        "title": "Graduate Mechanical Engineer",
+        "location": "Derby, UK",
+        "phone": "+44 7700 900265",
+        "email": "erin.prendergast@example.com",
+        "linkedin": "linkedin.com/in/erin-prendergast-example",
+        "website": "",
+        "summary": "- MEng graduate, ten months into a two-year development scheme at a rail traction supplier; registered on the IMechE Monitored Professional Development Scheme, CEng review targeted for 2030.\n- The year in industry was spent on a live gearbox programme, so the drawings below were made and inspected rather than marked.",
+        "skills": "CAD and drawing: SolidWorks, Creo Parametric, GD&T to BS 8888 and ISO 1101, tolerance stack-ups\nAnalysis: ANSYS Mechanical (static and modal), bearing and shaft hand calculations, MATLAB\nManufacturing: DFM reviews with machinists, first-article inspection, CMM reports, weld symbols to ISO 2553\nProcess: ISO 9001, 8D problem solving, DFMEA contributor, engineering change routing",
+        "experience": "Graduate Mechanical Engineer | Halberd Traction Systems | Derby, UK | Sep 2025 - Present\n- Third rotation of four; currently in the gearbox design cell, previously in test and in supplier quality.\n- Redrew the tolerance scheme on a pinion housing after a stack-up analysis showed the assembly could bind at extremes of tolerance; the change removed a hand-fitting operation on 400 units a year.\n- Ran the 500-hour endurance rig for a bearing supplier change, logged the vibration data and wrote the qualification report that released the part.\n- Took over the drawing standard on the graduate induction after finding four title-block conventions in one assembly.\n---\nEngineering Placement Student | Halberd Traction Systems | Derby, UK | Jul 2023 - Aug 2024\n- Sat inside the gearbox programme for twelve months and released eleven detail drawings and two assembly drawings to manufacture.\n- Built the parametric SolidWorks model that generates the shim pack for six housing variants, cutting the drawing effort for a new variant from three days to about four hours.",
+        "education": "MEng (Hons) Mechanical Engineering, 2:1 | University of Sheffield | Sep 2020 - Jun 2025\n---\nA-levels: Maths (A), Physics (A), Design and Technology (B) | Chesterfield Sixth Form College | Sep 2018 - Jun 2020",
+        "projects": "Final-year project - Fatigue life of press-fit gear hubs: strain-gauged a test hub through 2 million cycles and compared the measured life against an ANSYS prediction, which was 22% optimistic until the surface finish factor was corrected. Graded 76.\n---\nFormula Student, suspension sub-team (2023 and 2024): designed and made the front upright, taking 340g out of the 2023 part at the same factor of safety.",
+        "publications": "",
+        "certifications": "IMechE Associate Member (AMIMechE) - MPDS development scheme registered October 2025\nCertified SolidWorks Associate (CSWA), 2022\nIOSH Working Safely, 2025"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Seven years, pressure equipment design",
+      "why": "Notice how much of this CV is standards. In pressure and process work the codes you have actually designed to are the qualification a hiring engineer reads for, and PD 5500 against ASME VIII is a real difference in what you can be given. The project values live inside the bullets here, which is what a mid-level CV can carry without a separate project block.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Tobias Mahlangu",
+        "title": "Mechanical Design Engineer (Pressure Systems), CEng MIMechE",
+        "location": "Middlesbrough, UK",
+        "phone": "+44 7700 900145",
+        "email": "t.mahlangu@example.com",
+        "linkedin": "linkedin.com/in/tobias-mahlangu-example",
+        "website": "",
+        "summary": "- Mechanical design engineer, seven years on pressure vessels, heat exchangers and pipework for chemical and hydrogen clients; CEng MIMechE since 2025.\n- Owns designs from datasheet through to the Notified Body file, and goes to site for the hydrotest rather than sending the calculations and hoping.",
+        "skills": "Design codes: PD 5500, BS EN 13445, ASME VIII Division 1, ASME B31.3, PED 2014/68/EU and UKCA conformity assessment\nAnalysis: PV Elite, ANSYS Mechanical, local load checks to WRC 537, nozzle flexibility\nCAD: Autodesk Inventor, AutoCAD Plant 3D, Navisworks clash review\nFabrication and quality: WPS and PQR review, NDT witness (UT, PT, RT), PWHT charts, ITPs, Written Schemes of Examination under PSSR 2000\nMaterials: 316L and duplex stainless, low-temperature carbon steels, hydrogen embrittlement",
+        "experience": "Mechanical Design Engineer | Kelvinhaugh Process Engineering | Middlesbrough, UK | Apr 2022 - Present\n- Lead mechanical designer on a £4.6m hydrogen dryer skid: eight vessels, four to PED Category IV, all released through the Notified Body first time with no non-conformance raised.\n- Rewrote the company's vessel calculation template after two jobs came back from the Notified Body on the same nozzle reinforcement question; the query has not recurred in eleven submissions since.\n- Cut plate cost on a repeat 4.2m diameter separator by 9% by re-running the design to BS EN 13445 instead of PD 5500 and taking the higher allowable stress, which the client's spec permitted and nobody had checked.\n- Witnessed hydrotest and final inspection on 23 vessels at three fabricators, including two in Poland, and cleared the punch lists on site.\n---\nMechanical Engineer | Draycott Fabrications | Stockton-on-Tees, UK | Sep 2018 - Mar 2022\n- Detailed and released around 60 storage tanks and low-pressure vessels a year for water and food clients.\n- Found the root cause of a recurring weld-repair rate on 6mm duplex shells - a preheat control problem, not a welder problem - and the repair rate dropped from 14% of joints to under 3%.\n- Held the ISO 9001 document control for the design office through two surveillance audits.",
+        "education": "BEng (Hons) Mechanical Engineering, First Class | University of Strathclyde | Sep 2014 - Jun 2018",
+        "projects": "",
+        "publications": "",
+        "certifications": "CEng MIMechE - Engineering Council registration, March 2025\nCSWIP 3.1 Welding Inspector, 2023 (valid to 2028)\nPCN Level 2 Ultrasonic Testing, 2021\nIOSH Managing Safely, 2022\nCCNSG National Safety Passport, renewed 2025"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Fifteen years, now runs the engineering function",
+      "why": "The tooling list has almost gone. What replaces it is compliance ownership and money: a senior mechanical CV is read for what you are allowed to sign, what budget you hold and how many engineers answer to you. The selected-projects block appears at this level because contract values are now part of the evidence.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Deniz Aksoy",
+        "title": "Engineering Manager (Mechanical), CEng MIMechE",
+        "location": "Coventry, UK",
+        "phone": "+44 7700 900342",
+        "email": "deniz.aksoy@example.com",
+        "linkedin": "linkedin.com/in/deniz-aksoy-example",
+        "website": "",
+        "summary": "- Engineering manager at a special-purpose machinery builder: 14 engineers across mechanical design, controls and commissioning, and a £5.2m annual engineering budget.\n- Signs the technical file and the Declaration of Conformity on every machine that leaves the building, which is the part of the job that decides how the department is run.",
+        "skills": "Leadership: 14 engineers in three sub-teams, hiring and appraisals, engineering budget of £5.2m\nCompliance: Supply of Machinery (Safety) Regulations 2008, BS EN ISO 12100, ISO 13849-1 performance levels, UKCA and CE technical files\nEngineering: automated assembly and test, six-axis robot integration, cycle-time and tolerance modelling, DFMEA and PFMEA\nCommercial: fixed-price machine contracts to £3.8m, make-versus-buy, supplier development, warranty cost as a tracked KPI",
+        "experience": "Engineering Manager | Ravenglass Automation | Coventry, UK | Feb 2021 - Present\n- Run the engineering function for a business turning over £31m on bespoke assembly and test machinery, typically eleven live machine builds at once.\n- Warranty cost fell from 4.1% of machine value to 1.3% over three years after I made design reviews a gate rather than a courtesy, with a named reviewer and a signed checklist.\n- Rebuilt the department after losing five engineers in one year: changed the salary bands, split design from commissioning so people stopped living in hotels, and brought attrition to one leaver in the last two years.\n- Chair the weekly engineering change board; scope creep after contract award is down from an average of £64k a machine to £19k.\n---\nPrincipal Mechanical Engineer | Ravenglass Automation | Coventry, UK | Jun 2017 - Jan 2021\n- Technical lead on the largest machine the business had built, a £3.8m battery module assembly line, delivered eleven weeks late but at margin.\n- Introduced parametric standard modules for indexing tables and part-present sensing, taking roughly 300 design hours out of a typical build.\n- Mentored four graduates through MPDS; three are now chartered.\n---\nSenior Design Engineer | Torbeck Machine Tool | Rugby, UK | Sep 2011 - May 2017\n- Designed grinding and honing machines for automotive tier-one customers, to IATF 16949 requirements.\n- Redesigned a spindle assembly whose bearing failures were costing around £180k a year in warranty.",
+        "education": "MEng Mechanical Engineering | University of Nottingham | Sep 2007 - Jun 2011",
+        "projects": "Battery module assembly line, £3.8m: 42-station line at 18 seconds a part. Technical lead through design, build and 12-week commissioning on the customer's site.\n---\nAerospace bracket machining cell, £1.9m: robot-tended, in-process CMM gauging, ISO 13849 PLd safety functions, and a first-off routine that removed a full-time inspector from the customer's cost base.\n---\nMedical device assembly machine, £2.4m: built under an ISO 13485 customer QMS with full IQ/OQ/PQ documentation, validated in eight weeks against a fourteen-week plan.",
+        "publications": "",
+        "certifications": "CEng MIMechE - Engineering Council registration, 2016\nIMechE Professional Review Interviewer since 2021\nTUV Rheinland Functional Safety Engineer (Machinery), 2019\nNEBOSH National General Certificate, 2018"
+      }
+    }
+  ],
+  "civil_engineer": [
+    {
+      "level": "early",
+      "headline": "Fourteen months at a consultancy, training agreement running",
+      "why": "The line a civil consultancy looks for first is not the degree class - it is whether you are on an approved Training Agreement with a named Supervising Civil Engineer, because that tells them how much of your development they will have to build from scratch. Everything else here is software and codes you have actually opened.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Lucia Sandoval",
+        "title": "Graduate Civil Engineer",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900232",
+        "email": "lucia.sandoval@example.com",
+        "linkedin": "linkedin.com/in/lucia-sandoval-example",
+        "website": "",
+        "summary": "- Graduate civil engineer, fourteen months on highways and drainage schemes at a multidisciplinary consultancy.\n- On an ICE-approved Training Agreement with a named Supervising Civil Engineer; IPD record up to date, Chartered Professional Review targeted for 2030.",
+        "skills": "Design software: AutoCAD Civil 3D, Causeway Flow and Drainage (MicroDrainage), Revit\nStandards: BS EN 1997-1 with UK National Annex, DMRB CD and CG series, Design and Construction Guidance for adoptable sewers, CIRIA C753 SuDS Manual\nSite: setting out with a total station, site diaries, ITP witnessing, CDM 2015 designer duties\nOther: technical notes and design statements, flood risk assessment inputs, S278 and S38 submission packs",
+        "experience": "Graduate Civil Engineer | Thorncliffe Reed Consulting | Bristol, UK | Jul 2025 - Present\n- Produced the drainage design and Causeway Flow model for a 190-unit residential scheme, taken through to a technical approval from the sewerage undertaker with one round of comments.\n- Drew and checked the S278 highway works package for a district-centre access, including visibility splays, kerb radii and a signalised junction layout.\n- Spent nine weeks on site as an assistant resident engineer on a £2.4m culvert replacement, recording daily progress and witnessing concrete pours.\n- Rebuilt the team's Civil 3D corridor template after two schemes needed the same manual fix; it is now the office default.\n---\nSummer Placement, Civil Engineering | Thorncliffe Reed Consulting | Cardiff, UK | Jun 2024 - Sep 2024\n- Processed topographic survey and produced existing-ground surfaces for four highway schemes.\n- Assisted on a brownfield flood risk assessment, including the hydraulic model runs and sensitivity cases.",
+        "education": "MEng (Hons) Civil Engineering, 2:1 | Cardiff University | Sep 2020 - Jun 2025\n---\nA-levels: Maths (A), Physics (B), Geography (A) | Filton Sixth Form, Bristol | Sep 2018 - Jun 2020",
+        "projects": "Master's dissertation - Permeable pavement performance after ten years in service: measured infiltration across six adopted car parks and found median performance at 31% of the as-built design rate, with maintenance regime the dominant variable. Graded 71.\n---\nGroup design project: a pedestrian and cycle bridge over a disused railway cutting, taken to preliminary steel truss sizing to BS EN 1993 and a buildability review with a contractor mentor.",
+        "publications": "",
+        "certifications": "ICE Graduate Member (GMICE) - Training Agreement registered September 2025\nCSCS Academically Qualified Person card, valid to 2030\nEmergency First Aid at Work, 2025\nTemporary Works Awareness (CITB), 2025\nIOSH Working Safely, 2025"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Seven years buildings, chartered last year",
+      "why": "A structural CV is judged on the project list, and the list has to carry four things per line: what the building was, what it cost, what you personally designed, and what changed because of you. Note that the chartership line names the institution and the year - 'chartered engineer' on its own does not tell a reader which review you passed.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Tsedale Gebremariam",
+        "title": "Senior Structural Engineer, CEng MICE",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900282",
+        "email": "t.gebremariam@example.com",
+        "linkedin": "linkedin.com/in/tsedale-gebremariam-example",
+        "website": "",
+        "summary": "- Structural engineer, seven years on building structures from £1m refurbishments to a £48m mixed-use frame; CEng MICE registered March 2025.\n- Half the work is existing buildings, which means appraisal and intrusive survey specification rather than a clean sheet and a new-build code.",
+        "skills": "Analysis and design: Tekla Structural Designer, Autodesk Robot Structural Analysis, MasterSeries, hand calculations and independent checks\nCodes: BS EN 1990 to 1997 with UK National Annexes - concrete, steel, composite and geotechnical; BS 5975 temporary works; BS 8102 waterproofing\nExisting structures: appraisal to IStructE guidance, intrusive survey scoping, load testing, strengthening in steel plate and carbon fibre, historic cast iron\nBIM and delivery: Revit, ISO 19650, Navisworks federation; RIBA Stages 2 to 5, contractor design portion review, technical query registers",
+        "experience": "Senior Structural Engineer | Marchbank Kirkhope Consulting | Leeds, UK | Sep 2021 - Present\n- Structural lead on a £48m mixed-use scheme: 11-storey post-tensioned flat slab over two basement levels, taken from concept through to construction issue and site support.\n- Cut 340 tonnes of reinforcement out of that frame by moving from a 300mm flat slab to a banded post-tensioned solution, worth about £310k and eleven weeks of programme to the contractor.\n- Appraised a Grade II listed mill conversion where the original cast iron beams had no test data; specified and supervised the load testing that let us keep 70% of the existing frame.\n- Act as the office's independent checker on category 2 designs - about a dozen a year, and the awkward conversations that go with them.\n---\nStructural Engineer | Ardenwold Structures | Manchester, UK | Aug 2018 - Aug 2021\n- Designed steel and concrete frames for education and light industrial buildings, typically £3m to £12m.\n- Rescued a school extension whose piled foundations had been priced against the wrong ground investigation; the redesign to a raft with ground improvement saved £190k and fourteen weeks.\n- Wrote the practice's temporary works procedure after qualifying as a Temporary Works Coordinator.",
+        "education": "MEng (Hons) Civil and Structural Engineering, 2:1 | University of Leeds | Sep 2014 - Jun 2018",
+        "projects": "Ashlar Wharf, Leeds - £48m mixed-use, 11 storeys over two basement levels. Structural lead. Post-tensioned frame, secant piled basement, 340t of reinforcement saved against the concept scheme.\n---\nCastleford Mill conversion - £14m, Grade II listed. Appraisal, load testing and strengthening that retained 70% of the existing cast iron frame.\n---\nBeckhythe Academy - £9.6m teaching block, steel frame with precast planks. Stage 3 to construction issue in eleven weeks against a funding drawdown deadline.",
+        "publications": "",
+        "certifications": "CEng MICE - Engineering Council registration, March 2025\nTemporary Works Coordinator (CITB), 2021, refreshed 2026\nCSCS Professionally Qualified Person card, valid to 2029\nSSSTS - Site Supervisors' Safety Training Scheme, 2023"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Eighteen years, licensed in four states",
+      "why": "This one is American on purpose. In the US the licence is the whole ballgame: a firm hires you for the jurisdictions you can seal drawings in, so the states and the NCEES Record go near the top, and the SE is listed separately from the PE because they are different licences. Compare the credential block with the UK examples for the same role.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Warren Ikehara",
+        "title": "Principal Structural Engineer, PE, SE",
+        "location": "Portland, OR",
+        "phone": "+1 (503) 555-0121",
+        "email": "warren.ikehara@example.com",
+        "linkedin": "linkedin.com/in/warren-ikehara-example",
+        "website": "",
+        "summary": "- Principal structural engineer, 18 years in high-seismic design; leads a 22-person structural group with about $180m of construction value in design at any one time.\n- PE in Oregon, Washington, California and Idaho; SE in Oregon and Washington; NCEES Record holder, so new-state comity typically clears in six weeks.",
+        "skills": "Licensure: PE - OR, WA, CA, ID. SE - OR, WA. NCEES Record holder since 2016\nCodes: ASCE 7-22, ACI 318-19, AISC 341 and 360, IBC 2021, Oregon and Washington Structural Specialty Codes, ASCE 41 for existing buildings\nSeismic: SDC D through F, buckling-restrained braced frames, base isolation, nonlinear response history analysis, ASCE 7 Chapter 16 peer review\nLeadership and delivery: 22 engineers and designers across four offices, QA/QC program owner, design-build and CM/GC, projects from $2m to $90m",
+        "experience": "Principal Structural Engineer | Calder Point Structural | Portland, OR | Mar 2019 - Present\n- Lead the structural group across four offices; grew it from 9 to 22 people while holding utilization between 78% and 84%.\n- Won and delivered the firm's first base-isolated project, a $76m acute care replacement hospital, which opened the healthcare market that now accounts for 38% of revenue.\n- Rebuilt the QA/QC program after an errors-and-omissions claim; independent check is now a scheduled task with a named checker and a signed record, and claims have gone from three in four years to none in six.\n- Serve as seismic peer reviewer on outside projects, four to six a year, which is where most of our referral work comes from.\n---\nSenior Structural Engineer | Calder Point Structural | Portland, OR | Jun 2013 - Feb 2019\n- Engineer of record on 31 projects totaling about $340m of construction value, mostly K-12, higher education and mid-rise residential.\n- Introduced buckling-restrained braced frames to the firm on a $42m student housing project, cutting foundation costs by roughly $900k against the SCBF alternate.\n- Ran the ASCE 41 evaluation and retrofit of a 1928 unreinforced masonry civic building, kept in occupancy through construction.\n---\nStructural Engineer | Wilsonbrook Engineering | Seattle, WA | Aug 2007 - May 2013\n- Design and detailing for steel and concrete buildings; took the PE in 2011 and the SE in 2014.\n- Field engineer on two projects through construction, which is why my details still get built the way they are drawn.",
+        "education": "MS Civil Engineering (Structural) | Oregon State University | Sep 2005 - Jun 2007\n---\nBS Civil Engineering | University of Washington | Sep 2001 - Jun 2005",
+        "projects": "Kellerman Regional Medical Center, $76m - base-isolated acute care replacement, 210,000 sq ft, Risk Category IV. Principal-in-charge and engineer of record.\n---\nHarrow Street Student Housing, $42m - 8-story Type IIIA over concrete podium, BRBF lateral system, CM/GC with a guaranteed maximum price set at 60% design.\n---\nCounty Courthouse retrofit, $18m - ASCE 41 retrofit of a 1928 URM structure, occupied throughout, historic facade retained under State Historic Preservation Office review.",
+        "publications": "",
+        "certifications": "Professional Engineer (PE) - Oregon, Washington, California, Idaho\nStructural Engineer (SE) - Oregon, Washington\nNCEES Record holder\nStructural Engineers Association of Oregon - seismology committee since 2018\nOSHA 30-Hour Construction, 2021"
+      }
+    }
+  ],
+  "electrical_engineer": [
+    {
+      "level": "early",
+      "headline": "Six years on the tools, now designing",
+      "why": "An electrician moving into design is not a thin CV, it is a differently shaped one - so the trade history keeps its own dated entries rather than being compressed into a line about 'practical background'. The testing and inspection qualifications stay listed, because they are what make this candidate more useful on a site visit than a straight graduate.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Kirsty Balfour",
+        "title": "Electrical Design Engineer (Building Services)",
+        "location": "Glasgow, UK",
+        "phone": "+44 7700 900459",
+        "email": "kirsty.balfour@example.com",
+        "linkedin": "linkedin.com/in/kirsty-balfour-example",
+        "website": "",
+        "summary": "- Electrical design engineer, fourteen months at an M&E consultancy, after six years as an approved electrician - the BEng was done part-time on day release alongside them.\n- Registered with the IET and preparing an IEng application; designs get drawn the way they will actually be installed, because I have installed them.",
+        "skills": "Design: Trimble ProDesign (Amtech), DIALux evo, Revit MEP, AutoCAD, load schedules and diversity calculations\nStandards: BS 7671 18th Edition, BS 5266-1 emergency lighting, BS 5839-1 fire detection, CIBSE Guides A and K, Building Regulations Parts L, M and P\nTesting and inspection: initial verification and periodic inspection to BS 7671 Part 6, EICRs, insulation resistance, Zs and RCD testing\nInstallation knowledge: SWA and MICC termination, containment routes and fill, three-phase distribution boards, supply upgrades and DNO liaison",
+        "experience": "Electrical Design Engineer | Aldermoor Building Services | Glasgow, UK | Mar 2025 - Present\n- Electrical designer on eleven schemes so far, mostly primary schools, GP surgeries and a 62-bed care home; scheme values £400k to £3.1m.\n- Reworked the small power and containment strategy on a care home after walking the shell with the installing contractor; the change removed about 340m of tray and two builder's-work openings.\n- Set up a company DIALux template with the standard client lux and uniformity criteria, cutting the lighting design time on a classroom block from a day to about two hours.\n---\nApproved Electrician | Caskieben Electrical Contracts | Aberdeen, UK | Aug 2018 - Feb 2025\n- Second fix through to testing and certification on commercial fit-outs, plant rooms and a hospital theatre refurbishment.\n- Held the testing and certification role on the contract, issuing EICs and EICRs and closing out the C1 and C2 observations.\n- Supervised two apprentices through their SVQ portfolio and their AM2 preparation.\n---\nApprentice Electrician | Caskieben Electrical Contracts | Aberdeen, UK | Aug 2014 - Jul 2018\n- Four-year SJIB apprenticeship, day release at college, AM2 passed first time.",
+        "education": "BEng (Hons) Electrical and Electronic Engineering, 2:1 (part-time, day release) | Glasgow Caledonian University | Sep 2019 - Jun 2024\n---\nSVQ Level 3 Electrical Installation and Modern Apprenticeship | North East Scotland College | Aug 2014 - Jul 2018",
+        "projects": "",
+        "publications": "",
+        "certifications": "IET Associate Member - IEng application in preparation with a registered mentor\nC&G 2391-52 Inspection and Testing, 2021\nC&G 2382-22 Requirements for Electrical Installations, BS 7671 18th Edition Amendment 2, 2022\nSJIB Approved Electrician grade, ECS card valid to 2028\nIPAF 3a and 3b, 2023"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Eight years, control and instrumentation in process plant",
+      "why": "Hazardous-area work is the example of a field where a certificate is a gate rather than a nice-to-have: without a current CompEx you cannot be sent to half these jobs, so it is dated and its expiry is stated. The CV also says exactly where the CEng application has got to, which is normal in engineering and reads as confidence rather than a gap.",
+      "template_id": "swiss_grid",
+      "data": {
+        "full_name": "Arun Velayudhan",
+        "title": "Electrical, Control and Instrumentation Engineer, IEng MIET",
+        "location": "Runcorn, UK",
+        "phone": "+44 7700 900137",
+        "email": "arun.velayudhan@example.com",
+        "linkedin": "linkedin.com/in/arun-velayudhan-example",
+        "website": "",
+        "summary": "- EC&I engineer, eight years on chemical and water treatment plant; IEng MIET since 2022, CEng professional review booked for November 2026.\n- Works across the whole chain - area classification, LV distribution, panel design, PLC and SCADA, then commissioning it at three in the morning.",
+        "skills": "Standards: BS 7671, IEC 61439-1 and -2 for LV assemblies, IEC 60204-1, IEC 61508 and 61511 for functional safety, BS EN 60079 series, DSEAR and ATEX\nHazardous area: CompEx Ex01 to Ex04, area classification to IEC 60079-10-1, equipment selection by EPL and gas group, Ex inspection to IEC 60079-17\nControl systems: Siemens TIA Portal S7-1500, Rockwell Studio 5000, Modbus TCP and Profibus DP, Wonderware SCADA, alarm rationalisation to EEMUA 191\nDesign and studies: EPLAN Electric P8, ETAP load flow, short circuit and protection grading, arc flash to IEEE 1584\nDelivery: FAT and SAT scripts, loop checking, cause and effect matrices, SIL determination workshops, handover documentation",
+        "experience": "EC&I Engineer | Sallowfield Process Controls | Runcorn, UK | Jan 2022 - Present\n- Lead EC&I engineer on a £6.8m solvent recovery plant upgrade: Zone 1 and Zone 2 classification, 14 motor starters, a SIL 2 trip system and the SCADA migration, commissioned inside a nine-day plant shutdown.\n- Found during a SIL verification that the existing high-level trip had a proof-test interval that had never been carried out; the corrected regime brought the loop back inside its SIL 2 target and became a client-wide audit finding.\n- Standardised the panel build to IEC 61439-2 with one verified design across three fabricators, taking roughly £4k off a typical motor control centre section.\n- Ran alarm rationalisation on a distillation unit averaging 340 alarms an operator-hour; the rationalised set runs at 9.\n---\nElectrical and Instrumentation Engineer | Merrowdale Water Services | Warrington, UK | Sep 2017 - Dec 2021\n- Instrument and LV design across 20 wastewater treatment sites, including three storm-tank pumping stations to Zone 2.\n- Replaced the framework's standard flow instrument after a failure analysis showed 60% of call-outs came from one model in one duty; call-outs on that duty fell by two thirds.\n- Wrote and ran the FAT scripts for eleven telemetry outstations and trained the client's operators on the new SCADA screens.",
+        "education": "BEng (Hons) Electrical and Electronic Engineering, First Class | University of Manchester | Sep 2013 - Jun 2017",
+        "projects": "Solvent recovery plant upgrade, £6.8m - lead EC&I engineer. Zone 1 and 2 hazardous area design, SIL 2 trip system, MCC replacement and SCADA migration inside a nine-day shutdown.\n---\nStorm tank telemetry programme, £2.2m across 20 sites - one verified panel design reused at every site.",
+        "publications": "",
+        "certifications": "IEng MIET - Engineering Council registration, 2022; CEng professional review booked November 2026\nCompEx Ex01 to Ex04, recertified 2024, valid to 2029\nTUV Rheinland Functional Safety Engineer (FSEng), 2024\nLV Authorised Person, reauthorised 2025\nCCNSG National Safety Passport, renewed 2024"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Sixteen years, heads a high-voltage engineering function",
+      "why": "At the top of an electrical career the authorisation matters more than the qualification list: being a Senior Authorised Person for 33kV is a named, revocable appointment, and a hiring manager reads it as legal accountability rather than training. Note how the standards list shrinks to the ones the function is audited against.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Naledi Sithole",
+        "title": "Head of Electrical Engineering, CEng MIET",
+        "location": "Slough, UK",
+        "phone": "+44 7700 900624",
+        "email": "naledi.sithole@example.com",
+        "linkedin": "linkedin.com/in/naledi-sithole-example",
+        "website": "",
+        "summary": "- Heads electrical engineering for a data centre and industrial contractor: 21 engineers across HV, LV and controls, £14m of annual engineering spend, and the electrical safety rules for eleven live sites.\n- Senior Authorised Person for 11kV and 33kV systems, and the person who signs the switching programmes when a client wants a live changeover.",
+        "skills": "Leadership: 21 engineers in three disciplines, £14m engineering spend, competency and authorisation framework for 60 field staff\nHigh voltage: 11kV and 33kV distribution, ENA Engineering Recommendation G99 connections and DNO liaison, protection settings and grading, IEC 61850 substation automation\nElectrical safety: Senior Authorised Person, company electrical safety rules, permits and sanctions to test, arc flash policy to IEEE 1584, BS EN 50110-1 and HSG85\nAssurance: N+1 and 2N topologies, Uptime Institute Tier III certification, integrated systems testing, level 1 to 5 commissioning\nCommercial: design and build contracts to £40m, supplier framework negotiation across switchgear, UPS and generation",
+        "experience": "Head of Electrical Engineering | Threshfield Critical Power | Slough, UK | Jun 2020 - Present\n- Built the function from 7 engineers to 21 and put a written authorisation framework behind it; before that, HV switching authority was informal and nobody could show an auditor who held it.\n- Delivered the electrical design and commissioning for a 32MW data centre campus, including two 33kV primary substations and a G99 connection agreement negotiated with the DNO.\n- Standardised the switchgear and UPS supply base from nine vendors to three, cutting lead time by eleven weeks on average and £1.1m from a typical hall's cost.\n- Ran the investigation after an arc flash incident that injured a subcontractor; the resulting change to sanction-to-test procedure was adopted across the business and by two clients.\n- Chair the design review board; no scheme goes to construction without a settled protection study and an integrated systems test plan.\n---\nPrincipal Electrical Engineer | Threshfield Critical Power | Reading, UK | Feb 2016 - May 2020\n- Lead designer on eight data hall fit-outs, 2MW to 9MW, all Tier III certified first time.\n- Took protection grading in-house from a consultancy, saving around £160k a year and cutting turnaround from six weeks to nine days.\n---\nElectrical Engineer | Garrowfield Power Services | Bracknell, UK | Sep 2009 - Jan 2016\n- HV cable and substation projects for industrial clients; qualified as an Authorised Person in 2012 and Senior Authorised Person in 2015.",
+        "education": "BEng (Hons) Electrical Engineering | University of Cape Town | Feb 2005 - Dec 2008",
+        "projects": "Marlwood Park data centre campus, 32MW - electrical design authority and SAP for the energisation. Two 33kV primary substations, 2N UPS topology, G99 connection agreement, Tier III certified.\n---\nHV network refurbishment for a pharmaceutical campus, £11m - live changeover of an 11kV ring across fourteen substations with no loss of supply to a GMP manufacturing area.",
+        "publications": "",
+        "certifications": "CEng MIET - Engineering Council registration, 2015\nSenior Authorised Person (11kV and 33kV), reauthorised 2025\nIET Professional Registration Adviser since 2021\nNEBOSH National General Certificate, 2019\nCity & Guilds 2339 HV Switching and Safety Rules, 2012"
+      }
+    }
+  ],
+  "construction_manager": [
+    {
+      "level": "early",
+      "headline": "Off the tools three years ago, assistant site manager now",
+      "why": "The card block is the first thing a contractor's recruiter checks, so it is listed with the scheme, the issue route and the expiry - a CSCS card that expired last month is a site you cannot walk onto. Note that the carpentry years are kept as real dated experience, because knowing how a trade prices and sequences work is why site managers get promoted from the tools.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Jordan Whitmarsh",
+        "title": "Assistant Site Manager",
+        "location": "Reading, UK",
+        "phone": "+44 7700 900291",
+        "email": "jordan.whitmarsh@example.com",
+        "linkedin": "linkedin.com/in/jordan-whitmarsh-example",
+        "website": "",
+        "summary": "- Assistant site manager on a 96-plot residential scheme, running the finishing trades from first fix through to handover.\n- Came off the tools as a site carpenter two years ago; part-way through the Level 4 NVQ in Construction Site Supervision.",
+        "skills": "Site management: three-week look-ahead programmes, trade sequencing, daily labour and plant returns, delivery bookings\nQuality: NHBC standards, Building Regulations Parts A, B, L and M, pre-plaster and pre-handover inspections, snagging\nSafety: SSSTS, RAMS review and briefing, permits to work, weekly site inspections, toolbox talks, scaffold handover checks\nSystems: Asta Powerproject (reading and marking up), Viewpoint Field View, Procore\nTrades: joinery, dryline, second fix, kitchens - can price and check the work as well as programme it",
+        "experience": "Assistant Site Manager | Fernbrook Homes (Southern) | Reading, UK | May 2024 - Present\n- Run the finishing trades on a 96-plot site: typically 30 to 45 operatives across dryline, second fix, kitchens, decorating and floor coverings.\n- Handed over 41 plots in the last twelve months, 38 of them on or before the reservation date, with an average of 4 snags at customer walk-round against a site target of 8.\n- Rewrote the plot handover checklist after three plots reached customer inspection with the same missing trickle-vent detail; the defect has not come back.\n- Chair the Monday subcontractor meeting and issue the look-ahead, which used to be a job the site manager did on a Sunday night.\n---\nSite Carpenter | Larkhall Joinery Contracts | Basingstoke, UK | Sep 2019 - Apr 2024\n- First and second fix carpentry on residential and student accommodation sites, in a gang of four.\n- Took on setting out for the gang from 2022, including staircases, and became the point of contact for the main contractor's site manager.\n- Trained two apprentices through their Level 2 and into their Level 3.",
+        "education": "NVQ Level 4 Diploma in Construction Site Supervision | Reading College | Sep 2025 - expected Jun 2027\n---\nNVQ Level 3 Diploma in Site Carpentry | Basingstoke College of Technology | Sep 2019 - Jul 2021\n---\nGCSEs including English, Maths and Design Technology | Basingstoke, UK | Sep 2014 - Jun 2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "CSCS Blue Skilled Worker card (Site Carpentry), valid to June 2029\nSSSTS - Site Supervisors' Safety Training Scheme, CITB, March 2024, valid to March 2029\nEmergency First Aid at Work, 2026\nTemporary Works Awareness, CITB, 2025\nAsbestos Awareness (UKATA), 2025\nAbrasive Wheels, 2023\nFull UK driving licence, clean"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Eight years, running £6m to £16m projects",
+      "why": "A site manager's CV is read as three columns that are not on the page: programme, cost and safety record. Every entry here gives the project value, the number of subcontract packages and what happened to the completion date - and the accident record is stated as a number, because a contractor will ask for it at interview anyway.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Shabana Yousaf",
+        "title": "Site Manager",
+        "location": "Birmingham, UK",
+        "phone": "+44 7700 900381",
+        "email": "shabana.yousaf@example.com",
+        "linkedin": "linkedin.com/in/shabana-yousaf-example",
+        "website": "",
+        "summary": "- Site manager for a regional main contractor, running education and healthcare projects from £6m to £16m; four of the last five handed over on or ahead of programme.\n- No RIDDOR reportable incidents on any project I have run, across roughly 620,000 operative hours.",
+        "skills": "Delivery: Asta Powerproject, three-week look-ahead, procurement schedules, 18 to 24 subcontract packages per project, 60 to 110 operatives at peak\nContract: JCT Design and Build 2016, NEC4 ECC Option A, early warnings and compensation events, valuation support\nCDM and safety: SMSTS, principal contractor duties under CDM 2015, F10, construction phase plan, RAMS review, permit systems, temporary works register\nHandover: commissioning witness, air tightness and BREEAM evidence, O&M manuals and H&S file, twelve-month defects period\nQuality: ITPs, benchmark rooms, digital snagging",
+        "experience": "Site Manager | Ravensmoor Construction | Birmingham, UK | Feb 2022 - Present\n- Ran a £16.4m secondary school extension and remodel on a live, occupied site: 22 subcontract packages, a phased handover across three summer holidays, and no lost teaching time.\n- Brought a £9.1m primary care centre in five weeks ahead of a 62-week programme by re-sequencing the roof and the M&E first fix; the early completion released £140k of preliminaries.\n- Cut the average handover snag list on the last three projects from 340 items to 96 by running trade-by-trade benchmark inspections before the main run of work started.\n- Zero reportables and an all-injury rate of 0.11 across 310,000 hours on those three projects, with a Considerate Constructors score of 41.\n- Manage two assistant site managers, a site engineer and a trainee, and take the Level 4 NVQ candidates through their evidence.\n---\nAssistant Site Manager | Ravensmoor Construction | Coventry, UK | Jun 2019 - Jan 2022\n- Finishing trades and handover on two education projects, £4m and £11m.\n- Owned the temporary works register on the larger scheme, including a 9m deep basement with a propped contiguous piled wall.\n- Set up the site's first digital snagging process, replacing a clipboard and a spreadsheet.",
+        "education": "NVQ Level 6 Diploma in Construction Site Management | CITB-approved centre, Birmingham | Sep 2025 - expected Dec 2026\n---\nBSc (Hons) Construction Management, 2:1 | Birmingham City University | Sep 2015 - Jun 2018",
+        "projects": "",
+        "publications": "",
+        "certifications": "CSCS Academically Qualified Person card, valid to 2027 - black Manager card to follow completion of the Level 6 NVQ\nSMSTS - Site Management Safety Training Scheme, CITB, renewed September 2024, valid to September 2029\nMCIOB - Chartered Member of the Chartered Institute of Building, 2024\nNEBOSH National Certificate in Construction Health and Safety, 2023\nTemporary Works Coordinator, CITB, 2022\nFirst Aid at Work (3 day), 2025\nScaffold Inspection (Basic), Fire Marshal, Asbestos Awareness - all current"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Nineteen years, three sites and £62m a year",
+      "why": "Above site level the CV stops being about one building. What a contractor buys here is contractual and regulatory cover - NEC4 change control, CDM principal contractor duties, and now the Building Safety Act gateways for higher-risk buildings - so those sit alongside the money. The safety record is given per million hours, which is how the industry actually compares people.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Vasile Petrache",
+        "title": "Project Manager (Construction)",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900327",
+        "email": "vasile.petrache@example.com",
+        "linkedin": "linkedin.com/in/vasile-petrache-example",
+        "website": "",
+        "summary": "- Construction project manager, nineteen years; accountable for three concurrent sites turning over £62m a year for a national contractor.\n- Took the business through its first Building Safety Act gateway 2 submission on an 11-storey residential block, and wrote the internal procedure for it.",
+        "skills": "Commercial: NEC4 ECC Options A and C, JCT Design and Build, largest scheme £85m, monthly CVR, change control, final accounts settled inside 90 days\nProgramme: Asta Powerproject and Primavera P6, critical path and mitigation, extension of time and delay narratives\nRegulatory: CDM 2015 principal contractor, Building Safety Act 2022 gateways 2 and 3, golden thread, Fire Safety (England) Regulations 2022\nSafety: AFR of 0.09 per 100,000 hours across 1.4m hours, behavioural safety programme\nLeadership: 4 site managers, 3 quantity surveyors and 2 engineers; 60 to 90 operatives daily",
+        "experience": "Project Manager | Kelso Ridgeway Construction | Manchester, UK | Aug 2021 - Present\n- Accountable for three live sites - an £85m mixed-use scheme, a £22m logistics unit and a £14m leisure refurbishment - together turning over £62m a year.\n- Recovered the £85m scheme from fourteen weeks behind at frame stage to four weeks behind at practical completion, through a re-sequence agreed as a compensation event rather than fought as a claim. The client has since awarded a second scheme.\n- Settled the logistics unit's final account at £310k above target cost against a £1.2m forecast, by issuing early warning notices in the month they arose rather than in arrears.\n- Ran the gateway 2 submission for an 11-storey residential block; approval came in 11 weeks against an industry average nearer 20.\n- Chair the regional safety forum; the region's AFR has gone from 0.31 to 0.09 in four years.\n---\nSenior Site Manager | Kelso Ridgeway Construction | Leeds, UK | Mar 2016 - Jul 2021\n- Single projects between £18m and £34m: a hotel, two student accommodation blocks and a hospital energy centre.\n- Held the £34m student scheme to its fixed September handover despite a nine-week weather delay, by moving the facade to an off-site unitised system mid-design.\n---\nSite Manager | Bevington Hallam Ltd | Sheffield, UK | Jan 2010 - Feb 2016\n- Commercial and industrial projects £3m to £12m, working up from assistant site manager.",
+        "education": "NVQ Level 7 Diploma in Construction Senior Management | CITB-approved centre, Manchester | Sep 2019 - Nov 2020\n---\nNVQ Level 6 Diploma in Construction Site Management | Sheffield | Sep 2012 - Mar 2013\n---\nHNC Construction and the Built Environment | Salford City College | Sep 2007 - Jun 2009",
+        "projects": "Ancoats Foundry, £85m - 340-apartment mixed-use scheme over retail and a basement car park, NEC4 Option C. Recovered ten weeks of programme; final account settled within 90 days.\n---\nWharfeside Court, £29m - 11-storey residential block and the business's first Building Safety Act gateway 2 submission.",
+        "publications": "",
+        "certifications": "CSCS Black Manager card (NVQ Level 7 route), valid to 2029\nMCIOB - Chartered Member of the Chartered Institute of Building, 2017\nSMSTS, CITB, renewed 2025, valid to 2030\nNEBOSH National Certificate in Construction Health and Safety, 2016\nTemporary Works Coordinator, CITB, 2022"
+      }
+    }
+  ],
+  "chef_hospitality": [
+    {
+      "level": "early",
+      "stage": "Chef de Partie",
+      "headline": "Three and a half years, holding the sauce section",
+      "why": "A kitchen CV is read for section, covers and volume. 'Worked in a busy kitchen' tells a head chef nothing; 'sauce, 90 to 110 covers, up to 240 at banqueting' tells them whether you can hold a station on a Saturday. The stages are listed too, because in kitchens an unpaid week somewhere serious is real evidence.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Tuan Pham",
+        "title": "Chef de Partie",
+        "location": "Bath, UK",
+        "phone": "+44 7700 900168",
+        "email": "tuan.pham@example.com",
+        "linkedin": "",
+        "website": "",
+        "summary": "- Chef de partie on sauce at a 90-cover AA two-rosette restaurant; three and a half years in kitchens, starting as a commis in hotel banqueting.\n- Trained on larder, fish and pastry as well, so I cover the section that is short rather than only my own.",
+        "skills": "Sections held: sauce (current), larder, fish, pastry cover\nService volume: 90 to 110 covers a la carte, up to 240 at banqueting, seven-course tasting menu Fridays and Saturdays\nCraft: butchery of whole lamb and venison, fish filleting and curing, stocks and reduction sauces, bread and basic viennoiserie\nFood safety: Level 2 Food Safety and Hygiene, HACCP daily records, delivery and temperature checks, 14 named allergens, PPDS labelling under Natasha's Law\nKitchen: mise en place planning, ordering cover for the sous chef, training commis chefs",
+        "experience": "Chef de Partie (Sauce) | The Bickerton Rooms | Bath, UK | Mar 2025 - Present\n- Run the sauce section on a 90-cover a la carte service and on the tasting menu, six services a week.\n- Wrote the section's prep list and yields after a stock take showed the veal jus being made at nearly twice the volume being sold; the change took about £90 a week out of waste.\n- Cover the sous chef on his two days off - ordering, section checks and the pass.\n- Two dishes I put up at the Monday development meeting are on the current autumn menu.\n---\nCommis Chef | Rowanbank Hotel | Bristol, UK | Sep 2022 - Feb 2025\n- Larder and pastry sections in a 120-bedroom hotel doing breakfast, a 70-cover restaurant and banqueting to 300.\n- Took over afternoon tea production in my second year: 40 to 90 covers on a Saturday, made and plated single-handed.\n- Kept the fridge and dry store rotation checks the kitchen had been marked down on at the previous EHO visit; the rating went back to 5 at the next inspection.",
+        "education": "Level 3 Diploma in Professional Cookery | City of Bristol College | Sep 2020 - Jul 2022",
+        "projects": "Stage, two weeks - a one-rosette coastal seafood restaurant in Cornwall, on fish and shellfish prep in peak season.\n---\nStage, one week - pastry section at a Bath hotel, laminated doughs and plated desserts on a live service.",
+        "publications": "",
+        "certifications": "Level 2 Award in Food Safety and Hygiene for Catering (Highfield), 2025\nLevel 2 Award in HACCP for Catering, 2024\nLevel 2 Allergen Awareness, 2025\nEmergency First Aid at Work, 2024"
+      }
+    },
+    {
+      "level": "mid",
+      "stage": "Sous Chef",
+      "headline": "Eight years, sous chef running the numbers",
+      "why": "The step from chef de partie to sous chef is a step into money and paperwork, and this CV shows it: gross profit, food cost, labour percentage, stock takes and the hygiene rating sit alongside the sections. Three venues in eight years is normal in kitchens and needs no apology - what needs explaining is what improved at each one.",
+      "template_id": "pastel_soft",
+      "data": {
+        "full_name": "Beatrix Sallai",
+        "title": "Sous Chef",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900534",
+        "email": "beatrix.sallai@example.com",
+        "linkedin": "linkedin.com/in/beatrix-sallai-example",
+        "website": "",
+        "summary": "- Sous chef in a 140-cover neighbourhood restaurant doing £1.9m a year on food; runs three of the five services and owns ordering, stock and gross profit.\n- Took food GP from 63% to 70.5% in fourteen months without raising a single menu price.",
+        "skills": "Kitchen management: brigade of 11, rotas and holiday planning, labour held at 27 to 29% of food sales, weekly stock take, ordering across nine suppliers\nCost control: food GP 70.5%, portion specifications and yield tests, waste log by section, menu engineering by contribution margin\nCompliance: Level 3 Food Safety and Hygiene, Level 3 HACCP, Safer Food Better Business diary, Food Hygiene Rating 5 at the last three inspections, PPDS and 14-allergen matrix\nService: 140 covers, up to 320 on a Saturday, private dining to 60, Sunday roast at 260\nDevelopment: four seasonal menu changes a year, six specials a week",
+        "experience": "Sous Chef | The Ambrose Yard | Leeds, UK | Jan 2023 - Present\n- Second to the head chef in a kitchen of 11, running the pass on three services a week and every Sunday.\n- Rebuilt the ordering after finding four suppliers delivering the same three lines; consolidating to two and moving to a weekly forecast took food cost from 37% to 29.5%.\n- Cut waste from 4.2% of food purchases to 1.6% by putting a written yield on every prep item and checking the bin twice a week for a month.\n- Trained and signed off five chefs de partie, three of whom had never held a section; two are now junior sous chefs.\n- Held a Food Hygiene Rating of 5 through two unannounced inspections, including one run from a temporary kitchen during a refurbishment.\n---\nJunior Sous Chef | Cranmoor House Hotel | Harrogate, UK | Apr 2020 - Dec 2022\n- Larder and sauce sections, then junior sous, in a 90-cover hotel restaurant with weddings to 180.\n- Wrote the banqueting prep system that let a brigade of six put out 180 three-course covers inside 50 minutes.\n- Covered the head chef for a nine-week absence, including ordering, rotas and the EHO visit.\n---\nChef de Partie | Kekfrankos Bisztro | Budapest, Hungary | Jun 2018 - Mar 2020\n- Grill and larder in a 70-cover bistro; moved to the UK for the language and stayed.",
+        "education": "Level 3 Diploma in Professional Cookery | Leeds City College | Sep 2021 - Jun 2022\n---\nVocational Diploma in Catering and Hospitality | Budapest, Hungary | Sep 2015 - Jun 2018",
+        "projects": "",
+        "publications": "",
+        "certifications": "Level 3 Award in Supervising Food Safety in Catering (Highfield), 2024\nLevel 3 Award in HACCP for Food Manufacturing, 2023\nLevel 2 Allergen Awareness, renewed 2025\nFirst Aid at Work, 2024\nPersonal Licence (Licensing Act 2003), 2023"
+      }
+    },
+    {
+      "level": "senior",
+      "stage": "Head Chef",
+      "headline": "Sixteen years, six kitchens, now heads a brigade of 22",
+      "why": "A head chef is hired on the P&L and the hygiene record at least as much as on the food, so gross profit, labour percentage and the FHRS score are in the opening lines. With six kitchens behind you the venue, the covers and the money have to be in the first line of each entry - nobody reads eight paragraphs of prose about seasonal produce.",
+      "template_id": "layered_papercard",
+      "data": {
+        "full_name": "Imani Sowande",
+        "title": "Head Chef",
+        "location": "London, UK",
+        "phone": "+44 7700 900912",
+        "email": "imani.sowande@example.com",
+        "linkedin": "linkedin.com/in/imani-sowande-example",
+        "website": "",
+        "summary": "- Head chef of a 180-cover restaurant and events kitchen turning over £4.6m a year on food, with a brigade of 22 across five sections plus three pastry chefs.\n- Sixteen years and six kitchens, from hotel banqueting to two-rosette dining; every site has held a Food Hygiene Rating of 5 while I ran it.",
+        "skills": "Commercial: £4.6m food turnover, GP held between 71% and 73%, labour at 26% of sales, kitchen capex cases, supplier tendering across 14 lines\nTeam: brigade of 22 including three sous chefs, apprenticeship partnership with a local college, chef turnover down from 84% to 31% a year\nCompliance: Level 4 Food Safety Management, Level 3 HACCP, EHO liaison, FHRS 5 at every inspection since 2016, PPDS and 14-allergen matrices\nMenu: four seasonal changes a year, a seven-course tasting menu, banqueting to 400, plant-based dishes at 22% of covers sold\nOperations: kitchen design input on two refurbishments, equipment replacement planning, cross-site standards for a three-site group",
+        "experience": "Head Chef | Sablewood at the Grainhouse | London, UK | Apr 2021 - Present\n- Run a 180-cover restaurant and a separate events kitchen doing £4.6m a year on food, with 22 chefs and a weekly wage bill of about £23k.\n- Brought food GP from 64% to 72% over two years through supplier tendering, a written specification on every dish and a whole-animal butchery programme that uses four carcasses a week.\n- Chef turnover was 84% a year when I arrived. Splitting the rota into fixed patterns, closing Mondays and paying for the Level 3 qualifications brought it to 31%.\n- Rebuilt the allergen system after a near-miss with a sesame order: every dish now has a signed matrix, PPDS labels print from the same source, and the front-of-house script was rewritten with the general manager.\n- Held FHRS 5 through four inspections, one of them two days after a walk-in freezer failure.\n---\nHead Chef | The Fettercairn Arms | Edinburgh, UK | Sep 2017 - Mar 2021\n- 120-cover gastropub with rooms, £1.8m food turnover, brigade of nine.\n- Won and held two AA rosettes from the second year, in a kitchen that had none when I arrived.\n- Moved from three deliveries a week to daily local supply, worth four points of GP and half the waste.\n---\nSous Chef | Marchmont Park Hotel | Perthshire, UK | Feb 2014 - Aug 2017\n- Second to the head chef across a 140-cover restaurant and weddings to 250, in a brigade of 14.\n- Ran banqueting as a separate P&L for two years, holding GP at 68%.",
+        "education": "Level 3 Diploma in Professional Cookery (Patisserie and Confectionery) | Westminster Kingsway College | Sep 2008 - Jul 2010",
+        "projects": "",
+        "publications": "",
+        "certifications": "Level 4 Award in Food Safety Management for Catering (Highfield), 2022\nLevel 3 Award in HACCP for Food Manufacturing, 2023\nLevel 3 Award in Education and Training - assesses the kitchen's apprentices, 2023\nCraft Guild of Chefs - member since 2019\nFirst Aid at Work, 2025"
+      }
+    }
+  ],
+  "retail_manager": [
+    {
+      "level": "early",
+      "headline": "Three years in, first department of her own",
+      "why": "A first management CV in retail is carried by the numbers you personally moved on one department, plus the unglamorous responsibilities - rotas, absence, stock counts, key holding - that prove you can be left with the building. 'Excellent customer service' is worth nothing on a CV when the till system already reports conversion.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Reece Alderton",
+        "title": "Department Manager",
+        "location": "Nottingham, UK",
+        "phone": "+44 7700 900247",
+        "email": "reece.alderton@example.com",
+        "linkedin": "linkedin.com/in/reece-alderton-example",
+        "website": "",
+        "summary": "- Department manager for menswear and footwear in a £5.8m store, 14 colleagues, three years after starting on the shop floor as a Saturday assistant.\n- Has run the department through two Christmas peaks and a full stockroom relocation.",
+        "skills": "Trading: department turnover £1.4m, conversion, average transaction value and units per transaction, markdown and sell-through\nTeam: rotas for 14 colleagues, absence and return-to-work meetings, inductions, weekly one-to-ones, nine seasonal hires\nStock: deliveries and replenishment, stock counts, shrinkage investigation, RFID cycle counts, return-to-vendor\nMerchandising: planogram compliance, window and mannequin changes, overnight launch and promotion set-ups\nCompliance: age-restricted sales and Challenge 25, fire and evacuation, key holder, cash handling and banking",
+        "experience": "Department Manager, Menswear and Footwear | Halbrook & Vane | Nottingham, UK | Aug 2024 - Present\n- Own a £1.4m department with 14 colleagues, reporting weekly on sales, conversion and stock loss to the store manager.\n- Department sales grew 8.4% against a store average of 2.1% in the year to July, mostly from re-siting footwear next to the fitting rooms after watching where customers actually stopped.\n- Shrinkage on the department fell from 1.4% of sales to 0.7% after I changed the stockroom process so high-value trainers are counted daily rather than weekly.\n- Recruited, inducted and rota'd nine temporary colleagues for Christmas peak; five were kept on and two have since been promoted to supervisor.\n- Ran the stockroom relocation over four nights with no trading days lost.\n---\nSales Assistant, then Supervisor | Halbrook & Vane | Nottingham, UK | Oct 2021 - Jul 2024\n- Started as a Saturday sales assistant while at college, went full-time in 2022 and to supervisor in 2023.\n- Held the top conversion rate on the department for eleven of fourteen months as a supervisor.\n- Trained new starters on the till and on age-restricted sales.",
+        "education": "Level 3 Extended Diploma in Business, Distinction | Nottingham College | Sep 2019 - Jun 2021\n---\nGCSEs including English and Maths | Nottingham, UK | Sep 2014 - Jun 2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "Level 3 Retail Team Leader Apprenticeship, completed with distinction, 2024\nLevel 2 Award for Personal Licence Holders (APLH), 2025\nEmergency First Aid at Work, 2025\nFire Marshal, 2024"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Seven years, £6.4m store and 52 colleagues",
+      "why": "A store manager's CV is a profit and loss account. Turnover, like-for-like against the region, payroll as a percentage of sales, shrinkage and colleague turnover are the five numbers a regional manager will ask for, so they are given here rather than described. Note that the shrink improvement names the cause - a process, not a security guard.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Priyanka Nadar",
+        "title": "Store Manager",
+        "location": "Cardiff, UK",
+        "phone": "+44 7700 900417",
+        "email": "priyanka.nadar@example.com",
+        "linkedin": "linkedin.com/in/priyanka-nadar-example",
+        "website": "",
+        "summary": "- Store manager of a £6.4m city-centre store, 52 colleagues across four departments, four department managers reporting in.\n- Delivered +5.1% like-for-like in a year the region ran -1.2%, and took shrinkage from 1.9% of sales to 0.6%.",
+        "skills": "Trading: £6.4m turnover, LFL +5.1%, conversion 24.8% against a region at 21.4%, ATV £38.20, payroll held at 9.4% of sales\nLoss prevention: shrink 1.9% to 0.6%, goods-in reconciliation, high-risk stock controls, refunds and voids audit\nPeople: 52 colleagues and 4 department managers, turnover 61% to 24%, six internal promotions, absence at 2.8%, ER casework with HR\nPeak trading: Golden Quarter planning, 26 seasonal hires, Black Friday and Boxing Day staffing, click-and-collect at 900 orders a week in December\nSystems: EPOS and sales reporting, workforce management scheduling, SAP stock, Power BI dashboards",
+        "experience": "Store Manager | Halloway & Fen | Cardiff, UK | Mar 2023 - Present\n- Accountable for a £6.4m store: trading performance, payroll, stock loss, health and safety and the colleague team.\n- Grew like-for-like sales 5.1% in a year when the region was down 1.2%, mainly by moving four colleagues from back-of-house tasks into the trading hours where footfall actually peaks.\n- Shrinkage went from 1.9% of sales to 0.6% in eighteen months. Most of it was a goods-in problem, not a theft problem: deliveries were being signed for unchecked, and reconciling them on arrival found £41k of short-shipped stock in the first quarter.\n- Cut colleague turnover from 61% to 24% by fixing the rota - fixed shift patterns published four weeks out instead of ten days - and by promoting six people internally rather than recruiting over them.\n- Took the store from 74% to 96% on the mystery shop programme; it has been top five nationally for three quarters running.\n---\nAssistant Store Manager | Halloway & Fen | Swansea, UK | Jan 2021 - Feb 2023\n- Deputised in a £4.1m store, owning stock, goods-in and seasonal recruitment.\n- Ran the store's first click-and-collect operation from set-up to 400 orders a week, with no extra headcount.\n- Traded through a four-week refit from half the floor space; sales held at 78% of the prior year against a plan of 60%.\n---\nDepartment Manager | Bramblewick Home | Newport, UK | Sep 2018 - Dec 2020\n- Homewares department, £900k turnover and nine colleagues.\n- Best conversion rate in the region for the 2019 Christmas peak.",
+        "education": "BA (Hons) Business Management, 2:1 | Cardiff Metropolitan University | Sep 2015 - Jun 2018",
+        "projects": "",
+        "publications": "",
+        "certifications": "Level 4 Retail Manager Apprenticeship, 2022\nIOSH Managing Safely, 2023\nLevel 2 Award for Personal Licence Holders (APLH), 2019\nFirst Aid at Work, 2024\nMental Health First Aid, 2025"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Sixteen years, twelve stores and £74m",
+      "why": "Above store level the document changes shape: it is now a portfolio - store count, area turnover, and the spread between the best and worst site - and the interesting evidence is what you did about the worst one. The openings, the closure and the TUPE transfer are here because multi-site retail hires for change, not for steady state.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Marlon Beckford",
+        "title": "Area Manager, South West and South Wales",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900357",
+        "email": "marlon.beckford@example.com",
+        "linkedin": "linkedin.com/in/marlon-beckford-example",
+        "website": "",
+        "summary": "- Area manager for 12 stores turning over £74m with 640 colleagues, from a £2.1m high-street unit to a £14m retail park anchor.\n- The area moved from ninth of nine to second on the national scorecard in two years, and holds LFL at +3.8% against a market running at -0.4%.",
+        "skills": "Portfolio: 12 stores, £74m turnover, 640 colleagues, 12 store managers reporting in; LFL +3.8%, area shrink 0.71%, payroll at 8.9% of sales\nTurnaround: took two stores off a closure list; new managers into both, LFL +11% and +7% inside a year\nChange: three openings, one closure with 22 of 31 colleagues redeployed and no compulsory redundancy, one TUPE transfer of 40 colleagues\nCost and margin: capex cases for three refits totalling £4.2m, waste and markdown governance\nGovernance: health and safety across 12 sites, premises licensing, ER casework and appeals, GDPR and PCI compliance at store level",
+        "experience": "Area Manager, South West and South Wales | Corrieburn Retail Group | Bristol, UK | Feb 2022 - Present\n- Twelve stores, £74m of turnover, 640 colleagues, and a £6.6m annual payroll budget across the area.\n- Moved the area from bottom to second of nine nationally in two years, largely by changing four of the twelve store managers and then leaving the rest alone.\n- Two stores were on a closure list when I took the area. Both are trading profitably - one at +11% LFL, the other at +7% - and the estates team has since renewed both leases.\n- Opened three stores, including a £14m retail park anchor taken from handover to trading in eleven weeks, and closed one small unit while redeploying 22 of its 31 colleagues.\n- Cut area shrinkage from 1.24% to 0.71% by putting one process - daily reconciliation at goods-in - into all twelve stores, rather than running twelve local improvement plans.\n---\nStore Manager, Flagship | Corrieburn Retail Group | Bristol, UK | Jun 2017 - Jan 2022\n- Ran the group's second largest store: £14m turnover, 180 colleagues, seven departments.\n- Grew sales 21% over four years and stayed top three nationally on colleague engagement throughout.\n- Traded through an eleven-week refit without closing, holding sales at 84% of the prior year.\n---\nStore Manager | Pikeley Stores | Taunton, UK | Aug 2013 - May 2017\n- £3.2m store with 40 colleagues; first store management appointment.\n- Turned round a store that had failed two consecutive audits, reaching green within nine months.",
+        "education": "CMI Level 5 Diploma in Leadership and Management | Chartered Management Institute | Sep 2018 - Jul 2019\n---\nBTEC National Diploma in Business | Bridgwater College | Sep 2005 - Jun 2007",
+        "projects": "",
+        "publications": "",
+        "certifications": "CMI Level 5 Diploma in Leadership and Management, 2019\nILM Level 5 Certificate in Coaching and Mentoring, 2023\nNEBOSH National General Certificate, 2021\nIOSH Managing Safely, 2016\nLevel 2 Award for Personal Licence Holders (APLH), 2012"
+      }
+    }
+  ],
+  "logistics_driver": [
+    {
+      "level": "early",
+      "headline": "Eighteen months on rigids, up from vans",
+      "why": "A transport office reads a driver's CV in about ten seconds and is looking for four things: categories held, whether the CPC is in date, whether the tacho card is valid, and whether the licence is clean. All four are in the first two blocks. This CV is deliberately short - padding it out with paragraphs about teamwork makes it worse, not better.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Danielle Fyfe",
+        "title": "HGV Class 2 Driver (Category C)",
+        "location": "Warrington, UK",
+        "phone": "+44 7700 900482",
+        "email": "danielle.fyfe@example.com",
+        "linkedin": "",
+        "website": "",
+        "summary": "- Category C (Class 2) driver since March 2025, Driver CPC current to September 2030, digital tacho card valid to 2030, clean licence with no endorsements.\n- Eighteen months on rigid multi-drop for a chilled distributor, 18 to 24 drops a shift, after four years on 3.5t vans.",
+        "skills": "Licences and cards: Category C (Class 2) since March 2025; Category B since 2019; Driver CPC (DQC) valid to September 2030; digital tachograph driver card valid to March 2030\nVehicles: 18t and 26t rigid, column tail lift, temperature-controlled bodies (chilled 0 to 5C and ambient), pump truck and roll cages\nCompliance: daily walkaround checks and defect reporting, drivers' hours and the 45-minute break, WTD records, load securing to the DVSA code\nDelivery: 18 to 24 drops a shift, handheld PODs, retail back-door and licensed-premises deliveries, temperature records at each drop",
+        "experience": "HGV Class 2 Driver | Brackenmoss Chilled Logistics | Warrington, UK | Apr 2025 - Present\n- Nights and early shifts on a fixed North West run, 18 to 24 drops a shift into pubs, restaurants and convenience stores.\n- No infringements on the tacho report in the last twelve months and no chargeable incidents since starting.\n- Took over training two new starters on the route and on the handheld system after the transport supervisor asked for cover.\n---\nMulti-Drop Van Driver | Quillstone Couriers | St Helens, UK | Feb 2021 - Mar 2025\n- 90 to 120 parcel drops a day on 3.5t vans across Merseyside, with a 98.6% first-time delivery rate over the last year.\n- Trained on the depot's loading sequence and helped rework it, which took about 20 minutes off the average start time for a round.",
+        "education": "Category C (LGV) training and DVSA modules 1 to 4 | Warrington, UK | Jan 2025 - Mar 2025\n---\nGCSEs including English and Maths | Warrington, UK | Sep 2013 - Jun 2018",
+        "projects": "",
+        "publications": "",
+        "certifications": "Driver CPC - 35 hours completed, DQC valid to September 2030\nDigital tachograph driver card - valid to March 2030\nDVLA licence: clean, no endorsements. Check code available on request\nCounterbalance forklift B1 and B2 (ITSSAR), 2023\nManual handling and load securing, 2025\nEmergency First Aid at Work, 2024"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Nine years Class 1, ADR carded",
+      "why": "This is where a driving CV earns its keep on specifics: trailer types worked, ADR classes actually carried, tramping against day work, and a stated infringement record. An employer can check every one of those, which is precisely why they are worth writing down - and why the ADR classes are named rather than left as 'ADR licence held'.",
+      "template_id": "ats_plain",
+      "data": {
+        "full_name": "Baljit Dhaliwal",
+        "title": "HGV Class 1 Driver (Category C+E), ADR",
+        "location": "Wolverhampton, UK",
+        "phone": "+44 7700 900775",
+        "email": "baljit.dhaliwal@example.com",
+        "linkedin": "",
+        "website": "",
+        "summary": "- Category C+E driver, nine years, currently on nights trunking between regional distribution centres; around 2,300 miles a fortnight.\n- No tachograph infringements in the last three years and a clean licence. ADR carded for packages and tanks in classes 3, 8 and 9.",
+        "skills": "Licences and cards: Category C+E (Class 1) since 2017, Category C since 2016; Driver CPC valid to July 2029; digital tachograph card valid to November 2029; ADR packages and tanks, classes 3, 8 and 9, valid to May 2028\nTrailers and equipment: curtainsider, box, double-deck, temperature-controlled, skeletal and container, fuel tanker with metered delivery\nCompliance: GB and EU drivers' hours - 9 hours daily driving, 56 in a week, 90 in a fortnight; WTD 48-hour average; manual entries, walkaround checks and defect reporting\nLoads: load securing to the DVSA code, weight distribution and axle loading, ADR placarding and segregation, tremcards, spill kit\nSites: RDC booking-in and timed slots, forecourt and bulk fuel delivery, night trunking and tramping up to four nights out",
+        "experience": "HGV Class 1 Driver (Nights) | Torrance Vale Distribution | Wolverhampton, UK | Aug 2022 - Present\n- Night trunking on a fixed triangular run between three RDCs, 2,300 miles a fortnight on double-deck and curtainside.\n- Zero infringements on the last three years of tacho analysis and no chargeable incidents in six years.\n- Asked by the transport manager to mentor new Class 1 starters on the trunk routes; eight so far, all still with the company.\n---\nHGV Class 1 Tanker Driver (ADR) | Kesteven Fuels Distribution | Cannock, UK | Jun 2017 - Jul 2022\n- Bulk fuel to forecourts, farms and commercial sites - six to nine drops a shift on a 44t artic tanker.\n- Best delivery-accuracy record on the site over five years, with no overfill or wrong-grade incident.\n- Mentored four new tanker drivers through their first month on the wet side.\n---\nHGV Class 2 Driver | Adderbury Builders Merchants | Wolverhampton, UK | Mar 2016 - May 2017\n- Rigid deliveries of building materials with a Moffett truck-mounted forklift, including live sites.",
+        "education": "Category C+E training and DVSA test | Wolverhampton, UK | Feb 2017 - Apr 2017\n---\nGCSEs including English and Maths | Wolverhampton, UK | Sep 2007 - Jun 2012",
+        "projects": "",
+        "publications": "",
+        "certifications": "ADR Driver Training Certificate - packages and tanks, classes 3, 8 and 9, valid to May 2028\nDriver CPC - 35 hours completed, DQC valid to July 2029\nDigital tachograph driver card - valid to November 2029\nDVLA licence: clean, no endorsements since 2016. Check code available on request\nMoffett truck-mounted forklift (ITSSAR), renewed 2021\nSafe Urban Driving (FORS-approved CPC module), 2024\nADR Petroleum Driver Passport, 2018"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Twenty-four years driving, now holds the O-licence",
+      "why": "The senior end of a driving career is where the licence block gets shorter and the compliance detail arrives. What an operator is buying is a named Transport Manager CPC holder on their licence, an OCRS they can defend and someone who can run the infringement process - so those lead, and the years behind the wheel become the reason to believe it.",
+      "template_id": "government_formal",
+      "data": {
+        "full_name": "Trevor Ainscough",
+        "title": "Transport Supervisor and Driver Trainer",
+        "location": "Doncaster, UK",
+        "phone": "+44 7700 900460",
+        "email": "trevor.ainscough@example.com",
+        "linkedin": "linkedin.com/in/trevor-ainscough-example",
+        "website": "",
+        "summary": "- Transport supervisor for a 68-vehicle local authority fleet - refuse, gritters, tippers and highways - and the named Transport Manager CPC holder on the operator's licence.\n- Twenty-four years driving, twelve of them Class 1, before moving into compliance; still takes a shift a fortnight to keep the licence and the card in use.",
+        "skills": "Operator licence: named Transport Manager CPC holder (National and International) on a 68-vehicle standard licence; OCRS held at green; DVSA Earned Recognition application submitted 2025\nCompliance: tachograph download and analysis, infringement management, drivers' hours and WTD, six-weekly PMI schedule, defect rectification within 24 hours, brake testing at every safety inspection\nDriver training: JAUPT-approved Driver CPC trainer, 35 hours of periodic training delivered in-house to 74 drivers; new-starter and returning-driver assessments\nTeam and budget: 74 drivers and 6 workshop staff, £2.4m annual transport budget, agency spend under 3% of driver hours\nFleet: 26t refuse collection vehicles, 18t gritters, tippers with HIAB, sweepers and welfare vans",
+        "experience": "Transport Supervisor and Driver Trainer | Wearne Valley District Council, Fleet Services | Doncaster, UK | Jan 2020 - Present\n- Named CPC holder on a 68-vehicle standard national and international operator's licence, with continuous and effective control demonstrated to the Traffic Commissioner at a 2023 preliminary hearing that closed with no action.\n- Brought tachograph infringements down from an average of 3.1 per driver per month to 0.4, by analysing weekly instead of monthly and dealing with the top ten offenders one at a time.\n- Annual test first-time pass rate went from 71% to 94% after moving pre-test inspections in-house and giving the workshop a written checklist.\n- Took Driver CPC training in-house as a JAUPT-approved trainer, saving about £34k a year in course fees and letting the training cover the fleet's own vehicles rather than a generic curriculum.\n- Fuel economy across the rigid fleet went from 7.9 to 8.6 mpg in three years, through driver league tables, telematics coaching and an idling policy.\n---\nDriver Trainer and Class 1 Driver | Ockbrook Haulage | Rotherham, UK | Mar 2013 - Dec 2019\n- Drove general haulage four days a week and trained new drivers on the fifth, taking about 60 through induction and assessment.\n- Ran the depot's load securing toolbox talks after two shed loads in one winter; there were none in the six years that followed.\n---\nHGV Class 1 Driver | Ockbrook Haulage | Rotherham, UK | Sep 2002 - Feb 2013\n- Tramping and day work across the UK and into France and Belgium, on curtainside and container.\n- Clean licence and no chargeable incidents across the eleven years.",
+        "education": "Transport Manager CPC, National and International (OCR) | Doncaster, UK | Jan 2018 - Sep 2018\n---\nLevel 3 Award in Education and Training | Doncaster College | Sep 2015 - Jun 2016",
+        "projects": "",
+        "publications": "",
+        "certifications": "Transport Manager CPC (National and International), 2018 - named on the operator's licence since 2020\nJAUPT-approved Driver CPC trainer, approval renewed 2025\nCategory C+E since 2002; Driver CPC valid to 2029; clean licence, no endorsements\nDigital tachograph analysis (Tachomaster), 2019\nIOSH Managing Safely, 2021\nFirst Aid at Work, 2024"
+      }
+    }
+  ]
+}

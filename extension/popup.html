@@ -75,6 +75,117 @@
   .act-txt b { display: block; font-size: 12.5px; font-weight: 650; }
   .act-txt span { display: block; font-size: 11px; color: var(--ink-soft); margin-top: 1px; }
   .act-arrow { color: var(--faint); font-size: 13px; }
+  /* The busy state replaces the button's contents for the duration of the
+     request; it's a wrapper so the original markup can be put back verbatim
+     rather than rebuilt from a flattened string. */
+  .act-busy { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 650; }
+
+  /* ---- numbered steps ---- */
+  .step { display: flex; gap: 10px; margin-bottom: 14px; }
+  .step-num {
+    width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; margin-top: 1px;
+    background: var(--accent); color: #fff; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-body { flex: 1; min-width: 0; }
+  .step-label {
+    display: block; font-size: 11px; font-weight: 700; color: var(--ink-soft);
+    margin-bottom: 6px; letter-spacing: .01em;
+  }
+  .step-body select {
+    width: 100%; height: 36px; border: 1px solid var(--line); border-radius: 9px;
+    padding: 0 9px; font-family: inherit; font-size: 12px; background: #fff; color: var(--ink);
+  }
+  .step-opts { display: flex; gap: 10px; margin-top: 7px; align-items: center; flex-wrap: wrap; }
+  .step-opts label { font-size: 11px; display: flex; align-items: center; gap: 5px; color: var(--ink-soft); }
+
+  /* ---- ATS result ---- */
+  .ats-box { border: 1px solid var(--line); border-radius: 12px; padding: 12px 13px; margin-bottom: 14px; }
+  .ats-top { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .ats-score { display: flex; align-items: baseline; }
+  .ats-score b { font-size: 26px; font-weight: 800; letter-spacing: -.02em; }
+  .ats-score span { font-size: 11px; color: var(--faint); margin-left: 2px; }
+  .ats-verdict { font-size: 11.5px; font-weight: 700; }
+  .ats-verdict.good { color: #16A34A; }
+  .ats-verdict.mid { color: #D97706; }
+  .ats-verdict.low { color: #DC2626; }
+  .ats-bar { height: 6px; border-radius: 4px; background: #EEF0F4; overflow: hidden; margin: 9px 0 10px; }
+  .ats-bar span { display: block; height: 100%; border-radius: 4px; width: 0; background: var(--accent);
+                  transition: width .5s ease; }
+  .ats-missing { font-size: 11px; color: var(--ink-soft); line-height: 1.6; }
+  .ats-missing b { display: block; font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em;
+                   color: var(--faint); margin-bottom: 5px; }
+  .ats-missing i { font-style: normal; display: inline-block; padding: 2px 7px; margin: 0 4px 4px 0;
+                   border-radius: 6px; background: #FEF3E2; color: #B45309; font-size: 10.5px; font-weight: 650; }
+
+  /* ---- downloads ---- */
+  .downloads { margin-top: 4px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .dl-item { display: flex; align-items: center; gap: 10px; padding: 10px 11px; margin-bottom: 8px;
+             border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+  .dl-item--stack { display: block; }
+  .dl-row { display: flex; align-items: center; gap: 10px; }
+  .dl-row--end { justify-content: flex-end; margin-top: 6px; }
+  .dl-ico { width: 30px; height: 30px; border-radius: 9px; flex-shrink: 0; background: #F3F4F8;
+            display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .dl-txt { flex: 1; min-width: 0; }
+  .dl-txt b { display: block; font-size: 12.5px; font-weight: 650; }
+  .dl-txt span { display: block; font-size: 11px; color: var(--ink-soft); margin-top: 1px;
+                 overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl-btn { flex-shrink: 0; height: 30px; padding: 0 13px; border-radius: 8px; border: none;
+            background: var(--accent); color: #fff; font-family: inherit; font-size: 11.5px;
+            font-weight: 650; cursor: pointer; }
+  .dl-btn:hover { filter: brightness(1.06); }
+  .dl-btn:disabled { opacity: .55; cursor: default; }
+  .dl-item--stack textarea { width: 100%; margin-top: 9px; border: 1px solid var(--line);
+                             border-radius: 9px; padding: 8px; font-family: inherit; font-size: 11.5px;
+                             color: var(--ink); resize: vertical; }
+
+  /* ---- sponsorship badge ---- */
+  .spon {
+    display: inline-flex; align-items: center; gap: 5px; margin-top: 6px;
+    padding: 3px 9px; border-radius: 999px; font-size: 10.5px; font-weight: 700;
+    border: 1px solid transparent; max-width: 100%;
+  }
+  .spon span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .spon.yes { background: #E7F8EF; color: #15803D; border-color: #BBEBCD; }
+  .spon.maybe { background: #FEF3E2; color: #B45309; border-color: #F6DFB8; }
+  .spon.no { background: #F3F4F8; color: #6B6F85; border-color: var(--line); }
+  .spon.pending { background: #F3F4F8; color: var(--faint); border-color: var(--line); }
+
+  /* ---- sponsorship controls (the in-page tags) ---- */
+  .sw-row { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; cursor: pointer; }
+  .sw-row .sw-txt { flex: 1; min-width: 0; }
+  .sw-row b { display: block; font-size: 12px; font-weight: 650; }
+  .sw-row i { display: block; font-style: normal; font-size: 11px; color: var(--ink-soft);
+              line-height: 1.45; margin-top: 2px; }
+  /* appearance:none on a real checkbox rather than a styled div — it stays
+     focusable, space-togglable, and labelled by the row it sits in. */
+  .sw {
+    appearance: none; -webkit-appearance: none; margin: 2px 0 0; flex-shrink: 0;
+    width: 34px; height: 20px; border-radius: 999px; background: #DDE0E8;
+    position: relative; cursor: pointer; transition: background .15s ease;
+  }
+  .sw::after {
+    content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+    border-radius: 50%; background: #fff; box-shadow: 0 1px 3px rgba(16,20,40,.28);
+    transition: transform .15s ease;
+  }
+  .sw:checked { background: var(--accent); }
+  .sw:checked::after { transform: translateX(14px); }
+  .sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .seg { display: flex; gap: 4px; padding: 3px; background: #F3F4F8; border-radius: 10px; }
+  .seg button {
+    flex: 1; height: 27px; border: none; border-radius: 8px; background: transparent;
+    font-family: inherit; font-size: 11px; font-weight: 650; color: var(--ink-soft);
+    cursor: pointer; white-space: nowrap;
+  }
+  .seg button.on { background: #fff; color: var(--accent); box-shadow: 0 1px 2px rgba(16,20,40,.12); }
+  .seg.off { opacity: .45; pointer-events: none; }
+  .spon-hint { font-size: 11px; color: var(--ink-soft); line-height: 1.45; margin: 7px 0 0; }
+  .spon-reg { display: flex; align-items: baseline; gap: 6px; margin: 8px 0 0;
+              font-size: 10.5px; color: var(--faint); line-height: 1.5; }
+  .spon-reg span { flex: 1; min-width: 0; }
 
   /* ---- right: the job ---- */
   .job-head { display: flex; gap: 13px; align-items: center; padding: 16px 16px 0; }
@@ -187,14 +298,14 @@
 
   .linkbtn { border: none; background: none; color: var(--accent); font-size: 11px;
              cursor: pointer; font-family: inherit; padding: 2px 4px; }
-  .mm-mark { width: 26px; height: 26px; flex-shrink: 0; }
+  .mm-mark { height: 22px; width: auto; flex-shrink: 0; }
 </style>
 </head>
 <body>
 
 <!-- ============================== LOGIN ============================== -->
 <div id="view-login">
-  <h2 style="display:flex;align-items:center;gap:9px;"><svg class="mm-mark" viewBox="0 0 96 96" aria-hidden="true"><rect width="96" height="96" rx="26" fill="#4F46E5"/><path d="M22 74V30L47 56L70 22" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M54 22H70V38" fill="none" stroke="#fff" stroke-width="8.5" stroke-linecap="round" stroke-linejoin="round"/></svg>Momentum Tracker</h2>
+  <h2 style="display:flex;align-items:center;gap:9px;"><img class="mm-mark" src="icons/mark.png" alt="" aria-hidden="true">Momentum Tracker</h2>
   <p>Sign in to capture jobs straight from the page you're on.</p>
   <input type="email" id="login-email" placeholder="you@example.com" autocomplete="username" />
   <input type="password" id="login-password" placeholder="Password" autocomplete="current-password" />
@@ -210,7 +321,7 @@
     <!-- ---------- left: insights ---------- -->
     <div class="panel panel-l">
       <div class="ins-head">
-        <div class="ins-icon"><svg viewBox="0 0 96 96" aria-hidden="true" style="width:22px;height:22px"><path d="M24 72V32L48 56L68 26" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/><path d="M52 26H70V44" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="ins-icon"><img src="icons/mark-light.png" alt="" aria-hidden="true" style="width:22px;height:auto;display:block"></div>
         <div style="min-width:0">
           <h1>Job Insights</h1>
           <p>Signals pulled from this posting</p>
@@ -225,54 +336,110 @@
         <div class="divider"></div>
 
         <p class="sec-label">Your next step</p>
-        <p class="step-sub">Tools to build a stronger application</p>
+        <p class="step-sub">Pick a resume first — everything below works from it</p>
 
-        <button class="act" id="generate-resume-btn">
-          <span class="act-ico" style="background:#EEF0FE;color:#4F46E5;">📄</span>
-          <span class="act-txt"><b>Generate Tailored CV</b><span>A CV matched to this job</span></span>
-          <span class="act-arrow">›</span>
-        </button>
-        <button class="act" id="generate-cover-letter-btn">
-          <span class="act-ico" style="background:#E7F8EF;color:#16A34A;">✉️</span>
-          <span class="act-txt"><b>Generate Cover Letter</b><span>A personalised letter</span></span>
-          <span class="act-arrow">›</span>
-        </button>
-        <button class="act" id="ats-check-btn">
-          <span class="act-ico" style="background:#FEF3E2;color:#D97706;">🛡️</span>
-          <span class="act-txt"><b>Check ATS Score</b><span>Score your resume for ATS</span></span>
-          <span class="act-arrow">›</span>
-        </button>
-        <button class="act" id="select-resume-btn">
-          <span class="act-ico" style="background:#EEF0FE;color:#4F46E5;">📁</span>
-          <span class="act-txt"><b>Select Existing Resume</b><span>Choose from your saved resumes</span></span>
-          <span class="act-arrow">›</span>
-        </button>
-
-        <div id="resume-picker" class="hidden" style="margin-top:4px;">
-          <select id="resume-select" style="width:100%;height:36px;border:1px solid #ECEDF3;border-radius:9px;padding:0 9px;font-family:inherit;font-size:12px;"></select>
-          <div style="display:flex;gap:10px;margin-top:7px;align-items:center;flex-wrap:wrap;">
-            <button class="linkbtn" id="resume-refresh-btn">Refresh</button>
-            <label style="font-size:11px;display:flex;align-items:center;gap:5px;">
-              <input type="checkbox" id="chk-tailor" checked /> Auto-tailor
-            </label>
-            <label style="font-size:11px;display:flex;align-items:center;gap:5px;">
-              <input type="checkbox" id="chk-cover" checked /> Cover letter
-            </label>
+        <!-- Step 1 is a step, not a button that reveals one. Every action here
+             needs a resume, so hiding the picker behind "Select Existing
+             Resume" put the prerequisite last and left the other buttons
+             looking available when they weren't. -->
+        <div class="step">
+          <span class="step-num">1</span>
+          <div class="step-body">
+            <label class="step-label" for="resume-select">Resume</label>
+            <select id="resume-select"></select>
+            <div class="step-opts">
+              <button class="linkbtn" id="resume-refresh-btn">Refresh</button>
+              <label><input type="checkbox" id="chk-tailor" checked /> Auto-tailor</label>
+              <label><input type="checkbox" id="chk-cover" checked /> Cover letter</label>
+            </div>
+            <div id="resume-status" class="status"></div>
           </div>
-          <div id="resume-status" class="status"></div>
         </div>
 
-        <div id="results-section" class="hidden" style="margin-top:10px;">
-          <div id="resume-result" class="hidden status ok">
-            Tailored resume ready — <a id="resume-download-link" href="#" target="_blank">download</a>
+        <div class="step">
+          <span class="step-num">2</span>
+          <div class="step-body">
+            <span class="step-label">Do something with it</span>
+
+            <button class="act" id="ats-check-btn">
+              <span class="act-ico" style="background:#FEF3E2;color:#D97706;">🛡️</span>
+              <span class="act-txt"><b>Check ATS Score</b><span>Score this resume against the posting</span></span>
+              <span class="act-arrow">›</span>
+            </button>
+            <button class="act" id="generate-resume-btn">
+              <span class="act-ico" style="background:#EEF0FE;color:#4F46E5;">📄</span>
+              <span class="act-txt"><b>Generate Tailored CV</b><span>A CV matched to this job</span></span>
+              <span class="act-arrow">›</span>
+            </button>
+            <button class="act" id="generate-cover-letter-btn">
+              <span class="act-ico" style="background:#E7F8EF;color:#16A34A;">✉️</span>
+              <span class="act-txt"><b>Generate Cover Letter</b><span>A personalised letter</span></span>
+              <span class="act-arrow">›</span>
+            </button>
+            <button class="act" id="autofill-btn">
+              <span class="act-ico" style="background:#E9EDFF;color:#3D5AFE;">🪄</span>
+              <span class="act-txt"><b>Fill this application</b><span>From your saved profile — you review and submit</span></span>
+              <span class="act-arrow">›</span>
+            </button>
           </div>
-          <div id="cover-letter-result" class="hidden" style="margin-top:8px;">
-            <textarea id="cover-letter-text" rows="5" style="width:100%;border:1px solid #ECEDF3;border-radius:9px;padding:8px;font-family:inherit;font-size:11.5px;"></textarea>
-            <div style="display:flex;gap:6px;margin-top:6px;">
-              <button class="linkbtn" id="copy-cover-letter-btn">Copy</button>
-              <button class="linkbtn" id="download-cover-letter-btn">Download</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Visa sponsorship: the in-page tags and how they treat the rest.
+             Lives here rather than in Settings because it is a job-search
+             decision, changed as often as the search itself is. -->
+        <p class="sec-label">Visa sponsorship</p>
+        <label class="sw-row" for="spon-enabled">
+          <span class="sw-txt">
+            <b>Tag sponsors on job lists</b>
+            <i>Marks every card whose employer holds a UK sponsor licence, on the search page itself.</i>
+          </span>
+          <input type="checkbox" id="spon-enabled" class="sw" checked />
+        </label>
+        <div class="seg" id="spon-mode">
+          <button type="button" data-mode="badge" class="on">Tag only</button>
+          <button type="button" data-mode="dim">Dim rest</button>
+          <button type="button" data-mode="hide">Hide rest</button>
+        </div>
+        <p class="spon-hint" id="spon-hint"></p>
+        <p class="spon-reg">
+          <span id="spon-register">Checking register…</span>
+          <button class="linkbtn" id="spon-refresh">Refresh</button>
+        </p>
+
+        <!-- ATS result -->
+        <div id="ats-result" class="hidden ats-box">
+          <div class="ats-top">
+            <div class="ats-score"><b id="ats-score-val">—</b><span>/ 100</span></div>
+            <div class="ats-verdict" id="ats-verdict"></div>
+          </div>
+          <div class="ats-bar"><span id="ats-bar-fill"></span></div>
+          <div id="ats-missing" class="ats-missing"></div>
+        </div>
+
+        <!-- Downloads: everything generated lands here, in one place -->
+        <div id="results-section" class="hidden downloads">
+          <p class="sec-label">Downloads</p>
+
+          <div id="resume-result" class="hidden dl-item">
+            <span class="dl-ico">📄</span>
+            <span class="dl-txt"><b>Tailored resume</b><span id="resume-dl-name">Ready</span></span>
+            <button class="dl-btn" id="resume-download-btn">Download</button>
+          </div>
+
+          <div id="cover-letter-result" class="hidden dl-item dl-item--stack">
+            <div class="dl-row">
+              <span class="dl-ico">✉️</span>
+              <span class="dl-txt"><b>Cover letter</b><span id="cover-dl-name">Ready — edit before you send</span></span>
+              <button class="dl-btn" id="download-cover-letter-btn">Download</button>
+            </div>
+            <textarea id="cover-letter-text" rows="5"></textarea>
+            <div class="dl-row dl-row--end">
+              <button class="linkbtn" id="copy-cover-letter-btn">📋 Copy</button>
             </div>
           </div>
+
           <div id="ai-refine-status" class="status"></div>
         </div>
       </div>
@@ -285,6 +452,8 @@
         <div style="min-width:0;flex:1">
           <h2 id="hdr-role">No job detected</h2>
           <p class="sub" id="hdr-sub">Open a job posting, then reopen this popup</p>
+          <!-- Filled in by checkSponsorship() as soon as a company is known. -->
+          <div id="spon-badge" class="spon hidden"></div>
         </div>
       </div>
       <div class="topbar">

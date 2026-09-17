@@ -32,6 +32,7 @@ Configuration (all optional, all via environment):
 from __future__ import annotations
 
 import json
+import logging
 import os
 
 from ..env import env_bool, env_int, env_str
@@ -45,6 +46,8 @@ N_THREADS = env_int("MOMENTUM_LLM_THREADS", os.cpu_count() or 4)
 N_CTX = env_int("MOMENTUM_LLM_CONTEXT", 4096)
 N_GPU_LAYERS = env_int("MOMENTUM_LLM_GPU_LAYERS", 0)
 DISABLED = env_bool("MOMENTUM_LLM_DISABLED")
+
+log = logging.getLogger("momentum.ai")
 
 _lock = threading.Lock()
 _llm = None
@@ -178,11 +181,44 @@ def status() -> dict:
     return {"available": True, "mode": "lite", "model_hint": _load_error, "models_dir": MODELS_DIR}
 
 
+# ---------------------------------------------------------------------------
+# Remote model, when the user has configured one
+# ---------------------------------------------------------------------------
+# Checked before the local model in every entry point below. That ordering is
+# the whole design: six routers call complete/chat/complete_json and none of
+# them know a hosted provider exists, so putting the check here is what makes
+# one pasted API key light up tailoring, cover letters, ATS suggestions and the
+# assistant simultaneously.
+#
+# Failures fall through rather than raise. The contract every caller was
+# written against is "None means no model", and a provider being down should
+# degrade to lite mode exactly as a missing GGUF does — not 500 a page.
+
+def _remote():
+    try:
+        from . import remote
+        return remote, remote.current()
+    except Exception:
+        return None, None
+
+
+def remote_available() -> bool:
+    _mod, cfg = _remote()
+    return cfg is not None
+
+
 def complete(prompt: str, *, max_tokens: int = 512, temperature: float = 0.7,
              stop: list[str] | None = None, grammar_str: str | None = None) -> str | None:
     """Runs a completion. Returns None (never raises) when no model is
     loaded or generation fails, so every caller can fall back to lite mode
     with a plain `if result is None`."""
+    remote, cfg = _remote()
+    if cfg is not None:
+        try:
+            return remote.chat("You are a careful, concise writing assistant.",
+                               prompt, cfg, max_tokens=max_tokens, temperature=temperature)
+        except Exception as e:
+            log.warning("remote LLM failed, falling back to local: %s", e)
     llm = _load()
     if llm is None:
         return None
@@ -208,6 +244,16 @@ def complete_json(prompt: str, *, max_tokens: int = 512, temperature: float = 0.
     invalid JSON, which removes the usual 'strip the ```json fence and pray'
     parsing step. Returns None if unavailable or still unparseable.
     """
+    remote, cfg = _remote()
+    if cfg is not None:
+        try:
+            parsed = remote.chat_json("You are a careful assistant.", prompt, cfg,
+                                      max_tokens=max_tokens, temperature=temperature)
+            if parsed is not None:
+                return parsed
+        except Exception as e:
+            log.warning("remote LLM JSON failed, falling back to local: %s", e)
+
     raw = complete(prompt, max_tokens=max_tokens, temperature=temperature, grammar_str=JSON_GRAMMAR)
     if not raw:
         return None
@@ -229,6 +275,13 @@ def chat(system: str, user: str, *, max_tokens: int = 512, temperature: float = 
     (most instruct GGUFs do), falling back to a plain prompt otherwise.
     Using the model's native template noticeably improves instruct-tuned
     output versus hand-rolling 'System: … User: …'."""
+    remote, cfg = _remote()
+    if cfg is not None:
+        try:
+            return remote.chat(system, user, cfg, max_tokens=max_tokens,
+                               temperature=temperature)
+        except Exception as e:
+            log.warning("remote LLM chat failed, falling back to local: %s", e)
     llm = _load()
     if llm is None:
         return None

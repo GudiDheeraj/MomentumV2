@@ -1,0 +1,410 @@
+{
+  "project_manager": [
+    {
+      "level": "early",
+      "headline": "Coordinator moving up, first solo deliveries",
+      "why": "Project management is one of the few fields where the certificate is a real screening gate, so PRINCE2 is named in the first line of the profile rather than left to the bottom of the page. What earns the interview underneath is scope actually held: every delivery states its budget, its team and the date it landed, because a coordinator who cannot say those three things reads as an administrator.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Ffion Hargreaves",
+        "title": "Project Manager",
+        "location": "Cardiff, UK",
+        "phone": "+44 7700 900218",
+        "email": "ffion.hargreaves@example.com",
+        "linkedin": "linkedin.com/in/ffion-hargreaves-example",
+        "website": "",
+        "summary": "- PRINCE2 Practitioner, two years in utilities delivery, now running small projects end to end rather than supporting them.\n- Three deliveries closed in the last year at £40k, £120k and £180k, all inside stage-gate governance.",
+        "skills": "Methods: PRINCE2, stage gates, RAID logs, MoSCoW prioritisation, Scrum ceremonies\nDelivery: schedule building, budget tracking and forecasting, change control, benefits tracking, steering packs\nTools: Microsoft Project, Jira, Confluence, Smartsheet, Excel (S-curves, resource plans)\nWorking with: field engineering teams, subcontractors, regulatory reporting",
+        "experience": "Project Coordinator | Tirvale Energy | Cardiff, UK | Jun 2024 - Present\n- Run three concurrent projects worth £340k combined with a delivery team of nine, reporting into the monthly stage-gate board.\n- Rebuilt the smart-meter installation schedule after a subcontractor pulled out, holding a regulatory deadline that a four-week slip would have missed.\n- Took over the RAID log for the whole workstream, closed 31 aged risks and got the register down to the 12 that needed board attention.\n- Write the monthly steering pack for the delivery director, replacing the six-tab spreadsheet that preceded it.\n---\nCustomer Operations Adviser | Tirvale Energy | Cardiff, UK | Sep 2023 - May 2024\n- Handled around 60 billing queries a day and joined the complaints escalation desk after four months.\n- Ran the desk-level pilot of the new billing script; my notes became the training material for 40 advisers.",
+        "education": "BSc, Business Management (2:1) | Cardiff University | Sep 2020 - Jun 2023",
+        "projects": "Smart Meter Rollout, Phase 2: £180k, 11 weeks, team of six engineers and two schedulers. Delivered 2,400 installations against a 2,200 target and closed a week early after resequencing the route plan.\n---\nDepot Move, Newport: £120k over four months. Relocated 38 staff and a vehicle fleet across one weekend with no lost operating days, and wrote the cutover runbook now used for the two remaining depots.",
+        "publications": "",
+        "certifications": "PRINCE2 Practitioner (2025)\nAPM Project Fundamentals Qualification (PFQ) (2024)\nCertified ScrumMaster, Scrum Alliance (2025)"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, insurance and telecoms change",
+      "why": "Scope belongs in the profile and results belong in the bullets. This template lifts the first bullet of every role into a Key Achievements block, so none of them is a scope line; the budget, the headcount and the vendor count sit in the summary instead, where a reader sizes you before they read you. Note the project that was stopped at a stage gate, which is worth more to a delivery director than another green status.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Dmytro Lysenko",
+        "title": "Project Manager",
+        "location": "Birmingham, UK",
+        "phone": "+44 7700 900473",
+        "email": "d.lysenko@example.com",
+        "linkedin": "linkedin.com/in/dmytro-lysenko-example",
+        "website": "",
+        "summary": "- Project manager, six years across insurance and telecoms change; hybrid delivery, with stage-gate governance over Scrum teams.\n- Currently runs a £2.4m portfolio of four projects: 18 people, two vendors and an offshore test team.\n- PRINCE2 and AgilePM Practitioner; comfortable arguing a statement of work as well as a sprint plan.",
+        "skills": "Delivery: PRINCE2, Scrum, Kanban, stage gates, earned value reporting, change control, RAID\nCommercial: statements of work, vendor selection, fixed-price versus time-and-materials, contract change notes\nTools: Jira, Confluence, Microsoft Project, Azure DevOps, Power BI, Miro\nDomain: policy administration, claims, regulatory reporting, data migration",
+        "experience": "Project Manager | Perrymead Mutual | Birmingham, UK | Feb 2023 - Present\n- Delivered the claims portal replacement two weeks early and £160k under budget; digital claim submissions went from 21% to 58% of volume within six months.\n- Recovered £210k of contingency by renegotiating the integration partner's statement of work after a scope dispute, without moving the delivery date.\n- Stopped the fourth workstream at its second stage gate when the benefits case failed review, and wrote the paper that made the case for stopping.\n- Cut the change-request backlog from 74 to 19 by putting a weekly triage in front of the design authority.\n---\nProject Manager | Rushmere Telecom | Coventry, UK | Aug 2021 - Jan 2023\n- Ran the £900k billing migration for 340,000 accounts; cutover finished inside a 14-hour window against a 24-hour plan.\n- Introduced a fortnightly dependency review across four squads after a missed handover cost three weeks.\n- Took 11% off the supplier day-rate card at contract renewal.\n---\nProject Support Officer | Rushmere Telecom | Coventry, UK | Sep 2020 - Jul 2021\n- Built the resource forecast for a £4m programme PMO; the delivery leads still run it.\n- Produced the weekly portfolio report and chased the actions nobody else was chasing.",
+        "education": "BSc, Information Systems (2:1) | Coventry University | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "PRINCE2 Practitioner (2022)\nAgilePM Practitioner (2023)\nCertified ScrumMaster, Scrum Alliance (2021)\nITIL 4 Foundation (2021)"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Thirteen years, capital delivery, £14m portfolio",
+      "why": "Infrastructure project management is screened on things software delivery never mentions. The certifications block carries ChPP, NEC4 accreditation and SMSTS rather than another Agile course, the CDM client duty is stated outright, and money appears as sanction value and out-turn variance, which is how a capital scheme is actually judged. Copying an IT project manager's CV into this sector fails on all three.",
+      "template_id": "timeline",
+      "data": {
+        "full_name": "Anita Bhattacharya",
+        "title": "Senior Project Manager",
+        "location": "London, UK",
+        "phone": "+44 7700 900162",
+        "email": "anita.bhattacharya@example.com",
+        "linkedin": "linkedin.com/in/anita-bhattacharya-example",
+        "website": "",
+        "summary": "- Senior project manager in electricity distribution, thirteen years across capital delivery and civils; NEC4 contracts to £14m.\n- Holds the client-side CDM duty on live sites; three years across the portfolio without a RIDDOR-reportable incident.\n- Four project managers report in; chairs the monthly cost and change review.",
+        "skills": "Capital delivery: NEC4 Options A and C, early warnings and compensation events, CDM 2015 client duties, earned value, out-turn forecasting\nGovernance: stage gates, £500k delegated change authority, RIIO price-control reporting, design authority sign-off\nLeadership: four direct reports, contractor performance reviews, consultation with local authorities and residents\nTools: Primavera P6, Microsoft Project, SAP PS, Power BI",
+        "experience": "Senior Project Manager | Stanmere Networks | London, UK | Mar 2020 - Present\n- Portfolio of six substation and cable schemes, £14m of capital value, with four project managers reporting in.\n- Delivered the 33kV substation rebuild for £11.6m against a £12.4m sanction, eleven weeks past the original date and inside the revised board window.\n- Settled a £1.9m compensation-event claim at £460k by reconstructing the early-warning record the contractor said did not exist.\n- Narrowed the gap between forecast and out-turn from 14% to under 4% across two years by moving the portfolio onto a single monthly cost report.\n- Chair consultation on schemes affecting residential streets; planning objections fell from an average of 23 per scheme to 6.\n---\nProject Manager | Halbrook Civils | Reading, UK | Jun 2016 - Feb 2020\n- Ran highways and drainage schemes from £600k to £4.2m for local authority clients, each with its own approval regime.\n- Recovered the Longmead culvert scheme after an eight-week archaeological stop, replanning to hold the flood-season deadline.\n- Introduced site-based weekly cost capture, which took month-end reporting from nine days to two.\n---\nProject Engineer | Halbrook Civils | Reading, UK | Sep 2013 - May 2016\n- Site engineering and temporary works coordination on two schemes over £3m.\n- Moved into project management after taking over planning on the second.",
+        "education": "BEng, Civil Engineering (2:1) | University of Nottingham | Sep 2010 - Jun 2013",
+        "projects": "",
+        "publications": "",
+        "certifications": "APM Chartered Project Professional (ChPP)\nPRINCE2 Practitioner\nNEC4 ECC Project Manager Accreditation\nSMSTS (Site Management Safety Training Scheme)\nCSCS Manager card"
+      }
+    }
+  ],
+  "program_manager": [
+    {
+      "level": "early",
+      "headline": "PMO lead stepping into programme delivery",
+      "why": "A first programme role is not won by listing more projects. This CV is rewritten in programme vocabulary — tranches, the dependency log, the benefits register — because what separates a senior project manager from a programme manager is whether you have handled the seams between projects and the benefits case that pays for all of them. The double-counted benefits line is the most persuasive thing on the page.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Kwabena Mensah",
+        "title": "Programme Manager",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900355",
+        "email": "kwabena.mensah@example.com",
+        "linkedin": "linkedin.com/in/kwabena-mensah-example",
+        "website": "",
+        "summary": "- Six years in retail change, three of them running the dependency, benefits and reporting layer of a £12m store systems programme.\n- MSP Foundation and PRINCE2 Practitioner; delivered two of the programme's six projects directly when their managers left mid-tranche.\n- Looking for a first full programme, with the business case as well as the plan.",
+        "skills": "Programme: tranche planning, dependency management, benefits registers, business case tracking, programme board reporting\nProject: PRINCE2, stage gates, RAID, change control, resource forecasting\nFinancial: capex and opex forecasting, benefits baselining, monthly variance analysis\nTools: Microsoft Project, Planview, Jira, Power BI, Excel",
+        "experience": "PMO Lead | Fenmarket Grocers | Manchester, UK | Apr 2023 - Present\n- Rebuilt the benefits register so every line had an owner, a baseline and a measurement date; 4 of the 19 benefits turned out to be counted twice across projects.\n- Own the dependency log for six projects in a £12m programme; the two cross-project clashes caught at the last tranche review would have cost about five weeks each.\n- Stepped in as project manager for the self-checkout rollout when its manager left, delivering 84 store installations over 11 weeks.\n- Cut the programme board pack from 40 slides to 12 and moved the rest to an appendix nobody has since asked for.\n---\nProject Manager | Fenmarket Grocers | Manchester, UK | Sep 2021 - Mar 2023\n- Delivered the £480k warehouse labelling replacement across two depots without interrupting overnight picking.\n- Took the loyalty platform integration from contract signature to live in nine weeks.\n---\nGraduate Analyst, Retail Operations | Fenmarket Grocers | Manchester, UK | Sep 2020 - Aug 2021\n- Rotated through store operations, buying and IT.\n- Wrote the till-downtime analysis that became the business case for the systems programme.",
+        "education": "BSc, Management with Information Systems (First Class) | University of Manchester | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "MSP Foundation (2024)\nP3O Foundation (2023)\nManaging Benefits Foundation (2024)\nPRINCE2 Practitioner (2022)"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Seven years, a £9.4m platform replacement",
+      "why": "Programme CVs live or die on the benefits paragraph. Anyone can say a programme went live; this one says what the benefits register showed twelve months later, including the workstream that came in 40% short and was reported rather than netted off against the wins. The governance vocabulary — SRO, programme board, tranche — is what a programme recruiter searches on, so it is used precisely rather than decoratively.",
+      "template_id": "consulting_premium",
+      "data": {
+        "full_name": "Imogen Fairbairn",
+        "title": "Programme Manager",
+        "location": "Edinburgh, UK",
+        "phone": "+44 7700 900509",
+        "email": "imogen.fairbairn@example.com",
+        "linkedin": "linkedin.com/in/imogen-fairbairn-example",
+        "website": "",
+        "summary": "- Programme manager, seven years across financial services and local government; currently runs a £9.4m savings-platform replacement.\n- Five workstreams, 46 people, three suppliers; reports to the SRO and runs the monthly programme board.\n- Accountable for the benefits case as well as the delivery plan, and has re-baselined both.",
+        "skills": "Programme: MSP tranches, blueprint and target operating model, benefits realisation, dependency and interface management, SRO and board reporting\nDelivery: PRINCE2 stage gates over Scrum teams, migration planning, cutover and rollback, service transition\nCommercial: £9.4m budget, business case refresh, supplier performance, contract change control\nTools: Microsoft Project, Planview, Jira, Confluence, Power BI",
+        "experience": "Programme Manager | Ashcliffe Building Society | Edinburgh, UK | Jan 2023 - Present\n- Run the savings-platform replacement: £9.4m, five workstreams, 46 people across three suppliers, reporting to the SRO and a monthly programme board.\n- Migrated 610,000 accounts over four tranches with 41 hours of total customer outage against a 72-hour commitment.\n- Benefits at twelve months: £2.8m of the £3.4m case realised. The servicing-cost line came in 40% short and went to the board as a shortfall rather than being netted off against the wins.\n- Absorbed a mid-programme regulatory reporting change by re-sequencing tranche three, with no new business case required.\n- Took £430k of change requests out of the programme by restructuring the supplier's fixed-price scope into two lots.\n---\nProject Manager | Strathenn Council | Stirling, UK | Jun 2019 - Dec 2022\n- Delivered the revenues and benefits system replacement for 190 staff and 78,000 households, going live during the annual billing run without missing a statutory date.\n- Agreed the shift model for the service redesign that followed through member and union consultation, with no formal dispute raised.\n- Took the digital front-door project back from a red gate review to amber in one quarter.",
+        "education": "MA (Hons), Economics and Politics (2:1) | University of Edinburgh | Sep 2015 - Jun 2019",
+        "projects": "Savings Platform Replacement, £9.4m: Five workstreams over 30 months — core platform, migration, servicing model, colleague training and decommissioning. Four migration tranches, 610,000 accounts, £2.8m of benefits evidenced at twelve months.\n---\nRevenues and Benefits Replacement, £2.1m: 190 users across three sites, go-live inside the annual billing window, with the legacy system decommissioned four months later rather than run in parallel for a year.",
+        "publications": "",
+        "certifications": "MSP Practitioner (2022)\nManaging Benefits Practitioner (2023)\nPRINCE2 Practitioner (2019)\nAgilePM Practitioner (2021)"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Seventeen years, now a £40m portfolio",
+      "why": "At portfolio level the projects disappear and the decisions arrive. The line worth studying is the one about stopping a £3.6m CRM and a £1.2m network refresh, because a director who only ever lists things they started reads as someone who has never had to choose. Note also that the skills block names programmes led rather than tools — nobody hires a portfolio director for their Planview.",
+      "template_id": "executive_twopage",
+      "data": {
+        "full_name": "Andrés Quiroga",
+        "title": "Programme Director",
+        "location": "London, UK",
+        "phone": "+44 7700 900281",
+        "email": "andres.quiroga@example.com",
+        "linkedin": "linkedin.com/in/andres-quiroga-example",
+        "website": "",
+        "summary": "- Programme director, seventeen years in industrials and telecoms, accountable for a £40m change portfolio and a PMO of 14.\n- Nine programme and project managers report in; hired six of them and wrote the delivery competency framework the group now recruits against.\n- Comfortable with the unglamorous half of portfolio work: stopping programmes, re-baselining business cases, and telling an executive committee the number has moved.",
+        "skills": "Portfolio: investment committee papers, benefits governance, stage-gate assurance, prioritisation against strategic themes, capacity planning\nProgrammes led: ERP replacement across four countries, post-acquisition integration, target operating model design, multi-site consolidation\nLeadership: nine direct reports, PMO of 14, delivery capability framework, supplier governance across £18m of annual spend",
+        "experience": "Programme Director | Caldermill Group | London, UK | Sep 2021 - Present\n- Delivered the S/4HANA replacement across four countries in 26 months, £2.1m under a £24m budget, with the finance close holding at five days through cutover.\n- Own the £40m group change portfolio across six operating companies and chair the monthly investment committee with the CFO.\n- Stopped two programmes at gate review — a £3.6m CRM and a £1.2m network refresh — when their benefits cases failed re-testing, and moved the money to integration work that was oversubscribed.\n- Integrated a £90m-turnover acquisition in 11 months: one ERP, one payroll, 340 people onto group terms, and £6.4m of synergies against £5.5m committed.\n- Rebuilt portfolio reporting around benefits rather than milestones; the executive pack is four pages and the board now asks about outcomes.\n---\nHead of Programme Delivery | Ambergate Plastics | Reading, UK | Feb 2017 - Aug 2021\n- Ran a £16m portfolio across five UK sites covering capacity expansion, an MES rollout and the consolidation that closed two plants.\n- Led that consolidation from board approval to final shipment, including consultation with 210 affected staff and the retention package that held the technical team through transfer.\n- Grew the PMO from two people to nine and introduced the gate process still in use.\n---\nSenior Programme Manager | Ambergate Plastics | Reading, UK | Mar 2013 - Jan 2017\n- Delivered the £7m automated finishing line, commissioned four weeks late and at design throughput within a quarter.\n- Took over two failing supplier-led projects and brought both to close inside the original budget.",
+        "education": "MBA | Warwick Business School | Sep 2015 - Jul 2018\n---\nBEng, Manufacturing Engineering (2:1) | Loughborough University | Sep 2005 - Jun 2009",
+        "projects": "",
+        "publications": "",
+        "certifications": "MSP Practitioner\nMoP Practitioner\nAPM Chartered Project Professional (ChPP)"
+      }
+    }
+  ],
+  "business_analyst": [
+    {
+      "level": "early",
+      "headline": "Claims handler turned analyst, two years",
+      "why": "A first BA CV is screened for one thing: evidence you can write a requirement somebody else could build from. So the projects section names the artefacts — the BPMN as-is map, the story map, the UAT pack — instead of saying 'supported requirements gathering', and the four years spent working the process being redesigned are treated as domain knowledge rather than as something to get past.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Mehreen Aslam",
+        "title": "Business Analyst",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900647",
+        "email": "mehreen.aslam@example.com",
+        "linkedin": "linkedin.com/in/mehreen-aslam-example",
+        "website": "",
+        "summary": "- Business analyst two years into the role, after three and a half years handling motor and home claims; knows the process being redesigned from having worked it.\n- Two BCS modules passed and working towards the International Diploma in Business Analysis.",
+        "skills": "Techniques: elicitation workshops, as-is and to-be process modelling (BPMN 2.0), gap analysis, MoSCoW, user stories with acceptance criteria, UAT planning\nDocumentation: business requirements documents, process maps, data dictionaries, traceability matrices\nTools: Jira, Confluence, Microsoft Visio, Miro, Excel, SQL (joins and aggregates), Power BI\nDomain: motor and home claims, first notification of loss, fraud referral, complaints",
+        "experience": "Business Analyst | Rossmere Insurance | Leeds, UK | Mar 2024 - Present\n- Sole analyst on the first-notification-of-loss redesign; wrote 64 user stories across three releases and sat with the developers through every refinement.\n- Mapped the claims journey end to end and found 11 handoffs, four of which existed only to feed a report nobody had received since 2019.\n- Ran UAT with eight business testers for the triage release: 43 defects found before go-live, two after.\n- Built the SQL extract the fraud team runs weekly, replacing a manual sample of 30 claims with the full population.\n---\nSenior Claims Handler | Rossmere Insurance | Leeds, UK | Sep 2020 - Feb 2024\n- Settled complex motor claims to £75k authority and coached four new handlers through their first quarter.\n- Sat as business representative on the claims system upgrade, which is where the move into analysis started.",
+        "education": "BA, Business and Management (2:1) | Leeds Beckett University | Sep 2017 - Jun 2020",
+        "projects": "FNOL Redesign, as-is and to-be: Two weeks of workshops with claims, fraud and telephony, BPMN maps of both states, a gap analysis covering 11 handoffs, and the story map that became the release plan.\n---\nComplaints Root-Cause Analysis: Recoded 1,200 complaints against the process map rather than the free-text categories in use. 38% traced back to a single letter template; rewriting it cut repeat complaints on that journey by a third.",
+        "publications": "",
+        "certifications": "BCS Foundation Certificate in Business Analysis (2024)\nBCS Foundation Certificate in Requirements Engineering (2025)\nWorking towards the BCS International Diploma in Business Analysis"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, payments and regulatory change",
+      "why": "The most valuable bullets on a mid-level BA CV are the ones where analysis stopped something being built. Two here end in a decision not to proceed — a £600k tool that was already licensed, and duplicated checks three teams each believed the others required — which is harder to evidence than a delivered feature and reads as somebody who tests a requirement rather than transcribing it.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Struan Mackinnon",
+        "title": "Business Analyst",
+        "location": "Glasgow, UK",
+        "phone": "+44 7700 900392",
+        "email": "struan.mackinnon@example.com",
+        "linkedin": "linkedin.com/in/struan-mackinnon-example",
+        "website": "",
+        "summary": "- Business analyst, six years across retail banking and payments; works in agile squads and on waterfall regulatory change with equal comfort.\n- Lead analyst on Consumer Duty remediation across four product lines, and on the data migration for a core savings platform.\n- BCS International Diploma; two years as proxy product owner for a squad without one.",
+        "skills": "Analysis: requirements elicitation, process modelling (BPMN 2.0), data mapping and lineage, gap analysis, impact assessment, options papers\nAgile: user stories, acceptance criteria, backlog refinement, story mapping, sprint review facilitation\nRegulatory: Consumer Duty fair-value assessments, Strong Customer Authentication, vulnerable customer journeys, complaints root cause\nTools: Jira, Confluence, SQL, Power BI, Visio, Lucidchart, Postman for API contracts",
+        "experience": "Business Analyst | Cadzow Bank | Glasgow, UK | May 2023 - Present\n- Lead BA on Consumer Duty remediation across four product lines, producing the fair-value assessments and the evidence pack the board signed.\n- Mapped 2.1m accounts through the savings migration and found a rate-history gap that would have mispriced 14,000 accounts on day one.\n- Wrote the options paper that ended a £600k plan to build a bespoke contact tool; the same outcome came from configuring software already licensed.\n- Run refinement for two squads. Stories pulled back mid-sprint fell from about a third to under a tenth.\n---\nBusiness Analyst | Nethergate Payments | Edinburgh, UK | Sep 2020 - Apr 2023\n- Specified the SCA exemption engine with the risk team, cutting challenged transactions 22% with no movement in the fraud rate.\n- Took merchant onboarding from 11 days to 4 by removing duplicated checks that three separate teams each believed the others required.\n- Documented the API contracts for four payment endpoints; still the reference partners integrate against.",
+        "education": "BSc, Computing Science (2:1) | University of Strathclyde | Sep 2016 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "BCS International Diploma in Business Analysis (2023)\nAgileBA Practitioner (2024)\nCertified Scrum Product Owner (2022)"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Twelve years, now runs the practice",
+      "why": "A lead BA CV answers two questions at once: what you shaped, and what the analysts you manage do differently now. This one carries a vendor selection with the scoring model agreed before the bids arrived, a migration governed rather than executed, and a practice of nine with a competency framework — which is the distance between senior analyst and lead. The tools list is gone entirely.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Anneke de Vries",
+        "title": "Lead Business Analyst",
+        "location": "London, UK",
+        "phone": "+44 7700 900734",
+        "email": "anneke.devries@example.com",
+        "linkedin": "linkedin.com/in/anneke-de-vries-example",
+        "website": "",
+        "summary": "- Lead business analyst, twelve years across retail and energy; runs a practice of nine analysts and owns the analysis standard every change programme works to.\n- Shapes work before it is funded — business cases, options appraisals, vendor selections — then governs the delivery that follows.",
+        "skills": "Practice: nine analysts, competency framework, hiring and moderation, quality reviews, community of practice\nShaping: business case development, options appraisal, vendor selection and weighted scoring, target operating model, benefits definition\nDelivery: data migration governance, process modelling, regulatory impact assessment, UAT strategy\nDomain: multichannel retail, order management, energy billing and metering",
+        "experience": "Lead Business Analyst | Marlden Apparel | London, UK | Feb 2022 - Present\n- Run the BA practice: nine analysts across four programmes, a competency framework, and a quality review every requirements pack passes before funding.\n- Led the order management vendor selection through 14 requirements workshops and a weighted scoring model agreed with finance and operations before bids opened; the recommendation went against the incumbent's cheaper offer and the board took it.\n- Governed the migration of 4.3m customer records and nine years of order history. Reconciliation ran at 99.97% on first pass, with both exception classes identified before cutover.\n- Ended a £1.4m returns-automation proposal by costing it against the 3% of returns it would have touched.\n---\nSenior Business Analyst | Penhale Energy | London, UK | Jun 2018 - Jan 2022\n- Lead analyst on the billing engine replacement for 1.2m customers, owning the requirements baseline through two re-scopes.\n- Mapped the industry data flows behind metering exceptions and took them from 41,000 a month to under 6,000.\n- Mentored four analysts; two now hold lead roles.\n---\nBusiness Analyst | Penhale Energy | London, UK | Sep 2014 - May 2018\n- Smart metering programme: appointment scheduling, installer routing and the customer communication rules.",
+        "education": "MSc, Business Information Systems | Vrije Universiteit Amsterdam | Sep 2012 - Jun 2014\n---\nBSc, Business Administration | Erasmus University Rotterdam | Sep 2009 - Jun 2012",
+        "projects": "",
+        "publications": "",
+        "certifications": "Certified Business Analysis Professional (CBAP), IIBA\nBCS International Diploma in Business Analysis"
+      }
+    }
+  ],
+  "operations_manager": [
+    {
+      "level": "early",
+      "headline": "Hospitality to warehouse, two years in",
+      "why": "Operations hiring runs on the numbers you were accountable for — headcount, shift pattern, volume through the door — and a career changer who supplies them from a restaurant floor reads as an operations person rather than a hopeful one. The certifications are the other half of the screen: IOSH and a counterbalance licence are cheap, checkable and expected before anyone will put you in front of a shift.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Jack Pemberton",
+        "title": "Operations Shift Manager",
+        "location": "Nottingham, UK",
+        "phone": "+44 7700 900571",
+        "email": "jack.pemberton@example.com",
+        "linkedin": "linkedin.com/in/jack-pemberton-example",
+        "website": "",
+        "summary": "- Shift manager in a 24/7 fulfilment centre, two years in, after four years running restaurant operations.\n- Accountable for 32 people a shift and 18,000 units a night against an 04:00 trailer cut-off.\n- Same job in a different building: rota to demand, control the wage line, keep people safe.",
+        "skills": "Operations: shift planning, labour scheduling to volume, pick and pack flow, agency management, daily performance boards\nMeasures: units per hour, pick accuracy, on-time despatch, absence and attrition, overtime spend\nSafety and people: IOSH Managing Safely, toolbox talks, accident investigation, return-to-work interviews, disciplinary support\nSystems: warehouse management (Manhattan), Excel, Power BI dashboards",
+        "experience": "Shift Manager | Trentmoor Logistics | Nottingham, UK | Jul 2024 - Present\n- Run the night despatch shift: 32 permanent and agency staff, 18,000 units, 04:00 trailer cut-off.\n- Held on-time despatch at 98.6% through Christmas peak with agency headcount 9% below the peak plan.\n- Cut pick errors on the ambient lines from 1.4 to 0.6 per thousand by moving the label position and re-running induction for 40 pickers.\n- Investigated a manual handling injury and rewrote the pallet breakdown method; no repeat in eleven months.\n---\nAssistant Restaurant Manager | The Selwyn Grange | Nottingham, UK | Sep 2020 - Jun 2024\n- Ran a 120-cover service with 14 staff, opening to cash-up, holding food margin at 68% against a 66% target.\n- Took £1,900 a month out of the wage bill by rebuilding the rota around covers by hour rather than a flat pattern.\n- Trained 22 new starters and was promoted to assistant manager after fourteen months.",
+        "education": "BTEC Level 3 Extended Diploma, Business (DDM) | Nottingham College | Sep 2018 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "IOSH Managing Safely (2025)\nLean Six Sigma Yellow Belt (2024)\nRTITB counterbalance forklift licence (2024)"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, chilled food, one site",
+      "why": "An operations CV is read against the site: how many people, how many shifts, what budget, what the KPI board says. The scope sits in the profile because this template promotes each role's first bullet into a highlights block, and the wins underneath are the ones an operations director actually asks about — OEE, labour cost per case, agency percentage and attrition, not 'improved efficiency'.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Aisha Kamara",
+        "title": "Operations Manager",
+        "location": "Dartford, UK",
+        "phone": "+44 7700 900425",
+        "email": "aisha.kamara@example.com",
+        "linkedin": "linkedin.com/in/aisha-kamara-example",
+        "website": "",
+        "summary": "- Operations manager at a chilled food site: 85 people across three shifts, six lines, £4.2m operating budget, 1.1m cases a year.\n- Six years in FMCG operations, Lean Six Sigma Green Belt; owns the site's OEE and labour cost per case and runs the daily performance review.",
+        "skills": "Production: line balancing, changeover reduction (SMED), OEE improvement, capacity planning, BRCGS audit readiness\nContinuous improvement: DMAIC, value stream mapping, 5S, standard work, Kaizen events\nPeople: 85 headcount over three shifts, agency management, absence and disciplinary process, training matrix\nSystems: SAP (PP and MM), Power BI, Excel, planned maintenance scheduling",
+        "experience": "Operations Manager | Bramfield Fresh Foods | Dartford, UK | Nov 2022 - Present\n- Raised OEE on the two slowest lines from 61% to 74% by attacking changeovers first; the line that took 47 minutes to change over now averages 19.\n- Took labour cost per case from £0.42 to £0.35 by rebuilding the shift pattern around the real order profile instead of a flat five-day assumption.\n- Cut agency hours from 31% to 12% by converting reliable regulars to permanent contracts; attrition fell with it, from 38% to 21% a year.\n- Held a BRCGS AA grade through two unannounced audits, including the first after the allergen line was commissioned.\n- Chair the daily performance review with engineering, quality and planning; it now runs in 15 minutes and ends with owners against actions.\n---\nProduction Shift Manager | Northmarch Fulfilment | Croydon, UK | Sep 2020 - Oct 2022\n- Best shift on site for on-time despatch in seven months of twelve during 2021, running 26 people on ambient packing.\n- Led the 5S rollout across four packing halls, taking an average 11 minutes of searching out of every changeover.\n- Trained and signed off 18 line leaders on the revised quality checks.",
+        "education": "BSc, Food Science and Technology (2:1) | University of Reading | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "Lean Six Sigma Green Belt (2021)\nIOSH Managing Safely (2020)\nCIPD Level 3 Foundation Certificate in People Practice (2023)\nHACCP Level 3 (2020)"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Fourteen years, four sites, £26m budget",
+      "why": "At head-of-operations level the KPI table gives way to decisions with consequences: a plant closed, a night shift removed, a capex case argued and paid back early. Notice how much space goes to how the consolidation was handled — 74 roles affected, 41 redeployed, no tribunal claim — because at this level a board is buying judgement about people and money, and the OEE number is only there to show the operating discipline behind it.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Stefan Radulescu",
+        "title": "Head of Operations",
+        "location": "Coventry, UK",
+        "phone": "+44 7700 900198",
+        "email": "stefan.radulescu@example.com",
+        "linkedin": "linkedin.com/in/stefan-radulescu-example",
+        "website": "",
+        "summary": "- Head of operations across four manufacturing sites: 340 people, £26m operating budget, full site P&L accountability, five plant managers reporting in.\n- Fourteen years in ceramics and precision engineering, from shift management to site leadership.\n- Has closed a plant and commissioned a line; the closure is the one worth asking about.",
+        "skills": "Leadership: five direct reports, 340 staff, works council and union consultation, succession planning, apprenticeship programme\nCommercial: £26m operating budget, capex appraisal to £4m, make-versus-buy analysis, standard costing\nOperations: multi-site capacity planning, OEE, energy intensity, planned maintenance, ISO 9001 and ISO 14001",
+        "experience": "Head of Operations | Kilnbrook Ceramics | Coventry, UK | Jan 2021 - Present\n- Four sites, 340 people, £26m budget, site P&L reported monthly to the group board.\n- Consolidated two sites into one over nine months: 74 roles affected, 41 redeployed, no tribunal claim and no missed customer order during the move.\n- Made the £3.8m case for replacing the tunnel kiln on energy cost alone; gas per tonne fell 26% and payback came in at 4.1 years against 5.2 in the paper.\n- Lifted group OEE from 58% to 69% by standardising a planned maintenance regime that had been four different regimes.\n- Removed the permanent night shift at one site after demand fell, agreeing a four-day pattern with the works council in six weeks and keeping the skills.\n---\nPlant Manager | Vellacott Engineering | Redditch, UK | Mar 2016 - Dec 2020\n- Ran a 120-person machining site through a customer loss that removed 30% of volume in a quarter, and returned it to profit in three.\n- Cut scrap from 4.8% to 1.9% by putting first-off inspection back in the operators' hands.\n- Started the apprenticeship intake that has since supplied nine of the site's setters.\n---\nProduction Manager | Vellacott Engineering | Redditch, UK | Jun 2012 - Feb 2016\n- Two shifts, 55 people; delivered the cell layout change that took 40% out of internal travel distance.",
+        "education": "MSc, Manufacturing Management | Cranfield University | Sep 2013 - Jul 2015\n---\nBEng, Mechanical Engineering (2:1) | Coventry University | Sep 2007 - Jun 2011",
+        "projects": "",
+        "publications": "",
+        "certifications": "Lean Six Sigma Black Belt\nNEBOSH National General Certificate\nIEMA Foundation Certificate in Environmental Management"
+      }
+    }
+  ],
+  "management_consultant": [
+    {
+      "level": "early",
+      "headline": "Two years in, graduate strategy analyst",
+      "why": "Early consulting CVs are screened as a proxy for raw analytical horsepower, so the education block still carries the grade, the cohort rank and the dissertation prize — detail that would look juvenile on any other CV at this stage. Clients are described by size and sector rather than named, which is the profession's convention rather than coyness, and extracurricular leadership is quantified like everything else.",
+      "template_id": "harvard_classic",
+      "data": {
+        "full_name": "Wenqi Zhang",
+        "title": "Analyst, Strategy Consulting",
+        "location": "London, UK",
+        "phone": "+44 7700 900116",
+        "email": "wenqi.zhang@example.com",
+        "linkedin": "linkedin.com/in/wenqi-zhang-example",
+        "website": "",
+        "summary": "- Analyst at a strategy boutique, two years and five engagements across consumer goods, industrials and private equity diligence.\n- Builds the model on most cases; has presented findings to a client CFO twice in the last year.",
+        "skills": "Analysis: market sizing, cost baselining, price-volume-mix, competitor benchmarking, expert-call synthesis\nModelling: Excel (driver and three-statement models), SQL, Alteryx, Tableau\nCommunication: storyline construction, PowerPoint, client interviewing, workshop support\nLanguages: Mandarin (native), English (fluent), German (B2)",
+        "experience": "Analyst | Corbett Vance | London, UK | Sep 2024 - Present\n- Built the demand model for a commercial due diligence on a £180m-revenue pet food business; the private-label sensitivity was the one that changed the client's bid.\n- Baselined overhead for a mid-market industrial and found £4.1m of addressable cost against the £2.5m target set at kick-off.\n- Interviewed 22 store managers for a retail footprint study and wrote the synthesis that framed the final recommendation.\n- Rebuilt the firm's market-sizing template, now the starting point on consumer cases.\n---\nSummer Analyst | Ardenhall Advisory | London, UK | Jun 2023 - Aug 2023\n- Supported a pricing diagnostic for a building products distributor; the discount-leakage analysis became one of three recommendations taken forward.",
+        "education": "MSc, Management (Distinction) | London School of Economics | Sep 2023 - Sep 2024\n---\nBSc, Economics (First Class, ranked 4th of 210) | University of Warwick | Sep 2020 - Jun 2023",
+        "projects": "University Consulting Society, President: Committee of 12 and a case competition with 180 entrants and three sponsoring firms; membership grew from 240 to 610 in a year.\n---\nUndergraduate Dissertation, Pricing in UK Grocery: Four years of scanner data on 900 SKUs, testing pass-through of input costs by category. Awarded the department prize for best dissertation.",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Seven years, engagement manager, cost and pricing",
+      "why": "The engagement list is the load-bearing section of a consulting CV, and each entry needs three things: how the client is sized, how big the team was, and what the number was at the end. Note the third engagement, where the client only took part of the recommendation — an engagement list of unqualified wins reads as marketing, and partners screening this page have sat through the same conversations.",
+      "template_id": "consulting_premium",
+      "data": {
+        "full_name": "Louisa Brandt",
+        "title": "Engagement Manager",
+        "location": "London, UK",
+        "phone": "+44 7700 900338",
+        "email": "louisa.brandt@example.com",
+        "linkedin": "linkedin.com/in/louisa-brandt-example",
+        "website": "",
+        "summary": "- Engagement manager, seven years in consumer goods and industrials; leads teams of three to five and owns the client relationship day to day.\n- Cost transformation and pricing: £46m signed off across four programmes, and two pricing architectures now in market.\n- Sold £1.2m of follow-on work last year across three accounts.",
+        "skills": "Problem solving: hypothesis-driven structuring, issue trees, cost baselining, price-volume-mix, market sizing, operating model design\nDelivery: teams of three to five, workshop design, steering committee facilitation, implementation planning and tracking\nCommercial: proposal writing, scoping and pricing, follow-on origination\nSectors: consumer goods, food manufacturing, building products, industrial distribution",
+        "experience": "Engagement Manager | Halloway Strategy Group | London, UK | Apr 2023 - Present\n- Lead teams of three to five on cost and pricing engagements, from proposal through to implementation tracking.\n- Sold £1.2m of follow-on work across three accounts, including the two-phase extension on the grocery pricing case below.\n- Built the firm's pricing diagnostic toolkit, used on nine engagements since and worth about two weeks off the analysis phase each time.\n- Run the client interviewing training for two analyst intakes.\n---\nConsultant | Thorne Anderby | London, UK | Sep 2019 - Mar 2023\n- Promoted twice in three and a half years and leading workstreams from the second year.\n- Owned the procurement workstream on a £2.3bn grocer's cost programme, delivering £18m against a £12m target.\n- Ran post-merger integration planning for two building products distributors, including the branch overlay that identified 14 closures.",
+        "education": "MSc, Economics | University of Mannheim | Sep 2018 - Aug 2019\n---\nBSc, International Business (First Class) | University of Bath | Sep 2015 - Jun 2018",
+        "projects": "Pricing rebuild, £2.3bn UK grocer: Team of five over 14 weeks. Rebuilt the promotional architecture across 4,200 lines; £31m of gross margin in year one, £24m of it held after competitive response.\n---\nOverhead cost programme, £600m food manufacturer: Team of four, 11-week diagnostic plus six months of implementation support. £14m addressable, £11.6m signed off by the CFO, 60% delivered inside the first year.\n---\nRoute-to-market review, £340m building products distributor: Team of three. Recommended exiting two of five channels; the client exited one and kept the other on strategic grounds, which is the version in the case study we still use.",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Seventeen years, partner, £6.8m sold last year",
+      "why": "A partner-track CV stops being about cases delivered and starts being about work sold and people kept. Revenue, repeat rate, practice headcount and manager attrition are the numbers that matter, the engagement detail shrinks to the one or two everybody in the sector will recognise the shape of, and the degree that carried the analyst CV is now two lines at the bottom.",
+      "template_id": "executive_twopage",
+      "data": {
+        "full_name": "Tarek Baroudi",
+        "title": "Partner, Operations Practice",
+        "location": "London, UK",
+        "phone": "+44 7700 900805",
+        "email": "tarek.baroudi@example.com",
+        "linkedin": "linkedin.com/in/tarek-baroudi-example",
+        "website": "",
+        "summary": "- Partner in an independent strategy and operations firm, seventeen years across industrials, transport and consumer supply chains.\n- £6.8m of sales in the last twelve months, 71% of it from clients who had bought before.\n- Built the operations practice from four consultants to 24; five of its six managers were promoted from inside it.",
+        "skills": "Commercial: origination, proposal and pricing strategy, master service agreements, account leadership across five relationships, £6.8m personal sales\nPractice: 24 consultants, promotion and review process, recruiting, capability build, methodology and asset development\nContent: operations strategy, network design, cost transformation, post-merger integration, procurement",
+        "experience": "Partner, Operations Practice | Ostley & March | London, UK | Jan 2020 - Present\n- Led the network redesign for a £1.4bn transport group, 11 depots to 8, taking out £22m of annualised cost over 18 months with the client's own team running the final six.\n- Own five client relationships worth £6.8m a year; the largest has renewed four years running and now spans three business units.\n- Grew the practice from 4 consultants to 24 and its contribution margin from 24% to 39%.\n- Declined two engagements in the last year where the scope did not match the outcome the client described; both returned rescoped, one at twice the value.\n- Rebuilt the promotion and feedback process after a year of 30% attrition at manager grade; attrition at that grade now runs at 11%.\n---\nPrincipal | Halloway Strategy Group | London, UK | Feb 2015 - Dec 2019\n- Led the industrials practice's largest account: four engagements worth £2.1m over three years.\n- Ran post-merger integration for two £400m-revenue engineering groups, delivering £26m of a £30m synergy case in 18 months.\n- Recruited and developed 14 consultants and introduced the case-team feedback process still in use.\n---\nConsultant to Engagement Manager | Halloway Strategy Group | London, UK | Sep 2009 - Jan 2015\n- Cost, procurement and operations engagements across manufacturing and logistics; promoted three times.",
+        "education": "Executive MBA | London Business School | Sep 2012 - Jul 2014\n---\nMEng, Chemical Engineering (First Class) | Imperial College London | Sep 2005 - Jun 2009",
+        "projects": "Network redesign, £1.4bn transport group: 11 depots to 8 across 18 months, £22m annualised. Sold as a six-week diagnostic and extended three times.\n---\nPost-merger integration, two £400m engineering groups: £26m of a £30m synergy case delivered in 18 months, including a single operating model across seven sites.",
+        "publications": "",
+        "certifications": "Chartered Management Consultant (ChMC), Chartered Management Institute"
+      }
+    }
+  ],
+  "supply_chain": [
+    {
+      "level": "early",
+      "headline": "Placement to assistant buyer, indirect spend",
+      "why": "Procurement CVs are read for two numbers: the spend you hold and the savings you can evidence. This one gives savings in pounds, as a share of addressable spend, and as the amount finance actually booked in-year — three different figures that most mid-level procurement CVs still collapse into one, because £186k off £2.4m is a different result from £186k off £20m.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Harpreet Sandhu",
+        "title": "Assistant Buyer",
+        "location": "Wolverhampton, UK",
+        "phone": "+44 7700 900263",
+        "email": "harpreet.sandhu@example.com",
+        "linkedin": "linkedin.com/in/harpreet-sandhu-example",
+        "website": "",
+        "summary": "- Assistant buyer holding £2.4m of indirect and consumables spend across five categories, two years post-graduation plus a placement year on the same site.\n- Three modules into the CIPS Level 4 Diploma, with the fourth sat in November.",
+        "skills": "Procurement: RFQ and tender preparation, quotation comparison, purchase price variance, contract renewals, supplier onboarding and due diligence\nCategories: MRO, packaging, consumables, workwear, courier and pallet freight\nSystems: SAP MM (requisitions, purchase orders, goods receipt), Excel (lookups, pivots, savings trackers), Power BI\nCompliance: supplier questionnaires, modern slavery due diligence, ISO 9001 supplier audit support",
+        "experience": "Assistant Buyer | Coalbrook Fasteners | Wolverhampton, UK | Aug 2024 - Present\n- Delivered £186k of savings, 7.8% of the addressable spend I hold, of which £141k was verified by finance in the year it was booked.\n- Ran nine tenders in the last twelve months across £2.4m of indirect spend.\n- Consolidated 34 packaging suppliers to 6; that tail alone had been producing a fifth of the invoice queries.\n- Cleaned 1,100 supplier records in SAP ahead of the payment-terms project, which is what let the move to 60-day terms land on schedule.\n---\nSupply Chain Placement Student | Coalbrook Fasteners | Wolverhampton, UK | Jul 2022 - Aug 2023\n- Built the supplier on-time-in-full tracker still used at the monthly supplier review.\n- Ran the weekly shortage report for production planning, chasing 40 to 60 open lines a week.",
+        "education": "BSc, Business Management with Supply Chain (First Class) | Aston University | Sep 2020 - Jun 2024",
+        "projects": "Pallet Network Freight Tender: Ran the full cycle under supervision — 11 invitations, 6 returns, and a weighted matrix scoring price, transit time and OTIF history rather than price alone. Award saved £47k a year, 12% of the lane spend, with no service loss in the six months since.",
+        "publications": "",
+        "certifications": "CIPS Level 4 Diploma in Procurement and Supply — 3 of 4 modules passed (2025)\nCIPS Level 3 Advanced Certificate in Procurement and Supply Operations (2023)"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, demand planning and S&OP",
+      "why": "Planning is judged on three numbers that normally trade against each other — forecast accuracy, inventory and service — so a planner's CV has to move at least two of them at once and say so explicitly. Stating the level the accuracy was measured at (SKU-week, not aggregate) matters too, because an aggregate accuracy figure is easy to reach and tells a planning manager nothing.",
+      "template_id": "corporate_blue",
+      "data": {
+        "full_name": "Minh Nguyen",
+        "title": "Demand and Supply Planning Manager",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900684",
+        "email": "minh.nguyen@example.com",
+        "linkedin": "linkedin.com/in/minh-nguyen-example",
+        "website": "",
+        "summary": "- Demand and supply planning manager, six years in FMCG; owns the monthly S&OP cycle for 340 SKUs and £86m of revenue.\n- Lifted forecast accuracy from 68% to 81% at SKU-week level and inventory turns from 4.1 to 5.6 in the same eighteen months, with service holding.\n- CPIM, and the person who runs the executive S&OP meeting rather than just preparing the pack for it.",
+        "skills": "Planning: S&OP and IBP cycle ownership, statistical forecasting, demand and supply review, capacity planning, safety stock modelling, phase-in and phase-out\nMeasures: forecast accuracy and bias (MAPE, WMAPE), OTIF, inventory turns, weeks of cover, obsolescence, fill rate\nSystems: SAP IBP, SAP MM and PP, Excel, Power BI\nCommercial: contract manufacturer capacity agreements, MOQ and lead-time negotiation, promotional volume planning",
+        "experience": "Demand and Supply Planning Manager | Cravenside Drinks | Bristol, UK | Jan 2023 - Present\n- Own the monthly S&OP cycle for 340 SKUs and £86m of revenue: demand review, supply review and the executive meeting where the gaps are closed.\n- Took forecast accuracy from 68% to 81% at SKU-week level, mostly by pulling promotional volume out of the statistical baseline and planning it separately.\n- Raised inventory turns from 4.1 to 5.6 and released £2.9m of working capital while OTIF held at 97.4%.\n- Cut obsolescence write-off from £480k to £155k a year by putting a phase-out plan against every SKU with a fixed delist date.\n- Rebuilt the capacity plan with four contract manufacturers; the booking horizon that caused weekly firefighting at two weeks now runs at eight.\n---\nSupply Planner | Loxwood Personal Care | Swindon, UK | Sep 2020 - Dec 2022\n- Planned 190 SKUs across two sites and held fill rate above 98% through a six-month packaging shortage by qualifying a second component.\n- Replaced a full weekly MRP review with an exception report, giving the team back about a day a week.\n- Ran the ABC/XYZ segmentation that still sets the safety stock policy.",
+        "education": "BSc, Logistics and Supply Chain Management (2:1) | Cardiff University | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "ASCM Certified in Planning and Inventory Management (CPIM) (2023)\nIBF Certified Professional Forecaster (CPF) (2024)\nLean Six Sigma Green Belt (2021)"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Fifteen years, £180m of addressable spend",
+      "why": "At head-of level a procurement CV stops competing on savings percentages. What carries this one is a sole-source supplier that went into administration on a Friday and single-sourced lines cut from 31% to 9% — because the question a board asks a supply chain director is what happens when something breaks, not what the last tender saved. Savings are still there, in one clause, deliberately not first.",
+      "template_id": "compact_onepage",
+      "data": {
+        "full_name": "Yelena Voronova",
+        "title": "Head of Supply Chain and Procurement",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900937",
+        "email": "yelena.voronova@example.com",
+        "linkedin": "linkedin.com/in/yelena-voronova-example",
+        "website": "",
+        "summary": "- Head of supply chain and procurement for a £1.1bn multichannel retailer: £180m of addressable spend, six category managers and a planning team of nine.\n- MCIPS, fifteen years across food manufacturing and retail; chairs S&OP and owns the supplier risk register the audit committee reads.\n- Rebuilt a supply base around resilience after two years in which two sole-source suppliers failed.",
+        "skills": "Leadership: six category managers, planning team of nine, capability framework, succession and development plans\nCommercial: £180m addressable spend, tender and negotiation strategy, long-term agreements, index-linked pricing, payment terms and working capital\nRisk and compliance: dual sourcing, supplier financial monitoring, modern slavery due diligence, customs and rules of origin, business continuity testing\nSystems: SAP S/4HANA, Coupa, Power BI",
+        "experience": "Head of Supply Chain and Procurement | Tarnside Retail Group | Leeds, UK | Feb 2020 - Present\n- Held supply through the administration of a sole-source packaging supplier announced on a Friday: second source qualified in nine days, three SKUs short for one week out of 2,400.\n- Took single-sourced lines from 31% to 9% over three years, and delivered £21m of savings across the same period.\n- Released £14m of working capital by moving payment terms from 45 to 62 days, paired with an early-payment facility for suppliers under £2m turnover; no supplier was lost to the change.\n- Rebuilt S&OP as a decision meeting rather than a forecast review, extending the planning horizon from 12 weeks to 18 so the availability argument happens before a season rather than during it.\n- Brought customs and rules-of-origin work in-house after two years of broker errors, recovering £680k of overpaid duty.\n---\nSenior Category Manager | Coppermill Foods | Wakefield, UK | Apr 2016 - Jan 2020\n- Ran packaging and ingredients: £64m of spend across 210 suppliers.\n- Moved the ingredients tender to index-linked pricing, ending the annual renegotiation and saving £3.4m over three years.\n- Built the supplier scorecard covering quality, OTIF and labour standards, later adopted across all four categories.\n---\nBuyer to Category Manager | Coppermill Foods | Wakefield, UK | Sep 2011 - Mar 2016\n- Indirect spend, then raw materials; promoted twice.",
+        "education": "MSc, Supply Chain and Logistics Management | WMG, University of Warwick | Sep 2013 - Sep 2015\n---\nBA, Business Studies (2:1) | University of Leeds | Sep 2008 - Jun 2011",
+        "projects": "",
+        "publications": "",
+        "certifications": "MCIPS, Chartered Institute of Procurement and Supply\nASCM Certified Supply Chain Professional (CSCP)"
+      }
+    }
+  ]
+}

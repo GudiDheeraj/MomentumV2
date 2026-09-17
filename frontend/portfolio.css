@@ -1,0 +1,905 @@
+/* ===========================================================================
+   Portfolio tab — library grid and builder
+   ---------------------------------------------------------------------------
+   Uses the app's own --lp-* design tokens throughout, so this page inherits
+   light and dark mode for free rather than carrying a second palette that
+   would need updating every time the app's does.
+   ======================================================================== */
+
+/* ---------- hero ---------- */
+/* Deliberately short. This used to be a centred card 370px tall with a globe
+   emoji in it, which pushed the template grid — the only decision on the
+   screen — below the fold on a laptop. The copy and the three steps say the
+   same thing in a third of the height. */
+.pf-hero {
+  display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.35fr); gap: 1.6rem 2.2rem;
+  align-items: center; padding: 1.5rem 1.6rem; margin-bottom: 1.6rem;
+  background:
+    radial-gradient(120% 160% at 0% 0%, var(--lp-blue-soft) 0%, transparent 60%),
+    var(--lp-surface);
+  border: 1px solid var(--lp-border); border-radius: var(--lp-radius);
+}
+.pf-hero-eyebrow {
+  display: inline-block; font-size: .68rem; font-weight: 800; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--lp-blue); margin-bottom: .5rem;
+}
+.pf-hero-main h2 {
+  font-size: 1.42rem; font-weight: 800; letter-spacing: -.03em; line-height: 1.2;
+  margin-bottom: .45rem; max-width: 20ch;
+}
+.pf-hero-main p { font-size: .87rem; color: var(--lp-ink-mute); line-height: 1.55; max-width: 46ch; }
+.pf-hero-steps { display: grid; gap: .55rem; list-style: none; margin: 0; padding: 0; }
+.pf-step { display: flex; align-items: flex-start; gap: .7rem; }
+.pf-step-n {
+  flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center;
+  font-size: .72rem; font-weight: 800; background: var(--lp-blue); color: #fff; margin-top: .05rem;
+}
+.pf-step-t { display: block; min-width: 0; }
+.pf-step-t strong { display: block; font-size: .84rem; font-weight: 700; letter-spacing: -.01em; }
+.pf-step-t small { display: block; font-size: .765rem; color: var(--lp-ink-mute); line-height: 1.45; }
+
+@media (max-width: 900px) {
+  .pf-hero { grid-template-columns: 1fr; gap: 1.15rem; padding: 1.3rem 1.2rem; }
+  .pf-hero-main h2 { font-size: 1.28rem; max-width: none; }
+}
+/* On a phone the hero is the only thing above the first template, so every
+   line it spends is a card the person cannot see. Same words, tighter. */
+@media (max-width: 620px) {
+  .pf-hero { gap: .9rem; padding: 1.05rem 1rem; margin-bottom: 1.15rem; }
+  .pf-hero-main h2 { font-size: 1.15rem; margin-bottom: .35rem; }
+  .pf-hero-main p { font-size: .8rem; }
+  .pf-hero-steps { gap: .4rem; }
+  .pf-step-t small { font-size: .73rem; }
+  .pf-gallery-wrap { margin-top: 1.4rem; }
+  .pf-gallery-head { margin-bottom: .8rem; }
+  .pf-filters { width: 100%; }
+  .pf-chip { flex: 1; justify-content: center; }
+}
+
+/* ---------- library ---------- */
+.pf-cards { display: grid; gap: 1.1rem; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.pf-card {
+  background: var(--lp-surface); border: 1px solid var(--lp-border); border-radius: var(--lp-radius);
+  overflow: hidden; cursor: pointer; transition: border-color .2s, transform .2s, box-shadow .2s;
+  display: flex; flex-direction: column;
+}
+.pf-card:hover, .pf-card:focus-visible { border-color: var(--lp-blue); transform: translateY(-2px); box-shadow: var(--lp-shadow-md); }
+
+/* The thumbnail is the real site in an iframe, rendered at desktop width and
+   scaled down — so a card can never show a layout the visitor won't get. */
+.pf-card-shot {
+  position: relative; height: 172px; overflow: hidden; background: var(--lp-surface-2);
+  border-bottom: 1px solid var(--lp-border);
+}
+/* width/height/transform are set by pfFitThumb() from the card's measured
+   width; these are the pre-measurement defaults so a card never flashes at
+   full 1280px before the scale lands. */
+.pf-shot-frame {
+  width: 1280px; height: 736px; border: 0; transform: scale(.235); transform-origin: top left;
+  pointer-events: none;
+}
+.pf-shot-skeleton { position: absolute; inset: 0; display: grid; place-items: center; }
+.pf-card-tpl {
+  position: absolute; left: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .68rem; font-weight: 700; padding: .22rem .55rem; border-radius: 999px;
+  background: rgba(20, 22, 26, .78); color: #fff; backdrop-filter: blur(6px);
+}
+.pf-card-tpl i { width: 7px; height: 7px; border-radius: 50%; display: block; }
+.pf-card-body { padding: .95rem 1.1rem .6rem; flex: 1; }
+.pf-card-body h3 { font-size: 1rem; font-weight: 700; letter-spacing: -.015em; margin-bottom: .2rem; }
+.pf-card-body p {
+  color: var(--lp-ink-mute); font-size: .82rem; margin-bottom: .55rem;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.pf-card-meta { display: flex; flex-wrap: wrap; gap: .3rem .45rem; align-items: center; font-size: .72rem; color: var(--lp-ink-faint); }
+.pf-card-flag { font-weight: 600; padding: .1rem .45rem; border-radius: 5px; background: var(--lp-surface-2); }
+.pf-flag-ok { color: var(--lp-green); background: var(--lp-green-soft); }
+.pf-flag-warn { color: var(--lp-amber); background: var(--lp-amber-soft); }
+.pf-card-actions {
+  display: flex; flex-wrap: wrap; gap: .3rem; padding: .6rem .9rem 1rem;
+  border-top: 1px solid var(--lp-border); margin-top: .5rem;
+}
+.pf-card-actions .btn { padding: .3rem .55rem !important; font-size: .73rem !important; }
+.pf-card-actions [data-pf-action="delete"] { margin-left: auto; }
+.btn-xs { padding: .32rem .7rem !important; font-size: .76rem !important; border-radius: 8px !important; }
+.pf-danger { color: #B91C1C !important; }
+
+/* ---------- template gallery ---------- */
+.pf-gallery-wrap { margin-top: 1.9rem; }
+.pf-gallery-head {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem 1.5rem;
+  flex-wrap: wrap; margin-bottom: 1rem;
+}
+.pf-gallery-lede h3 { font-size: 1.06rem; font-weight: 800; letter-spacing: -.02em; margin-bottom: .22rem; }
+.pf-gallery-lede p { font-size: .82rem; color: var(--lp-ink-mute); line-height: 1.5; max-width: 64ch; }
+.pf-gallery-foot { font-size: .82rem; color: var(--lp-ink-faint); padding: 1.6rem 0; text-align: center; }
+
+.pf-filters { display: flex; gap: .25rem; padding: .22rem; background: var(--lp-surface-2);
+  border: 1px solid var(--lp-border); border-radius: 11px; }
+.pf-chip {
+  display: inline-flex; align-items: center; gap: .35rem; border: 0; background: transparent; cursor: pointer;
+  font-size: .78rem; font-weight: 600; color: var(--lp-ink-mute);
+  padding: .36rem .7rem; border-radius: 8px; transition: background .15s, color .15s;
+}
+.pf-chip:hover { color: var(--lp-ink); }
+.pf-chip.active { background: var(--lp-surface); color: var(--lp-ink); box-shadow: var(--lp-shadow-sm); }
+.pf-chip-n { font-size: .68rem; font-weight: 700; color: var(--lp-ink-faint); font-variant-numeric: tabular-nums; }
+.pf-chip.active .pf-chip-n { color: var(--lp-blue); }
+
+/* Wider than it was (250px) because these cards now carry a real rendered
+   page rather than six grey bars, and a screenshot of a 1280px layout shown
+   at 250px is a smudge. */
+.pf-gallery { display: grid; gap: 1.05rem; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.pf-tpl {
+  display: flex; flex-direction: column; text-align: left; background: var(--lp-surface);
+  border: 1px solid var(--lp-border); border-radius: var(--lp-radius); overflow: hidden; cursor: pointer;
+  padding: 0; transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.pf-tpl:hover, .pf-tpl:focus-visible {
+  border-color: var(--lp-blue); transform: translateY(-3px); box-shadow: var(--lp-shadow-lg);
+}
+.pf-tpl:focus-visible { outline: 2px solid var(--lp-blue-ring); outline-offset: 2px; }
+.pf-tpl[hidden] { display: none; }
+
+.pf-tpl-shot {
+  position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden;
+  background: var(--lp-surface-2); border-bottom: 1px solid var(--lp-border);
+}
+/* The SVG swatch is what the card shows until its iframe has rendered, so the
+   grid is never a wall of empty rectangles. It fades out underneath once the
+   real page is up. */
+.pf-tpl-fallback { position: absolute; inset: 0; transition: opacity .4s ease; }
+.pf-tpl-fallback svg { display: block; width: 100%; height: 100%; }
+.pf-tpl-shot.is-live .pf-tpl-fallback { opacity: 0; }
+
+.pf-tpl-hover {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: .5rem; opacity: 0; transition: opacity .18s ease;
+  background: linear-gradient(180deg, rgba(9, 11, 16, .18) 0%, rgba(9, 11, 16, .62) 100%);
+}
+.pf-tpl:hover .pf-tpl-hover, .pf-tpl:focus-within .pf-tpl-hover { opacity: 1; }
+.pf-mini-btn {
+  font-size: .78rem; font-weight: 700; padding: .46rem .9rem; border-radius: 9px;
+  border: 1px solid transparent; cursor: pointer; transition: transform .12s ease, filter .15s ease;
+}
+.pf-mini-btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.pf-mini-solid { background: var(--lp-blue); color: #fff; }
+.pf-mini-ghost { background: rgba(255, 255, 255, .94); color: #171A1F; }
+
+/* Hover is not a gesture a touchscreen has. Rather than hiding the two actions
+   from every phone, the overlay becomes a permanent bar across the bottom. */
+@media (hover: none) {
+  .pf-tpl-hover {
+    opacity: 1; flex-direction: row; justify-content: center; align-items: flex-end;
+    padding-bottom: .6rem;
+    background: linear-gradient(180deg, rgba(9, 11, 16, 0) 45%, rgba(9, 11, 16, .8) 100%);
+  }
+  .pf-mini-btn { font-size: .72rem; padding: .34rem .7rem; }
+}
+
+.pf-tpl-body { padding: .85rem 1rem 1rem; display: block; }
+.pf-tpl-name { display: flex; align-items: center; gap: .45rem; font-weight: 700; font-size: .95rem;
+  letter-spacing: -.015em; margin-bottom: .3rem; }
+.pf-tpl-dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+.pf-tpl-badge {
+  font-size: .62rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+  padding: .12rem .42rem; border-radius: 4px; background: var(--lp-blue-soft); color: var(--lp-blue);
+}
+.pf-tpl-desc { display: block; font-size: .8rem; color: var(--lp-ink-mute); line-height: 1.5; margin-bottom: .35rem; }
+.pf-tpl-best { display: block; font-size: .72rem; color: var(--lp-ink-faint); }
+
+/* ---------- full-size template preview ---------- */
+.pf-pv-backdrop { padding: 2vh 2vw; }
+.modal-backdrop .pf-pv-box {
+  max-width: none; width: min(1500px, 96vw); height: min(940px, 94vh);
+  border-radius: 16px; background: var(--lp-surface); border: 1px solid var(--lp-border);
+  display: flex; flex-direction: column; overflow: hidden; padding: 0;
+}
+.pf-pv-bar {
+  display: flex; align-items: center; gap: .8rem; flex-wrap: wrap;
+  padding: .6rem .8rem; border-bottom: 1px solid var(--lp-border); background: var(--lp-surface);
+}
+.pf-pv-id { display: flex; align-items: center; gap: .5rem; min-width: 0; }
+.pf-pv-id h3 { font-size: 1rem; font-weight: 800; letter-spacing: -.02em; white-space: nowrap; }
+.pf-pv-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+.pf-pv-sample {
+  font-size: .72rem; color: var(--lp-ink-faint); white-space: nowrap;
+  padding-left: .6rem; margin-left: .2rem; border-left: 1px solid var(--lp-border);
+}
+.pf-pv-devices { display: flex; gap: .2rem; margin-left: auto; padding: .2rem;
+  background: var(--lp-surface-2); border-radius: 10px; }
+.pf-pv-dev {
+  display: inline-flex; align-items: center; gap: .35rem; border: 0; background: transparent;
+  font-size: .75rem; font-weight: 600; color: var(--lp-ink-mute); cursor: pointer;
+  padding: .34rem .62rem; border-radius: 8px; transition: background .15s, color .15s;
+}
+.pf-pv-dev.active { background: var(--lp-surface); color: var(--lp-ink); box-shadow: var(--lp-shadow-sm); }
+.pf-pv-actions { display: flex; align-items: center; gap: .4rem; }
+.pf-pv-step {
+  width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--lp-border);
+  background: var(--lp-surface); color: var(--lp-ink-mute); cursor: pointer;
+  font-size: 1.05rem; line-height: 1; display: grid; place-items: center;
+}
+.pf-pv-step:hover { border-color: var(--lp-blue); color: var(--lp-blue); }
+.pf-pv-count { font-size: .74rem; color: var(--lp-ink-faint); min-width: 48px; text-align: center;
+  font-variant-numeric: tabular-nums; }
+.pf-pv-close {
+  width: 32px; height: 32px; border-radius: 9px; border: 1px solid var(--lp-border);
+  background: var(--lp-surface); color: var(--lp-ink-mute); cursor: pointer; font-size: .9rem;
+}
+.pf-pv-close:hover { border-color: var(--lp-blue); color: var(--lp-blue); }
+
+.pf-pv-stage {
+  flex: 1; min-height: 0; overflow: hidden; background: var(--lp-surface-2);
+  display: grid; place-items: start center; padding: 12px 16px;
+}
+/* Rendered at the device's real width and scaled to fit, never scaled up past
+   1:1 — a 1280px layout squeezed into a 900px frame is a different layout, and
+   judging the wrong one is the whole thing this dialog exists to prevent. */
+.pf-pv-frame { border: 0; background: #fff; transform-origin: top center; display: block; }
+.pf-pv-frame.pf-pv-framed { border-radius: 14px; box-shadow: 0 16px 44px rgba(12, 29, 43, .26); }
+
+.pf-pv-fail {
+  display: grid; gap: .4rem; place-content: center; text-align: center; padding: 2rem;
+  color: var(--lp-ink-mute); font-size: .88rem;
+}
+.pf-pv-fail b { font-size: 1rem; color: var(--lp-ink); }
+.pf-pv-fail-hint { font-size: .78rem; color: var(--lp-ink-faint); }
+
+@media (max-width: 780px) {
+  .pf-pv-backdrop { padding: 0; }
+  .modal-backdrop .pf-pv-box { width: 100vw; height: 100vh; border-radius: 0; }
+  .pf-pv-sample { display: none; }
+  .pf-pv-dev span { display: none; }
+  .pf-pv-devices { margin-left: auto; }
+  .pf-pv-count { display: none; }
+  /* Everything else in this bar can go before the button that is the entire
+     reason someone opened the dialog. */
+  .pf-pv-actions .btn { padding: .4rem .7rem !important; font-size: .78rem !important; }
+}
+
+/* ---------- builder shell ---------- */
+.pf-builder { display: flex; flex-direction: column; height: calc(100vh - 132px); min-height: 560px; }
+.pf-topbar {
+  display: flex; align-items: center; gap: .55rem; flex-wrap: wrap;
+  padding: .6rem .85rem; background: var(--lp-surface); border: 1px solid var(--lp-border);
+  border-radius: var(--lp-radius); margin-bottom: .75rem;
+}
+.pf-name-input {
+  flex: 1; min-width: 150px; max-width: 340px; font-weight: 700 !important; font-size: .92rem !important;
+  padding: .42rem .7rem !important; margin: 0 !important;
+}
+.pf-save-state { font-size: .74rem; color: var(--lp-ink-faint); font-weight: 600; white-space: nowrap; }
+.pf-save-state.pf-unsaved { color: var(--lp-amber); }
+.pf-devices { display: inline-flex; gap: 2px; padding: 2px; background: var(--lp-surface-2); border-radius: 9px; margin-left: auto; }
+.pf-device {
+  border: 0; background: transparent; cursor: pointer; padding: .3rem .55rem; border-radius: 7px;
+  font-size: .85rem; color: var(--lp-ink-faint); transition: .16s;
+}
+.pf-device:hover { color: var(--lp-ink); }
+.pf-device.active { background: var(--lp-surface); color: var(--lp-blue); box-shadow: var(--lp-shadow-sm); }
+
+/* grid-template-rows is doing real work here: a grid row defaults to
+   max-content, so without it the row grows to the height of the tallest
+   child — the form panel — and both columns spill past the builder's own
+   height. The whole page then scrolls instead of the panel, which pushes
+   the Save button off screen on any portfolio with a few projects in it. */
+.pf-workspace {
+  display: grid; grid-template-columns: minmax(340px, 420px) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr); gap: .75rem; flex: 1; min-height: 0;
+}
+
+/* ---------- left panel ---------- */
+.pf-panel {
+  background: var(--lp-surface); border: 1px solid var(--lp-border); border-radius: var(--lp-radius);
+  display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+}
+.pf-panel-tabs { display: flex; border-bottom: 1px solid var(--lp-border); overflow-x: auto; scrollbar-width: none; }
+.pf-panel-tabs::-webkit-scrollbar { display: none; }
+.pf-panel-tab {
+  flex: 1; border: 0; background: transparent; cursor: pointer; padding: .7rem .5rem; font-size: .78rem;
+  font-weight: 600; color: var(--lp-ink-faint); border-bottom: 2px solid transparent; white-space: nowrap;
+  display: flex; flex-direction: column; align-items: center; gap: .15rem; transition: .16s;
+}
+.pf-panel-tab span { font-size: .95rem; }
+.pf-panel-tab:hover { color: var(--lp-ink); background: var(--lp-surface-2); }
+.pf-panel-tab.active { color: var(--lp-blue); border-bottom-color: var(--lp-blue); }
+.pf-panel-body { flex: 1; overflow-y: auto; padding: 1rem 1.1rem 3rem; }
+
+.pf-group { margin-bottom: 1.7rem; }
+.pf-group > h4 {
+  font-size: .74rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase;
+  color: var(--lp-ink-faint); margin-bottom: .7rem; display: flex; align-items: center; gap: .5rem;
+}
+.pf-count-pill {
+  font-size: .66rem; font-weight: 700; padding: .08rem .38rem; border-radius: 999px;
+  background: var(--lp-surface-2); color: var(--lp-ink-mute); letter-spacing: 0;
+}
+.pf-group-note { font-size: .78rem; color: var(--lp-ink-mute); margin: -.35rem 0 .8rem; line-height: 1.5; }
+.pf-note { display: block; font-size: .74rem; color: var(--lp-ink-faint); line-height: 1.5; margin-top: .5rem; }
+
+.pf-field { margin-bottom: .75rem; }
+.pf-field label { display: block; font-size: .76rem; font-weight: 600; color: var(--lp-ink-mute); margin-bottom: .25rem; }
+.pf-field input, .pf-field textarea, .pf-field select { width: 100%; margin: 0 !important; font-size: .85rem !important; }
+.pf-field textarea { resize: vertical; min-height: 2.4rem; line-height: 1.55; }
+.pf-field small { display: block; font-size: .71rem; color: var(--lp-ink-faint); margin-top: .25rem; line-height: 1.45; }
+.pf-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 .6rem; }
+.pf-grid2 .pf-field:not(.pf-half) { grid-column: 1 / -1; }
+@media (max-width: 520px) { .pf-grid2 { grid-template-columns: 1fr; } }
+
+.pf-item {
+  border: 1px solid var(--lp-border); border-radius: 11px; padding: .8rem .85rem .4rem;
+  margin-bottom: .7rem; background: var(--lp-surface-2);
+}
+.pf-item-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; }
+.pf-item-n { font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--lp-ink-faint); }
+.pf-item-tools { display: flex; gap: .2rem; }
+.pf-icon-btn {
+  border: 1px solid var(--lp-border); background: var(--lp-surface); border-radius: 6px; width: 24px; height: 24px;
+  cursor: pointer; font-size: .75rem; line-height: 1; color: var(--lp-ink-mute); transition: .16s;
+}
+.pf-icon-btn:hover:not(:disabled) { border-color: var(--lp-blue); color: var(--lp-blue); }
+.pf-icon-btn:disabled { opacity: .35; cursor: not-allowed; }
+.pf-add {
+  width: 100%; border: 1px dashed var(--lp-border-strong); background: transparent; border-radius: 10px;
+  padding: .55rem; font-size: .8rem; font-weight: 600; color: var(--lp-ink-mute); cursor: pointer; transition: .18s;
+}
+.pf-add:hover { border-color: var(--lp-blue); color: var(--lp-blue); background: var(--lp-blue-soft); }
+
+/* photo */
+.pf-photo-row { display: flex; gap: .8rem; align-items: flex-start; }
+.pf-photo-preview {
+  width: 62px; height: 62px; border-radius: 14px; overflow: hidden; flex: 0 0 62px;
+  background: var(--lp-blue-soft); color: var(--lp-blue); display: grid; place-items: center;
+  font-weight: 800; font-size: 1.2rem; border: 1px solid var(--lp-border);
+}
+.pf-photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+.pf-photo-row small { display: block; font-size: .71rem; color: var(--lp-ink-faint); margin-top: .35rem; line-height: 1.45; }
+
+/* Where a photo came from, and the one-time offer to refresh it. The tag is a
+   label rather than a control — it answers "why is there already a picture
+   here?" without adding another thing to click. Tokens match the small badge
+   used elsewhere in this panel; --lp-accent is referenced in a few places but
+   never actually defined, so it is not used here. */
+.pf-photo-tag {
+  display: inline-flex; align-items: center; gap: .32rem; vertical-align: middle;
+  padding: .16rem .5rem; border-radius: 999px;
+  font-size: .68rem; font-weight: 600;
+  background: var(--lp-blue-soft); color: var(--lp-blue);
+}
+.pf-photo-tag::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.pf-photo-note {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .45rem;
+  margin-top: .6rem; padding: .55rem .7rem; border-radius: 10px;
+  font-size: .76rem; line-height: 1.4; color: var(--lp-ink);
+  background: var(--lp-blue-soft); border: 1px solid var(--lp-blue-ring);
+}
+/* Text on its own row, buttons together underneath. Letting them share a row
+   meant the pair split across two lines the moment the panel narrowed, which
+   read as two unrelated controls. */
+.pf-photo-note span { flex: 1 1 100%; }
+/* The template-has-no-photo notice is information, not a problem, so it sits
+   in the panel's neutral tone rather than borrowing the blue used for the
+   "your profile photo changed" prompt above it. */
+.pf-photo-note--quiet {
+  background: var(--lp-surface-2, #f4f6fa);
+  border-color: var(--lp-border);
+  color: var(--lp-ink-mute);
+}
+.pf-photo-note--quiet b { color: var(--lp-ink); }
+
+/* template picker rows */
+/* ---------- builder: template picker ---------- */
+/* Two columns of real renders rather than a list of abstract swatches. At 20
+   templates a wireframe list is a wall of grey rectangles, and the whole point
+   of this panel is choosing between designs you can see. */
+.pf-tpl-pick { display: grid; grid-template-columns: 1fr 1fr; gap: .55rem; }
+.pf-pk {
+  position: relative; border: 2px solid var(--lp-border); border-radius: 12px; overflow: hidden;
+  cursor: pointer; background: var(--lp-surface); transition: border-color .18s, transform .18s, box-shadow .18s;
+}
+.pf-pk:hover { transform: translateY(-2px); box-shadow: var(--lp-shadow-md); border-color: var(--lp-blue); }
+.pf-pk:focus-visible { outline: 2px solid var(--lp-blue-ring); outline-offset: 2px; }
+.pf-pk.active { border-color: var(--lp-blue); box-shadow: 0 0 0 2px var(--lp-blue-soft); }
+.pf-pk-shot { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: var(--lp-surface-2); }
+.pf-pk-shot .pf-tpl-fallback { position: absolute; inset: 0; transition: opacity .4s ease; }
+.pf-pk-shot .pf-tpl-fallback svg { display: block; width: 100%; height: 100%; }
+.pf-pk-shot.is-live .pf-tpl-fallback { opacity: 0; }
+.pf-pk-eye {
+  position: absolute; right: 5px; top: 5px; z-index: 2; width: 22px; height: 22px; border-radius: 6px;
+  border: 0; cursor: pointer; font-size: .72rem; line-height: 1;
+  background: rgba(9, 11, 16, .62); color: #fff; opacity: 0; transition: opacity .18s, background .18s;
+}
+.pf-pk:hover .pf-pk-eye, .pf-pk-eye:focus-visible { opacity: 1; }
+.pf-pk-eye:hover { background: var(--lp-blue); }
+.pf-pk-name {
+  display: flex; align-items: center; gap: .35rem; padding: .4rem .5rem;
+  font-size: .76rem; font-weight: 700; letter-spacing: -.01em;
+}
+.pf-pk-name i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.pf-pk-name b { margin-left: auto; color: var(--lp-blue); }
+@media (hover: none) { .pf-pk-eye { opacity: 1; } }
+
+.pf-tpl-list { display: grid; gap: .5rem; }
+.pf-tpl-row {
+  display: grid; grid-template-columns: 84px minmax(0, 1fr) auto; gap: .75rem; align-items: center;
+  text-align: left; padding: .6rem; border: 1px solid var(--lp-border); border-radius: 11px;
+  background: var(--lp-surface); cursor: pointer; transition: .18s;
+}
+.pf-tpl-row:hover { border-color: var(--lp-blue); background: var(--lp-surface-2); }
+.pf-tpl-row.active { border-color: var(--lp-blue); background: var(--lp-blue-soft); }
+.pf-tpl-row-shot { display: block; border-radius: 7px; overflow: hidden; border: 1px solid var(--lp-border); aspect-ratio: 16/10; }
+.pf-tpl-row-shot svg { display: block; width: 100%; height: 100%; }
+.pf-tpl-row-body { display: block; min-width: 0; }
+.pf-tpl-row .pf-tpl-name { font-size: .86rem; margin-bottom: .15rem; }
+.pf-tpl-row .pf-tpl-desc { font-size: .74rem; margin-bottom: .2rem; }
+.pf-tpl-row .pf-tpl-best { font-size: .68rem; }
+.pf-tpl-check { color: var(--lp-blue); font-weight: 800; font-size: 1rem; }
+
+/* swatches */
+.pf-swatches { display: flex; flex-wrap: wrap; gap: .45rem; align-items: center; }
+.pf-swatch {
+  width: 30px; height: 30px; border-radius: 9px; border: 2px solid transparent; cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .12); transition: .16s;
+}
+.pf-swatch:hover { transform: scale(1.1); }
+.pf-swatch.active { border-color: var(--lp-ink); transform: scale(1.1); }
+.pf-swatch-custom {
+  display: inline-flex; align-items: center; gap: .35rem; font-size: .74rem; font-weight: 600;
+  color: var(--lp-ink-mute); cursor: pointer; border: 1px solid var(--lp-border); border-radius: 9px;
+  padding: .18rem .5rem .18rem .18rem;
+}
+.pf-swatch-custom input[type="color"] { width: 24px; height: 24px; padding: 0; border: 0; margin: 0 !important; background: none; cursor: pointer; }
+.pf-reset { border: 0; background: none; color: var(--lp-blue); font-size: .74rem; font-weight: 600; cursor: pointer; text-decoration: underline; }
+
+/* toggles */
+.pf-toggle { display: flex; align-items: center; gap: .65rem; padding: .5rem 0; cursor: pointer; }
+.pf-toggle input { position: absolute; opacity: 0; width: 0; height: 0; }
+.pf-toggle-track {
+  width: 36px; height: 20px; border-radius: 999px; background: var(--lp-border-strong);
+  position: relative; flex: 0 0 36px; transition: background .18s;
+}
+.pf-toggle-dot {
+  position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%;
+  background: #fff; transition: transform .18s; box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+}
+.pf-toggle input:checked + .pf-toggle-track { background: var(--lp-blue); }
+.pf-toggle input:checked + .pf-toggle-track .pf-toggle-dot { transform: translateX(16px); }
+.pf-toggle input:focus-visible + .pf-toggle-track { outline: 2px solid var(--lp-blue-ring); outline-offset: 2px; }
+.pf-toggle-label { font-size: .86rem; font-weight: 500; }
+.pf-toggle-state { margin-left: auto; font-size: .68rem; color: var(--lp-ink-faint); font-style: italic; }
+
+/* résumé panel */
+.pf-resume-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .6rem; }
+.pf-radios { display: grid; gap: .45rem; }
+.pf-radio {
+  display: flex; gap: .6rem; align-items: flex-start; padding: .7rem .8rem; border: 1px solid var(--lp-border);
+  border-radius: 11px; cursor: pointer; transition: .18s; background: var(--lp-surface);
+}
+.pf-radio:hover { border-color: var(--lp-blue); }
+.pf-radio.active { border-color: var(--lp-blue); background: var(--lp-blue-soft); }
+.pf-radio input { margin-top: .25rem; flex: 0 0 auto; }
+.pf-radio b { display: block; font-size: .84rem; font-weight: 600; margin-bottom: .15rem; }
+.pf-radio small { display: block; font-size: .73rem; color: var(--lp-ink-mute); line-height: 1.45; }
+.pf-attached {
+  display: flex; align-items: center; justify-content: space-between; gap: .6rem; margin: .6rem 0;
+  padding: .6rem .8rem; border-radius: 10px; background: var(--lp-green-soft); color: var(--lp-green);
+  font-size: .8rem; font-weight: 600;
+}
+.pf-attached-size { font-weight: 500; opacity: .85; }
+
+/* publish panel */
+.pf-filecard {
+  display: flex; align-items: center; gap: .8rem; padding: .9rem 1rem; border: 1px solid var(--lp-border);
+  border-radius: 12px; background: var(--lp-surface-2); margin-bottom: 1rem;
+}
+.pf-filecard-icon { font-size: 1.5rem; }
+.pf-filecard b { display: block; font-size: .85rem; word-break: break-all; }
+.pf-filecard small { display: block; font-size: .72rem; color: var(--lp-ink-faint); margin-top: .15rem; }
+.pf-filecard .btn { margin-left: auto; flex: 0 0 auto; }
+.pf-deploy { display: grid; gap: .5rem; counter-reset: step; padding-left: 0; }
+.pf-deploy li {
+  position: relative; padding-left: 1.9rem; font-size: .8rem; color: var(--lp-ink-mute); line-height: 1.5;
+  list-style: none;
+}
+.pf-deploy li::before {
+  counter-increment: step; content: counter(step);
+  position: absolute; left: 0; top: .05rem; width: 1.3rem; height: 1.3rem; border-radius: 50%;
+  background: var(--lp-blue-soft); color: var(--lp-blue); font-size: .68rem; font-weight: 800;
+  display: grid; place-items: center;
+}
+.pf-deploy code, .pf-note code {
+  font-family: var(--lp-mono); font-size: .93em; background: var(--lp-surface-2);
+  padding: .05rem .3rem; border-radius: 4px;
+}
+
+/* ---------- preview ---------- */
+.pf-preview-wrap { min-width: 0; display: flex; flex-direction: column; }
+.pf-preview-stage {
+  flex: 1; min-height: 0; background: var(--lp-surface-2); border: 1px solid var(--lp-border);
+  border-radius: var(--lp-radius); overflow: hidden; padding: 12px; position: relative;
+}
+/* A checkerboard behind the frame makes the device width obvious at a glance
+   when the preview is narrower than its column. */
+.pf-preview-stage::before {
+  content: ""; position: absolute; inset: 0; opacity: .5;
+  background-image:
+    linear-gradient(45deg, var(--lp-border) 25%, transparent 25%, transparent 75%, var(--lp-border) 75%),
+    linear-gradient(45deg, var(--lp-border) 25%, transparent 25%, transparent 75%, var(--lp-border) 75%);
+  background-size: 16px 16px; background-position: 0 0, 8px 8px;
+}
+#pf-preview {
+  position: relative; border: 0; background: #fff; border-radius: 6px;
+  box-shadow: 0 10px 40px rgba(20, 22, 26, .16); display: block;
+}
+
+@media (max-width: 1100px) {
+  .pf-builder { height: auto; }
+  .pf-workspace { grid-template-columns: 1fr; grid-template-rows: auto auto; }
+  .pf-panel { max-height: 60vh; }
+  .pf-preview-stage { height: 70vh; }
+  .pf-devices { margin-left: 0; }
+}
+
+/* dark mode: the app's tokens carry most of it; these are the few places a
+   hard-coded light value would otherwise leak through */
+[data-theme="dark"] .pf-card-tpl { background: rgba(0, 0, 0, .72); }
+[data-theme="dark"] .pf-swatch { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .18); }
+[data-theme="dark"] .pf-swatch.active { border-color: #fff; }
+[data-theme="dark"] .pf-toggle-dot { background: #E8EAED; }
+[data-theme="dark"] #pf-preview { box-shadow: 0 10px 40px rgba(0, 0, 0, .5); }
+[data-theme="dark"] .pf-danger { color: #F87171 !important; }
+[data-theme="dark"] .pf-mini-ghost { background: rgba(255, 255, 255, .9); color: #171A1F; }
+[data-theme="dark"] .pf-pv-frame.pf-pv-framed { box-shadow: 0 16px 44px rgba(0, 0, 0, .55); }
+[data-theme="dark"] .pf-tpl-hover {
+  background: linear-gradient(180deg, rgba(0, 0, 0, .4) 0%, rgba(0, 0, 0, .82) 100%);
+}
+
+/* ==========================================================================
+   The designer
+   ==========================================================================
+   Three panes and a top bar. It borrows the builder's tokens rather than
+   inventing a second set, so a theme change lands in both, and it reuses
+   .pf-topbar's children (.pf-name-input, .pf-save-state, .pf-devices)
+   outright — the two editors should not drift apart visually. */
+
+/* Full-screen editing. The page header (title, search, sub-tabs) is hidden
+   while the designer is open, so the canvas starts at the top of the viewport
+   instead of below two stacked bars. app.js's render() removes the class. */
+html.pf-immersive header.topbar-glass { display: none; }
+html.pf-immersive #page-content { padding: 0 !important; max-width: none; }
+html.pf-immersive .pf-dsn { height: 100vh; padding: 8px; }
+
+.pf-dsn { display: flex; flex-direction: column; height: calc(100vh - 132px); min-height: 600px; }
+
+/* Three zones on a grid: what I am editing · how I am viewing it · what I can
+   do with it. The middle column is centred on the bar, which puts the device
+   switcher over the middle of the canvas rather than wherever the two side
+   groups leave room. */
+.pf-dsn-top {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center; gap: .5rem;
+  padding: .38rem .5rem; background: var(--lp-surface); border: 1px solid var(--lp-border);
+  border-radius: 11px; margin-bottom: .5rem;
+}
+.pf-dsn-top-l { display: flex; align-items: center; gap: .4rem; min-width: 0; }
+.pf-dsn-top-c { display: flex; justify-content: center; }
+.pf-dsn-top-r { display: flex; align-items: center; justify-content: flex-end; gap: .4rem; }
+
+.pf-dsn-back { font-size: 1rem; padding: .26rem .48rem; }
+
+/* The name is the title of the thing, so it reads as one until you click it —
+   a boxed input beside a boxed button reads as two controls of equal weight,
+   and the name is not a control. */
+/* The field grows with its text instead of holding a fixed 260px box: a short
+   name in a wide box left a hand's width of nothing between the title and the
+   save state, which read as two unrelated things rather than one label. The
+   ::after mirror carries the same text at the same font, so the grid cell is
+   exactly as wide as the name and the input sits on top of it. */
+.pf-dsn-namewrap { display: inline-grid; align-items: center; min-width: 0; max-width: 280px; }
+.pf-dsn-namewrap::after,
+.pf-dsn-name {
+  grid-area: 1 / 1; font: inherit; font-weight: 700; font-size: .88rem;
+  padding: .28rem .4rem; border: 1px solid transparent; border-radius: 7px;
+}
+.pf-dsn-namewrap::after {
+  content: attr(data-value); visibility: hidden; white-space: pre; overflow: hidden;
+}
+.pf-dsn-name {
+  width: 100%; min-width: 3ch; margin: 0; color: var(--lp-ink);
+  background: transparent; transition: background .14s, border-color .14s;
+  text-overflow: ellipsis;
+}
+.pf-dsn-name:hover { background: var(--lp-surface-2); }
+.pf-dsn-name:focus { background: var(--lp-surface); border-color: var(--lp-blue-ring); outline: none; }
+
+.pf-dsn-state {
+  display: inline-flex; align-items: center; gap: .3rem; flex: 0 0 auto;
+  font-size: .7rem; font-weight: 600; color: var(--lp-ink-faint); white-space: nowrap;
+}
+.pf-dsn-state i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .55; }
+.pf-dsn-state.is-unsaved { color: var(--lp-amber); }
+.pf-dsn-state.is-unsaved i { opacity: 1; }
+
+.pf-dsn-history { display: inline-flex; gap: 2px; padding: 2px; background: var(--lp-surface-2); border-radius: 9px; }
+
+.pf-icon-btn {
+  border: 0; background: transparent; cursor: pointer; padding: .28rem .5rem; border-radius: 7px;
+  font-size: .88rem; line-height: 1.2; color: var(--lp-ink-mute); transition: .16s;
+}
+.pf-icon-btn:hover:not(:disabled) { background: var(--lp-surface-2); color: var(--lp-ink); }
+.pf-icon-btn:disabled { opacity: .32; cursor: default; }
+.pf-icon-btn.pf-danger:hover { background: var(--lp-ledger-coral-soft); }
+
+.pf-dsn-work {
+  display: grid; grid-template-columns: minmax(230px, 290px) minmax(0, 1fr) minmax(240px, 300px);
+  grid-template-rows: minmax(0, 1fr); gap: .75rem; flex: 1; min-height: 0;
+}
+
+.pf-dsn-left, .pf-dsn-right {
+  background: var(--lp-surface); border: 1px solid var(--lp-border); border-radius: var(--lp-radius);
+  display: flex; flex-direction: column; min-height: 0; overflow: hidden;
+}
+.pf-dsn-right { padding: 0; overflow-y: auto; }
+
+.pf-dsn-tabs { display: flex; border-bottom: 1px solid var(--lp-border); }
+.pf-dsn-tab {
+  flex: 1; border: 0; background: transparent; cursor: pointer; padding: .66rem .4rem;
+  font-size: .76rem; font-weight: 600; color: var(--lp-ink-faint);
+  border-bottom: 2px solid transparent; white-space: nowrap; transition: .16s;
+}
+.pf-dsn-tab:hover { color: var(--lp-ink); }
+.pf-dsn-tab.active { color: var(--lp-blue); border-bottom-color: var(--lp-blue); }
+.pf-dsn-panel { flex: 1; min-height: 0; overflow-y: auto; padding: .8rem; }
+
+.pf-dsn-note { font-size: .74rem; color: var(--lp-ink-faint); line-height: 1.5; margin-bottom: .7rem; }
+.pf-dsn-small { display: block; font-size: .71rem; color: var(--lp-ink-faint); line-height: 1.45; margin-top: .35rem; }
+.pf-dsn-empty { font-size: .8rem; color: var(--lp-ink-faint); padding: 1.4rem .4rem; text-align: center; }
+.pf-dsn-warn {
+  font-size: .74rem; color: var(--lp-amber); background: var(--lp-amber-soft);
+  padding: .45rem .6rem; border-radius: 8px; margin: 0 .8rem .7rem;
+}
+
+/* ---------- the block palette ---------- */
+.pf-dsn-blocks { display: grid; gap: .4rem; }
+.pf-dsn-block {
+  display: grid; grid-template-columns: 26px 1fr; gap: .1rem .55rem; text-align: left;
+  padding: .55rem .6rem; border: 1px solid var(--lp-border); border-radius: 10px;
+  background: var(--lp-surface); cursor: grab; transition: .16s; width: 100%;
+}
+.pf-dsn-block:hover:not(:disabled) { border-color: var(--lp-blue); background: var(--lp-blue-soft); }
+.pf-dsn-block:active:not(:disabled) { cursor: grabbing; }
+.pf-dsn-block:disabled, .pf-dsn-block.is-used { opacity: .5; cursor: default; }
+.pf-dsn-block-ico { grid-row: 1 / span 2; font-size: 1.05rem; align-self: center; }
+.pf-dsn-block-name { font-size: .8rem; font-weight: 700; color: var(--lp-ink); }
+.pf-dsn-block-name em {
+  font-style: normal; font-size: .64rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--lp-ink-faint); margin-left: .35rem;
+}
+.pf-dsn-block-name em.is-empty { color: var(--lp-amber); }
+.pf-dsn-block-hint { font-size: .7rem; color: var(--lp-ink-faint); line-height: 1.4; }
+
+/* The card that follows the pointer while a block is being dragged in from
+   the palette. Fixed to the viewport and un-hittable, so it can never become
+   the thing the pointer is over. */
+.pf-dsn-ghost {
+  position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none;
+  padding: .4rem .7rem; border-radius: 9px; font-size: .76rem; font-weight: 700;
+  background: var(--lp-blue); color: #fff; box-shadow: var(--lp-shadow-md);
+}
+body.pf-dsn-dragging { cursor: grabbing; user-select: none; }
+
+/* ---------- layers ---------- */
+.pf-dsn-layers { list-style: none; margin: 0; padding: 0; display: grid; gap: .25rem; }
+.pf-dsn-layer {
+  display: grid; grid-template-columns: auto auto 1fr auto; align-items: center; gap: .45rem;
+  padding: .4rem .5rem; border: 1px solid transparent; border-radius: 9px;
+  cursor: pointer; transition: .14s; background: var(--lp-surface-2);
+}
+.pf-dsn-layer:hover { border-color: var(--lp-border-strong); }
+.pf-dsn-layer.active { border-color: var(--lp-blue); background: var(--lp-blue-soft); }
+.pf-dsn-layer.is-hidden { opacity: .5; }
+.pf-dsn-layer.is-dragging { opacity: .4; }
+.pf-dsn-layer.drop-before { box-shadow: inset 0 2px 0 var(--lp-blue); }
+.pf-dsn-layer.drop-after { box-shadow: inset 0 -2px 0 var(--lp-blue); }
+.pf-dsn-grip { color: var(--lp-ink-faint); cursor: grab; font-size: .8rem; }
+.pf-dsn-layer-ico { font-size: .9rem; }
+.pf-dsn-layer-name {
+  font-size: .78rem; font-weight: 600; color: var(--lp-ink);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.pf-dsn-layer-name em {
+  display: block; font-style: normal; font-size: .66rem; font-weight: 500; color: var(--lp-ink-faint);
+}
+.pf-dsn-layer-acts { display: flex; gap: 0; opacity: 0; transition: .14s; }
+.pf-dsn-layer:hover .pf-dsn-layer-acts,
+.pf-dsn-layer.active .pf-dsn-layer-acts,
+.pf-dsn-layer:focus-within .pf-dsn-layer-acts { opacity: 1; }
+
+/* ---------- theme + inspector controls ---------- */
+.pf-dsn-group { padding: 0 0 .9rem; margin-bottom: .9rem; border-bottom: 1px solid var(--lp-border); }
+.pf-dsn-group:last-child { border-bottom: 0; margin-bottom: 0; }
+.pf-dsn-right .pf-dsn-group { padding-inline: .8rem; }
+.pf-dsn-group h4 {
+  font-size: .68rem; font-weight: 800; text-transform: uppercase; letter-spacing: .09em;
+  color: var(--lp-ink-faint); margin-bottom: .5rem;
+}
+
+.pf-dsn-select, .pf-dsn-input {
+  width: 100%; padding: .45rem .55rem; border: 1px solid var(--lp-border); border-radius: 8px;
+  background: var(--lp-surface); color: var(--lp-ink); font-size: .8rem; font-family: inherit;
+}
+.pf-dsn-select:focus, .pf-dsn-input:focus { outline: 2px solid var(--lp-blue-ring); outline-offset: 1px; }
+.pf-dsn-range { width: 100%; accent-color: var(--lp-blue); }
+
+.pf-dsn-seg { display: flex; gap: 2px; padding: 2px; background: var(--lp-surface-2); border-radius: 9px; flex-wrap: wrap; }
+.pf-dsn-seg button {
+  flex: 1; min-width: 0; border: 0; background: transparent; cursor: pointer; padding: .34rem .3rem;
+  border-radius: 7px; font-size: .73rem; font-weight: 600; color: var(--lp-ink-faint); transition: .16s;
+}
+.pf-dsn-seg button:hover { color: var(--lp-ink); }
+.pf-dsn-seg button.active { background: var(--lp-surface); color: var(--lp-blue); box-shadow: var(--lp-shadow-sm); }
+
+.pf-dsn-palettes { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: .35rem; }
+.pf-dsn-pal {
+  border: 1px solid var(--lp-border); border-radius: 9px; background: var(--lp-surface);
+  padding: .3rem; cursor: pointer; transition: .14s; display: grid; gap: .2rem; justify-items: stretch;
+}
+.pf-dsn-pal:hover { border-color: var(--lp-border-strong); transform: translateY(-1px); }
+.pf-dsn-pal.active { border-color: var(--lp-blue); box-shadow: 0 0 0 2px var(--lp-blue-soft); }
+.pf-dsn-pal span { display: block; height: 22px; border-radius: 5px; }
+.pf-dsn-pal em { font-style: normal; font-size: .63rem; font-weight: 600; color: var(--lp-ink-mute); }
+
+.pf-dsn-colour { display: flex; align-items: center; gap: .55rem; margin-bottom: .45rem; }
+.pf-dsn-colour input[type="color"] {
+  width: 38px; height: 30px; padding: 0; border: 1px solid var(--lp-border);
+  border-radius: 7px; background: none; cursor: pointer;
+}
+.pf-dsn-colour span { font-size: .78rem; font-weight: 600; color: var(--lp-ink); }
+.pf-dsn-colour span em { display: block; font-style: normal; font-size: .68rem; font-weight: 400; color: var(--lp-ink-faint); }
+
+.pf-dsn-insp-head { display: flex; gap: .6rem; align-items: flex-start; padding: .8rem .8rem .6rem; }
+.pf-dsn-insp-ico { font-size: 1.2rem; line-height: 1.2; }
+.pf-dsn-insp-head h4 { font-size: .88rem; font-weight: 800; color: var(--lp-ink); }
+.pf-dsn-insp-head small { font-size: .7rem; color: var(--lp-ink-faint); line-height: 1.4; }
+.pf-dsn-insp-acts {
+  display: flex; gap: .1rem; padding: 0 .8rem .8rem; margin-bottom: .8rem;
+  border-bottom: 1px solid var(--lp-border);
+}
+.pf-dsn-none { padding: 2.4rem 1.1rem; text-align: center; color: var(--lp-ink-faint); }
+.pf-dsn-none span { font-size: 1.6rem; display: block; margin-bottom: .5rem; opacity: .55; }
+.pf-dsn-none h4 { font-size: .82rem; font-weight: 700; color: var(--lp-ink-mute); margin-bottom: .35rem; }
+.pf-dsn-none p { font-size: .74rem; line-height: 1.55; }
+
+/* ---------- the canvas ---------- */
+.pf-dsn-canvas {
+  position: relative; min-width: 0; overflow: hidden; padding: 16px;
+  background: var(--lp-surface-2); border: 1px solid var(--lp-border); border-radius: var(--lp-radius);
+}
+#pf-dsn-frame {
+  position: absolute; top: 16px; border: 0; background: #fff; border-radius: 6px;
+  box-shadow: 0 10px 40px rgba(20, 22, 26, .16); display: block;
+}
+.pf-dsn-hint {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 5;
+  padding: .35rem .8rem; border-radius: 999px; font-size: .74rem; font-weight: 700;
+  background: var(--lp-blue); color: #fff; pointer-events: none; box-shadow: var(--lp-shadow-md);
+}
+
+/* ---------- the library shelf ---------- */
+.pf-dsn-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .8rem; }
+.pf-dsn-card {
+  background: var(--lp-surface); border: 1px solid var(--lp-border); border-radius: var(--lp-radius);
+  overflow: hidden; cursor: pointer; transition: .16s; display: flex; flex-direction: column;
+}
+.pf-dsn-card:hover, .pf-dsn-card:focus-visible {
+  border-color: var(--lp-blue); transform: translateY(-2px); box-shadow: var(--lp-shadow-md);
+}
+.pf-dsn-card-shot {
+  position: relative; height: 150px; overflow: hidden;
+  background: var(--lp-surface-2); border-bottom: 1px solid var(--lp-border);
+}
+.pf-dsn-card-swatch { position: absolute; inset: 0; transition: opacity .3s; }
+.pf-dsn-card-shot.is-live .pf-dsn-card-swatch { opacity: 0; }
+.pf-dsn-card-body { padding: .7rem .8rem .3rem; }
+.pf-dsn-card-body h3 { font-size: .85rem; font-weight: 700; color: var(--lp-ink); }
+.pf-dsn-card-body p { font-size: .72rem; color: var(--lp-ink-faint); margin-top: .15rem; }
+.pf-dsn-card-acts {
+  display: flex; flex-wrap: wrap; gap: .3rem; padding: .6rem .8rem .7rem; margin-top: auto;
+}
+/* The offer, before anything has been built: one row, not a section. */
+.pf-own-promo {
+  display: flex; align-items: center; gap: .9rem;
+  padding: .7rem .9rem; margin-bottom: 1.1rem;
+  background: linear-gradient(100deg, var(--lp-blue-soft), var(--lp-surface) 62%);
+  border: 1px solid var(--lp-border); border-radius: var(--lp-radius);
+}
+.pf-own-promo-ico {
+  flex: 0 0 auto; display: grid; place-items: center; width: 34px; height: 34px;
+  border-radius: 10px; background: var(--lp-surface); border: 1px solid var(--lp-border);
+  font-size: .95rem;
+}
+.pf-own-promo-copy { min-width: 0; flex: 1; }
+.pf-own-promo-copy h3 { font-size: .92rem; font-weight: 800; letter-spacing: -.015em; }
+.pf-own-promo-copy p {
+  font-size: .78rem; color: var(--lp-ink-mute); line-height: 1.45; margin-top: .1rem;
+}
+.pf-own-promo .btn { flex: 0 0 auto; }
+
+@media (max-width: 720px) {
+  .pf-own-promo { flex-wrap: wrap; }
+  .pf-own-promo-copy { flex: 1 1 100%; order: 2; }
+  .pf-own-promo .btn { order: 3; width: 100%; justify-content: center; }
+}
+
+/* The design tiles in the builder's Design panel. */
+.pf-pk-own { display: grid; place-items: center; height: 84px; }
+.pf-pk-own em {
+  font-style: normal; font-size: .68rem; font-weight: 700; color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, .35);
+}
+.pf-own-acts { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .6rem; }
+.pf-card-tpl em { font-style: normal; opacity: .75; font-size: .92em; }
+
+.pf-dsn-top .pf-devices { margin-left: 0; }
+
+@media (max-width: 1180px) {
+  html.pf-immersive .pf-dsn { height: auto; }
+  .pf-dsn { height: auto; }
+  .pf-dsn-work { grid-template-columns: 1fr; grid-template-rows: auto auto auto; }
+  .pf-dsn-left, .pf-dsn-right { max-height: 52vh; }
+  .pf-dsn-canvas { height: 70vh; }
+}
+
+/* Below this the three zones can't share a row without crushing the name, so
+   the bar wraps: identity and actions on the first line, the device switcher
+   on its own beneath them. */
+@media (max-width: 860px) {
+  .pf-dsn-top { grid-template-columns: minmax(0, 1fr) auto; row-gap: .4rem; }
+  .pf-dsn-top-c { grid-column: 1 / -1; order: 3; justify-content: flex-start; }
+  .pf-dsn-name { max-width: none; }
+}
+
+[data-theme="dark"] #pf-dsn-frame { box-shadow: 0 10px 40px rgba(0, 0, 0, .5); }
+[data-theme="dark"] .pf-dsn-ghost { color: #0F1216; }
+
+/* The build-your-own shelf leads the library, so it carries no top margin of
+   its own — .pf-gallery-wrap's 1.9rem is for a section following something,
+   and this one usually follows nothing. */
+.pf-dsn-shelf:first-child { margin-top: 0; }
+.pf-dsn-shelf { margin-bottom: 1.9rem; }
+
+/* ---------- the designer's Start panel ---------- */
+/* Each card is a real render of the preset at page width, scaled down — the
+   same engine and the same content as the canvas, because the only claim
+   these cards make is "your page will look like this". */
+.pf-dsn-presets { display: grid; gap: .5rem; }
+.pf-dsn-preset {
+  display: grid; grid-template-columns: 82px minmax(0, 1fr); gap: .65rem;
+  padding: .45rem; text-align: left; width: 100%;
+  background: var(--lp-surface); border: 1px solid var(--lp-border);
+  border-radius: 11px; cursor: pointer; transition: .16s;
+}
+.pf-dsn-preset:hover, .pf-dsn-preset:focus-visible {
+  border-color: var(--lp-blue); background: var(--lp-blue-soft); transform: translateY(-1px);
+}
+.pf-dsn-preset-shot {
+  position: relative; height: 92px; border-radius: 7px; overflow: hidden;
+  background: var(--lp-surface-2); border: 1px solid var(--lp-border);
+}
+.pf-dsn-preset-swatch { position: absolute; inset: 0; transition: opacity .3s; }
+.pf-dsn-preset-shot.is-live .pf-dsn-preset-swatch { opacity: 0; }
+.pf-dsn-preset-empty {
+  display: grid; place-items: center; font-size: 1.4rem; color: var(--lp-ink-faint);
+  border-style: dashed;
+}
+.pf-dsn-preset-body { min-width: 0; align-self: center; }
+.pf-dsn-preset-body b { display: block; font-size: .82rem; font-weight: 700; color: var(--lp-ink); }
+.pf-dsn-preset-body em {
+  display: block; font-style: normal; font-size: .71rem; line-height: 1.42;
+  color: var(--lp-ink-mute); margin-top: .12rem;
+}
+.pf-dsn-preset-body i {
+  display: block; font-style: normal; font-size: .66rem; color: var(--lp-ink-faint);
+  margin-top: .25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}

@@ -15,11 +15,25 @@ Base.metadata.create_all(bind=engine)
 db = SessionLocal()
 
 # Clear existing data for a clean seed.
-# Order matters: children before parents, or SQLite's FK constraints reject the delete.
-for model in [models.JobActivity, models.JobContact, models.JobApplication, models.JobBoard,
-              models.HabitEntry, models.Habit, models.Task, models.WeeklyNote,
-              models.Resume, models.StudyBlock, models.User]:
-    db.query(model).delete()
+#
+# Order matters: children before parents, or SQLite's FK constraints reject the
+# delete. Rather than hand-maintaining that list (which silently breaks every
+# time a new table with a foreign key is added — e.g. job_hits.application_id
+# pointing at job_applications), derive it from the metadata: sorted_tables is
+# in dependency order, so reversing it gives children-before-parents.
+#
+# Reference data that isn't tied to a user is preserved — sponsor_orgs alone is
+# ~125k rows scraped from the sponsor register and is expensive to rebuild.
+PRESERVE = {"sponsor_orgs", "sponsor_register_meta", "company_boards"}
+
+for table in reversed(Base.metadata.sorted_tables):
+    if table.name in PRESERVE:
+        # Keep the global rows, but drop any user-owned ones — otherwise they
+        # would still point at users we're about to delete.
+        if "user_id" in table.c:
+            db.execute(table.delete().where(table.c.user_id.isnot(None)))
+        continue
+    db.execute(table.delete())
 db.commit()
 
 admin = models.User(name="Admin", email="admin@momentum.app",

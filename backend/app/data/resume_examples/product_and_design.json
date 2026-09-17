@@ -1,0 +1,274 @@
+{
+  "product_manager": [
+    {
+      "level": "early",
+      "headline": "First PM role, arrived from support",
+      "why": "A first product CV is read for evidence of product decisions, not for the job title. Everything here that looks like PM work was done from a support seat, and the projects section carries the discovery write-up a hiring manager would otherwise have no way to see.",
+      "template_id": "hybrid_combination",
+      "data": {
+        "full_name": "Rhiannon Kelleher",
+        "title": "Associate Product Manager",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900164",
+        "email": "r.kelleher@example.com",
+        "linkedin": "linkedin.com/in/rhiannon-kelleher-example",
+        "website": "",
+        "summary": "- Associate product manager at Fernhill Learning, eighteen months in, after three years running support at the same company.\n- Moved into product when the ticket taxonomy I built became what quarterly planning started from.",
+        "skills": "Discovery: user interviews, ticket and call analysis, opportunity solution trees, concept testing\nDelivery: user stories, acceptance criteria, Jira, dual-track agile with a team of six\nData: SQL, Amplitude, Looker, experiment readouts with a data scientist\nTools: Figma, Confluence, Productboard",
+        "experience": "Associate Product Manager | Fernhill Learning | Bristol, UK | Feb 2025 - Present\n- Own teacher onboarding; took the time from account creation to a first published lesson from 11 days to 3, and trial-to-paid conversion from 22% to 31%.\n- Killed a bulk-import feature three schools had asked for after 14 interviews showed they import once and never again. The team built roster sync instead, now used by 340 schools.\n- Write the weekly release note that goes to support and sales, which ended customers hearing about changes from their account manager first.\n---\nCustomer Support Lead | Fernhill Learning | Bristol, UK | Sep 2022 - Jan 2025\n- Rebuilt the ticket taxonomy across 40,000 historic tickets; the top-ten problem list that came out of it is still the input to quarterly planning.\n- Ran the marking-tool beta, recruiting 30 teachers and turning their sessions into the issue list engineering worked through.\n- Held escalations for the 20 largest accounts, none of which churned over that period.",
+        "education": "BA, Education Studies | University of Leeds | Sep 2019 - Jun 2022",
+        "projects": "Roster Sync Discovery: Fourteen interviews with school data managers, a two-week concept test across six schools, and a written recommendation not to build the feature as scoped. Kept as a worked example of a discovery memo.\n---\nMarking Tool Beta: Thirty teachers over eight weeks; wrote the go/no-go memo that delayed launch by a month over a data-retention question nobody had asked about.",
+        "publications": "",
+        "certifications": "Professional Scrum Product Owner I (PSPO I)"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, B2B SaaS and pricing",
+      "why": "Feature launches are activity; this CV is built from things that moved a number and from two things that were deliberately taken away. A packaging change and a retired module read as more senior than a longer list of releases, because both required a judgement somebody could have got wrong.",
+      "template_id": "achievement_focused",
+      "data": {
+        "full_name": "Tomas Iriarte",
+        "title": "Product Manager",
+        "location": "Austin, TX",
+        "phone": "+1 (512) 555-0148",
+        "email": "tomas.iriarte@example.com",
+        "linkedin": "linkedin.com/in/tomas-iriarte-example",
+        "website": "",
+        "summary": "- Product manager, five years on B2B subscription products; owns plans, pricing and packaging at Kestrel Retail Cloud.\n- Two of the last three quarters' revenue movement came from repackaging rather than from anything new being built.",
+        "skills": "Product: pricing and packaging, activation and retention, quarterly planning, competitive and win/loss analysis\nDiscovery: jobs-to-be-done interviews, Van Westendorp and conjoint pricing studies, customer advisory calls\nAnalysis: SQL, Snowflake, Amplitude, cohort and funnel work, experiment design and readout\nWorks with: engineering (9), design, sales engineering, finance",
+        "experience": "Product Manager | Kestrel Retail Cloud | Austin, TX | Jun 2023 - Present\n- Collapsed three overlapping plans into two with a usage-based add-on; net revenue retention went from 104% to 118% over four quarters without touching list price.\n- Rebuilt onboarding around one milestone, first store connected, after finding 61% of trials never reached it. Activation rose from 34% to 52%.\n- Retired the legacy reporting module used by 4% of accounts and migrated them by hand rather than rebuilding it, which freed two engineers for a quarter and removed the largest source of support escalations.\n- Run win/loss interviews on every lost enterprise deal; the audit-log requirement that surfaced there was the highest-revenue thing shipped last year.\n---\nProduct Manager | Loomhouse | Austin, TX | Aug 2021 - May 2023\n- Owned checkout for a $40m direct-to-consumer apparel brand; removing forced account creation took mobile abandonment from 71% to 63%.\n- Launched instalments in eight weeks. 19% of orders use it, and those orders average 34% higher.\n- Replaced a monthly deck nobody read with a weekly funnel review attended by marketing and finance.\n---\nBusiness Analyst | Loomhouse | Austin, TX | Jan 2020 - Jul 2021\n- Built the merchandising reporting buyers still plan the season from.",
+        "education": "BBA, Marketing | The University of Texas at Austin | Aug 2016 - May 2019",
+        "projects": "",
+        "publications": "",
+        "certifications": "Pragmatic Institute Certified: Foundations and Focus"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Eleven years, three teams, a P&L",
+      "why": "At director level the features disappear from the page entirely. What a reader checks for instead is whether you have carried a number, made a bet that could have failed, and hired. Note the buy-not-build decision and the killed project: both are there because a CV of only wins reads as a CV with the losses edited out.",
+      "template_id": "consulting_premium",
+      "data": {
+        "full_name": "Ingrid Halvorsen",
+        "title": "Director of Product",
+        "location": "London, UK",
+        "phone": "+44 7700 900622",
+        "email": "ingrid.halvorsen@example.com",
+        "linkedin": "linkedin.com/in/ingrid-halvorsen-example",
+        "website": "",
+        "summary": "- Director of product at Tidewell Energy, accountable for a GBP 46m subscription line and three product teams.\n- Eleven years across energy, insurance and retail; twice taken something built as an internal tool and turned it into a product that was sold.",
+        "skills": "Accountable for: GBP 46m P&L, 3 teams (14 people), 4 PMs hired, quarterly board reporting\nDomain: energy retail, regulated pricing, subscription and usage billing, Ofgem change control\nPractice: portfolio prioritisation, build/buy/partner decisions, pricing strategy, outcome-based planning",
+        "experience": "Director of Product | Tidewell Energy | London, UK | Mar 2023 - Present\n- Own the smart-tariff line: GBP 46m of annual subscription revenue, up from GBP 19m, across three teams restructured down from five.\n- Chose to buy the settlement engine rather than build it. A GBP 1.4m contract replaced an eighteen-month internal roadmap and freed the team to ship tariff comparison in that window instead.\n- Hired four product managers and wrote the levelling guide the wider product group now uses; nobody hired under it has left inside a year.\n- Took a heat-pump tariff from proposal to 12,000 customers in nine months, including the Ofgem change-control submission. It is now the highest-margin product on the book.\n- Killed the in-house CRM after two quarters and GBP 600k, and wrote the post-mortem. Every proposal in the group now has to state its kill criterion up front.\n---\nGroup Product Manager | Silverbeck Insurance | Manchester, UK | Jan 2019 - Feb 2023\n- Led four PMs across claims and pricing. Average claim settlement went from 21 days to 9, worth GBP 3.2m a year in handling cost.\n- Ran the migration off a twenty-year-old rating engine and held the loss ratio flat through the switch, which was the condition the board set.\n- Replaced feature roadmaps with quarterly outcome reviews; two other product groups copied it.\n---\nProduct Manager | Silverbeck Insurance | Manchester, UK | Sep 2015 - Dec 2018\n- Owned the renewals journey and lifted retention six points on a 900,000-policy book.",
+        "education": "MBA (part-time) | Warwick Business School | Sep 2019 - Jun 2021\n---\nBEng, Mechanical Engineering | University of Nottingham | Sep 2011 - Jun 2015",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "product_designer": [
+    {
+      "level": "early",
+      "headline": "Fourteen months in, portfolio carries the proof",
+      "why": "A designer's CV is read next to a portfolio, so it must not try to be one. The link sits in the header, the case studies get one line each, and the page is spent on what she owned, the method she used and what changed. The portfolio shows how it looked; only the CV can say what it did.",
+      "template_id": "creative_colorful",
+      "data": {
+        "full_name": "Dilnoza Karimova",
+        "title": "Product Designer",
+        "location": "Leeds, UK",
+        "phone": "+44 7700 900217",
+        "email": "d.karimova@example.com",
+        "linkedin": "linkedin.com/in/dilnoza-karimova-example",
+        "website": "dilnoza.example.com",
+        "summary": "- Product designer, fourteen months in-house, after three years in architectural visualisation.\n- Three case studies on the site above; each one shows the research, the version that tested worse, and the version that shipped.",
+        "skills": "Design: Figma, prototyping, interaction design, design tokens, responsive layout\nResearch: moderated usability testing, hallway testing, survey design, session replay review\nAccessibility: WCAG 2.2 AA, keyboard and screen-reader testing (NVDA, VoiceOver), contrast auditing\nAlso: Adobe Creative Cloud, Blender, enough HTML and CSS to read a pull request",
+        "experience": "Product Designer | Bramblewick Toys | Leeds, UK | Jul 2025 - Present\n- Redesigned the gift finder after watching eight sessions stall at the same age filter; completion went from 41% to 68%.\n- Own checkout and account screens. Inline validation and a recover-from-error state cut failed card submissions by about a fifth.\n- Built the component library's form patterns with two engineers, writing down focus order and error announcement so web and app behave the same way.\n---\nJunior Product Designer | Bramblewick Toys | Leeds, UK | Sep 2024 - Jun 2025\n- Ran the storefront's first accessibility audit; 31 of the 44 issues found are closed.\n- Drew the illustration set still used across empty states and marketing email.",
+        "education": "Professional Diploma in UX Design | UX Design Institute, accredited by Glasgow Caledonian University | Jan 2024 - Aug 2024\n---\nBA (Hons) Architecture | University of Sheffield | Sep 2018 - Jun 2021",
+        "projects": "Gift Finder Rebuild: Eight moderated sessions, a tree test on the category names, then three rounds of prototype testing. The case study includes the round that tested worse than the original and why.\n---\nOutpatient Wayfinding (voluntary): Signage and a printable floor plan for a community hospital wing, redrawn after shadowing two clinic mornings.",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, half of it on systems",
+      "why": "Design systems work is invisible on a CV unless you name who else used it. Every bullet here says which partner it was built with and what became cheaper afterwards, because a component nobody adopted is a portfolio piece, not an outcome. Note that the projects section has gone: shipped work has replaced it.",
+      "template_id": "layered_papercard",
+      "data": {
+        "full_name": "Emeka Nwosu",
+        "title": "Product Designer",
+        "location": "London, UK",
+        "phone": "+44 7700 900488",
+        "email": "emeka.nwosu@example.com",
+        "linkedin": "linkedin.com/in/emeka-nwosu-example",
+        "website": "emekanwosu.example.com",
+        "summary": "- Product designer, five years across banking and logistics; splits the week between the booking squad and the design system at Marlowe Freight.\n- Portfolio covers three shipped products and the system work underneath them, including the pattern that had to be withdrawn.",
+        "skills": "Product design: end-to-end flows, prototyping in Figma, service blueprinting, content design\nDesign systems: token architecture, component API design with engineering, Storybook, contribution model\nResearch: moderated and unmoderated testing (Maze), ride-alongs, analytics review with the data team\nAccessibility: WCAG 2.2 AA, assistive-technology testing, accessible-name and focus-order documentation",
+        "experience": "Product Designer | Marlowe Freight | London, UK | Apr 2023 - Present\n- Redesigned pallet booking; the share of bookings needing a phone call to correct fell from one in six to one in twenty.\n- Rebuilt the system's form, table and empty-state patterns with two front-end engineers, so four product teams work from one set of rules instead of four. Time from handover to merged pull request roughly halved.\n- Started a fortnightly critique that includes the engineers who build the components, which is why the contribution backlog stopped growing.\n- Ran discovery for the driver app after two ride-alongs with subcontracted drivers; what shipped was a third of what had been proposed.\n---\nProduct Designer | Aldermoor Bank | London, UK | Feb 2021 - Mar 2023\n- Owned the dispute-raising journey in the app. Routing people to the right dispute type cut misfiled disputes 38%, which was a call-centre cost line before it was a design problem.\n- Designed a slower check-before-you-send payment path with the vulnerable-customers team; it is now the default for accounts flagged at risk of fraud.\n- Took the top ten journeys from unaudited to WCAG 2.2 AA.",
+        "education": "BSc (Hons) Digital Media Design | University of Brighton | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "IAAP Certified Professional in Accessibility Core Competencies (CPACC)"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Principal, sets direction for nine designers",
+      "why": "Nobody expects a principal to show new pixels, and the portfolio link stops being the argument. The page fills instead with direction others followed, hires, and practices that outlived her. The craft list is one line near the top rather than the substance of the document.",
+      "template_id": "magazine_editorial",
+      "data": {
+        "full_name": "Saoirse McQuillan",
+        "title": "Principal Product Designer",
+        "location": "Edinburgh, UK",
+        "phone": "+44 7700 900745",
+        "email": "s.mcquillan@example.com",
+        "linkedin": "linkedin.com/in/saoirse-mcquillan-example",
+        "website": "mcquillan.example.com",
+        "summary": "- Principal product designer, eleven years; sets design direction across three product groups at Ridgeway Rail and mentors seven designers who do not report to her.\n- Has built two design systems that outlived the teams that made them, and one that did not. The post-mortem on the third is on the site.",
+        "skills": "Direction: design strategy, multi-team critique, hiring and levelling, design ops\nCraft: complex service journeys, accessibility to WCAG 2.2 AA, research partnership, Figma\nDomain: regulated transport, ticketing and refunds, disruption, assisted travel duties",
+        "experience": "Principal Product Designer | Ridgeway Rail | Edinburgh, UK | Sep 2022 - Present\n- Set design direction for ticketing, disruption and assisted travel: three groups, nine designers, no reporting line to any of them.\n- Led the disruption-day rebuild, replacing eleven inconsistent status messages with one pattern. Contact-centre calls on cancellation days fell 27%, and the regulator's accessibility review named it as the improvement.\n- Rewrote refunds with legal and the contact centre; requests resolved without a human went from 12% to 58%, about GBP 900k a year in handling.\n- Ran design hiring for two years: fifteen hires and a portfolio-review format the whole group now uses.\n- Chair the accessibility working group. Assisted-travel booking is the journey other teams are told to copy.\n---\nSenior Product Designer | Trellis Care | Glasgow, UK | Jan 2019 - Aug 2022\n- Designed the care-visit app used by 4,000 carers, working from six shadowing days across three regions. Two of the four screens originally scoped were removed before launch.\n- Built the design system with a team of three; five years on it is still the company's front end.\n- Set up shared session notes and a findings repository, which stopped product managers commissioning studies that had already been run.\n---\nProduct Designer | Orrell & Byrne | Glasgow, UK | Aug 2015 - Dec 2018\n- Agency work across nine clients; ran the first usability test the studio ever billed for, and it became a standard line in proposals.",
+        "education": "BDes (Hons) Digital Interaction Design | The Glasgow School of Art | Sep 2011 - Jun 2015",
+        "projects": "",
+        "publications": "\"Designing for the day everything is cancelled\" - Service Design in Government, 2025\n\"What we got wrong building a second design system\" - SmashingConf, 2024",
+        "certifications": ""
+      }
+    }
+  ],
+  "graphic_designer": [
+    {
+      "level": "early",
+      "headline": "Placement year, then junior at the studio",
+      "why": "The portfolio already answers whether a junior has taste. What a studio is checking on the CV is whether they can be trusted with production, so the vocabulary matters: bleed, imposition, spot builds, wet proofs, GSM. Notice that the strongest bullet is about a mistake caught before it reached press.",
+      "template_id": "twocolumn_sidebar",
+      "data": {
+        "full_name": "Elif Demirtas",
+        "title": "Junior Graphic Designer",
+        "location": "Manchester, UK",
+        "phone": "+44 7700 900359",
+        "email": "elif.demirtas@example.com",
+        "linkedin": "linkedin.com/in/elif-demirtas-example",
+        "website": "elifdemirtas.example.com",
+        "summary": "- Junior designer at a six-person branding studio, a year on from a placement in the same team.\n- Brand, packaging and print. Portfolio on the site above: packaging, a wayfinding scheme and the identity work below.",
+        "skills": "Software: InDesign, Illustrator, Photoshop, Figma, After Effects (basic)\nPrint production: artwork and repro, CMYK and Pantone specification, bleed and trim, imposition, wet-proof checking, stock and GSM selection, working to ISO 12647\nDesign: typography and typesetting, layout, applying brand guidelines, retouching\nStudio: Mac and PC workflow, asset libraries, version control on artwork, basic HTML and CSS",
+        "experience": "Junior Graphic Designer | Cobalt & Quill | Manchester, UK | Aug 2025 - Present\n- Take other designers' concepts to press-ready artwork, about sixty jobs so far. On a 96-page catalogue I caught a spot colour built as process, which would have meant a reprint.\n- Redrew a client's guidelines as a 24-page InDesign document with linked styles, so the studio stopped rebuilding the same templates every quarter.\n- Design the studio's social and email templates; the account team now produces most of them without a designer.\n---\nDesign Placement | Cobalt & Quill | Manchester, UK | Jul 2023 - Jul 2024\n- Packaging artwork for a nine-SKU range, including barcode and regulatory panel checks.\n- Attended three press passes at the litho printer and wrote the checklist the studio still uses.",
+        "education": "BA (Hons) Graphic Design (sandwich) | Nottingham Trent University | Sep 2021 - Jun 2025",
+        "projects": "Letterpress Studio Identity (final year): Marks, a two-weight custom wordmark, stationery and a specimen book, printed by hand at the university's letterpress workshop.\n---\nNorthern Quarter Wayfinding (student brief): A signage system tested by asking twelve visitors to find three addresses. The second version dropped the arrows the first version depended on.",
+        "publications": "",
+        "certifications": "Adobe Certified Professional in Visual Design"
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Six years, agency then in-house brand",
+      "why": "Agency and in-house design are judged on different things, and the CV should say which one you have been doing. In-house work is measured by consistency and throughput across a system, so these numbers are about artwork rounds, template reuse and what marketing could produce afterwards without him.",
+      "template_id": "diagonal_split",
+      "data": {
+        "full_name": "Marek Zawadzki",
+        "title": "Brand Designer",
+        "location": "Bristol, UK",
+        "phone": "+44 7700 900531",
+        "email": "m.zawadzki@example.com",
+        "linkedin": "linkedin.com/in/marek-zawadzki-example",
+        "website": "zawadzki.example.com",
+        "summary": "- Brand designer, six years: three in a branding studio, three in-house at Hollowbrook Foods.\n- Runs the brand system across 40 SKUs in grocery and food service, plus the campaign work that sits on top of it.\n- Portfolio case studies are packaging systems rather than single pieces, which is the work in-house teams hire for.",
+        "skills": "Brand: identity systems, guidelines, packaging architecture, campaign art direction\nPrint: artwork and repro, Pantone and CMYK specification, dielines, flexo and litho, press passes, proof approval\nSoftware: InDesign, Illustrator, Photoshop, Figma, After Effects, Esko ArtPro\nWorks with: marketing, packaging technologists, print suppliers, three freelance designers",
+        "experience": "Brand Designer | Hollowbrook Foods | Bristol, UK | Feb 2023 - Present\n- Rebuilt the packaging architecture across 40 SKUs so range, flavour and dietary marks sit on one grid. Artwork rounds with the printer dropped from an average of five to two.\n- Wrote the 60-page guidelines and the InDesign template set marketing now uses directly, which took roughly 200 jobs a year out of the studio queue.\n- Art-directed the 2025 chilled launch across photography, packaging and point of sale; it went into 900 stores.\n- Brief, rate and check the work of three freelancers through peak season.\n---\nMiddleweight Designer | Thornbury & Vale | Bristol, UK | Sep 2020 - Jan 2023\n- Identity work for eleven clients, two of them led from brief to guidelines, including a regional brewery rebrand the studio still opens pitches with.\n- Produced pitch visuals and decks over three years in which the studio won four of nine pitches it entered.\n- Handled artwork and repro for the studio's largest print client, a 200-page annual catalogue.",
+        "education": "BA (Hons) Graphic Communication | University of Reading | Sep 2016 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Thirteen years, now runs the studio",
+      "why": "The software list nearly disappears at this level, and what replaces it is what someone buying a creative director is actually buying: clients won, people hired, margin held, and identities still running unchanged years later. Craft is one line here, not the argument.",
+      "template_id": "magazine_editorial",
+      "data": {
+        "full_name": "Valentina Ruiz-Herrera",
+        "title": "Creative Director",
+        "location": "London, UK",
+        "phone": "+44 7700 900668",
+        "email": "v.ruizherrera@example.com",
+        "linkedin": "linkedin.com/in/valentina-ruiz-herrera-example",
+        "website": "ruizherrera.example.com",
+        "summary": "- Creative director, thirteen years; leads a studio of nine across brand, packaging and environmental graphics at Petrichor Studio.\n- Work in food, culture and public sector. Four of the identities made in the last five years are still running without revision.",
+        "skills": "Leading: studio of 9, hiring and mentoring, freelance roster, GBP 2.4m of annual studio revenue\nCraft: identity systems, art direction, typography, packaging, exhibition and environmental graphics\nProduction: print specification, supplier management, substrate and sustainability choices, large-format and fabricated signage",
+        "experience": "Creative Director | Petrichor Studio | London, UK | Jan 2022 - Present\n- Lead nine people and the GBP 2.4m of annual revenue they deliver; grew the team from five without losing a client through the change.\n- Art-directed identity and wayfinding for a new city museum, from brief to the signage fabricated on site. Three years in, it has had no revisions.\n- Won and ran a national food brand's packaging system: 120 SKUs, a move to mono-material film, and a rollout their own team could continue without us.\n- Changed how the studio prices work, from day rates to phase fees. Average project margin went from 21% to 34%.\n- Hired six designers and set up the placement scheme; two former placement students are middleweights here now.\n---\nDesign Lead | Fig & Anchor Group | London, UK | Mar 2016 - Dec 2021\n- Ran design in-house for a nineteen-restaurant group: an identity per site inside one system, plus menus, signage and the print supply chain behind them.\n- Consolidated eleven print suppliers to three and standardised stock and formats, cutting annual print spend by GBP 180k.\n- Built the menu artwork system that let each site change prices without a designer, which had been taking a day a week.\n---\nDesigner | Beacon & Pike | Bristol, UK | Sep 2013 - Feb 2016\n- Identity and packaging across drinks and retail clients, working to studio guidelines rather than setting them.",
+        "education": "MA, Communication Design | Central Saint Martins, University of the Arts London | Sep 2012 - Jun 2013\n---\nBA (Hons) Graphic Design | Falmouth University | Sep 2009 - Jun 2012",
+        "projects": "",
+        "publications": "",
+        "certifications": ""
+      }
+    }
+  ],
+  "ux_researcher": [
+    {
+      "level": "early",
+      "headline": "Psychology MSc, first year in industry",
+      "why": "An early research CV is checked for method credibility before product sense, so the methods, the sample sizes and the analysis approach sit high and the academic work stays on the page. It is the only evidence available that this person can run a study properly rather than just sit in on one.",
+      "template_id": "academic_cv",
+      "data": {
+        "full_name": "Hugo Bettencourt",
+        "title": "UX Researcher",
+        "location": "Cardiff, UK",
+        "phone": "+44 7700 900273",
+        "email": "h.bettencourt@example.com",
+        "linkedin": "linkedin.com/in/hugo-bettencourt-example",
+        "website": "",
+        "summary": "- UX researcher, thirteen months in industry, from an MSc in cognitive psychology.\n- Nine moderated studies and two surveys over 1,000 responses so far; does his own analysis rather than handing it to a data team.",
+        "skills": "Qualitative: moderated usability testing, semi-structured interviews, contextual inquiry, diary studies, thematic analysis\nQuantitative: survey design and sampling, SUS and UMUX-Lite, task success and time on task, R, SPSS\nTools: UserTesting, Lookback, Dovetail, Qualtrics, Optimal Workshop (card sorting, tree testing), Figma\nPractice: participant recruitment and screening, consent and data handling under UK GDPR, repository upkeep",
+        "experience": "UX Researcher | Lindenhall Housing | Cardiff, UK | Jul 2025 - Present\n- Ran the repairs-reporting study with 18 tenants, half of them in their own homes. People describe the room before the fault, which reversed the order of the two main questions and cut abandoned reports by about a quarter.\n- Built the research repository and tagged three years of loose findings into it, so product now cites old studies instead of rerunning them.\n- Recruit and screen participants directly, including tenants without smartphones, who had never taken part in a study here before.\n---\nResearch Assistant | Marchmont Research Unit | Cardiff, UK | Oct 2023 - Jun 2025\n- Ran eye-tracking and reaction-time sessions with 140 participants across two studies on reading under time pressure.\n- Wrote the cleaning and mixed-effects analysis scripts in R that four people in the unit still use.\n- Taught the second-year statistics seminar for two terms.",
+        "education": "MSc, Cognitive Psychology (Distinction) | Cardiff University | Sep 2022 - Sep 2023\n---\nBSc (Hons) Psychology | University of Exeter | Sep 2019 - Jun 2022",
+        "projects": "Repairs Reporting Study: 18 tenants, 9 of them at home, sessions run in Welsh and English. Written up as six decisions rather than a report, which is how the team asks for findings now.\n---\nDigital Exclusion Interviews (voluntary): Ten interviews with tenants over 70 for a local housing forum; the summary is what the forum used to argue for keeping the phone line open.",
+        "publications": "Bettencourt H., Kaur S. Reading strategy under imposed time limits: an eye-tracking study. Journal of Cognitive Psychology, 2025\nBettencourt H. Do confidence ratings survive a delay? Poster, British Psychological Society Cognitive Section, 2024",
+        "certifications": ""
+      }
+    },
+    {
+      "level": "mid",
+      "headline": "Five years, sole researcher, thirty people",
+      "why": "A list of methods run is a list of activity. Each bullet here ends at the decision the study changed, including the build that was stopped. The research-ops lines matter too: as the only researcher in a product group, the panel, the consent process and the repository are half the job and nobody else will list them.",
+      "template_id": "magazine_editorial",
+      "data": {
+        "full_name": "Benedikt Sauer",
+        "title": "UX Researcher",
+        "location": "Brighton, UK",
+        "phone": "+44 7700 900412",
+        "email": "b.sauer@example.com",
+        "linkedin": "linkedin.com/in/benedikt-sauer-example",
+        "website": "benediktsauer.example.com",
+        "summary": "- UX researcher, five years; the only researcher in a product group of thirty at Alderway Health.\n- Works both ends: discovery that decides what gets built, and evaluative work that decides whether it ships.",
+        "skills": "Generative: contextual inquiry, diary studies, jobs-to-be-done interviews, service safaris, longitudinal panels\nEvaluative: moderated and unmoderated usability testing, concept and comprehension testing, benchmark studies, testing with assistive-technology users\nQuantitative: survey design, MaxDiff, SUS benchmarking, behavioural analysis in Amplitude and SQL\nResearch ops: 400-person panel, incentive and consent process, Dovetail repository, clinical-safety and governance liaison",
+        "experience": "UX Researcher | Alderway Health | Brighton, UK | Jan 2023 - Present\n- Stopped a symptom-checker build. Twenty-two contextual interviews showed people were already triaging by phone and wanted the call booked sooner; callback booking shipped in six weeks instead.\n- Built a 400-person panel including 60 people who use screen readers or magnification, which ended the habit of testing accessibility on colleagues.\n- Benchmark the medication-reminder flow twice a year. Task success moved from 61% to 88% across four releases and the figure now sits in the group's quarterly review.\n- Trained eleven designers and PMs to moderate their own evaluative sessions, with a written rule about the questions they must not ask, which bought back my time for discovery.\n---\nUX Researcher | Wrenfield Education | Brighton, UK | Sep 2021 - Dec 2022\n- Ran a term-long diary study with 15 teachers that produced the Sunday-evening planning insight the marking tool was built around.\n- Rewrote consent and data handling for studies involving under-18s, then trained the team on it.\n- Set up the fortnightly session where anyone in the company could watch a customer use the product.",
+        "education": "MSc, Human-Computer Interaction | University College London | Sep 2020 - Sep 2021\n---\nBA (Hons) Anthropology | University of Manchester | Sep 2017 - Jun 2020",
+        "projects": "",
+        "publications": "",
+        "certifications": "Nielsen Norman Group UX Certification - User Research specialty"
+      }
+    },
+    {
+      "level": "senior",
+      "headline": "Twelve years, now runs the function",
+      "why": "Individual studies shrink to one line and the tool list disappears altogether. What a head of research is judged on is whether evidence changed what the company chose to do, so the page carries a team, a budget, a gate that has stopped three business cases, and one proposal argued down.",
+      "template_id": "modern_minimalist",
+      "data": {
+        "full_name": "Nadia Belhadj",
+        "title": "Head of User Research",
+        "location": "London, UK",
+        "phone": "+44 7700 900806",
+        "email": "n.belhadj@example.com",
+        "linkedin": "linkedin.com/in/nadia-belhadj-example",
+        "website": "",
+        "summary": "- Head of user research, twelve years; leads eight researchers across a 200-person product organisation at Verity Mutual.\n- Has built a research function twice: once from one person, once from a team that had stopped being listened to.",
+        "skills": "Leading: team of 8, research strategy, hiring and levelling, GBP 340k budget including panel and incentives\nPractice: mixed-methods programmes, longitudinal and continuous discovery, inclusive and accessible research, ethics and consent governance\nInfluence: quarterly insight review with the executive, research democratisation, evidence standards for business cases",
+        "experience": "Head of User Research | Verity Mutual | London, UK | May 2022 - Present\n- Lead eight researchers embedded across claims, pricing and member services; hired six of them and wrote the levelling framework the wider design group then adopted.\n- Set the evidence standard now required for any business case over GBP 250k: what was studied, with whom, and what would have changed the answer. Three proposals have been withdrawn at that gate.\n- Ran the vulnerability programme, eighteen months of longitudinal work with 40 members through bereavement and serious-illness claims. It reshaped the claims journey and the training behind it, and complaints on those claim types fell 44%.\n- Brought panel and incentives in-house, taking annual agency recruitment spend from GBP 190k to GBP 70k while doubling the number of disabled participants.\n---\nLead UX Researcher | Marram Group | London, UK | Feb 2018 - Apr 2022\n- Grew research from one person to five across online grocery and stores; the store team's first study changed the trolley-return layout in 340 shops.\n- Introduced continuous discovery, six customer sessions a fortnight open to any team. Attendance went from occasional to a waiting list.\n- Argued down the personalised-pricing proposal with evidence that customers read it as a penalty; the board minute cites the study.\n---\nSenior UX Researcher | Pallant Digital | London, UK | Sep 2014 - Jan 2018\n- Agency research across nine finance and public-sector clients, including the accessibility study that became a client's procurement requirement.\n- Rebuilt participant recruitment so studies stopped being run on staff and their friends.",
+        "education": "MSc, Ergonomics and Human Factors | Loughborough University | Sep 2013 - Sep 2014\n---\nBSc (Hons) Psychology | University of Nottingham | Sep 2010 - Jun 2013",
+        "projects": "",
+        "publications": "Belhadj N. Longitudinal research with people in crisis: consent that can be withdrawn twice. Journal of Usability Studies, 2024\nBelhadj N. Building a panel that includes disabled participants. Advancing Research, 2023",
+        "certifications": ""
+      }
+    }
+  ]
+}

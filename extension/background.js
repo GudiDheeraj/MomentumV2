@@ -75,9 +75,81 @@ async function scrapeActiveTab() {
   }
 }
 
+// Same on-demand injection story as scrapeActiveTab: a tab that was already
+// open when the extension loaded has no autofill.js in it yet.
+async function autofillActiveTab(profile) {
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tab?.id) throw new Error("No active tab found.");
+  if (!/^https?:/.test(tab.url || "")) {
+    throw new Error("Open the application form first.");
+  }
+  const send = () => chrome.tabs.sendMessage(tab.id, { type: "MOMENTUM_AUTOFILL", profile });
+  try {
+    return await send();
+  } catch (e) {
+    await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["autofill.js"] });
+    return await send();
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Sponsor-register answers, cached in the worker
+// ---------------------------------------------------------------------------
+// A results list asks about the same employers over and over — every scroll,
+// every tab, every re-render. The register is republished at most daily, so an
+// answer stays true far longer than a browsing session; an hour is a
+// conservative floor that still picks up a manual refresh quickly. The map is
+// bounded because a service worker is not a place to leak memory (Chrome will
+// evict this worker when idle anyway, which empties it for free).
+const SPONSOR_TTL_MS = 60 * 60 * 1000;
+const SPONSOR_CACHE_MAX = 3000;
+const sponsorCache = new Map();      // normalised name -> { at, answer }
+
+const sponsorKey = (name) => String(name).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
+function readSponsorCache(names) {
+  const known = {};
+  const missing = [];
+  const now = Date.now();
+  for (const name of names) {
+    const hit = sponsorCache.get(sponsorKey(name));
+    if (hit && now - hit.at < SPONSOR_TTL_MS) known[name] = hit.answer;
+    else missing.push(name);
+  }
+  return { known, missing };
+}
+
+function writeSponsorCache(results) {
+  const now = Date.now();
+  for (const [name, answer] of Object.entries(results || {})) {
+    sponsorCache.set(sponsorKey(name), { at: now, answer });
+  }
+  // Oldest-first eviction: Map preserves insertion order, and an entry only
+  // moves to the back when it is re-written with a fresh answer.
+  while (sponsorCache.size > SPONSOR_CACHE_MAX) {
+    sponsorCache.delete(sponsorCache.keys().next().value);
+  }
+}
+
+// Signing out (or in as someone else) must not leave the previous session's
+// answers behind — they were fetched with a different token.
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === "local" && changes.token) sponsorCache.clear();
+});
+
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   (async () => {
     try {
+      if (msg.type === "MOMENTUM_AUTOFILL_FORM") {
+        // The profile is fetched here rather than in the content script: the
+        // token lives in extension storage, and a page-injected script that
+        // could read it would be handing every site on the web a way to ask.
+        const profile = await apiFetch("/api/job-hunt/profile");
+        const result = await autofillActiveTab(profile);
+        sendResponse({ ok: true, ...result });
+        return;
+      }
+
       if (msg.type === "MOMENTUM_LOGIN") {
         const data = await apiFetch("/api/auth/login", {
           method: "POST",
@@ -143,6 +215,59 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           method: "POST",
           body: JSON.stringify(msg.payload),
         });
+        sendResponse({ ok: true, data });
+        return;
+      }
+
+      if (msg.type === "MOMENTUM_ATS_CHECK") {
+        // The scorer has always existed server-side; this is the extension
+        // finally calling it instead of telling you to go and use the app.
+        const data = await apiFetch("/api/ats/check", {
+          method: "POST",
+          body: JSON.stringify(msg.payload),
+        });
+        sendResponse({ ok: true, data });
+        return;
+      }
+
+      if (msg.type === "MOMENTUM_SPONSOR_CHECK") {
+        // Advisory lookup against the Home Office register of licensed worker
+        // sponsors. Failing quietly is the right call: a company that can't be
+        // checked should show no badge, not an error over the job posting.
+        const q = encodeURIComponent(msg.payload?.company || "");
+        const data = await apiFetch(`/api/sponsors/check?company=${q}`);
+        sendResponse({ ok: true, data });
+        return;
+      }
+
+      if (msg.type === "MOMENTUM_SPONSOR_CHECK_BULK") {
+        // The in-page tags ask about a whole results list at once. A worker-
+        // level cache on top of the content script's own is what makes a
+        // second tab on the same board, or a board revisited later, free.
+        const asked = (msg.payload?.companies || []).filter(Boolean).slice(0, 60);
+        const { known, missing } = readSponsorCache(asked);
+        if (missing.length) {
+          const data = await apiFetch("/api/sponsors/check-bulk", {
+            method: "POST",
+            body: JSON.stringify({ companies: missing }),
+          });
+          const results = data?.results || {};
+          writeSponsorCache(results);
+          Object.assign(known, results);
+        }
+        sendResponse({ ok: true, data: { results: known } });
+        return;
+      }
+
+      if (msg.type === "MOMENTUM_SPONSOR_STATUS") {
+        const data = await apiFetch("/api/sponsors/status");
+        sendResponse({ ok: true, data });
+        return;
+      }
+
+      if (msg.type === "MOMENTUM_SPONSOR_REFRESH") {
+        const data = await apiFetch("/api/sponsors/refresh", { method: "POST" });
+        sponsorCache.clear();      // every cached answer came from the old copy
         sendResponse({ ok: true, data });
         return;
       }

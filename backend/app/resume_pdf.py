@@ -294,7 +294,28 @@ def _esc_pdf(text) -> str:
 
 def parse_entries(block_text: str) -> list[dict]:
     """Parse a '---'-separated textarea into entries with a header line
-    (pipe-separated parts) and following '-' bullet lines."""
+    (pipe-separated parts) and following '-' bullet lines.
+
+    NOTHING IS EVER DROPPED. This used to keep the first line as the header,
+    keep any line starting with "-" as a bullet, and silently discard
+    everything else — so a Projects section typed as three plain lines
+    printed as one project and the other two disappeared from the PDF. The
+    person could see them in the editor and not in their résumé, which is the
+    worst possible place to lose someone's work.
+
+    A line with no "-" is read one of two ways, depending on what else is in
+    the block:
+
+      no bullets anywhere in the block   each line is its own entry — this is
+                                         a list (three projects, three
+                                         certifications) typed without
+                                         separators, and that is what it means
+      the block already has bullets      the loose line is a continuation of
+                                         this entry and becomes a bullet, the
+                                         same repair _ensure_bullet_prefixes()
+                                         already makes to model output
+
+    Either way the text reaches the page."""
     if not block_text:
         return []
     blocks = [b.strip() for b in block_text.split("\n---\n") if b.strip()]
@@ -303,9 +324,17 @@ def parse_entries(block_text: str) -> list[dict]:
         raw_lines = [l for l in b.split("\n") if l.strip()]
         if not raw_lines:
             continue
+        rest = raw_lines[1:]
+        has_bullets = any(l.strip().startswith("-") for l in rest)
+        if rest and not has_bullets:
+            # A list typed on consecutive lines: every line is an entry.
+            for line in raw_lines:
+                entries.append({"parts": [p.strip() for p in line.split("|")], "bullets": []})
+            continue
         header = raw_lines[0]
         parts = [p.strip() for p in header.split("|")]
-        bullets = [l.strip()[1:].strip() for l in raw_lines[1:] if l.strip().startswith("-")]
+        bullets = [l.strip()[1:].strip() if l.strip().startswith("-") else l.strip()
+                   for l in rest]
         entries.append({"parts": parts, "bullets": bullets})
     return entries
 

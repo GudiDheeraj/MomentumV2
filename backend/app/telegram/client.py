@@ -22,6 +22,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import threading
 import urllib.error
 import urllib.request
 from typing import Any, Optional
@@ -98,16 +99,65 @@ def call_sync(method: str, payload: dict[str, Any], token: str | None = None,
     return data.get("result")
 
 
+def _run_off_loop(method: str, payload: dict[str, Any], timeout: int) -> "asyncio.Future":
+    """Run one blocking Bot API call on a *daemon* thread.
+
+    asyncio.to_thread is the obvious way to do this, and it is what this used
+    to be. The problem is where to_thread runs: the default
+    ThreadPoolExecutor, which has two properties that are wrong for a
+    thirty-second long-poll.
+
+      * Cancelling the awaiting task does not interrupt the thread. The await
+        returns only when the socket does, so shutdown had to wait out the
+        entire poll before it could stop the poller.
+      * The interpreter joins every executor thread on the way out. So even
+        after uvicorn had finished shutting down, the process sat there until
+        Telegram answered — Ctrl+C looked like a hang, and a --reload restart
+        left the old process still polling while the new one started, which
+        Telegram answers with 409 Conflict to both of them.
+
+    A daemon thread is joined by nobody and waited on by nothing, so stopping
+    the server is immediate and the abandoned socket dies with the process.
+    The future is resolved back on the event loop, so callers await it exactly
+    as they awaited to_thread.
+    """
+    loop = asyncio.get_running_loop()
+    fut: asyncio.Future = loop.create_future()
+
+    def _settle(setter, value) -> None:
+        # The awaiting task may have been cancelled while the socket was still
+        # open; setting a result on a cancelled future is an error, not news.
+        if not fut.done():
+            setter(value)
+
+    def _worker() -> None:
+        try:
+            result = call_sync(method, payload, None, timeout)
+        except BaseException as exc:                      # noqa: BLE001
+            try:
+                loop.call_soon_threadsafe(_settle, fut.set_exception, exc)
+            except RuntimeError:
+                pass                                      # loop already closed
+        else:
+            try:
+                loop.call_soon_threadsafe(_settle, fut.set_result, result)
+            except RuntimeError:
+                pass
+
+    threading.Thread(target=_worker, name=f"telegram-{method}", daemon=True).start()
+    return fut
+
+
 async def call(method: str, payload: dict[str, Any], timeout: int = 30,
                retry_on_flood: bool = True) -> Any:
     """Async wrapper around call_sync with one automatic retry on 429."""
     try:
-        return await asyncio.to_thread(call_sync, method, payload, None, timeout)
+        return await _run_off_loop(method, payload, timeout)
     except TelegramError as e:
         if retry_on_flood and e.retry_after:
             log.warning("telegram flood control on %s — waiting %ss", method, e.retry_after)
             await asyncio.sleep(e.retry_after + 1)
-            return await asyncio.to_thread(call_sync, method, payload, None, timeout)
+            return await _run_off_loop(method, payload, timeout)
         raise
 
 

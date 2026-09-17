@@ -133,6 +133,16 @@ frontend_url = setting(values, "FRONTEND_URL", FRONTEND_URL_DEFAULT).rstrip("/")
 api_base = setting(values, "MOMENTUM_API_BASE") or backend_url
 google_client_id = setting(values, "GOOGLE_CLIENT_ID")
 
+# The tutorial video is content, not configuration, but it belongs in .env for
+# the same reason the URLs do: it appears on the Home page and in the help
+# panel, and changing it should be one edit rather than a hunt through app.js.
+tutorial = {
+    "url": setting(values, "TUTORIAL_VIDEO_URL"),
+    "title": setting(values, "TUTORIAL_VIDEO_TITLE"),
+    "duration": setting(values, "TUTORIAL_VIDEO_DURATION"),
+    "level": setting(values, "TUTORIAL_VIDEO_LEVEL"),
+}
+
 # --- frontend/env.js -----------------------------------------------------
 frontend_content = f"""// ============================================================================
 // Momentum Tracker — frontend environment config
@@ -144,6 +154,12 @@ frontend_content = f"""// ======================================================
 
 window.MOMENTUM_API_BASE = "{api_base}";
 window.GOOGLE_CLIENT_ID = "{google_client_id}";
+window.MOMENTUM_TUTORIAL = {{
+  url: "{tutorial['url']}",
+  title: "{tutorial['title']}",
+  duration: "{tutorial['duration']}",
+  level: "{tutorial['level']}"
+}};
 """
 FRONTEND_OUT.write_text(frontend_content)
 print(f"Wrote {FRONTEND_OUT} (API base: {api_base})")

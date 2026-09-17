@@ -22,7 +22,25 @@ async function api(path, opts = {}) {
   const headers = opts.body instanceof FormData ? {} : { "Content-Type": "application/json" };
   const token = auth.getToken();
   if (token) headers["Authorization"] = `Bearer ${token}`;
-  const res = await fetch(`${API_BASE}${path}`, { headers, ...opts });
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${path}`, { headers, ...opts });
+  } catch (netErr) {
+    // fetch() rejects with a plain TypeError for EVERY network-level failure:
+    // server down, port closed mid-request, DNS, a CORS rejection. By type
+    // that is indistinguishable from a real bug in our own code — which is how
+    // "TypeError: Failed to fetch" ended up being reported to people as "this
+    // is an application error, not a connection problem — the backend is
+    // fine", i.e. the exact opposite of the truth. Tag it at the source, where
+    // we still know it came out of fetch(), so callers can tell the two apart.
+    netErr.isNetworkError = true;
+    checkBackendConnection();   // deduped — raises the connectivity banner
+    throw netErr;
+  }
+  // We got an answer from the server, so it is reachable — whatever the status
+  // code says about this particular request. Clears the connectivity banner if
+  // a transient failure (a --reload restart, a slow cold start) left one up.
+  noteBackendReachable();
   if (res.status === 401) {
     auth.clear();
     showAuthScreen();
@@ -87,18 +105,94 @@ function invalidateApiCache(prefix) {
   for (const key of _apiCache.keys()) if (key.startsWith(prefix)) _apiCache.delete(key);
 }
 
-// Writes go straight through and then blow away the read cache so the next
-// render sees the change. (Cheap and always-correct; the cache exists to
-// speed up navigation, not to be clever about partial invalidation.)
-const post = (p, body) => api(p, { method: "POST", body: body instanceof FormData ? body : JSON.stringify(body) }).then(r => (invalidateApiCache(), r));
-const patch = (p, body) => api(p, { method: "PATCH", body: JSON.stringify(body) }).then(r => (invalidateApiCache(), r));
-const put = (p, body) => api(p, { method: "PUT", body: JSON.stringify(body) }).then(r => (invalidateApiCache(), r));
-const del = (p) => api(p, { method: "DELETE" }).then(r => (invalidateApiCache(), r));
+// ---------- what a write invalidates ----------
+// Writes used to call invalidateApiCache() with no argument, which empties the
+// entire map. On a tracker that is close to having no cache at all: ticking one
+// habit threw away the cached job list, the resumes, the boards and the
+// portfolio, so the very next tab you opened refetched everything from scratch
+// and showed a spinner doing it. The cache was working exactly as designed and
+// being wiped several times a minute — that is the tab-switching lag.
+//
+// A write now clears its own resource plus the endpoints that genuinely
+// aggregate across resources. Everything else stays warm, so moving between
+// pages you have already visited is a cache read and no network at all.
+//
+// ALWAYS_CLEAR are the ones derived from everything: /api/summary rolls up
+// habits, tasks and study; search and export read the lot; admin counts rows
+// across all of it.
+const ALWAYS_CLEAR = ["/api/summary", "/api/search", "/api/export", "/api/admin"];
+
+// Pairs where writing one side changes what the other side reports — a job
+// moving board changes the board's counts, saving in the builder changes the
+// resume list, and so on. Anything not named here only clears itself.
+const WRITE_ALSO_CLEARS = {
+  "/api/jobs":           ["/api/boards", "/api/job-hunt"],
+  "/api/boards":         ["/api/jobs"],
+  "/api/job-hunt":       ["/api/jobs", "/api/boards"],
+  "/api/resumes":        ["/api/resume-builder", "/api/docs"],
+  "/api/resume-builder": ["/api/resumes", "/api/docs"],
+  "/api/docs":           ["/api/resumes"],
+  "/api/portfolios":     ["/api/docs"],
+  "/api/study-blocks":   ["/api/study-timer"],
+  "/api/study-timer":    ["/api/study-blocks"],
+  "/api/profile":        ["/api/auth"],
+  "/api/auth":           ["/api/profile"],
+};
+
+function invalidateForWrite(path) {
+  const resource = (String(path).match(/^\/api\/[^/?#]+/) || [])[0];
+  // A path we do not recognise gets the old behaviour: clear everything. Being
+  // slow is a much smaller bug than showing someone stale data.
+  if (!resource) { invalidateApiCache(); return; }
+  invalidateApiCache(resource);
+  for (const also of WRITE_ALSO_CLEARS[resource] || []) invalidateApiCache(also);
+  for (const agg of ALWAYS_CLEAR) invalidateApiCache(agg);
+}
+
+const post = (p, body) => api(p, { method: "POST", body: body instanceof FormData ? body : JSON.stringify(body) }).then(r => (invalidateForWrite(p), r));
+const patch = (p, body) => api(p, { method: "PATCH", body: JSON.stringify(body) }).then(r => (invalidateForWrite(p), r));
+const put = (p, body) => api(p, { method: "PUT", body: JSON.stringify(body) }).then(r => (invalidateForWrite(p), r));
+const del = (p) => api(p, { method: "DELETE" }).then(r => (invalidateForWrite(p), r));
 
 // ============================================================================
 // UI utilities: toasts, in-app modals (replacing native alert/confirm/prompt),
 // and the mobile sidebar drawer
 // ============================================================================
+
+// ---------- busy state on a button, without eating its icon ----------
+// The obvious way to show progress on a button destroys it:
+//
+//     const original = btn.textContent;      // the text only — the <svg> isn't text
+//     btn.textContent = "Preparing export…"; // replaces EVERY child node
+//     ...
+//     btn.textContent = original;            // puts back one text node; icon gone
+//
+// That is what happened to the icon beside "Export to PDF": the first time
+// anyone used it, its <svg> was replaced by a text node and never came back
+// short of a page reload — the item silently lost its icon while every other
+// row in the menu kept theirs.
+//
+// This touches the button's text nodes and nothing else, so the icon stays put
+// (and stays visible during the wait, which is the more useful thing anyway).
+// It hands back a function that restores the original wording.
+function setButtonBusy(btn, label) {
+  if (!btn) return () => {};
+  const texts = Array.from(btn.childNodes)
+    .filter(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
+  if (!texts.length) {
+    // Icon-only button: add a label for the duration, then take it away again.
+    const added = document.createTextNode(` ${label}`);
+    btn.appendChild(added);
+    return () => added.remove();
+  }
+  const original = texts.map(n => n.textContent);
+  // Keep the original leading/trailing whitespace: these buttons are laid out
+  // with `gap`, but some rely on the space between the icon and the word.
+  texts[0].textContent = original[0].replace(/\S[\s\S]*\S|\S/, label);
+  for (let i = 1; i < texts.length; i++) texts[i].textContent = "";
+  return () => texts.forEach((n, i) => { n.textContent = original[i]; });
+}
+
 function showToast(message, type = "info", icon = null) {
   const container = document.getElementById("toast-container");
   const el = document.createElement("div");
@@ -329,15 +423,52 @@ function openSidebar() {
   document.getElementById("sidebar").classList.add("sidebar-mobile-open");
   document.getElementById("sidebar-backdrop").classList.remove("hidden");
   document.querySelector("#app > main")?.classList.add("sidebar-drawer-locked");
+  // The page behind a drawer must not scroll under your thumb. Locking <body>
+  // rather than the main column is what stops iOS Safari scrolling the page
+  // when a swipe starts on the backdrop.
+  document.body.classList.add("drawer-open");
 }
 function closeSidebar() {
   document.getElementById("sidebar").classList.remove("sidebar-mobile-open");
   document.getElementById("sidebar-backdrop").classList.add("hidden");
   document.querySelector("#app > main")?.classList.remove("sidebar-drawer-locked");
+  document.body.classList.remove("drawer-open");
+}
+function sidebarIsOpen() {
+  return document.getElementById("sidebar").classList.contains("sidebar-mobile-open");
 }
 document.getElementById("sidebar-open").addEventListener("click", openSidebar);
 document.getElementById("sidebar-close").addEventListener("click", closeSidebar);
 document.getElementById("sidebar-backdrop").addEventListener("click", closeSidebar);
+// Escape is what every other overlay in this app answers to; the drawer was
+// the one that didn't.
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && sidebarIsOpen()) closeSidebar();
+});
+// Swipe left to dismiss. Deliberately crude: a mostly-horizontal drag of more
+// than 45px, tracked on the drawer itself, so a vertical scroll through a long
+// nav list never triggers it.
+(() => {
+  const el = document.getElementById("sidebar");
+  let x0 = null, y0 = null;
+  el.addEventListener("touchstart", (e) => {
+    if (!sidebarIsOpen()) return;
+    x0 = e.touches[0].clientX;
+    y0 = e.touches[0].clientY;
+  }, { passive: true });
+  el.addEventListener("touchend", (e) => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
+    const dy = e.changedTouches[0].clientY - y0;
+    x0 = y0 = null;
+    if (dx < -45 && Math.abs(dx) > Math.abs(dy) * 1.5) closeSidebar();
+  }, { passive: true });
+})();
+// A drawer left open behind a rotation or a window resize onto a desktop
+// layout would leave the backdrop covering a sidebar that is now permanent.
+window.addEventListener("resize", () => {
+  if (window.innerWidth >= 1024 && sidebarIsOpen()) closeSidebar();
+});
 
 // ---------- desktop sidebar collapse (icon-only rail) ----------
 function setSidebarCollapsed(collapsed) {
@@ -402,6 +533,8 @@ const state = {
   resumesView: "library",   // "library" | "builder" — sub-tab of the Resumes page
   resumesLibTab: "base",    // "base" | "tailored" — library filter
   builderResumeId: null,    // set when the builder is editing an existing resume
+  portfolioView: "library", // "library" | "builder" — sub-tab of the Portfolio page
+  portfolioId: null,        // set when the portfolio builder is editing a saved site
 };
 
 function destroyChart(id) {
@@ -416,18 +549,18 @@ function destroyChart(id) {
 // current theme here keeps them in sync automatically.
 function chartTheme() {
   const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-  const accent = getComputedStyle(document.documentElement).getPropertyValue("--lp-blue").trim() || "#3D5AFE";
+  const accent = getComputedStyle(document.documentElement).getPropertyValue("--lp-blue").trim() || "#0E9384";
   // donutFill/donutTrack previously fell back to near-black/gray in light
   // mode (#171A1F on #E9EBEE) instead of the app's actual accent color, so
   // every doughnut chart (day/week/month/year progress, dashboard status
-  // breakdown) rendered off-brand grayscale instead of matching the blue/
-  // violet theme used everywhere else (buttons, active tabs, the day-ring).
+  // breakdown) rendered off-brand grayscale instead of matching the accent
+  // used everywhere else (buttons, active tabs, the day-ring).
   // Pointing both at the accent keeps every circular progress indicator in
   // the same uniform violet-blue family, in both themes.
   return isDark
     ? { bar: accent, barMuted: "rgba(255,255,255,0.18)", grid: "rgba(255,255,255,0.09)", text: "#AEB9C3", donutTrack: "rgba(124,144,255,0.16)", donutFill: accent, donutBorder: "#182838", accent,
         tooltipBg: "#1C2333", tooltipBorder: "rgba(255,255,255,0.08)", cardBg: "#182333" }
-    : { bar: "#171A1F", barMuted: "#C9CDD3", grid: "#F0F1F3", text: "#5B6472", donutTrack: "#E9EDFF", donutFill: accent, donutBorder: "#fff", accent,
+    : { bar: "#171A1F", barMuted: "#C9CDD3", grid: "#F0F1F3", text: "#5B6472", donutTrack: "#E3F4F1", donutFill: accent, donutBorder: "#fff", accent,
         tooltipBg: "#171A1F", tooltipBorder: "rgba(255,255,255,0.06)", cardBg: "#FFFFFF" };
 }
 
@@ -515,8 +648,8 @@ registerChartPlugins();   // no-op unless something else already loaded Chart.js
 // (--lp-blue). Every multi-series chart on the dashboard pulls from this
 // so the whole page reads as one consistent theme instead of a rainbow of
 // unrelated hues, and it already tracks light/dark mode automatically.
-const ACCENT_SCALE_LIGHT = ["#3D5AFE", "#2C42C7", "#1E2E94", "#7C90FF", "#16205E", "#B8C4FF"];
-const ACCENT_SCALE_DARK  = ["#7C90FF", "#3D5AFE", "#2C42C7", "#B8C4FF", "#1E2E94", "#E9EDFF"];
+const ACCENT_SCALE_LIGHT = ["#0E9384", "#0B7C70", "#0B5F57", "#5BC8BB", "#0A403B", "#9BD9D0"];
+const ACCENT_SCALE_DARK  = ["#5BC8BB", "#0E9384", "#0B7C70", "#9BD9D0", "#0B5F57", "#E3F4F1"];
 function accentScale(n) {
   const isDark = document.documentElement.getAttribute("data-theme") === "dark";
   const scale = isDark ? ACCENT_SCALE_DARK : ACCENT_SCALE_LIGHT;
@@ -527,8 +660,8 @@ function accentScale(n) {
 // series/categories benefit from being visually distinguishable at a glance
 // (skills, job types, status breakdowns, funnel stages, KPI accents…)
 // rather than shades of a single accent color.
-const VIVID_SCALE_LIGHT = ["#3D5AFE", "#FF6A3D", "#7C5CFC", "#1FAE6B", "#E0A93E", "#0EA5E9", "#EC4899", "#14B8A6", "#F43F5E", "#84CC16"];
-const VIVID_SCALE_DARK  = ["#6B84FF", "#FF9166", "#A78BFA", "#3FC488", "#F5CB74", "#38BDF8", "#F472B6", "#2DD4BF", "#FB7185", "#A3E635"];
+const VIVID_SCALE_LIGHT = ["#0E9384", "#FF6A3D", "#7C5CFC", "#1FAE6B", "#E0A93E", "#0EA5E9", "#EC4899", "#14B8A6", "#F43F5E", "#84CC16"];
+const VIVID_SCALE_DARK  = ["#3FB8A9", "#FF9166", "#A78BFA", "#3FC488", "#F5CB74", "#38BDF8", "#F472B6", "#2DD4BF", "#FB7185", "#A3E635"];
 function vividScale(n) {
   const isDark = document.documentElement.getAttribute("data-theme") === "dark";
   const scale = isDark ? VIVID_SCALE_DARK : VIVID_SCALE_LIGHT;
@@ -743,6 +876,59 @@ function barChart(canvasId, labels, data, highlightIndex = -1, customColors = nu
   });
 }
 
+// Horizontal bar chart — for categories with real names rather than dates.
+// "Distributed Systems" and "TypeScript" cannot be written under a vertical
+// bar in a third-width card without overlapping or being rotated 45°; along
+// the y-axis they read straight, at full size, however many there are.
+function hBarChart(canvasId, labels, data, customColors = null) {
+  if (!chartLibReady(() => hBarChart(canvasId, labels, data, customColors))) return;
+  destroyChart(canvasId);
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  const t = chartTheme();
+  const [ar, ag, ab] = accentRgb();
+  const colors = customColors || labels.map(() => `rgba(${ar}, ${ag}, ${ab}, 0.75)`);
+  state.charts[canvasId] = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        data,
+        backgroundColor: colors,
+        hoverBackgroundColor: colors,
+        borderRadius: { topLeft: 0, bottomLeft: 0, topRight: 5, bottomRight: 5 },
+        borderSkipped: false,
+        maxBarThickness: 16,
+        categoryPercentage: 0.82,
+        barPercentage: 0.9,
+      }],
+    },
+    options: {
+      indexAxis: "y",
+      maintainAspectRatio: false,
+      layout: { padding: { right: 10 } },
+      plugins: {
+        legend: { display: false },
+        tooltip: chartTooltip(t, { displayColors: false }),
+      },
+      scales: {
+        x: {
+          beginAtZero: true,
+          grid: { color: t.grid, drawTicks: false },
+          border: { display: false },
+          ticks: { color: t.text, precision: 0, padding: 4, font: { size: 9.5 }, maxTicksLimit: 5 },
+        },
+        y: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: { color: t.text, font: { size: 10.5 }, padding: 2, autoSkip: false, crossAlign: "far" },
+        },
+      },
+      animation: { duration: 500 },
+    },
+  });
+}
+
 // ----------------------------------------------------------------------
 // Column-aligned trend chart (hand-drawn SVG).
 //
@@ -837,18 +1023,18 @@ function renderTrendChart(container, { labels, values, todayIndex = -1, unit = "
          aria-label="Share of habits completed each day this week">
       <defs>
         <linearGradient id="${uid}-area" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%"   stop-color="var(--lp-blue, #3D5AFE)" stop-opacity="0.32"/>
-          <stop offset="50%"  stop-color="var(--lp-blue, #3D5AFE)" stop-opacity="0.11"/>
-          <stop offset="100%" stop-color="var(--lp-blue, #3D5AFE)" stop-opacity="0"/>
+          <stop offset="0%"   stop-color="var(--lp-blue, #0E9384)" stop-opacity="0.32"/>
+          <stop offset="50%"  stop-color="var(--lp-blue, #0E9384)" stop-opacity="0.11"/>
+          <stop offset="100%" stop-color="var(--lp-blue, #0E9384)" stop-opacity="0"/>
         </linearGradient>
         <linearGradient id="${uid}-line" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0%"   stop-color="var(--lp-blue, #3D5AFE)" stop-opacity="0.75"/>
-          <stop offset="50%"  stop-color="var(--lp-blue, #3D5AFE)"/>
+          <stop offset="0%"   stop-color="var(--lp-blue, #0E9384)" stop-opacity="0.75"/>
+          <stop offset="50%"  stop-color="var(--lp-blue, #0E9384)"/>
           <stop offset="100%" stop-color="var(--lp-violet, #7C5CFC)"/>
         </linearGradient>
         <filter id="${uid}-glow" x="-20%" y="-40%" width="140%" height="200%">
           <feDropShadow dx="0" dy="3" stdDeviation="4"
-            flood-color="var(--lp-blue, #3D5AFE)" flood-opacity="0.28"/>
+            flood-color="var(--lp-blue, #0E9384)" flood-opacity="0.28"/>
         </filter>
       </defs>
       <g class="trend-grid-group">${grid}</g>
@@ -868,7 +1054,7 @@ function hexToRgb(hex) {
 // array, so charts and progress bars can build tinted variations of it that
 // follow whatever accent theme is active instead of hardcoded greys/blacks.
 function accentRgb() {
-  const hex = getComputedStyle(document.documentElement).getPropertyValue("--lp-blue").trim() || "#3D5AFE";
+  const hex = getComputedStyle(document.documentElement).getPropertyValue("--lp-blue").trim() || "#0E9384";
   return hexToRgb(hex);
 }
 
@@ -881,89 +1067,6 @@ function habitBarColor(percent) {
   const alpha = (0.32 + (p / 100) * 0.68).toFixed(3);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
-
-// GitHub-contributions-style activity heatmap: one cell per day over the
-// last ~13 weeks, colored by how many applications were logged that day.
-function renderApplicationHeatmap(jobs, scrollId = "app-heatmap-scroll") {
-  const accent = chartTheme().accent;
-  const [r, g, b] = hexToRgb(accent);
-  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-  const emptyCellColor = isDark ? "rgba(255,255,255,0.07)" : "rgba(23,26,31,0.06)";
-  const WEEKS = 53; // a full year, GitHub-contributions style
-  const CELL = 14, GAP = 3;
-  const days = WEEKS * 7;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const start = new Date(today);
-  start.setDate(start.getDate() - (days - 1) - today.getDay()); // align to a Sunday
-
-  const countByDate = {};
-  jobs.forEach(j => {
-    if (!j.date_applied) return;
-    countByDate[j.date_applied] = (countByDate[j.date_applied] || 0) + 1;
-  });
-  const maxCount = Math.max(1, ...Object.values(countByDate), 0);
-
-  const weeks = [];
-  for (let w = 0; w < WEEKS; w++) {
-    const col = [];
-    for (let d = 0; d < 7; d++) {
-      const date = new Date(start);
-      date.setDate(date.getDate() + w * 7 + d);
-      const iso = toISO(date);
-      const count = countByDate[iso] || 0;
-      const inFuture = date > today;
-      const opacity = count === 0 ? 0 : Math.max(0.18, count / maxCount);
-      col.push({ iso, count, opacity, inFuture });
-    }
-    weeks.push(col);
-  }
-
-  const monthLabels = [];
-  let lastMonth = null;
-  weeks.forEach((col, w) => {
-    const d = new Date(col[0].iso);
-    const m = d.toLocaleDateString(undefined, { month: "short" });
-    if (m !== lastMonth) { monthLabels.push({ w, label: m }); lastMonth = m; }
-  });
-
-  const totalApplications = Object.values(countByDate).reduce((a, b2) => a + b2, 0);
-  const gridWidth = WEEKS * (CELL + GAP);
-
-  return `
-    <div id="${scrollId}" style="overflow-x:auto; padding-bottom:2px;">
-      <div class="text-xs text-gray-400 mb-2">${totalApplications} application${totalApplications === 1 ? "" : "s"} in the last year</div>
-      <div style="display:grid; grid-template-columns:repeat(${WEEKS},${CELL}px); gap:10px ${GAP}px; margin-bottom:4px; font-size:9px; color:var(--lp-ink-faint,#93968E); font-family:var(--lp-mono,monospace); min-width:${gridWidth}px;">
-        ${weeks.map((_, w) => {
-          const found = monthLabels.find(m => m.w === w);
-          return `<div>${found ? found.label : ""}</div>`;
-        }).join("")}
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(${WEEKS},${CELL}px); grid-auto-flow:column; grid-template-rows:repeat(7,${CELL}px); gap:${GAP}px; min-width:${gridWidth}px;">
-        ${weeks.flat().map(cell => `
-          <div title="${cell.iso}: ${cell.count} application${cell.count === 1 ? "" : "s"}"
-               style="width:${CELL}px; height:${CELL}px; border-radius:3px; background:${cell.inFuture ? "transparent" : (cell.count === 0 ? emptyCellColor : `rgba(${r},${g},${b},${cell.opacity})`)};"></div>
-        `).join("")}
-      </div>
-      <div class="flex items-center gap-2 mt-2 text-[9px] text-gray-400">
-        <span>Less</span>
-        ${[0, 0.25, 0.5, 0.75, 1].map(o => `<div style="width:14px; height:14px; border-radius:3px; background:${o === 0 ? emptyCellColor : `rgba(${r},${g},${b},${o})`};"></div>`).join("")}
-        <span>More</span>
-      </div>
-    </div>
-  `;
-}
-
-// Scrolls a heatmap wrapper (built by renderApplicationHeatmap) all the way
-// to the right so the current/latest month is visible without the user
-// needing to manually scroll a 53-week-wide grid.
-function scrollHeatmapToLatest(scrollId) {
-  requestAnimationFrame(() => {
-    const wrap = document.getElementById(scrollId);
-    if (wrap) wrap.scrollLeft = wrap.scrollWidth;
-  });
-}
-
 
 function pieChart(canvasId, labels, data, colors) {
   if (!chartLibReady(() => pieChart(canvasId, labels, data, colors))) return;
@@ -1205,27 +1308,61 @@ function renderJobFunnel(funnel) {
 }
 
 // Small inline sparkline SVG for KPI cards — no axes, just a trend line.
+// Sparkline for the KPI cards. Drawn in a viewBox with no intrinsic size so it
+// stretches to whatever strip the card gives it — the card is a share of the
+// rail, which is a share of the screen, so a fixed 64×20 box would be the one
+// thing on the card that didn't scale.
+//
+// `vector-effect: non-scaling-stroke` keeps the line an even weight despite the
+// non-uniform stretch; without it a wide short strip draws a line that's thick
+// vertically and thin horizontally.
 function sparklineSVG(data, color) {
   const clean = (data && data.length >= 2) ? data : [0, 0];
-  const w = 64, h = 20;
+  const w = 100, h = 28, pad = 2.5;
   const max = Math.max(...clean), min = Math.min(...clean);
-  const range = (max - min) || 1;
-  const pts = clean.map((v, i) => `${(i / (clean.length - 1) * w).toFixed(1)},${(h - ((v - min) / range) * h).toFixed(1)}`).join(" ");
-  return `<svg width="${w}" height="${h}" aria-hidden="true"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="1.75"/></svg>`;
+  const range = max - min;
+  const y = (v) => range === 0
+    ? h / 2                                  // flat series sits on the midline
+    : h - pad - ((v - min) / range) * (h - pad * 2);
+  const pts = clean.map((v, i) => `${(i / (clean.length - 1) * w).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">
+    <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2"
+              vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
 }
 
+// KPI card for the dashboard rail.
+//
+// The name sits on the top line beside its icon rather than as a 9px caption
+// wedged between the icon row and the value, where it was easy to miss
+// entirely — a number with no name on it is not a metric. The sparkline moves
+// down beside the value, which is where it has width to be worth drawing.
+//
+// Three bands, spread across the card's full height rather than clustered in
+// the middle with dead space beneath: the name identifies it, the figures
+// answer it, the sparkline gives it a direction. The sparkline stretches to
+// whatever height is left over, so the card reads the same whether the rail
+// gives it 110px or 200px.
+//
+//   [icon]  Today's Progress
+//
+//   100%
+//   ↑ 12/12 done today
+//   ‿◠‿◠‿◠‿◠‿◠‿◠‿◠‿◠‿◠
 function kpiCardV2(icon, label, value, delta, trend, sparkData, accent) {
   const color = accent || chartTheme().accent;
-  const deltaClass = trend === "up" ? "text-emerald-600" : trend === "down" ? "text-red-500" : "text-gray-400";
+  const deltaClass = trend === "up" ? "kpi-delta--up" : trend === "down" ? "kpi-delta--down" : "kpi-delta--flat";
   const deltaArrow = trend === "up" ? "↑" : trend === "down" ? "↓" : "→";
-  return `<div class="card p-4 kpi-card-v2">
-    <div class="flex items-center justify-between mb-2">
-      <div class="kpi-icon-badge" style="background:${color}1F; color:${color};">${icon}</div>
-      ${sparklineSVG(sparkData, color)}
+  return `<div class="card kpi-card-v2">
+    <div class="kpi-top">
+      <span class="kpi-icon-badge" style="background:${color}1F; color:${color};">${icon}</span>
+      <span class="kpi-name" title="${esc(label)}">${esc(label)}</span>
     </div>
-    <p class="text-[9.5px] font-semibold text-gray-500 uppercase tracking-wide">${label}</p>
-    <p class="text-2xl font-extrabold mt-0.5">${value}</p>
-    <p class="text-[10px] mt-1 ${deltaClass}">${deltaArrow} ${delta}</p>
+    <div class="kpi-figures">
+      <span class="kpi-value">${value}</span>
+      <p class="kpi-delta ${deltaClass}" title="${esc(delta)}">${deltaArrow} ${delta}</p>
+    </div>
+    <div class="kpi-spark">${sparklineSVG(sparkData, color)}</div>
   </div>`;
 }
 
@@ -1287,20 +1424,24 @@ function opacityForPercent(p) {
 // Calendar-style habit heatmap — each column is one whole week (Mon top,
 // Sun bottom), each cell filled and tinted by that day's completion percent.
 function renderHabitConsistencyGrid(dayList) {
-  const real = (dayList || []).filter(d => !d.is_future);
-  if (!real.length) return `<p class="text-sm text-gray-400 text-center py-12">No habit data yet — add a habit to start tracking consistency.</p>`;
+  const all = dayList || [];
+  if (!all.some(d => !d.is_future)) return `<p class="text-sm text-gray-400 text-center py-12">No habit data yet — add a habit to start tracking consistency.</p>`;
 
   const accent = chartTheme().accent;
   const [r, g, b] = hexToRgb(accent);
   const isDark = document.documentElement.getAttribute("data-theme") === "dark";
   const emptyCellColor = isDark ? "rgba(255,255,255,0.07)" : "rgba(23,26,31,0.06)";
-  const CELL = 24, GAP = 5;
+  const GAP = 5;
   const DAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-  // group chronological days into week columns, Monday-first
+  // Group into week columns, Monday-first — including the rest of the month.
+  // Dropping future days made the card's shape depend on the date: on the 7th
+  // it was two columns adrift in a wide card, on the 28th it was five. The
+  // month is the unit the card is about, so the month is always what's drawn;
+  // days that haven't happened yet are outlined rather than filled.
   const weeks = [];
   let col = null;
-  real.forEach(d => {
+  all.forEach(d => {
     const date = new Date(d.date + "T00:00:00");
     const dow = (date.getDay() + 6) % 7; // Mon=0 .. Sun=6
     if (!col || dow === 0) { col = new Array(7).fill(null); weeks.push(col); }
@@ -1316,29 +1457,85 @@ function renderHabitConsistencyGrid(dayList) {
     if (m !== lastMonth) { monthLabels.push({ i, label: m }); lastMonth = m; }
   });
 
-  const gridWidth = weeks.length * (CELL + GAP);
+  // Same fluid model as the year heatmaps (see .hm in styles.css): columns are
+  // fractions of the container, cells are square by aspect-ratio, and the cap
+  // on cell size is set in CSS from the viewport height — the card has to fit
+  // a row of a fixed-height grid, so its content can't be sized in fixed px.
+  //
+  // No month row and no Less/More legend here: this is a single month (the
+  // card header says so) and five opacity swatches explain a shade the tooltip
+  // already gives exactly. Both were pure overhead in the height budget.
   return `
-    <div style="display:flex; gap:8px; overflow-x:auto; padding-bottom:2px;">
-      <div style="display:flex; flex-direction:column; gap:${GAP}px; padding-top:18px; font-size:9px; color:var(--lp-ink-faint,#93968E); flex-shrink:0;">
-        ${DAY_LABELS.map(l => `<div style="height:${CELL}px; line-height:${CELL}px;">${l}</div>`).join("")}
-      </div>
-      <div>
-        <div style="display:grid; grid-template-columns:repeat(${weeks.length},${CELL}px); gap:0 ${GAP}px; margin-bottom:4px; font-size:9px; color:var(--lp-ink-faint,#93968E); min-width:${gridWidth}px;">
-          ${weeks.map((_, i) => { const found = monthLabels.find(m => m.i === i); return `<div>${found ? found.label : ""}</div>`; }).join("")}
+    <div class="hm" style="--hm-cols:${weeks.length}; --hm-gap:${GAP}px;">
+      <div class="hm-body">
+        <div class="hm-daylabels">
+          ${DAY_LABELS.map(l => `<span>${l}</span>`).join("")}
         </div>
-        <div style="display:grid; grid-template-columns:repeat(${weeks.length},${CELL}px); grid-auto-flow:column; grid-template-rows:repeat(7,${CELL}px); gap:${GAP}px; min-width:${gridWidth}px;">
+        <div class="hm-grid">
           ${weeks.flat().map(d => {
-            if (!d) return `<div style="width:${CELL}px; height:${CELL}px;"></div>`;
+            if (!d) return `<div class="hm-cell hm-cell--blank"></div>`;
+            if (d.is_future) return `<div class="hm-cell hm-cell--future" title="${d.date}"></div>`;
             const o = opacityForPercent(d.percent);
-            return `<div title="${d.date}: ${d.percent}%" style="width:${CELL}px; height:${CELL}px; border-radius:4px; background:${o === 0 ? emptyCellColor : `rgba(${r},${g},${b},${o})`};"></div>`;
+            return `<div class="hm-cell" title="${d.date}: ${d.percent}%" style="background:${o === 0 ? emptyCellColor : `rgba(${r},${g},${b},${o})`};"></div>`;
           }).join("")}
         </div>
       </div>
     </div>
-    <div class="flex items-center gap-2 mt-3 text-[9px] text-gray-400">
-      <span>Less</span>
-      ${[0, 0.22, 0.45, 0.7, 1].map(o => `<div style="width:12px; height:12px; border-radius:3px; background:${o === 0 ? emptyCellColor : `rgba(${r},${g},${b},${o})`};"></div>`).join("")}
-      <span>More</span>
+  `;
+}
+
+// A year of habit consistency as twelve month rows by thirty-one day columns.
+//
+// Not the usual 53-weeks-across grid. That one is roughly 7.6:1, and the card
+// it lives in here is taller than it is wide — a year laid out that way would
+// be a 5px-tall sliver stranded in the middle of the card, which is exactly why
+// the wide version was removed from these dashboards. Months-by-days is about
+// 2.6:1, which is close enough to the card's own shape to fill it, and a row
+// per month is arguably easier to read anyway: you can compare Februarys.
+//
+// Short months leave a few blank slots at the end of their row. That's honest —
+// the alternative is a ragged grid where the same column means a different day
+// depending on the row.
+function renderYearConsistencyGrid(days, year) {
+  const real = (days || []).filter(d => !d.is_future);
+  if (!real.length) return `<p class="dash-empty">No habit data yet this year.</p>`;
+
+  const accent = chartTheme().accent;
+  const [r, g, b] = hexToRgb(accent);
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
+  const emptyCellColor = isDark ? "rgba(255,255,255,0.07)" : "rgba(23,26,31,0.06)";
+  const COLS = 31;
+
+  const byMonth = Array.from({ length: 12 }, () => new Array(COLS).fill(null));
+  days.forEach(d => {
+    const dt = new Date(d.date + "T00:00:00");
+    if (dt.getFullYear() !== year) return;
+    byMonth[dt.getMonth()][dt.getDate() - 1] = d;
+  });
+
+  const monthNames = Array.from({ length: 12 }, (_, i) =>
+    new Date(year, i, 1).toLocaleDateString(undefined, { month: "short" }));
+  // Sparse column ticks — every day number would be unreadable at this size,
+  // and a few anchors are all you need to find a date.
+  const ticks = new Set([1, 5, 10, 15, 20, 25, 30]);
+
+  const cells = byMonth.flatMap((row, m) => row.map((d, i) => {
+    if (!d) return `<div class="hm-cell hm-cell--blank"></div>`;
+    if (d.is_future) return `<div class="hm-cell hm-cell--future" title="${d.date}"></div>`;
+    const o = opacityForPercent(d.percent);
+    return `<div class="hm-cell" title="${d.date}: ${d.percent}%"
+                 style="background:${o === 0 ? emptyCellColor : `rgba(${r},${g},${b},${o})`};"></div>`;
+  }));
+
+  return `
+    <div class="hm hm--year" style="--hm-cols:${COLS}; --hm-gap:3px;">
+      <div class="hm-colheads">
+        ${Array.from({ length: COLS }, (_, i) => `<span>${ticks.has(i + 1) ? i + 1 : ""}</span>`).join("")}
+      </div>
+      <div class="hm-body">
+        <div class="hm-daylabels">${monthNames.map(n => `<span>${n}</span>`).join("")}</div>
+        <div class="hm-grid">${cells.join("")}</div>
+      </div>
     </div>
   `;
 }
@@ -1487,90 +1684,6 @@ function loadWorldAtlas() {
 // controls. Uses a fixed logical canvas size (scaled to 100% width via the
 // SVG viewBox) rather than the container's live clientWidth, so pin/stroke
 // sizing can't be thrown off by reading the width before layout settles.
-// Real "Quick Insights" for the right-hand dashboard panel — derived from
-// actual job stats and application dates, not canned text.
-function quickJobInsights(jobStats, allJobs) {
-  const out = [];
-  // interview rate
-  out.push({
-    icon: "📈", tone: "blue",
-    title: `Interview rate is ${jobStats.interview_rate}%`,
-    body: jobStats.interview_rate >= 20 ? "Strong — keep the momentum going." : "Keep applying to improve your chances.",
-  });
-  // most active weekday by application date
-  const dow = [0, 0, 0, 0, 0, 0, 0];
-  allJobs.forEach(j => { if (j.date_applied) dow[fromISO(j.date_applied).getDay()]++; });
-  const maxDow = Math.max(...dow);
-  if (maxDow > 0) {
-    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const bestDay = dayNames[dow.indexOf(maxDow)];
-    out.push({ icon: "🏆", tone: "green", title: `You're most active on ${bestDay}s`, body: "Great! Consistency is key." });
-  }
-  // follow-ups due this week
-  const dueCount = jobStats.upcoming_follow_ups.length;
-  out.push({
-    icon: "⏰", tone: "amber",
-    title: dueCount ? `${dueCount} follow-up${dueCount === 1 ? "" : "s"} due this week` : "No follow-ups due this week",
-    body: dueCount ? "Stay on top of your opportunities." : "You're all caught up 🎉",
-  });
-  return out;
-}
-
-// Next upcoming study session: the soonest not-yet-completed block from now
-// forward (today's later sessions, then future days).
-function nextStudySession(allBlocks) {
-  const now = new Date();
-  const todayISO = toISO(now);
-  const nowMin = now.getHours() * 60 + now.getMinutes();
-  const upcoming = allBlocks
-    .filter(b => !b.completed && b.date >= todayISO)
-    .filter(b => b.date > todayISO || timeToMinutes(b.end_time) >= nowMin)
-    .sort((a, b) => (a.date + a.start_time).localeCompare(b.date + b.start_time));
-  return upcoming[0] || null;
-}
-
-// Real "AI Insights" for the Habits/Study right panel — all derived from
-// actual habit + study data, never canned.
-function studyAiInsights(month, allStudyBlocks, weekStudyBlocks) {
-  const out = [];
-  // consistency / streak
-  if (month.current_streak >= 3) {
-    out.push({ icon: "📈", tone: "green", title: "Great Consistency!", body: `You've maintained a ${month.current_streak}-day habit streak. Keep it up!` });
-  } else if (month.current_streak > 0) {
-    out.push({ icon: "📈", tone: "green", title: "Streak building", body: `You're on a ${month.current_streak}-day streak — a few more days locks in the habit.` });
-  } else {
-    out.push({ icon: "🎯", tone: "green", title: "Start a streak", body: "Complete a habit today to kick off a new streak." });
-  }
-  // focus opportunity: a weekday this week where actual < planned
-  const actualLog = getStudyActualLog();
-  const weekStart = weekStartOf(new Date());
-  let opp = null;
-  for (let i = 0; i < 7; i++) {
-    const iso = toISO(addDays(weekStart, i));
-    if (iso > toISO(new Date())) continue;
-    const dayBlocks = weekStudyBlocks.filter(b => b.date === iso);
-    if (!dayBlocks.length) continue;
-    const planned = dayBlocks.reduce((s, b) => s + Math.max(0, timeToMinutes(b.end_time) - timeToMinutes(b.start_time)), 0);
-    const actual = dayBlocks.reduce((s, b) => s + (actualLog[b.id] || 0), 0);
-    if (planned > 0 && actual < planned * 0.8) { opp = { iso, planned, actual }; break; }
-  }
-  if (opp) {
-    out.push({ icon: "⏰", tone: "amber", title: "Focus Opportunity", body: `Your study time on ${fromISO(opp.iso).toLocaleDateString(undefined, { weekday: "long" })} was lower than planned.` });
-  }
-  // subjects balance
-  const subjects = new Map();
-  allStudyBlocks.forEach(b => {
-    if (!subjects.has(b.subject)) subjects.set(b.subject, { total: 0, done: 0 });
-    const s = subjects.get(b.subject); s.total++; if (b.completed) s.done++;
-  });
-  const totalSessions = allStudyBlocks.length;
-  const doneSessions = allStudyBlocks.filter(b => b.completed).length;
-  if (subjects.size >= 2) {
-    out.push({ icon: "🧩", tone: "purple", title: "Subjects Balance", body: `You've completed ${doneSessions}/${totalSessions} total sessions. Try to balance your subjects.` });
-  }
-  return out.slice(0, 3);
-}
-
 async function renderJobsWorldMap(containerId, jobs, opts = {}) {
   const el = document.getElementById(containerId);
   if (!el) return;
@@ -1591,7 +1704,7 @@ async function renderJobsWorldMap(containerId, jobs, opts = {}) {
   const isDark = document.documentElement.getAttribute("data-theme") === "dark";
   const countryFill = isDark ? "rgba(255,255,255,0.08)" : "#EDEFF3";
   const countryStroke = isDark ? "rgba(255,255,255,0.14)" : "#DDE1E8";
-  const dotColor = "#3D5AFE";
+  const dotColor = "#0E9384";
 
   const countries = topojson.feature(topo, topo.objects.countries);
   const bboxFeature = {
@@ -1718,8 +1831,8 @@ const WELCOME_DOC_LINKS = [
     sub: "Docker and manual setup instructions", doc: "readme", match: "running" },
   { icon: "🛡️", tint: "ember", title: "Troubleshooting (Backend Connection)",
     sub: "Fix common connection and CORS issues", doc: "readme", match: "deploying" },
-  { icon: "🤖", tint: "purple", title: "Local AI Assistant",
-    sub: "Optional setup for the on-device model", doc: "ai-setup", match: "" },
+  { icon: "🤖", tint: "purple", title: "Connect an AI model",
+    sub: "Pick a provider, paste a key — free tiers included", doc: "readme", match: "ai model" },
 ];
 
 function welcomeHeroArt() {
@@ -1756,12 +1869,257 @@ function welcomePathArt() {
   </svg>`;
 }
 
+// ---------------------------------------------------------------------------
+// Tutorial video
+// ---------------------------------------------------------------------------
+// The URL comes from .env via env.js, so swapping the walkthrough is one line
+// in the config file rather than an edit in here. Every surface that shows or
+// links to the video reads it through these helpers, so there is one place it
+// can be wrong.
+function tutorialConfig() {
+  const cfg = (typeof window !== "undefined" && window.MOMENTUM_TUTORIAL) || {};
+  const id = youTubeId(cfg.url);
+  if (!id) return null;   // blank/unparseable URL hides the card entirely
+  return {
+    id,
+    url: cfg.url,
+    title: cfg.title || "Getting started",
+    duration: cfg.duration || "",
+    level: cfg.level || "",
+    // nocookie + the thumbnail-first approach below mean YouTube sets nothing
+    // until someone actually presses play.
+    embed: `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1`,
+    thumb: `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
+    thumbFallback: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
+    watch: `https://www.youtube.com/watch?v=${id}`,
+  };
+}
+
+// Accepts every shape a person might paste: watch?v=, youtu.be/, /embed/,
+// /shorts/, /live/, with or without extra query parameters.
+function youTubeId(url) {
+  const text = String(url || "").trim();
+  if (!text) return "";
+  const patterns = [
+    /[?&]v=([\w-]{6,})/,
+    /youtu\.be\/([\w-]{6,})/,
+    /\/embed\/([\w-]{6,})/,
+    /\/shorts\/([\w-]{6,})/,
+    /\/live\/([\w-]{6,})/,
+  ];
+  for (const re of patterns) {
+    const m = text.match(re);
+    if (m) return m[1];
+  }
+  // A bare id pasted on its own.
+  return /^[\w-]{8,}$/.test(text) ? text : "";
+}
+
+function tutorialCardHtml() {
+  const v = tutorialConfig();
+  if (!v) return "";
+  // Facts as inline pills rather than three boxed cards. Boxes that big for
+  // "12:45" and "Beginner" were spending a third of the card's area on six
+  // words, and — sitting in a column beside a 16:9 video — forced the copy
+  // column to match the video's height, leaving the dead space underneath.
+  const facts = [
+    v.duration && `<span class="wel-video-pill">⏱ ${esc(v.duration)}</span>`,
+    v.level && `<span class="wel-video-pill">📶 ${esc(v.level)}</span>`,
+    `<span class="wel-video-pill">CC</span>`,
+  ].filter(Boolean).join("");
+  return `
+    <section class="wel-card wel-video">
+      <div class="wel-video-player">
+        <button class="wel-video-thumb" id="wel-video-play" type="button"
+                aria-label="Play: ${esc(v.title)}">
+          <img src="${esc(v.thumb)}" alt="" loading="lazy"
+               onerror="this.onerror=null;this.src='${esc(v.thumbFallback)}'">
+          <span class="wel-video-scrim"></span>
+          <span class="wel-video-play" aria-hidden="true">
+            <svg viewBox="0 0 68 48" width="54" height="38">
+              <path d="M66.5 7.7a8.6 8.6 0 0 0-6-6C55.2 0 34 0 34 0S12.8 0 7.5 1.7a8.6 8.6 0 0 0-6 6A90 90 0 0 0 0 24a90 90 0 0 0 1.5 16.3 8.6 8.6 0 0 0 6 6C12.8 48 34 48 34 48s21.2 0 26.5-1.7a8.6 8.6 0 0 0 6-6A90 90 0 0 0 68 24a90 90 0 0 0-1.5-16.3z" fill="#f00"/>
+              <path d="M27 34l18-10-18-10z" fill="#fff"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+
+      <div class="wel-video-bar">
+        <div class="wel-video-text">
+          <h2 class="wel-video-title">Getting Started with Momentum <span aria-hidden="true">🚀</span></h2>
+          <p class="wel-video-sub">A complete walkthrough of the app, start to finish.</p>
+          <div class="wel-video-pills">${facts}</div>
+        </div>
+        <a class="wel-video-link" href="${esc(v.watch)}" target="_blank" rel="noopener">
+          Watch on YouTube
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M9 7h8v8"/></svg>
+        </a>
+      </div>
+    </section>`;
+}
+
+// ---------------------------------------------------------------------------
+// Home — right rail
+// ---------------------------------------------------------------------------
+// Progress, streak, task counts and what is coming up. Every number here is
+// real: it comes from the same /api/summary/week the Progress pages use, so the
+// rail can never disagree with the page it summarises. A dashboard showing
+// invented figures is worse than no dashboard.
+
+const HOME_QUOTES = [
+  ["The secret of getting ahead is getting started.", "Mark Twain"],
+  ["Well begun is half done.", "Aristotle"],
+  ["It does not matter how slowly you go, so long as you do not stop.", "Confucius"],
+  ["Little by little, a little becomes a lot.", "Tanzanian proverb"],
+  ["Action is the foundational key to all success.", "Pablo Picasso"],
+];
+
+function homeQuote() {
+  // Same quote all day, a new one tomorrow: rotating on every render makes the
+  // page feel unstable, and a fixed one gets stale.
+  const day = Math.floor(Date.now() / 86400000);
+  return HOME_QUOTES[day % HOME_QUOTES.length];
+}
+
+function currentStreakFrom(days) {
+  // Consecutive days with anything completed, counting back from today and
+  // ignoring a still-empty today — the day isn't over yet, and zeroing the
+  // streak at 00:01 would be punishing someone for waking up.
+  if (!Array.isArray(days)) return 0;
+  const past = days.filter(d => !d.is_future);
+  let streak = 0;
+  for (let i = past.length - 1; i >= 0; i--) {
+    const done = (past[i].completed || 0) > 0;
+    if (done) streak++;
+    else if (i === past.length - 1) continue;   // today, not yet started
+    else break;
+  }
+  return streak;
+}
+
+function homeRailHtml(week, tasks) {
+  const pct = Math.round(week?.percent ?? 0);
+  const streak = currentStreakFrom(week?.days);
+  const done = tasks.filter(t => t.completed).length;
+  const todo = tasks.filter(t => !t.completed).length;
+  const todayISO = toISO(new Date());
+  const inProgress = tasks.filter(t => !t.completed && t.date <= todayISO).length;
+
+  const upcoming = tasks
+    .filter(t => !t.completed)
+    .sort((a, b) => (a.date || "").localeCompare(b.date || ""))
+    .slice(0, 4);
+
+  const [quote, author] = homeQuote();
+  const ring = `conic-gradient(var(--lp-blue) 0 ${pct * 3.6}deg, var(--lp-surface-2) ${pct * 3.6}deg 360deg)`;
+
+  const encouragement =
+    pct >= 75 ? "Great job! You're making excellent progress this week." :
+    pct >= 40 ? "Solid progress — keep the streak going." :
+    pct > 0   ? "You've made a start. One more today moves the number." :
+                "Nothing ticked yet this week. Start with one small thing.";
+
+  return `
+    <aside class="home-rail">
+      <section class="rail-card">
+        <div class="rail-head">
+          <h2 class="rail-h2">Your Progress</h2>
+          <span class="rail-chip">This Week</span>
+        </div>
+        <div class="rail-progress">
+          <div class="rail-ring" style="background:${ring}">
+            <div class="rail-ring-in"><b>${pct}%</b><span>Progress</span></div>
+          </div>
+          <p class="rail-note">${esc(encouragement)}</p>
+        </div>
+      </section>
+
+      <section class="rail-card rail-streak">
+        <span class="rail-streak-ico" aria-hidden="true">🔥</span>
+        <div>
+          <b>${streak}</b>
+          <span>Day${streak === 1 ? "" : "s"} Streak</span>
+        </div>
+        <span class="rail-streak-note">${streak > 0 ? "Keep it up!" : "Start today"}</span>
+      </section>
+
+      <section class="rail-card rail-stats">
+        ${[["✓", done, "Tasks Done", "ok"],
+           ["◷", inProgress, "In Progress", "warn"],
+           ["◻", todo, "To Do", "info"]].map(([ico, n, label, tint]) => `
+          <div class="rail-stat">
+            <span class="rail-stat-ico tint-${tint}" aria-hidden="true">${ico}</span>
+            <b>${n}</b><span>${label}</span>
+          </div>`).join("")}
+      </section>
+
+      <section class="rail-card">
+        <div class="rail-head">
+          <h2 class="rail-h2">Upcoming Tasks</h2>
+          <button class="rail-link" data-wel-go="day">View all</button>
+        </div>
+        ${upcoming.length ? `<ul class="rail-tasks">
+          ${upcoming.map(t => `
+            <li>
+              <span class="rail-task-tick" aria-hidden="true">✓</span>
+              <span class="rail-task-body">
+                <b>${esc(t.title)}</b>
+                <span>${esc(relativeDayLabel(t.date))}</span>
+              </span>
+              <span class="rail-task-pri pri-${taskPriority(t.date)}">${taskPriority(t.date)}</span>
+            </li>`).join("")}
+        </ul>` : `<p class="rail-empty">Nothing outstanding. Add a task to see it here.</p>`}
+      </section>
+
+      <section class="rail-card rail-quote">
+        <span class="rail-quote-mark" aria-hidden="true">&ldquo;</span>
+        <p>${esc(quote)}</p>
+        <span class="rail-quote-by">— ${esc(author)}</span>
+      </section>
+    </aside>`;
+}
+
+// Priority is derived from how close the task is rather than stored: the task
+// model has no priority field, and inventing one in the UI that nothing can
+// edit would be a control that lies.
+function taskPriority(dateISO) {
+  const today = toISO(new Date());
+  if (!dateISO || dateISO < today) return "high";
+  if (dateISO === today) return "high";
+  if (dateISO === toISO(addDays(new Date(), 1))) return "medium";
+  return "low";
+}
+
+function relativeDayLabel(dateISO) {
+  if (!dateISO) return "";
+  const today = toISO(new Date());
+  if (dateISO === today) return "Today";
+  if (dateISO === toISO(addDays(new Date(), 1))) return "Tomorrow";
+  if (dateISO < today) return "Overdue";
+  const d = new Date(dateISO + "T00:00:00");
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+}
+
 async function renderWelcome(content) {
   const user = auth.getUser();
   const first = user && user.name ? esc(user.name.trim().split(/\s+/)[0]) : "";
 
+  // The rail's figures come from the same endpoints the Progress pages use.
+  // allSettled: an empty rail is a much smaller problem than a Home page that
+  // refuses to render because one summary call was slow.
+  const monday = toISO(weekStartOf(new Date()));
+  const soon = toISO(addDays(new Date(), 14));
+  const [weekRes, tasksRes] = await Promise.allSettled([
+    get(`/api/summary/week/${monday}`),
+    get(`/api/tasks?start=${toISO(addDays(new Date(), -7))}&end=${soon}`),
+  ]);
+  const week = weekRes.status === "fulfilled" ? weekRes.value : null;
+  const tasks = tasksRes.status === "fulfilled" && Array.isArray(tasksRes.value)
+    ? tasksRes.value : [];
+
   content.innerHTML = `
-    <div class="wel">
+    <div class="wel wel-with-rail">
+      <div class="wel-main">
       <section class="wel-hero">
         <div class="wel-hero-copy">
           <p class="wel-hero-greeting"><span aria-hidden="true">👋</span> Welcome back${first ? `, ${first}` : ""}</p>
@@ -1778,6 +2136,8 @@ async function renderWelcome(content) {
         </div>
         <div class="wel-hero-art">${welcomeHeroArt()}</div>
       </section>
+
+      ${tutorialCardHtml()}
 
       <section class="wel-card">
         <h2 class="wel-h2">What would you like to do?</h2>
@@ -1818,6 +2178,23 @@ async function renderWelcome(content) {
         <section class="wel-card">
           <h2 class="wel-h2">Helpful resources</h2>
           <div class="wel-links">
+            ${(() => {
+              // The walkthrough belongs in Helpful resources too, and reads the
+              // same .env value as the card above rather than a second copy of
+              // the URL. Hidden along with the card when none is configured.
+              const v = tutorialConfig();
+              return v ? `
+              <a class="wel-link" href="${esc(v.watch)}" target="_blank" rel="noopener">
+                <span class="wel-link-ico-sq tint-red" aria-hidden="true">▶</span>
+                <span class="wel-link-body">
+                  <span class="wel-link-t">Video walkthrough</span>
+                  <span class="wel-link-s">${esc(v.title)}</span>
+                </span>
+                <span class="wel-link-ext" aria-hidden="true">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><path d="M15 3h6v6"/><path d="M10 14 21 3"/></svg>
+                </span>
+              </a>` : "";
+            })()}
             ${WELCOME_DOC_LINKS.map(l => `
               <button class="wel-link" data-wel-doc="${l.doc}" data-wel-match="${esc(l.match)}">
                 <span class="wel-link-ico-sq tint-${l.tint}" aria-hidden="true">${l.icon}</span>
@@ -1832,6 +2209,8 @@ async function renderWelcome(content) {
           </div>
         </section>
       </div>
+      </div>
+      ${homeRailHtml(week, tasks)}
     </div>`;
 
   content.querySelectorAll("[data-wel-go]").forEach(el =>
@@ -1844,6 +2223,18 @@ async function renderWelcome(content) {
   content.querySelectorAll("[data-wel-doc]").forEach(el =>
     el.addEventListener("click", () => openDocsPanel(el.dataset.welDoc, el.dataset.welMatch)));
   document.getElementById("wel-tour")?.addEventListener("click", startTour);
+
+  // Click-to-play rather than an iframe on load. A YouTube embed pulls ~1MB of
+  // player script and sets cookies before anyone has asked to watch anything,
+  // on a page most people open every day; the thumbnail costs one image.
+  document.getElementById("wel-video-play")?.addEventListener("click", (e) => {
+    const v = tutorialConfig();
+    if (!v) return;
+    const holder = e.currentTarget.parentElement;
+    holder.innerHTML = `<iframe src="${esc(v.embed)}" title="${esc(v.title)}"
+      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media;
+      gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -2018,10 +2409,9 @@ function closeDocsPanel() {
 const TOUR_STEPS = [
   { sel: '[data-page="dashboard"]', title: "Dashboard",
     body: "Your daily overview — today's habits, tasks, and what needs attention across everything else." },
-  { sel: '[data-page="tracker"]', title: "Progress Tracker",
-    body: "Habits and tasks by day, week, month and year. Start here to build a streak." },
-  { sel: '[data-page="study"]', title: "Study Plan",
-    body: "Block out study sessions by subject and tick them off as you go." },
+  { sel: '[data-page="tracker"]', title: "Progress & Study",
+    body: "Habits and tasks by day, week, month and year, plus your study plan — "
+          + "switch between them with the tabs at the top of the page." },
   { sel: '[data-page="jobs"]', title: "Job Applications",
     body: "A kanban board per search. Drag an application between columns as it moves along." },
   { sel: '[data-page="resumes"]', title: "Resumes",
@@ -2140,25 +2530,76 @@ function endTour(completed) {
 
 // ---------- nav ----------
 const DATE_VIEW_PAGES = ["day", "week", "month", "year"];
+// Study Plan lives under the same sidebar item as the date views: they are the
+// same activity ("what am I working on, and did I do it"), and they already
+// shared a header. TRACKER_PAGES is the set the nav item lights up for and the
+// sub-tab bar renders on; DATE_VIEW_PAGES stays as-is because the date pickers,
+// scope toggles and week/month/year logic apply to those four only — Study Plan
+// has its own controls and no date cursor.
+const TRACKER_PAGES = [...DATE_VIEW_PAGES, "study"];
 const NAV = [
   { id: "welcome", label: "Home", icon: "🏠", group: "Main" },
   { id: "dashboard", label: "Dashboard", icon: "📊", group: "Main" },
-  { id: "tracker", label: "Progress Tracker", icon: "📆", group: "Main" },
-  { id: "study", label: "Study Plan", icon: "📚", group: "Main" },
+  { id: "tracker", label: "Progress & Study", icon: "📆", group: "Main" },
   { id: "jobs", label: "Job Applications", icon: "💼", group: "Main" },
   { id: "resumes", label: "Resumes", icon: "📄", group: "Main" },
+  { id: "portfolio", label: "Portfolio", icon: "🌐", group: "Main" },
   { id: "jobhunt", label: "Job Hunt", icon: "🔎", group: "Main" },
   { id: "telegram", label: "Telegram", icon: "✈️", group: "Tools" },
+  { id: "ai", label: "AI Model", icon: "🤖", group: "Tools" },
   // The assistant is deliberately NOT here: it's the floating bubble in the
   // bottom-right corner, which is always on screen. Two entry points to one
   // panel is one more than the sidebar has room to justify.
 ];
 
+// ---------------------------------------------------------------------------
+// Sidebar icons
+// ---------------------------------------------------------------------------
+// Emoji were the last heavy thing in the panel, and not because of size: they
+// are five different illustration styles at five different visual weights, each
+// carrying its own palette, none of which is the app's. A monochrome set drawn
+// on one grid with one stroke inherits `currentColor`, so an icon is simply
+// the same colour as the word beside it — dark when inactive, indigo when
+// selected — and the eye reads the labels instead of a row of stickers.
+//
+// Inline rather than a sprite or an icon font: nine paths cost less than the
+// request, and there is nothing to keep in sync.
+const NAV_ICONS = {
+  welcome:   `<path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1V9.5Z"/>`,
+  dashboard: `<rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/>`,
+  tracker:   `<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/><path d="m9 15.5 2 2 4-4"/>`,
+  jobs:      `<rect x="2.5" y="7" width="19" height="13" rx="2"/><path d="M8.5 7V5.5A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5V7M2.5 12.5h19"/>`,
+  resumes:   `<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>`,
+  jobhunt:   `<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>`,
+  portfolio: `<rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M3 9h18M6.2 6.7h.01M9 6.7h.01"/><path d="M7 12.5h6M7 16h4"/>`,
+  telegram:  `<path d="M21.5 3.5 2.8 10.4c-.9.3-.9 1.6.05 1.9l4.6 1.4 1.8 5.3c.3.9 1.5 1 2 .2l2.4-3.4 4.6 3.4c.7.5 1.7.1 1.9-.7l3-13.4c.2-.9-.7-1.7-1.65-1.6Z"/><path d="m8.4 13.7 9.6-7-7 8.6"/>`,
+  ai:        `<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9.5 14h.01M14.5 14h.01M9 17.5h6M2 12v3M22 12v3"/>`,
+  admin:     `<path d="M12 3.5 4.5 6.5v5c0 4.6 3.1 8.3 7.5 9.5 4.4-1.2 7.5-4.9 7.5-9.5v-5L12 3.5Z"/><path d="m9.5 12 2 2 3.5-3.5"/>`,
+  extension: `<path d="M9 4.5a2 2 0 1 1 4 0V6h3a1 1 0 0 1 1 1v3h1.5a2 2 0 1 1 0 4H17v3a1 1 0 0 1-1 1h-3v-1.5a2 2 0 1 0-4 0V18H6a1 1 0 0 1-1-1v-3H6.5a2 2 0 1 0 0-4H5V7a1 1 0 0 1 1-1h3V4.5Z"/>`,
+};
+
+function navIcon(id, fallback) {
+  const path = NAV_ICONS[id];
+  if (!path) return fallback || "";
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
+}
+
 function renderNav() {
+  // The footer button is markup in index.html, so its icon is swapped here
+  // rather than duplicating the set into the HTML.
+  const extIcon = document.querySelector("#ext-panel-btn .nav-icon");
+  if (extIcon && !extIcon.querySelector("svg")) extIcon.innerHTML = navIcon("extension");
   const user = auth.getUser();
   renderUpgradeCard(user);
   const items = [...NAV];
-  if (user && user.role === "admin") items.splice(6, 0, { id: "admin", label: "Admin Dashboard", icon: "🛡️", group: "Main" });
+  if (user && user.role === "admin") {
+    // Append to the end of the Main group rather than at a fixed index —
+    // a hard-coded position silently misplaces Admin the moment the nav
+    // gains or loses an item above it.
+    const mainCount = items.filter((n) => n.group === "Main").length;
+    items.splice(mainCount, 0, { id: "admin", label: "Admin Dashboard", icon: "🛡️", group: "Main" });
+  }
 
   const nav = document.getElementById("nav");
   let lastGroup = null;
@@ -2166,10 +2607,10 @@ function renderNav() {
     const groupHeader = n.group !== lastGroup
       ? `<div class="nav-group-label">${esc(n.group)}</div>` : "";
     lastGroup = n.group;
-    const isActive = n.action ? false : (n.id === "tracker" ? DATE_VIEW_PAGES.includes(state.page) : state.page === n.id);
+    const isActive = n.action ? false : (n.id === "tracker" ? TRACKER_PAGES.includes(state.page) : state.page === n.id);
     const attr = n.action ? `data-action="${n.action}"` : `data-page="${n.id}"`;
     return `${groupHeader}<div class="nav-item ${isActive ? "active" : ""}" ${attr} title="${esc(n.label)}">
-      <span class="nav-icon">${n.icon}</span><span class="sidebar-label">${esc(n.label)}</span>
+      <span class="nav-icon">${navIcon(n.id, n.icon)}</span><span class="sidebar-label">${esc(n.label)}</span>
     </div>`;
   }).join("");
   nav.querySelectorAll(".nav-item[data-page]").forEach((el) => {
@@ -2212,8 +2653,21 @@ function renderUpgradeCard(user) {
   get("/api/extension/quota").then(q => {
     if (!sub || !q || q.limit == null) return;
     sub.textContent = q.exhausted
-      ? `You have used all ${q.limit} captures this month`
-      : `${q.remaining} of ${q.limit} captures left this month`;
+      ? `All ${q.limit} captures used`
+      : `${q.remaining} of ${q.limit} captures left`;
+    // A bar says "how much is left" at a glance; the sentence underneath it
+    // only confirms the exact number. Two lines of prose in a sidebar card is
+    // what made this block feel like an advert rather than a status.
+    const used = Math.max(0, Math.min(1, (q.limit - (q.remaining ?? 0)) / q.limit));
+    let bar = card.querySelector(".su-bar");
+    if (!bar) {
+      bar = document.createElement("div");
+      bar.className = "su-bar";
+      bar.innerHTML = `<i></i>`;
+      sub.insertAdjacentElement("afterend", bar);
+    }
+    bar.querySelector("i").style.width = `${Math.round(used * 100)}%`;
+    bar.classList.toggle("is-full", q.exhausted);
   }).catch(() => { /* leave the default line */ });
 }
 
@@ -2234,10 +2688,10 @@ function paintAvatar(el, user, profile) {
   }
   el.style.backgroundImage = "";
   el.textContent = name ? name.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join("") : "";
-  const palette = ["#3D5AFE", "#7C5CFC", "#3C9D7B", "#E4A335", "#E5734A", "#2C9CDB"];
+  const palette = ["#0E9384", "#7C5CFC", "#3C9D7B", "#E4A335", "#E5734A", "#2C9CDB"];
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
-  el.style.background = name ? palette[hash % palette.length] : "#3D5AFE";
+  el.style.background = name ? palette[hash % palette.length] : "#0E9384";
 }
 
 // ---------------------------------------------------------------------------
@@ -2735,10 +3189,36 @@ const DATE_VIEW_TABS = [
   { id: "month", label: "Month" },
   { id: "year", label: "Year" },
 ];
-function renderDateViewTabs(activeId) {
-  return `<div class="view-tabs">
-    ${DATE_VIEW_TABS.map(t => `<button type="button" class="view-tab ${t.id === activeId ? "active" : ""}" data-view-tab="${t.id}">${t.label}</button>`).join("")}
+
+// Two controls, not one row of five.
+//
+//     [ 📆 Tracker | 📚 Study Plan ]   ·   [ Day  Week  Month  Year ]
+//
+// Day/Week/Month/Year are four zoom levels on the *same* view; Study Plan is a
+// different view entirely. Sitting them all in one segmented control said
+// "Study Plan is a fifth time period", which is the one thing it isn't — and it
+// left the row with no way to show which of the two things you were even in.
+// Splitting them makes the first control answer "which section" and the second
+// "how far zoomed out", and the second disappears where it has no meaning.
+function renderTrackerTabs(activePage) {
+  const onStudy = activePage === "study";
+  const backTo = state.trackerLastDateView || "day";
+  const sections = `<div class="view-tabs">
+    <button type="button" class="view-tab ${onStudy ? "" : "active"}" data-view-tab="${backTo}">📆 Tracker</button>
+    <button type="button" class="view-tab ${onStudy ? "active" : ""}" data-view-tab="study">📚 Study Plan</button>
   </div>`;
+  if (onStudy) return sections;
+  // Returning to Tracker lands on the zoom level you left it at, so the pair
+  // behaves like one control with memory rather than two that argue.
+  const zooms = `<div class="view-tabs">
+    ${DATE_VIEW_TABS.map(t => `<button type="button" class="view-tab ${t.id === activePage ? "active" : ""}" data-view-tab="${t.id}">${t.label}</button>`).join("")}
+  </div>`;
+  return `${sections}<span class="header-sep"></span>${zooms}`;
+}
+
+// Kept as a thin alias: other call sites and the tour still reference it.
+function renderDateViewTabs(activeId) {
+  return renderTrackerTabs(activeId);
 }
 // ---------- Habits / Tasks / All scope toggle ----------
 // Lives in the page header beside the date controls on Week, Month and Year.
@@ -2789,11 +3269,128 @@ function wireDateViewTabs(container) {
     el.addEventListener("click", () => {
       state.page = el.dataset.viewTab;
       state.trackerLastPage = el.dataset.viewTab;
+      // Two different "last" values: which section the sidebar item returns
+      // to, and which zoom the Tracker button returns to. One variable for
+      // both meant clicking Study Plan then Tracker sent you back to Study.
+      if (DATE_VIEW_PAGES.includes(el.dataset.viewTab)) {
+        state.trackerLastDateView = el.dataset.viewTab;
+      }
       renderNav();
       scrollPageTo(0); // switching Day/Week/Month/Year is a navigation action, not an in-place update
       render();
     });
   });
+}
+
+// ---------- dashboard viewport lock ----------
+// The dashboard is one screen: no page scrollbar, no dead space under the last
+// row. Earlier attempts computed the available height in JS and wrote it to a
+// custom property. That worked but was fragile — it depended on measuring at
+// the right moment, and `100vh` and `window.innerHeight` disagree whenever a
+// scrollbar is present, which is exactly when it mattered.
+//
+// The structural version has no numbers in it at all: lock the document to the
+// viewport and let a flex chain hand the leftover height to the content box.
+// Nothing to measure means nothing to measure wrongly. The CSS side is gated to
+// sizes where one screen is actually readable (see DASHBOARD LAYOUT); below
+// that the class is inert and the page scrolls normally.
+// The lock class itself is set by fitDashboardGrid, which is the only place
+// that knows whether the space is actually there.
+function setDashboardLock(on) {
+  if (on) scheduleDashboardFit(); else clearDashboardFit();
+}
+
+// Belt and braces. The lock stops the document scrolling; this makes the grid
+// actually fill what it's been given.
+//
+// The flex chain alone should do it, but it runs through four ancestors owned
+// by other parts of the app (#app, main, the header, #dash-tab-body) and one
+// `auto` anywhere in that chain silently turns the grid back into content
+// sizing — which shows up as KPI cards bunched at the top of a half-height
+// rail. So the grid's height is also set outright, from its own measured
+// position: distance from its top to the bottom of the window, less the page's
+// bottom padding. Nothing above it is consulted, so nothing above it can break
+// it. Safe to read a viewport-relative `top` because the lock means the
+// document cannot be scrolled while this applies.
+// Three columns of charts need real width, so below this the layout reflows to
+// two and the fit is abandoned. Height, though, is not a guess: the decision is
+// made from the space actually measured, because a fixed height threshold is
+// exactly the kind of thing that is wrong on someone else's screen. A window
+// with a bookmarks bar can sit just under a plausible-looking 700px cutoff, and
+// the symptom — rail sized to its content with a gap beneath — looks nothing
+// like "your window is 8px too short".
+const DASH_FIT_MIN_WIDTH = 1201;
+const DASH_FIT_MIN_AVAIL = 420;
+
+// Measures where the pinned content box's top-left corner belongs: directly
+// below the header, directly right of the sidebar. Both are read from the live
+// elements, so a collapsed sidebar or a header that wraps to two lines moves
+// the box instead of breaking it. See the lock block in styles.css.
+function fitDashboardGrid() {
+  const content = document.getElementById("page-content");
+  if (!content || !content.classList.contains("page-content--dashboard")) return;
+  const root = document.documentElement;
+
+  const header = document.querySelector("#app main > header");
+  const sidebar = document.getElementById("sidebar");
+  // The header is sticky at the top of the viewport, so its bottom edge is the
+  // top of the space available — no scroll offset to account for.
+  const top = header ? Math.round(header.getBoundingClientRect().bottom) : 0;
+  // A sidebar pushed off-canvas has a negative right edge; clamp to 0 so the
+  // dashboard simply starts at the window edge.
+  const left = sidebar ? Math.max(0, Math.round(sidebar.getBoundingClientRect().right)) : 0;
+
+  const avail = window.innerHeight - top;
+  const fits = window.innerWidth >= DASH_FIT_MIN_WIDTH && avail >= DASH_FIT_MIN_AVAIL;
+
+  root.classList.toggle("dash-locked", fits);
+  if (fits) {
+    root.style.setProperty("--dash-top", `${top}px`);
+    root.style.setProperty("--dash-left", `${left}px`);
+    if (window.scrollY) window.scrollTo(0, 0);
+  } else {
+    root.style.removeProperty("--dash-top");
+    root.style.removeProperty("--dash-left");
+  }
+}
+
+function clearDashboardFit() {
+  const root = document.documentElement;
+  root.classList.remove("dash-locked");
+  root.style.removeProperty("--dash-top");
+  root.style.removeProperty("--dash-left");
+}
+
+let _dashFitPending = false;
+function scheduleDashboardFit() {
+  if (_dashFitPending) return;
+  _dashFitPending = true;
+  requestAnimationFrame(() => { _dashFitPending = false; fitDashboardGrid(); });
+}
+function dashboardIsOnScreen() {
+  return !!document.getElementById("page-content")?.classList.contains("page-content--dashboard");
+}
+
+window.addEventListener("resize", () => {
+  // Re-measure whenever the dashboard is on screen, not only while locked —
+  // a window that grows past the threshold has to be able to lock again.
+  if (dashboardIsOnScreen()) scheduleDashboardFit();
+});
+
+// The two edges the pinned box is measured against can change without the
+// window resizing: the sidebar collapses, the header wraps to a second line.
+// Watching them directly is cheaper and more reliable than trying to hook every
+// action that might cause it.
+if (typeof ResizeObserver !== "undefined") {
+  const edgeObserver = new ResizeObserver(() => { if (dashboardIsOnScreen()) scheduleDashboardFit(); });
+  const observeEdges = () => {
+    const header = document.querySelector("#app main > header");
+    const sidebar = document.getElementById("sidebar");
+    if (header) edgeObserver.observe(header);
+    if (sidebar) edgeObserver.observe(sidebar);
+  };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", observeEdges);
+  else observeEdges();
 }
 
 // ---------- root render dispatch ----------
@@ -2823,6 +3420,11 @@ async function render() {
   document.getElementById("view-center-slot").innerHTML = "";
   document.getElementById("header-status").innerHTML = "";
   document.querySelector("header.topbar-glass")?.classList.remove("hdr-doc-mode");
+  // The portfolio designer is a full-screen editor and hides the page chrome
+  // while it is open (see pfRenderDesigner). Cleared here, with the other
+  // header modes, so navigating away from it can never strand the app
+  // without its header.
+  document.documentElement.classList.remove("pf-immersive");
   // Leaving the Jobs page with the board dropdown open would otherwise strand
   // the header in its un-clipped state.
   document.querySelector(".hdr-zone-left")?.classList.remove("hdr-zone-left--menu-open");
@@ -2833,13 +3435,17 @@ async function render() {
   // the full viewport width rather than the centred reading column. (A CSS
   // :has() rule covers this too, but support isn't universal — this class is
   // the reliable path.)
-  document.documentElement.classList.toggle("zoom-100", state.page === "jobs" || state.page === "resumes");
+  document.documentElement.classList.toggle("zoom-100", state.page === "jobs" || state.page === "resumes" || state.page === "portfolio");
 
   const wantsWide = state.page === "dashboard"
-    || (state.page === "resumes" && state.resumesView === "builder");
+    || (state.page === "resumes" && state.resumesView === "builder")
+    || state.page === "portfolio";
   content.classList.toggle("page-content--wide", wantsWide);
-  content.classList.toggle("page-content--flush", state.page === "resumes" && state.resumesView === "builder");
+  content.classList.toggle("page-content--flush",
+    (state.page === "resumes" && state.resumesView === "builder")
+    || (state.page === "portfolio" && state.portfolioView === "builder"));
   content.classList.toggle("page-content--dashboard", state.page === "dashboard");
+  setDashboardLock(state.page === "dashboard");
 
   // Deferred spinner: only replaces the visible page if the load is slow
   // enough to notice. Fast/cached loads finish first and cancel it, so the
@@ -2848,7 +3454,7 @@ async function render() {
     if (mySeq === _renderSeq) content.innerHTML = `<div class="spinner"></div>`;
   }, 180);
 
-  if (DATE_VIEW_PAGES.includes(state.page)) {
+  if (TRACKER_PAGES.includes(state.page)) {
     title.textContent = "";
     // Both toggles answer "what am I looking at", so they sit together on the
     // left; the right side of the header is left for navigating time and the
@@ -2880,29 +3486,59 @@ async function render() {
     else if (state.page === "year") { renderYearControls(controls); await renderYear(content); }
     else if (state.page === "jobs") { title.textContent = "Job Applications"; await renderJobs(content); }
     else if (state.page === "resumes") { title.textContent = "Resumes"; await renderResumesPage(content); }
-    else if (state.page === "study") { title.textContent = "Study Plan"; renderStudyControls(controls); await renderStudy(content); }
+    else if (state.page === "portfolio") { title.textContent = "Portfolio"; await renderPortfolioPage(content); }
+    else if (state.page === "study") { renderStudyControls(controls); await renderStudy(content); }
     else if (state.page === "documents") { title.textContent = "Documents"; await renderDocuments(content); }
-    else if (state.page === "jobhunt") { title.textContent = "Job Hunt"; await renderJobHunt(content); }
+    else if (state.page === "jobhunt") { title.textContent = "Job Hunt"; await jhRefresh(content); }
+    else if (state.page === "ai") { title.textContent = "AI Model"; await renderAiSettings(content); }
     else if (state.page === "telegram") { title.textContent = "Telegram"; await renderTelegram(content); }
     else if (state.page === "profile") { title.textContent = "Profile"; await renderProfile(content); }
     else if (state.page === "admin") { title.textContent = "Admin Dashboard"; await renderAdmin(content); }
   } catch (err) {
     console.error(err);
-    // Don't blame the backend for a bug in the page. A TypeError or
-    // ReferenceError means the code threw, not that the server is
-    // unreachable — reporting "is the backend running?" for those sends
-    // people off checking their server while the real fault is right here.
-    const isCodeError = err instanceof TypeError || err instanceof ReferenceError
-                        || err instanceof SyntaxError || err instanceof RangeError;
-    const body = isCodeError
+    // Don't blame the backend for a bug in the page — and, just as important,
+    // don't absolve it for a connection failure. The trap here is that fetch()
+    // reports a dead server as `TypeError: Failed to fetch`, so a naive
+    // "TypeError means our code threw" test confidently tells people the
+    // backend is fine at the exact moment it is not running. api() tags the
+    // errors that actually came out of fetch(), so check that first; the
+    // message sniff is a fallback for any throw site that hasn't been tagged
+    // (Chrome says "Failed to fetch", Firefox "NetworkError...", Safari
+    // "Load failed").
+    const isNetworkError = !!err && (
+      err.isNetworkError === true ||
+      (err instanceof TypeError && /failed to fetch|networkerror|load failed|network request failed/i.test(err.message || ""))
+    );
+    // A TypeError or ReferenceError that did NOT come from fetch() means the
+    // code threw, not that the server is unreachable — reporting "is the
+    // backend running?" for those sends people off checking their server while
+    // the real fault is right here.
+    const isCodeError = !isNetworkError && (
+      err instanceof TypeError || err instanceof ReferenceError ||
+      err instanceof SyntaxError || err instanceof RangeError
+    );
+    const body = isNetworkError
+      ? `<p class="font-semibold mb-1">⚠️ Couldn't reach the backend.</p>
+         <p class="text-xs text-gray-500">The request never got an answer from <code>${esc(API_BASE)}</code>.
+         Check the terminal the backend is running in — if it has stopped or is restarting after a code change,
+         this page will load again once it is back.</p>
+         <p class="text-xs text-gray-400 mt-2"><code>${esc(err.name)}: ${esc(err.message)}</code></p>
+         <button type="button" class="btn mt-3 text-xs" data-render-retry>Try again</button>`
+      : isCodeError
       ? `<p class="font-semibold mb-1">⚠️ Something went wrong rendering this page.</p>
-         <p class="text-xs text-gray-500">This is an application error, not a connection problem — the backend is fine.
+         <p class="text-xs text-gray-500">This is an application error, not a connection problem — the backend answered fine.
          Details are in the browser console.</p>
          <p class="text-xs text-gray-400 mt-2"><code>${esc(err.name)}: ${esc(err.message)}</code></p>`
       : `<p class="font-semibold mb-1">⚠️ Couldn't load data.</p>
          <p class="text-xs text-gray-500">Is the backend running at <code>${esc(API_BASE)}</code>?</p>
          <p class="text-xs text-gray-400 mt-2">${esc(err.message)}</p>`;
-    if (mySeq === _renderSeq) content.innerHTML = `<div class="card p-6 text-red-600 text-sm">${body}</div>`;
+    if (mySeq === _renderSeq) {
+      content.innerHTML = `<div class="card p-6 text-red-600 text-sm">${body}</div>`;
+      content.querySelector("[data-render-retry]")?.addEventListener("click", () => {
+        invalidateApiCache();   // don't re-serve whatever the failed run cached
+        render();
+      });
+    }
   } finally {
     clearTimeout(spinnerTimer);
   }
@@ -2985,11 +3621,42 @@ async function renderDashboard(content) {
   const skillColors = vividScale(8);
   const jobTypeColors = vividScale(jobTypeEntries.length);
 
-  const periods = {
-    week: { labels: week.days.map(d => d.label), data: week.days.map(d => d.completed) },
-    month: { labels: month.weeks.map((_, i) => `Wk ${i + 1}`), data: month.weeks.map(w => w.completed) },
-    year: { labels: year.months.map(m => m.name), data: year.months.map(m => m.completed) },
+  // A period that hasn't happened yet is drawn as a faint placeholder rather
+  // than a coloured zero: a bar of zero height in the series colour claims you
+  // scored nothing that week, which is a different statement from "that week is
+  // still to come". Every series here reports is_future, so all three views can
+  // say the same thing the same way.
+  const isDarkTheme = document.documentElement.getAttribute("data-theme") === "dark";
+  const futureBarColor = isDarkTheme ? "rgba(255,255,255,0.07)" : "rgba(23,26,31,0.06)";
+  const withFuture = (items, isFuture) => {
+    const vivid = vividScale(items.length);
+    return items.map((it, i) => (isFuture(it) ? futureBarColor : vivid[i]));
   };
+
+  const periods = {
+    week: {
+      labels: week.days.map(d => d.label),
+      data: week.days.map(d => d.completed),
+      colors: withFuture(week.days, d => d.is_future),
+    },
+    month: {
+      labels: month.weeks.map((_, i) => `Wk ${i + 1}`),
+      data: month.weeks.map(w => w.completed),
+      colors: withFuture(month.weeks, w => w.is_future),
+    },
+    year: {
+      labels: year.months.map(m => m.name),
+      data: year.months.map(m => m.completed),
+      colors: withFuture(year.months, m => m.is_future),
+    },
+  };
+
+  // Year-at-a-glance consistency is fetched only when asked for — 365 days is
+  // a lot to put on the critical path of every dashboard load for a view most
+  // visits won't open. Cached here so switching dashboard tabs, or flipping
+  // Month/Year repeatedly, costs one request per visit at most.
+  let yearConsistency = null;
+  let consistencyView = localStorage.getItem("momentum_consistency_view") === "year" ? "year" : "month";
 
   // ---- shell: a single body container both tabs render into. The sub-tab
   // bar itself lives in the header (see render()), so there's no wasted space
@@ -2998,139 +3665,118 @@ async function renderDashboard(content) {
 
   function renderHabitsTab() {
     const body = document.getElementById("dash-tab-body");
-    const nextSession = nextStudySession(allStudyBlocks);
-    const aiInsights = studyAiInsights(month, allStudyBlocks, studyBlocks);
-    const sessDate = nextSession ? fromISO(nextSession.date) : null;
     const todayISO = toISO(new Date());
-    const sessWhen = nextSession
-      ? (nextSession.date === todayISO ? "Today" : nextSession.date === toISO(addDays(new Date(), 1)) ? "Tomorrow" : sessDate.toLocaleDateString(undefined, { weekday: "long" }))
-      : null;
 
+    // The card is a fixed share of one screen, so the list has to be a fixed
+    // length — five rows is what reads comfortably at this height. Anything
+    // beyond that is counted, not crammed: the Study page shows them all.
+    const SUBJECT_ROWS = 5;
+    const subjectCount = new Set(allStudyBlocks.map(b => b.subject)).size;
+    const subjectsHidden = Math.max(0, subjectCount - SUBJECT_ROWS);
+
+    // ---- Layout (see the DASHBOARD LAYOUT block in styles.css) ------------
+    // A single grid: three flexible chart columns, a KPI rail down the right,
+    // and a full-width band across the bottom for the year heatmap. Cards are
+    // direct children of the grid — no wrapper rows — so placement is stated
+    // once here and never has to be undone in CSS.
+    //
+    //   row 1   consistency | activity ...... | rail
+    //   row 2   planned vs actual .... | subjects | rail
+    //   row 3   the study ledger (full width) ...........
     body.innerHTML = `
-      <div class="dash-fade-in dash-two-col">
-        <div class="dash-main-col">
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 dash-kpi-row">
-            ${kpiCardV2("📅", "Today's Progress", `${today.percent}%`, `${today.completed}/${today.total} done today`, today.percent > 0 ? "up" : "flat", habitSpark, "#3D5AFE")}
-            ${kpiCardV2("🔥", "Habit Streak", `${month.current_streak} day${month.current_streak === 1 ? "" : "s"}`, "current streak", month.current_streak > 0 ? "up" : "flat", habitSpark, "#FF6A3D")}
-            ${kpiCardV2("✅", "Tasks Today", `${tasksTodayDone}/${tasksToday.length}`, "completed today", tasksToday.length && tasksTodayDone === tasksToday.length ? "up" : "flat", null, "#1FAE6B")}
-            ${kpiCardV2("📚", "Study This Week", `${studyDone}/${studyBlocks.length}`, `${studyHours}h scheduled`, "flat", null, "#7C5CFC")}
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 dash-row items-stretch">
-            <div class="card lg:col-span-3">
-              <div class="card-header flex items-center justify-between">
-                <span>Habit Consistency</span>
-                <span class="text-[10px] font-normal opacity-70">${month.current_streak}-day streak</span>
-              </div>
-              <div class="p-4">${renderHabitConsistencyGrid(month.days)}</div>
-            </div>
-            <div class="card lg:col-span-2">
-              <div class="card-header flex items-center justify-between">
-                <span>Activity Completed</span>
-                <div class="view-tabs" id="dash-period-tabs">
-                  <button type="button" class="view-tab active" data-period="week">Week</button>
-                  <button type="button" class="view-tab" data-period="month">Month</button>
-                  <button type="button" class="view-tab" data-period="year">Year</button>
-                </div>
-              </div>
-              <div class="p-4 dash-chart-box"><canvas id="dash-period-bar"></canvas></div>
-            </div>
-          </div>
-
-          ${(() => {
-            // Adapt this row to how many subjects the user actually has: with
-            // only a few, the ledger stays wide (3/2 split); once there are
-            // enough subjects that a single column would run long, the
-            // Subjects panel takes the larger share (3/5) and lays its rows
-            // out in two columns, and the ledger narrows to suit.
-            const subjectCount = new Set(allStudyBlocks.map(b => b.subject)).size;
-            const manySubjects = subjectCount > 5;
-            const ledgerSpan = manySubjects ? "lg:col-span-2" : "lg:col-span-3";
-            const subjectsSpan = manySubjects ? "lg:col-span-3" : "lg:col-span-2";
-            return `
-          <div class="grid grid-cols-1 lg:grid-cols-5 gap-4 dash-row items-stretch">
-            <div class="card ${ledgerSpan}">
-              <div class="card-header flex items-center justify-between">
-                <span>📖 The Study Ledger</span>
-                <span class="text-[10px] font-normal opacity-70">scrolled to latest month</span>
-              </div>
-              <div class="p-4 flex items-center dash-ledger-box">${renderStudyLedgerHeatmap(allStudyBlocks, "dash-study-ledger-scroll")}</div>
-            </div>
-            <div class="card ${subjectsSpan}">
-              <div class="card-header flex items-center justify-between">
-                <span>Subjects</span>
-                <span class="text-[10px] font-normal opacity-70">${subjectCount} total</span>
-              </div>
-              ${renderSubjectsPanel(allStudyBlocks, true, manySubjects)}
-            </div>
-          </div>`;
-          })()}
-
-          <div class="card">
-            <div class="card-header flex items-center justify-between">
-              <span>⏱️ Planned vs Actual Study Time</span>
-              <span class="text-[10px] font-normal opacity-70">this week, from the focus timer</span>
-            </div>
-            <div class="p-4 dash-chart-box"><canvas id="dash-planned-actual"></canvas></div>
-          </div>
+      <div class="dash-fade-in dash-grid">
+        <div class="dash-kpi-rail">
+          ${kpiCardV2("📅", "Today's Progress", `${today.percent}%`, `${today.completed}/${today.total} done today`, today.percent > 0 ? "up" : "flat", habitSpark, "#0E9384")}
+          ${kpiCardV2("🔥", "Habit Streak", `${month.current_streak} day${month.current_streak === 1 ? "" : "s"}`, "current streak", month.current_streak > 0 ? "up" : "flat", habitSpark, "#FF6A3D")}
+          ${kpiCardV2("✅", "Tasks Today", `${tasksTodayDone}/${tasksToday.length}`, "completed today", tasksToday.length && tasksTodayDone === tasksToday.length ? "up" : "flat", null, "#1FAE6B")}
+          ${kpiCardV2("📚", "Study This Week", `${studyDone}/${studyBlocks.length}`, `${studyHours}h scheduled`, "flat", null, "#7C5CFC")}
         </div>
 
-        <aside class="dash-side-col">
-          <div class="card dash-side-card">
-            <div class="card-header flex items-center justify-between">
-              <span>📅 Upcoming Study Session</span>
-            </div>
-            <div class="p-4">
-              ${nextSession ? `
-                <div class="study-sess-when"><span class="study-sess-day">${sessWhen}</span> <span class="study-sess-time">${nextSession.start_time} – ${nextSession.end_time}</span></div>
-                <div class="study-sess-subject">${esc(nextSession.subject)}</div>
-                ${nextSession.notes ? `<div class="study-sess-notes">${esc(nextSession.notes)}</div>` : ""}
-                <button class="btn btn-accent w-full justify-center mt-4" data-goto-study>▶ Open Study Plan</button>
-              ` : `
-                <p class="text-sm text-gray-400 py-3">No upcoming study sessions scheduled.</p>
-                <button class="btn btn-accent w-full justify-center mt-1" data-goto-study>+ Schedule a session</button>
-              `}
+        <section class="card dash-cell">
+          <div class="card-header">
+            <span>Habit Consistency</span>
+            <div class="view-tabs" id="dash-consistency-tabs">
+              <button type="button" class="view-tab ${consistencyView === "month" ? "active" : ""}" data-consistency="month">Month</button>
+              <button type="button" class="view-tab ${consistencyView === "year" ? "active" : ""}" data-consistency="year">Year</button>
             </div>
           </div>
+          <div class="dash-cell-body dash-cell-body--fit" id="dash-consistency-body">${renderHabitConsistencyGrid(month.days)}</div>
+        </section>
 
-          <div class="card dash-side-card">
-            <div class="card-header flex items-center gap-2"><span>✨ AI Insights</span></div>
-            <div class="p-4 flex flex-col gap-3">
-              ${aiInsights.map(i => `
-                <div class="ai-insight ${i.tone}">
-                  <div class="ai-insight-icon">${i.icon}</div>
-                  <div class="min-w-0">
-                    <div class="ai-insight-title">${i.title}</div>
-                    <div class="ai-insight-body">${i.body}</div>
-                  </div>
-                </div>
-              `).join("")}
-              <button class="ai-insight-viewall" data-goto-study>View all insights →</button>
+        <section class="card dash-cell dash-cell--w2">
+          <div class="card-header">
+            <span>Activity Completed</span>
+            <div class="view-tabs" id="dash-period-tabs">
+              <button type="button" class="view-tab active" data-period="week">Week</button>
+              <button type="button" class="view-tab" data-period="month">Month</button>
+              <button type="button" class="view-tab" data-period="year">Year</button>
             </div>
           </div>
+          <div class="dash-cell-body dash-chart-box"><canvas id="dash-period-bar"></canvas></div>
+        </section>
 
-          <div class="card dash-side-card">
-            <div class="card-header">Quick Actions</div>
-            <div class="p-2">
-              <button class="quick-action" data-action="add-job"><span class="qa-icon">➕</span><span class="qa-label">Add Job Application</span><span class="qa-arrow">›</span></button>
-              <button class="quick-action" data-action="schedule-study"><span class="qa-icon">📅</span><span class="qa-label">Schedule Study Session</span><span class="qa-arrow">›</span></button>
-              <button class="quick-action" data-action="focus-timer"><span class="qa-icon">⏱️</span><span class="qa-label">Start Focus Timer</span><span class="qa-arrow">›</span></button>
-              <button class="quick-action" data-action="upload-doc"><span class="qa-icon">⬆️</span><span class="qa-label">Upload Document</span><span class="qa-arrow">›</span></button>
-            </div>
+        <section class="card dash-cell dash-cell--w2">
+          <div class="card-header">
+            <span>⏱️ Planned vs Actual Study Time</span>
+            <span class="card-header-note">this week, from the focus timer</span>
           </div>
-        </aside>
+          <div class="dash-cell-body dash-chart-box"><canvas id="dash-planned-actual"></canvas></div>
+        </section>
+
+        <section class="card dash-cell">
+          <div class="card-header">
+            <span>Subjects</span>
+            <span class="card-header-note">${subjectCount} total</span>
+          </div>
+          <div class="dash-cell-body dash-cell-body--list">
+            ${renderSubjectsPanel(allStudyBlocks, true, false)}
+            ${subjectsHidden ? `<p class="dash-more">+${subjectsHidden} more on the Study page</p>` : ""}
+          </div>
+        </section>
       </div>
     `;
 
-    barChart("dash-period-bar", periods.week.labels, periods.week.data, periods.week.labels.findIndex((_, i) => week.days[i]?.date === toISO(now)), vividScale(periods.week.labels.length));
+    // ---- Habit Consistency: Month / Year ----
+    const consistencyBody = document.getElementById("dash-consistency-body");
+    async function showConsistency(view) {
+      consistencyView = view;
+      localStorage.setItem("momentum_consistency_view", view);
+      body.querySelectorAll("#dash-consistency-tabs [data-consistency]")
+        .forEach(b => b.classList.toggle("active", b.dataset.consistency === view));
+
+      if (view === "month") {
+        consistencyBody.innerHTML = renderHabitConsistencyGrid(month.days);
+        return;
+      }
+      if (!yearConsistency) {
+        consistencyBody.innerHTML = `<p class="dash-empty">Loading the year…</p>`;
+        try {
+          yearConsistency = (await get(`/api/summary/year/${now.getFullYear()}/days`)).days || [];
+        } catch {
+          // Leave the cache empty so a later attempt can retry rather than
+          // showing this message forever.
+          consistencyBody.innerHTML = `<p class="dash-empty">Couldn't load the year view.</p>`;
+          return;
+        }
+      }
+      // The user may have flipped back to Month while the request was in
+      // flight; don't overwrite what they're looking at now.
+      if (consistencyView !== "year") return;
+      consistencyBody.innerHTML = renderYearConsistencyGrid(yearConsistency, now.getFullYear());
+    }
+    body.querySelectorAll("#dash-consistency-tabs [data-consistency]").forEach(btn => {
+      btn.addEventListener("click", () => showConsistency(btn.dataset.consistency));
+    });
+    if (consistencyView === "year") showConsistency("year");
+
+    barChart("dash-period-bar", periods.week.labels, periods.week.data, periods.week.labels.findIndex((_, i) => week.days[i]?.date === toISO(now)), periods.week.colors);
     document.querySelectorAll("#dash-period-tabs [data-period]").forEach(btn => {
       btn.addEventListener("click", () => {
         document.querySelectorAll("#dash-period-tabs [data-period]").forEach(b => b.classList.toggle("active", b === btn));
         const p = periods[btn.dataset.period];
-        barChart("dash-period-bar", p.labels, p.data, -1, vividScale(p.labels.length));
+        barChart("dash-period-bar", p.labels, p.data, -1, p.colors);
       });
     });
-    scrollHeatmapToLatest("dash-study-ledger-scroll");
 
     // Planned vs Actual — planned = scheduled duration of every block that
     // day; actual = minutes logged by the focus-timer stopwatch (only
@@ -3142,136 +3788,100 @@ async function renderDashboard(content) {
     const plannedByDay = weekDates.map(iso => studyBlocks.filter(b => b.date === iso).reduce((sum, b) => sum + Math.max(0, timeToMinutes(b.end_time) - timeToMinutes(b.start_time)), 0));
     const actualByDay = weekDates.map(iso => studyBlocks.filter(b => b.date === iso).reduce((sum, b) => sum + (actualLog[b.id] || 0), 0));
     groupedBarChart("dash-planned-actual", weekDates.map(iso => fromISO(iso).toLocaleDateString(undefined, { weekday: "short" })), [
-      { label: "Planned (min)", data: plannedByDay, color: "#B9C6F5" },
+      { label: "Planned (min)", data: plannedByDay, color: "#9BD9D0" },
       { label: "Actual (min)", data: actualByDay, color: chartTheme().accent },
     ]);
-
-    // right-panel navigation + quick actions
-    body.querySelectorAll("[data-goto-study]").forEach(el => el.addEventListener("click", () => navigate("study")));
-    body.querySelectorAll("[data-action]").forEach(el => el.addEventListener("click", () => {
-      const a = el.dataset.action;
-      if (a === "add-job") { navigate("jobs"); }
-      else if (a === "schedule-study" || a === "focus-timer") { navigate("study"); }
-      else if (a === "upload-doc") { navigate("resumes"); }
-    }));
   }
 
   function renderJobsTab() {
     const body = document.getElementById("dash-tab-body");
-    const followUps = jobStats.upcoming_follow_ups;
-    const insights = quickJobInsights(jobStats, allJobs);
+    // Board Performance is a list, not a five-column table. Five columns of
+    // bar-tracks and badges cannot fit a third of the screen without a
+    // horizontal scrollbar, so each board becomes one row: name, the two
+    // counts as a single proportional bar, and the two rates as badges.
+    // Same reasoning as Subjects: a fixed-height card gets a fixed-length list.
+    // Boards are shown busiest-first so the four that matter are the four you
+    // see, rather than whichever four happen to sort first.
+    const BOARD_ROWS = 4;
+    const maxTotal = Math.max(1, ...boardStats.map(x => x.total));
+    const rankedBoards = boards
+      .map((b, i) => ({ board: b, s: boardStats[i] }))
+      .sort((a, b) => b.s.total - a.s.total);
+    const boardsHidden = Math.max(0, rankedBoards.length - BOARD_ROWS);
+    const boardRows = rankedBoards.slice(0, BOARD_ROWS).map(({ board: b, s }) => {
+      const interviews = (s.status_counts.interview || 0) + (s.status_counts.offer || 0);
+      const offerRate = s.total ? Math.round((s.offers / s.total) * 100) : 0;
+      return `
+        <div class="board-row">
+          <div class="board-row-top">
+            <span class="board-row-name" title="${esc(b.name)}">${esc(b.name)}</span>
+            <span class="board-row-rates">
+              <span class="rate-badge ${rateBadgeClass(s.interview_rate, 20, 10)}" title="Interview rate">${s.interview_rate}%</span>
+              <span class="rate-badge ${rateBadgeClass(offerRate, 8, 3)}" title="Offer rate">${offerRate}%</span>
+            </span>
+          </div>
+          <div class="board-row-bar" title="${esc(s.total)} applications · ${interviews} interviews">
+            <span class="board-row-fill" style="width:${Math.round((s.total / maxTotal) * 100)}%; background:#0E9384;"></span>
+            <span class="board-row-fill board-row-fill--alt" style="width:${Math.round((interviews / maxTotal) * 100)}%; background:#7C5CFC;"></span>
+          </div>
+          <div class="board-row-meta">${esc(s.total)} applied · ${interviews} interviewed</div>
+        </div>`;
+    }).join("");
+
+    // ---- Layout (see the DASHBOARD LAYOUT block in styles.css) ------------
+    //   row 1   applications over time (wide) ..... | status | rail
+    //   row 2   top skills | job type | board performance | rail
+    //   row 3   application activity (full width) .................
     body.innerHTML = `
-      <div class="dash-fade-in dash-two-col">
-        <div class="dash-main-col">
-          <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 dash-kpi-row">
-            ${kpiCardV2("📨", "Applications", jobStats.total, `${jobStats.applications_per_week.at(-1)?.count ?? 0} this week`, "flat", weeklyApps, "#3D5AFE")}
-            ${kpiCardV2("📞", "Phone Screens", jobStats.status_counts.phone_screen || 0, "in pipeline", "flat", null, "#0EA5E9")}
-            ${kpiCardV2("🧑‍💼", "Interviews", (jobStats.status_counts.interview || 0) + (jobStats.status_counts.offer || 0), `${jobStats.interview_rate}% rate`, jobStats.interview_rate > 0 ? "up" : "flat", weeklyInterviews, "#1FAE6B")}
-            ${kpiCardV2("🏆", "Offers", jobStats.offers, jobStats.offers > 0 ? "🎉" : "keep going", jobStats.offers > 0 ? "up" : "flat", weeklyOffers, "#FF6A3D")}
-            ${kpiCardV2("📈", "Conversion Rate", `${jobStats.interview_rate}%`, "applied → interview", "flat", weeklyConversion, "#7C5CFC")}
-          </div>
-
-          <div class="card dash-row">
-            <div class="card-header flex items-center justify-between">
-              <span>Applications &amp; Interviews Over Time</span>
-              <span class="text-[10px] font-normal opacity-70">last 8 weeks, all boards</span>
-            </div>
-            <div class="p-4 dash-chart-box--lg"><canvas id="dash-overtime-line"></canvas></div>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 dash-row items-stretch">
-            <div class="card">
-              <div class="card-header">Applications by Status</div>
-              <div class="p-4 dash-chart-box">
-                ${statusEntries.length ? `<canvas id="dash-status-donut"></canvas>` : `<p class="text-sm text-gray-400 text-center py-14">No applications yet</p>`}
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header">Top Skills Required</div>
-              <div class="p-4 dash-chart-box"><canvas id="dash-skills-bar"></canvas></div>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 dash-row items-stretch">
-            <div class="card">
-              <div class="card-header">Applications by Job Type</div>
-              <div class="p-4 dash-chart-box">
-                ${jobTypeEntries.length ? `<canvas id="dash-jobtype-pie"></canvas>` : `<p class="text-sm text-gray-400 text-center py-14">No applications yet to break down by job type.</p>`}
-              </div>
-            </div>
-            <div class="card">
-              <div class="card-header flex items-center justify-between">
-                <span>Application Activity Heatmap</span>
-                <span class="text-[10px] font-normal opacity-70">scrolled to latest month</span>
-              </div>
-              <div class="p-4 flex items-center dash-ledger-box">${renderApplicationHeatmap(allJobs, "dash-heatmap-scroll")}</div>
-            </div>
-          </div>
-
-          <div class="card overflow-x-auto">
-            <div class="card-header">Board Performance</div>
-            <div class="p-3">
-              <table class="dash-table">
-                <thead><tr><th>Board</th><th>Applications</th><th>Interviews</th><th>Interview Rate</th><th>Offer Rate</th></tr></thead>
-                <tbody>
-                  ${boards.map((b, i) => {
-                    const s = boardStats[i];
-                    const maxTotal = Math.max(1, ...boardStats.map(x => x.total));
-                    const maxInt = Math.max(1, ...boardStats.map(x => (x.status_counts.interview || 0) + (x.status_counts.offer || 0)));
-                    const interviews = (s.status_counts.interview || 0) + (s.status_counts.offer || 0);
-                    const offerRate = s.total ? Math.round((s.offers / s.total) * 100) : 0;
-                    return `
-                      <tr>
-                        <td class="font-semibold text-navy">${esc(b.name)}</td>
-                        <td><div class="flex items-center gap-2"><div class="bar-track"><div class="bar-fill" style="width:${Math.round((s.total / maxTotal) * 100)}%; background:#3D5AFE;"></div></div><span class="text-xs text-gray-500 shrink-0">${esc(s.total)}</span></div></td>
-                        <td><div class="flex items-center gap-2"><div class="bar-track"><div class="bar-fill" style="width:${Math.round((interviews / maxInt) * 100)}%; background:#7C5CFC;"></div></div><span class="text-xs text-gray-500 shrink-0">${interviews}</span></div></td>
-                        <td><span class="rate-badge ${rateBadgeClass(s.interview_rate, 20, 10)}">${s.interview_rate}%</span></td>
-                        <td><span class="rate-badge ${rateBadgeClass(offerRate, 8, 3)}">${offerRate}%</span></td>
-                      </tr>`;
-                  }).join("")}
-                </tbody>
-              </table>
-            </div>
-          </div>
+      <div class="dash-fade-in dash-grid">
+        <div class="dash-kpi-rail dash-kpi-rail--5">
+          ${kpiCardV2("📨", "Applications", jobStats.total, `${jobStats.applications_per_week.at(-1)?.count ?? 0} this week`, "flat", weeklyApps, "#0E9384")}
+          ${kpiCardV2("📞", "Phone Screens", jobStats.status_counts.phone_screen || 0, "in pipeline", "flat", null, "#0EA5E9")}
+          ${kpiCardV2("🧑‍💼", "Interviews", (jobStats.status_counts.interview || 0) + (jobStats.status_counts.offer || 0), `${jobStats.interview_rate}% rate`, jobStats.interview_rate > 0 ? "up" : "flat", weeklyInterviews, "#1FAE6B")}
+          ${kpiCardV2("🏆", "Offers", jobStats.offers, jobStats.offers > 0 ? "🎉" : "keep going", jobStats.offers > 0 ? "up" : "flat", weeklyOffers, "#FF6A3D")}
+          ${kpiCardV2("📈", "Conversion Rate", `${jobStats.interview_rate}%`, "applied → interview", "flat", weeklyConversion, "#7C5CFC")}
         </div>
 
-        <aside class="dash-side-col">
-          <div class="card dash-side-card">
-            <div class="card-header flex items-center justify-between">
-              <span>Upcoming Follow-ups</span>
-              <span class="text-base leading-none">🗓️</span>
-            </div>
-            <div class="p-4">
-              <p class="text-xs text-gray-400 mb-3">Applications with a "review by" date in the next 7 days — act or edit the form in the Job Applications page.</p>
-              ${followUps.length ? followUps.map(j => `
-                <div class="followup-item">
-                  ${companyAvatar(j.company_name)}
-                  <div class="min-w-0 flex-1">
-                    <div class="followup-company">${esc(j.company_name)}</div>
-                    <div class="followup-role">${esc(j.role_title)}</div>
-                    <span class="followup-badge">Review by ${fmtNice(fromISO(j.next_action_date))}</span>
-                  </div>
-                </div>
-              `).join("") : `<p class="text-sm text-gray-400 py-3">No upcoming follow-ups in the next 7 days 🎉</p>`}
-              ${followUps.length ? `<button class="followup-viewall" data-goto-jobs>View all follow-ups →</button>` : ""}
-            </div>
+        <section class="card dash-cell dash-cell--w2">
+          <div class="card-header">
+            <span>Applications &amp; Interviews Over Time</span>
+            <span class="card-header-note">last 8 weeks, all boards</span>
           </div>
+          <div class="dash-cell-body dash-chart-box"><canvas id="dash-overtime-line"></canvas></div>
+        </section>
 
-          <div class="card dash-side-card">
-            <div class="card-header">Quick Insights</div>
-            <div class="p-4 flex flex-col gap-3">
-              ${insights.map(i => `
-                <div class="quick-insight">
-                  <div class="quick-insight-icon ${i.tone}">${i.icon}</div>
-                  <div class="min-w-0">
-                    <div class="quick-insight-title">${i.title}</div>
-                    <div class="quick-insight-body">${i.body}</div>
-                  </div>
-                </div>
-              `).join("")}
-            </div>
+        <section class="card dash-cell">
+          <div class="card-header"><span>Applications by Status</span></div>
+          <div class="dash-cell-body dash-chart-box">
+            ${statusEntries.length ? `<canvas id="dash-status-donut"></canvas>` : `<p class="dash-empty">No applications yet</p>`}
           </div>
-        </aside>
+        </section>
+
+        <section class="card dash-cell">
+          <div class="card-header">
+            <span>Top Skills Required</span>
+            <span class="card-header-note">most requested</span>
+          </div>
+          <div class="dash-cell-body dash-chart-box"><canvas id="dash-skills-bar"></canvas></div>
+        </section>
+
+        <section class="card dash-cell">
+          <div class="card-header"><span>Applications by Job Type</span></div>
+          <div class="dash-cell-body dash-chart-box">
+            ${jobTypeEntries.length ? `<canvas id="dash-jobtype-pie"></canvas>` : `<p class="dash-empty">No applications yet to break down by job type.</p>`}
+          </div>
+        </section>
+
+        <section class="card dash-cell">
+          <div class="card-header">
+            <span>Board Performance</span>
+            <span class="card-header-note">interview · offer rate</span>
+          </div>
+          <div class="dash-cell-body dash-cell-body--list">
+            ${boardRows || `<p class="dash-empty">No boards yet</p>`}
+            ${boardsHidden ? `<p class="dash-more">+${boardsHidden} more board${boardsHidden === 1 ? "" : "s"}</p>` : ""}
+          </div>
+        </section>
       </div>
     `;
 
@@ -3279,7 +3889,7 @@ async function renderDashboard(content) {
       "dash-overtime-line",
       jobStats.applications_per_week.map(w => w.week_start.slice(5)),
       [
-        { label: "Applications", data: weeklyApps, color: "#3D5AFE", fill: true },
+        { label: "Applications", data: weeklyApps, color: "#0E9384", fill: true },
         { label: "Interviews", data: weeklyInterviews, color: "#7C5CFC" },
         { label: "Offers", data: weeklyOffers, color: "#1FAE6B", dash: [6, 4] },
       ]
@@ -3293,16 +3903,14 @@ async function renderDashboard(content) {
         DONUT_OPTS
       );
     }
+    // Horizontal, and highest-first: a ranked list reads top-to-bottom.
     const skills = jobStats.top_skills.slice(0, 8);
-    barChart("dash-skills-bar", skills.map(s => s.skill), skills.map(s => s.count), -1, skillColors);
+    hBarChart("dash-skills-bar", skills.map(s => s.skill), skills.map(s => s.count), skillColors);
     if (jobTypeEntries.length) {
       // Same helper + same opts as the Status donut above, so the two
       // stack up with identical inner/outer radii and line up vertically.
       multiDonutChart("dash-jobtype-pie", jobTypeEntries.map(e => e[0]), jobTypeEntries.map(e => e[1]), jobTypeColors, DONUT_OPTS);
     }
-    scrollHeatmapToLatest("dash-heatmap-scroll");
-
-    body.querySelector("[data-goto-jobs]")?.addEventListener("click", () => navigate("jobs"));
   }
 
   // ---- instant sub-tab switching: the tab buttons live in the header
@@ -3338,6 +3946,10 @@ async function renderDashboard(content) {
     localStorage.setItem("momentum_dashboard_tab", tab);
     updateDashHeader(tab);
     RENDERERS[tab]();
+    // The grid is rebuilt on every tab swap, so the height has to be reapplied
+    // to the new element — and the header's own height differs between the two
+    // tabs (Study has a two-line title), which moves the grid's top.
+    scheduleDashboardFit();
   }
   document.querySelectorAll("#dash-subtabs [data-dash-tab]").forEach(btn => {
     btn.addEventListener("click", () => showDashTab(btn.dataset.dashTab));
@@ -3386,6 +3998,7 @@ function goToDay(iso) {
   state.day = fromISO(iso);
   state.page = "day";
   state.trackerLastPage = "day";
+  state.trackerLastDateView = "day";
   renderNav();
   scrollPageTo(0);
   render();
@@ -3394,6 +4007,7 @@ function goToWeek(iso) {
   state.weekStart = weekStartOf(fromISO(iso));
   state.page = "week";
   state.trackerLastPage = "week";
+  state.trackerLastDateView = "week";
   renderNav();
   scrollPageTo(0);
   render();
@@ -3403,6 +4017,7 @@ function goToMonth(year, month) {
   state.monthMonth = month;
   state.page = "month";
   state.trackerLastPage = "month";
+  state.trackerLastDateView = "month";
   renderNav();
   scrollPageTo(0);
   render();
@@ -4069,9 +4684,9 @@ async function renderMonth(content) {
       <div class="card-header flex items-center justify-between">
         <span>${MONTH_NAMES[state.monthMonth - 1]} ${state.monthYear}</span>
         <span class="flex items-center gap-3 text-[10px] font-normal text-white/60">
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm inline-block" style="background:#EEF0F2"></span>no data</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm inline-block" style="background:#EAF0EE"></span>no data</span>
           <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm inline-block" style="background:#FBE3E3"></span>0%</span>
-          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm inline-block" style="background:#3D5AFE"></span>100%</span>
+          <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm inline-block" style="background:#0E9384"></span>100%</span>
         </span>
       </div>
       <div class="p-3 sm:p-5">
@@ -4115,7 +4730,7 @@ async function renderMonth(content) {
     (i) => goToWeek(agg.weeks[i].week_start));
   donutChart("month-donut", agg.percent);
   const weekRows = weeksByWeekday(summary.days, dayPct, dayTotal);
-  const weekColors = ["#3D5AFE", "#7C9BFF", "#B9C6F5", "#7C5CFC", "#8E9CE8"];
+  const weekColors = ["#0E9384", "#5BC8BB", "#9BD9D0", "#7C5CFC", "#6DBFB4"];
   groupedBarChart("month-weekday-bar", DAY_LABELS, weekRows.map((w, i) => ({
     label: `Week ${i + 1}`,
     data: w.values,
@@ -4145,7 +4760,7 @@ async function renderMonth(content) {
     const done = dayDone(d);
     const percent = dayPct(d) || 0;
     const hasData = total > 0;
-    const bg = !hasData ? "#EEF0F2" : percent === 0 ? "#FBE3E3" : `rgba(61,90,254,${0.12 + (percent / 100) * 0.78})`;
+    const bg = !hasData ? "#EAF0EE" : percent === 0 ? "#FBE3E3" : `rgba(14,147,132,${0.12 + (percent / 100) * 0.78})`;
     const numColor = hasData && percent >= 55 ? "#0F1216" : "#171A1F";
     html += `<button type="button" class="cal-cell ${isToday ? "cal-cell-today" : ""}" style="background:${bg}"
                 data-goto-day="${d.date}"
@@ -4288,14 +4903,14 @@ const STATUS_COLORS = {
   ghosted: "bg-gray-200 text-gray-500", withdrawn: "bg-gray-200 text-gray-500",
 };
 const KANBAN_ACCENTS = {
-  applied: "#3D5AFE", oa_test: "#7C5CFC", phone_screen: "#0EA5E9", interview: "#E0A93E",
+  applied: "#0E9384", oa_test: "#7C5CFC", phone_screen: "#0EA5E9", interview: "#E0A93E",
   offer: "#1FAE6B", rejected: "#E5484D", ghosted: "#93968E", withdrawn: "#93968E",
 };
 
 // Deterministic company-initial avatar color, cycling through the same
 // palette as the landing page's kanban mockup — so a given company always
 // gets the same color, and the board has that same playful multi-color look.
-const COMPANY_AVATAR_COLORS = ["#3D5AFE", "#7C5CFC", "#FF6A3D", "#1FAE6B", "#E0A93E"];
+const COMPANY_AVATAR_COLORS = ["#0E9384", "#7C5CFC", "#FF6A3D", "#1FAE6B", "#E0A93E"];
 function companyAvatar(companyName, size) {
   const name = (companyName || "?").trim();
   const initials = name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase() || "?";
@@ -4443,7 +5058,7 @@ async function renderJobs(content) {
 
   // Each board gets a stable dot color so it's recognisable at a glance in the
   // dropdown (and on the collapsed trigger).
-  const BOARD_DOT_COLORS = ["#3D5AFE", "#7C5CFC", "#0EA5E9", "#1FAE6B", "#E0A93E", "#E5484D", "#14B8A6", "#EC4899"];
+  const BOARD_DOT_COLORS = ["#0E9384", "#7C5CFC", "#0EA5E9", "#1FAE6B", "#E0A93E", "#E5484D", "#14B8A6", "#EC4899"];
   const boardDot = (id) => BOARD_DOT_COLORS[Math.abs(Number(id) || 0) % BOARD_DOT_COLORS.length];
 
   // The header's left zone clips its overflow so a long page title truncates.
@@ -4595,7 +5210,7 @@ async function renderJobs(content) {
       viewContainer.innerHTML = `
         <div class="jobs-stats-row">
           <div class="mini-stat-card">
-            <span class="mini-stat-icon" style="background:rgba(61,90,254,0.12);color:#3D5AFE;">📨</span>
+            <span class="mini-stat-icon" style="background:rgba(14,147,132,0.12);color:#0E9384;">📨</span>
             <div><p class="mini-stat-value">${stats.total}</p><p class="mini-stat-label">Total Applications</p></div>
           </div>
           <div class="mini-stat-card">
@@ -4668,9 +5283,17 @@ async function renderJobs(content) {
 
       function renderListView(filtered) {
         const resumeMap = Object.fromEntries(resumes.map(r => [r.id, r.name]));
+        // Twelve columns of unrelated facts make a table on a laptop and an
+        // unreadable smear on a phone. The `rt` class hands this same markup to
+        // a stylesheet rule that restacks each row into a card below 640px,
+        // using each cell's data-label as its heading — so there stays one
+        // renderer and one source of truth, with no second mobile template to
+        // keep in step. Cells holding nothing but a control are marked
+        // data-rt-action and gather into a single row of buttons at the foot of
+        // the card rather than each taking a labelled line of its own.
         document.getElementById("jobs-table-container").innerHTML = `
           <div class="card overflow-x-auto">
-            <table class="w-full text-sm">
+            <table class="w-full text-sm rt">
               <thead>
                 <tr class="text-left text-gray-400 text-xs uppercase tracking-wide border-b border-gray-100">
                   <th class="p-3">Company</th><th class="p-3">Role</th><th class="p-3">Location</th><th class="p-3">Applied</th>
@@ -4682,27 +5305,27 @@ async function renderJobs(content) {
               <tbody class="divide-y divide-gray-50">
                 ${filtered.map(j => `
                   <tr class="hover:bg-gray-50/60 cursor-pointer" data-job-open="${j.id}">
-                    <td class="p-3 font-semibold text-navy" style="border-left:3px solid ${j.color || "transparent"};">${esc(j.company_name)}</td>
-                    <td class="p-3">${esc(j.role_title)}</td>
-                    <td class="p-3 text-gray-500">${esc(j.location) || "—"}</td>
-                    <td class="p-3 text-gray-500">${j.date_applied}</td>
-                    <td class="p-3">
+                    <td class="p-3 font-semibold text-navy" data-rt-title style="border-left:3px solid ${j.color || "transparent"};">${esc(j.company_name)}</td>
+                    <td class="p-3" data-rt-sub data-label="Role">${esc(j.role_title)}</td>
+                    <td class="p-3 text-gray-500" data-label="Location">${esc(j.location) || "—"}</td>
+                    <td class="p-3 text-gray-500" data-label="Applied">${j.date_applied}</td>
+                    <td class="p-3" data-label="Status">
                       <select class="!w-auto badge ${STATUS_COLORS[j.status]}" data-status-select="${j.id}" onclick="event.stopPropagation()">
                         ${Object.entries(STATUS_LABELS).map(([k, v]) => `<option value="${k}" ${k === j.status ? "selected" : ""}>${v}</option>`).join("")}
                       </select>
                     </td>
-                    <td class="p-3">${tagChips(j.tags) || `<span class="text-gray-300">—</span>`}</td>
-                    <td class="p-3 text-xs text-gray-500 max-w-[180px]">${esc(j.skills_required) || "—"}</td>
-                    <td class="p-3 text-xs text-gray-500">${j.resume_id ? esc(resumeMap[j.resume_id] || "—") : "—"}</td>
-                    <td class="p-3">
+                    <td class="p-3" data-label="Tags">${tagChips(j.tags) || `<span class="text-gray-300">—</span>`}</td>
+                    <td class="p-3 text-xs text-gray-500 max-w-[180px]" data-label="Skills">${esc(j.skills_required) || "—"}</td>
+                    <td class="p-3 text-xs text-gray-500" data-label="Resume">${j.resume_id ? esc(resumeMap[j.resume_id] || "—") : "—"}</td>
+                    <td class="p-3" data-label="ATS score">
                       <button class="badge ${j.ats_score != null ? scoreColor(j.ats_score) : "bg-gray-100 text-gray-500"} cursor-pointer" data-ats-open="${j.id}" onclick="event.stopPropagation()">
                         ${j.ats_score != null ? j.ats_score + "%" : "Run check"}
                       </button>
                     </td>
-                    <td class="p-3"><button class="text-navy underline text-xs" data-view-cover="${j.id}" onclick="event.stopPropagation()">${j.cover_letter ? "View" : "Generate"}</button></td>
-                    <td class="p-3"><button class="text-navy hover:text-mint" data-job-open="${j.id}" title="Open">Open →</button></td>
-                    <td class="p-3"><span class="text-gray-300 cursor-pointer" data-job-delete="${j.id}" data-job-company="${esc(j.company_name)}" onclick="event.stopPropagation()">✕</span></td>
-                  </tr>`).join("") || `<tr><td colspan="12" class="p-6 text-center text-gray-400">No applications yet — click "+ New Application" to add your first one.</td></tr>`}
+                    <td class="p-3" data-label="Cover letter"><button class="text-navy underline text-xs" data-view-cover="${j.id}" onclick="event.stopPropagation()">${j.cover_letter ? "View" : "Generate"}</button></td>
+                    <td class="p-3" data-rt-action><button class="text-navy hover:text-mint" data-job-open="${j.id}" title="Open">Open →</button></td>
+                    <td class="p-3" data-rt-action><span class="text-gray-300 cursor-pointer" data-job-delete="${j.id}" data-job-company="${esc(j.company_name)}" onclick="event.stopPropagation()">✕</span></td>
+                  </tr>`).join("") || `<tr><td colspan="12" class="p-6 text-center text-gray-400" data-rt-empty>No applications yet — click "+ New Application" to add your first one.</td></tr>`}
               </tbody>
             </table>
           </div>
@@ -4727,7 +5350,7 @@ async function renderJobs(content) {
       // columns inherit the status of whichever core group they're added near
       // (default "applied") so the funnel/stats stay coherent.
       const CORE_COLUMNS = [
-        { key: "applied", label: "Applied", status: "applied", accent: "#4C6FE7", icon: "📨" },
+        { key: "applied", label: "Applied", status: "applied", accent: "#14B8A6", icon: "📨" },
         { key: "oa_test", label: "OA / Test", status: "oa_test", accent: "#7C5CFC", icon: "📝" },
         { key: "interview", label: "Interview", status: "interview", accent: "#E4A335", icon: "🗣️" },
         { key: "offer", label: "Offer", status: "offer", accent: "#3C9D7B", icon: "🎁" },
@@ -5399,7 +6022,7 @@ async function renderJobs(content) {
 // Rendered into #job-overlay-root (a full-screen layer above the app), so
 // they behave like dedicated pages rather than cramped modals.
 // ============================================================================
-const JOB_COLOR_SWATCHES = ["#E4A335", "#E2604F", "#4C6FE7", "#3C9D7B", "#7C5CFC", "#0EA5E9", "#EC4899", "#93968E"];
+const JOB_COLOR_SWATCHES = ["#E4A335", "#E2604F", "#14B8A6", "#3C9D7B", "#7C5CFC", "#0EA5E9", "#EC4899", "#93968E"];
 
 function jobOverlayRoot() {
   let root = document.getElementById("job-overlay-root");
@@ -5472,7 +6095,9 @@ function openAddJobPage(resumes, activeBoardId, boards, onSaved) {
               <div class="jf-field"><label>Board</label><select name="board_id">${boards.map(b => `<option value="${b.id}" ${b.id === activeBoardId ? "selected" : ""}>${esc(b.name)}</option>`).join("")}</select></div>
               <div class="jf-field jf-col-2"><label>Date applied</label><input type="date" name="date_applied" value="${toISO(new Date())}" required /></div>
 
-              <div class="jf-field jf-col-4"><label>Job description</label><textarea name="job_description" rows="4" placeholder="Paste it here — powers the ATS checker &amp; AI tools"></textarea></div>
+              <div class="jf-field jf-col-4"><label>Job description</label><textarea name="job_description" rows="4" placeholder="Paste it here — powers the ATS checker &amp; AI tools"></textarea>
+                <p class="jf-autofill-hint" id="add-autofill-hint" hidden></p>
+              </div>
 
               <div class="jf-field jf-col-4">
                 <label>Resume used</label>
@@ -5527,16 +6152,60 @@ function openAddJobPage(resumes, activeBoardId, boards, onSaved) {
     }
     wireColorSwatches(body.querySelector("#add-color-swatches"), body.querySelector('input[name="color"]'));
 
+    // ---- fill the rest of the row from the description ----
+    // Location, skills, salary and tags are all stated inside the description
+    // and almost never typed in by hand, which left the board's own columns —
+    // and the charts drawn from them — empty. The backend derives them on save
+    // regardless; doing it here as well means they appear in the form first,
+    // where they can be corrected, rather than turning up on the board as a
+    // surprise. Only blank fields are ever written to.
+    const descField = form.elements.job_description;
+    const hint = body.querySelector("#add-autofill-hint");
+    async function autofillFromDescription() {
+      const text = (descField.value || "").trim();
+      // Below this there is not enough text for the answers to be worth
+      // showing, and a half-pasted description would fill the fields with
+      // whatever happened to be in the first sentence.
+      if (text.length < 120 || text === lastAutofillText) return;
+      lastAutofillText = text;
+      captureForm();                       // fields on the other tab live here
+      let facts;
+      try {
+        facts = await post(`/api/jobs/enrich`, { job_description: text, role_title: form.elements.role_title.value || "" });
+      } catch { return; }                  // offline or a 4xx: leave the form alone
+      const LABELS = { location: "location", salary_range: "salary", skills_required: "skills", tags: "tags" };
+      const filled = [];
+      for (const key of Object.keys(LABELS)) {
+        const existing = (formState && formState[key]) || "";
+        if (String(existing).trim() || !facts[key]) continue;
+        formState = { ...(formState || {}), [key]: facts[key] };
+        const el = form.elements[key];     // present only while its tab is mounted
+        if (el) el.value = facts[key];
+        filled.push(LABELS[key]);
+      }
+      if (!filled.length) return;
+      hint.hidden = false;
+      hint.textContent = `Filled in ${listPhrase(filled)} from this description — check Additional details and edit anything that looks wrong.`;
+    }
+    descField.addEventListener("change", autofillFromDescription);
+    descField.addEventListener("input", () => {
+      clearTimeout(descField._autofillTimer);
+      descField._autofillTimer = setTimeout(autofillFromDescription, 900);
+    });
+    // A description pasted before this tab was re-rendered (or restored from
+    // formState) should still be read.
+    if ((descField.value || "").trim().length >= 120) autofillFromDescription();
+
     // Re-show the last ATS report (it's transient, lost on tab re-render).
     if (lastAts) renderAtsResult(body.querySelector("#add-ats-report-slot"), lastAts.result);
 
     // ---- shared helpers (mirrors the saved-application editor) ----
     async function withBusy(btn, label, fn, onError) {
-      const original = btn.textContent;
-      btn.disabled = true; btn.textContent = label;
+      const restore = setButtonBusy(btn, label);
+      btn.disabled = true;
       try { await fn(); }
       catch (err) { showToast(apiErrorMessage(err, "That didn't work — please try again"), "error"); if (onError) onError(err); }
-      finally { btn.disabled = false; btn.textContent = original; }
+      finally { btn.disabled = false; restore(); }
     }
     function requireContext(needResume) {
       const jd = form.elements.job_description.value.trim();
@@ -5551,7 +6220,12 @@ function openAddJobPage(resumes, activeBoardId, boards, onSaved) {
         form.elements.job_description.focus();
         return null;
       }
-      return { jd, resumeId, company: form.elements.company_name.value, role: form.elements.role_title.value };
+      // jobId is present on the detail page and absent on "add job", where the
+      // application does not exist yet. The backend treats it as optional and
+      // only links when it is given.
+      return { jd, resumeId, company: form.elements.company_name.value,
+               role: form.elements.role_title.value,
+               jobId: (typeof jobId !== "undefined" ? jobId : null) };
     }
 
     // ---- Generate cover letter ----
@@ -5594,6 +6268,10 @@ function openAddJobPage(resumes, activeBoardId, boards, onSaved) {
         const tailored = await post(`/api/resume-builder/tailor-for-job`, {
           resume_id: ctx.resumeId, job_description: ctx.jd,
           company_name: ctx.company, role_title: ctx.role,
+          // Linking server-side matters: without it the new CV is only
+          // selected in the dropdown, and closing the page without pressing
+          // Save changes loses the association entirely.
+          job_id: ctx.jobId || null,
         });
         resumes.push(tailored);
         const sel = form.elements.resume_id;
@@ -5682,6 +6360,9 @@ function openAddJobPage(resumes, activeBoardId, boards, onSaved) {
 
   // keep typed values when flipping tabs (each tab's form is re-created on render)
   let formState = null;
+  // The description the fields were last derived from, so re-rendering a tab
+  // or typing one more character does not re-ask.
+  let lastAutofillText = "";
   let lastAts = null; // last ATS report (result + score), persisted to the job on save
   function captureForm() {
     // Essentials live in #add-job-form, the rest in #add-details-form. Only one
@@ -5739,11 +6420,11 @@ function wireColorSwatches(container, hiddenInput) {
 // ---------- AI Tools registry (image 5) ----------
 const AI_DOC_STAGES = [
   { stage: "Application Stage", docs: [
-    { type: "cover_letter", title: "Cover Letter", desc: "A personalized letter explaining why you're a good fit for the position and how your skills align with the company's needs.", cta: "Generate Cover Letter", color: "#4C6FE7" },
+    { type: "cover_letter", title: "Cover Letter", desc: "A personalized letter explaining why you're a good fit for the position and how your skills align with the company's needs.", cta: "Generate Cover Letter", color: "#14B8A6" },
     { type: "follow_up_application", title: "Follow Up After Application", desc: "A polite follow-up email to inquire about the status of your application if there's been no response.", cta: "Generate Follow Up", color: "#3C9D7B" },
   ]},
   { stage: "Interview Stage", docs: [
-    { type: "interview_prep", title: "Interview Prep Questions", desc: "A list of likely questions to help you prepare for an upcoming interview.", cta: "Generate Interview Prep", color: "#4C6FE7" },
+    { type: "interview_prep", title: "Interview Prep Questions", desc: "A list of likely questions to help you prepare for an upcoming interview.", cta: "Generate Interview Prep", color: "#14B8A6" },
     { type: "questions_to_ask", title: "Questions to Ask", desc: "A curated list of thoughtful questions to ask employers, aimed at deeper insight into the role and culture.", cta: "Generate Questions", color: "#E2604F" },
     { type: "thank_you", title: "Thank You After Interview", desc: "A message expressing gratitude after an interview, reinforcing your interest and fit.", cta: "Generate Thank You", color: "#E4A335" },
     { type: "follow_up_interview", title: "Follow Up After Interview", desc: "An email to inquire about status if there's been no response within the expected timeframe.", cta: "Generate Follow Up", color: "#3C9D7B" },
@@ -5752,14 +6433,14 @@ const AI_DOC_STAGES = [
   ]},
   { stage: "Offer Stage", docs: [
     { type: "offer_negotiation", title: "Offer Negotiation", desc: "An email to negotiate the terms of a job offer, including salary, benefits, and other terms.", cta: "Generate Negotiation", color: "#E4A335" },
-    { type: "offer_acceptance", title: "Offer Acceptance", desc: "A message confirming acceptance of the offer with gratitude, confirmation of terms, and enthusiasm.", cta: "Generate Acceptance", color: "#4C6FE7" },
+    { type: "offer_acceptance", title: "Offer Acceptance", desc: "A message confirming acceptance of the offer with gratitude, confirmation of terms, and enthusiasm.", cta: "Generate Acceptance", color: "#14B8A6" },
     { type: "offer_decline", title: "Offer Decline", desc: "An email to decline a job offer, expressing gratitude and a brief explanation for your decision.", cta: "Generate Decline", color: "#3C9D7B" },
     { type: "extension_request", title: "Offer Time Extension Request", desc: "A message asking for more time to consider an offer, with valid reasons and continued interest.", cta: "Generate Extension Request", color: "#3C9D7B" },
   ]},
 ];
 
 const ACTIVITY_META = {
-  applied:        { icon: "📮", color: "#4C6FE7", label: "Applied" },
+  applied:        { icon: "📮", color: "#14B8A6", label: "Applied" },
   interview:      { icon: "🗣️", color: "#E4A335", label: "Interview" },
   offer_received: { icon: "🎉", color: "#3C9D7B", label: "Offer received" },
   offer_accepted: { icon: "✅", color: "#3C9D7B", label: "Offer accepted" },
@@ -5769,6 +6450,14 @@ const ACTIVITY_META = {
   status_change:  { icon: "🔄", color: "#93968E", label: "Status change" },
   other:          { icon: "•",  color: "#93968E", label: "Activity" },
 };
+
+// "location, skills and tags" — an Oxford-comma-free list for prose, so the
+// autofill notice reads like a sentence instead of a debug array.
+function listPhrase(items) {
+  const list = (items || []).filter(Boolean);
+  if (list.length <= 1) return list[0] || "";
+  return `${list.slice(0, -1).join(", ")} and ${list[list.length - 1]}`;
+}
 
 function esc(s) { return (s == null ? "" : String(s)).replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
@@ -5825,7 +6514,7 @@ async function openJobDetailPage(jobId, resumes, boards, onSaved) {
     const j = detail;
     root.innerHTML = `
       <div class="job-overlay-scrim" data-overlay-close></div>
-      <div class="job-page job-detail" style="--job-accent:${j.color || "#3D5AFE"}">
+      <div class="job-page job-detail" style="--job-accent:${j.color || "#0E9384"}">
         <div class="job-detail-head">
           <div class="flex items-center gap-3 min-w-0">
             ${companyAvatar(j.company_name, "lg")}
@@ -6035,17 +6724,22 @@ async function openJobDetailPage(jobId, resumes, boards, onSaved) {
         form.elements.job_description.focus();
         return null;
       }
-      return { jd, resumeId, company: form.elements.company_name.value, role: form.elements.role_title.value };
+      // jobId is present on the detail page and absent on "add job", where the
+      // application does not exist yet. The backend treats it as optional and
+      // only links when it is given.
+      return { jd, resumeId, company: form.elements.company_name.value,
+               role: form.elements.role_title.value,
+               jobId: (typeof jobId !== "undefined" ? jobId : null) };
     }
     async function withBusy(btn, label, fn, onError) {
-      const original = btn.textContent;
-      btn.disabled = true; btn.textContent = label;
+      const restore = setButtonBusy(btn, label);
+      btn.disabled = true;
       try { await fn(); }
       catch (err) {
         showToast(apiErrorMessage(err, "That didn't work — please try again"), "error");
         if (onError) onError(err); // lets the caller clear its own loading state
       }
-      finally { btn.disabled = false; btn.textContent = original; }
+      finally { btn.disabled = false; restore(); }
     }
 
     const coverBtn = body.querySelector("#gen-cover-btn");
@@ -6661,7 +7355,7 @@ function openAtsModal(job, resumes) {
 }
 
 function renderAtsResult(container, result) {
-  const color = result.score >= 75 ? "#2C42C7" : result.score >= 50 ? "#B45309" : "#B91C1C";
+  const color = result.score >= 75 ? "#0B7C70" : result.score >= 50 ? "#B45309" : "#B91C1C";
   container.innerHTML = `
     <div class="border border-gray-100 rounded-lg p-4">
       <div class="flex items-center gap-4 mb-3">
@@ -6770,7 +7464,15 @@ async function downloadFile(path, { method = "GET", body = null, fallbackName = 
   if (body) headers["Content-Type"] = "application/json";
   const token = auth.getToken();
   if (token) headers["Authorization"] = `Bearer ${token}`;
-  const res = await fetch(`${API_BASE}${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  let res;
+  try {
+    res = await fetch(`${API_BASE}${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  } catch (netErr) {
+    netErr.isNetworkError = true;   // see api() — fetch() network failures are TypeErrors
+    checkBackendConnection();
+    throw netErr;
+  }
+  noteBackendReachable();   // an answer of any kind means the backend is up
   if (!res.ok) {
     let detail = "";
     try { detail = (await res.json()).detail; } catch (_) {}
@@ -6944,9 +7646,8 @@ async function renderResumes(content) {
     const fileInput = form.querySelector("input[type=file]");
     if (!fileInput.files.length) { showToast("Choose a file first", "warning"); return; }
     const submitBtn = form.querySelector("button[type=submit]");
-    const originalLabel = submitBtn.textContent;
+    const restoreLabel = setButtonBusy(submitBtn, "Reading your resume…");
     submitBtn.disabled = true;
-    submitBtn.textContent = "Reading your resume…";
     try {
       const fd = new FormData();
       fd.append("file", fileInput.files[0]);
@@ -6969,7 +7670,7 @@ async function renderResumes(content) {
     } catch (err) {
       showToast(apiErrorMessage(err, "Couldn't read that file"), "error");
       submitBtn.disabled = false;
-      submitBtn.textContent = originalLabel;
+      restoreLabel();
     }
   });
 
@@ -7204,7 +7905,7 @@ const TEMPLATE_META = {
 // (header style, columns, photo placement) so people can see how a template
 // actually looks before committing to it — without needing to render a PDF.
 function templateThumbnailSVG(id) {
-  const NAVY = "#171A1F", MINT = "#3D5AFE", LINE = "#E2E4E8", PALE = "#F4F5F7", MUTED = "#C7CBD1";
+  const NAVY = "#171A1F", MINT = "#0E9384", LINE = "#E2E4E8", PALE = "#F4F5F7", MUTED = "#C7CBD1";
   const line = (x, y, w, h = 3, fill = LINE) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="1.5" fill="${fill}"/>`;
   const block = (x, y, w, h, fill = PALE) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2" fill="${fill}"/>`;
   const avatar = (cx, cy, r = 9) => `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${NAVY}"/>`;
@@ -7362,7 +8063,7 @@ function editorFieldValue(name) { return EDITOR.values[name] ?? ""; }
 // templates endpoint, the real /ai-assist endpoint, saveEditorResume(), and
 // the server PDF for downloads — the UI is new, the wiring is real.
 // ============================================================================
-const rbState = { tab: "edit", open: "sec-details", accent: "#6C5DD3", reviewRun: false, review: null, entries: null, roles: null, roleId: null, roleQuery: "", ai: { kind: null, idx: 0, anchor: null, options: [] } };
+const rbState = { tab: "edit", open: "sec-details", accent: "#0E9384", reviewRun: false, review: null, entries: null, roles: null, roleId: null, roleQuery: "", ai: { kind: null, idx: 0, anchor: null, options: [] } };
 
 function rbVal(name) { return EDITOR.values[name] ?? ""; }
 function rbSet(name, val) { EDITOR.values[name] = val; }
@@ -7557,7 +8258,7 @@ async function renderResumeBuilder(content) {
   const secDef = RB_SECTIONS;
 
   content.innerHTML = `
-  <div class="rbx" style="--rb-accent:${rbState.accent}">
+  <div class="rbx">
     <div class="rbx-layout">
       <div class="rbx-left">
         <!-- EDIT -->
@@ -7607,7 +8308,7 @@ async function renderResumeBuilder(content) {
               </button>
               <div class="rbx-theme">
                 <span class="rbx-theme-label">Main colour</span>
-                ${["#6C5DD3", "#3D5AFE", "#3C9D7B", "#E4A335", "#E2604F", "#0EA5E9", "#111827"].map(c =>
+                ${["#0E9384", "#0E9384", "#3C9D7B", "#E4A335", "#E2604F", "#0EA5E9", "#111827"].map(c =>
                   `<div class="rbx-swatch ${c === rbState.accent ? "active" : ""}" style="background:${c}" data-accent="${c}">${c === rbState.accent ? "✓" : ""}</div>`).join("")}
                 <label class="rbx-swatch rbx-swatch-custom" title="Custom colour">
                   <span class="rbx-swatch-plus" aria-hidden="true">+</span>
@@ -7633,8 +8334,144 @@ async function renderResumeBuilder(content) {
           <div class="rbx-roles-body" id="rbx-roles-body"></div>
         </div>
 
-        <!-- AI REVIEW -->
-        <div class="rbx-pane" id="rbx-pane-review" style="display:none;">
+        <!-- ANALYSE & TAILOR (the old Review and Tailor tabs, in one place) -->
+        <div class="rbx-pane" id="rbx-pane-tailor" style="display:none;">
+          <div class="rbx-tailor rbx-tlpane">
+            <div class="rbx-tl-hero">
+              <span class="rbx-tl-hero-ico" aria-hidden="true">✦</span>
+              <div>
+                <h3>Let's tailor your CV to the job</h3>
+                <p>Paste the job advert and we'll show you how you match, then change only what you accept.</p>
+              </div>
+            </div>
+
+            <!-- The advert is the one input everything below shares. As a
+                 200px box it also pushed the work below the fold on every
+                 visit after the first, so it folds to a line once it has
+                 something in it, and reopens on click. -->
+            <section class="rbx-ad" id="rbx-ad">
+              <div class="rbx-ad-head">
+                <button type="button" class="rbx-ad-bar" id="rbx-ad-bar"
+                        aria-expanded="true" aria-controls="rbx-ad-body">
+                  <span class="rbx-ad-chev" aria-hidden="true"></span>
+                  <span class="rbx-ad-bar-main">
+                    <span class="rbx-ad-title" id="rbx-ad-title">Job advert</span>
+                    <span class="rbx-ad-sub" id="rbx-tl-jd-count">Paste the full job description below</span>
+                  </span>
+                </button>
+                <div class="rbx-ad-acts">
+                  <button type="button" class="rbx-ad-act" id="rbx-ad-clear">
+                    <span aria-hidden="true">🗑</span> Clear
+                  </button>
+                  <label class="rbx-ad-act rbx-ad-upload">
+                    <span aria-hidden="true">⬆</span> Upload JD
+                    <input type="file" id="rbx-ad-file" accept=".txt,.md,.csv,.pdf,text/plain,application/pdf" hidden>
+                  </label>
+                </div>
+              </div>
+              <div class="rbx-ad-body" id="rbx-ad-body">
+                <textarea id="rbx-jd" maxlength="5000" aria-label="Job advert"
+                          placeholder="Paste the job description here…"></textarea>
+                <div class="rbx-ad-foot">
+                  <span class="rbx-ad-chars" id="rbx-ad-chars">0 / 5000</span>
+                  <span class="rbx-ad-foot-acts">
+                    <button type="button" class="rbx-tl-recheck" id="rbx-match">Re-check</button>
+                    <button type="button" class="rbx-tl-cta" id="rbx-ad-done">
+                      <span aria-hidden="true">✨</span> Analyse
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </section>
+
+            <!-- The headline read: the number, what it means, and the words on
+                 each side of the gap. Filled by rbRenderScoreStrip. -->
+            <div class="rbx-sc" id="rbx-sc"></div>
+
+            <div class="rbx-tl-stepsbar">
+              <nav class="rbx-tl-steps" id="rbx-tl-steps" role="tablist" aria-label="Analyse and tailor sections">
+                <button type="button" role="tab" data-step="tailor" class="on">Tailor your CV</button>
+                <button type="button" role="tab" data-step="review">CV Review</button>
+              </nav>
+            </div>
+
+            <div class="rbx-step" id="rbx-step-tailor">
+              <div class="rbx-tl-grid">
+                <section class="rbx-nb" id="rbx-blk-analyse">
+                  <div class="rbx-nb-head">
+                    <h4><span class="rbx-nb-n">1.</span> The match</h4>
+                    <p>See how your CV lines up with the job.</p>
+                  </div>
+                  <div id="rbx-tl-analyse"></div>
+                </section>
+                <section class="rbx-nb" id="rbx-blk-keywords">
+                  <div class="rbx-nb-head">
+                    <h4><span class="rbx-nb-n">2.</span> Keywords &amp; skills<span class="rbx-tl-step-n" id="rbx-tl-step-kw" title="missing from your CV"></span></h4>
+                    <p>Add or strengthen these in your CV.</p>
+                  </div>
+                  <div id="rbx-tl-keywords"></div>
+                </section>
+              </div>
+
+              <section class="rbx-nb" id="rbx-blk-how">
+                <div class="rbx-nb-head">
+                  <h4><span class="rbx-nb-n">3.</span> How should it be tailored?</h4>
+                  <p>Say it in your own words, or reuse one you saved. Nothing is deleted unless you ask.</p>
+                </div>
+                <div class="rbx-tl-controls">
+                  <div class="rbx-tl-col">
+                    <span class="rbx-tl-collabel" id="rbx-prompt-label">Your instruction</span>
+                    <textarea id="rbx-prompt" class="rbx-tl-prompt"
+                              aria-labelledby="rbx-prompt-label"
+                              placeholder="e.g. Keep every bullet. Lead with Azure and dbt. UK spelling, no buzzwords."></textarea>
+                    <div class="rbx-tl-read" id="rbx-tl-read"></div>
+                    <div class="rbx-tl-saved" id="rbx-tl-saved"></div>
+                    <div class="rbx-tl-savebar hidden" id="rbx-tl-savebar">
+                      <input type="text" id="rbx-tl-pname" maxlength="60"
+                             placeholder="Name it — e.g. Data engineering roles" aria-label="Name for this instruction">
+                      <button type="button" class="rbx-tl-btn" id="rbx-tl-pconfirm">Save</button>
+                      <button type="button" class="rbx-tl-btn rbx-tl-btn-ghost" id="rbx-tl-pcancel">Cancel</button>
+                    </div>
+                  </div>
+                  <div class="rbx-tl-col rbx-tl-col-strength">
+                    <span class="rbx-tl-collabel">How much rewriting</span>
+                    <div class="rbx-tl-levels" id="rbx-tl-levels" role="radiogroup" aria-label="How much rewriting?">
+                      <button type="button" data-level="regular" class="on" role="radio" aria-checked="true">
+                        <span class="rbx-tl-lv-dot" aria-hidden="true"></span>
+                        <span class="rbx-tl-lv-text">
+                          <span class="rbx-tl-lv-name">Regular</span>
+                          <span class="rbx-tl-lv-desc">Order only. Not one word rewritten.</span>
+                        </span>
+                      </button>
+                      <button type="button" data-level="medium" role="radio" aria-checked="false">
+                        <span class="rbx-tl-lv-dot" aria-hidden="true"></span>
+                        <span class="rbx-tl-lv-text">
+                          <span class="rbx-tl-lv-name">Medium</span>
+                          <span class="rbx-tl-lv-desc">Also rewrites the summary around this role.</span>
+                        </span>
+                      </button>
+                      <button type="button" data-level="aggressive" role="radio" aria-checked="false">
+                        <span class="rbx-tl-lv-dot" aria-hidden="true"></span>
+                        <span class="rbx-tl-lv-text">
+                          <span class="rbx-tl-lv-name">Aggressive</span>
+                          <span class="rbx-tl-lv-desc">Also rewords bullets in the job's language.</span>
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="rbx-nb" id="rbx-blk-changes">
+                <div class="rbx-nb-head">
+                  <h4><span class="rbx-nb-n">4.</span> Tailor your sections<span class="rbx-tl-step-n" id="rbx-tl-step-ch" title="suggested changes"></span></h4>
+                  <p>Take them one at a time. Edit any of them first — nothing is saved until you press Save.</p>
+                </div>
+                <div class="rbx-tl-out" id="rbx-tl-out"></div>
+              </section>
+            </div>
+            <!-- CV review: the former AI Review tab, unchanged, now a step -->
+        <div class="rbx-step" id="rbx-step-review" style="display:none;">
           <div class="rbx-review-hero">
             <div class="rbx-ring-wrap">
               <svg width="132" height="132" viewBox="0 0 150 150" aria-hidden="true">
@@ -7645,31 +8482,56 @@ async function renderResumeBuilder(content) {
             </div>
             <h3 id="rbx-review-h">Score your resume</h3>
             <p id="rbx-review-p">Checks ATS parsing, structure, writing quality and every experience bullet. Add a job description to also score keyword and skills match against that specific role.</p>
-            <div class="rbx-review-jdwrap">
-              <textarea id="rbx-review-jd" class="rbx-review-jd" rows="3" placeholder="Optional — paste the job description to score this resume against a specific role"></textarea>
-            </div>
+            <!-- The advert is pasted once, at the top of this pane, and the
+                 review is scored against it — a second box asking for the same
+                 text was the clearest sign these were two tabs doing one job. -->
+            <textarea id="rbx-review-jd" class="hidden" aria-hidden="true"></textarea>
+            <p class="rbx-review-jdnote" id="rbx-review-jdnote"></p>
             <button class="rbx-rescan" id="rbx-rescan">✨ <span>Run review</span></button>
           </div>
           <div class="rbx-review-body" id="rbx-review-body"></div>
         </div>
 
-        <!-- TAILOR -->
-        <div class="rbx-pane" id="rbx-pane-tailor" style="display:none;">
-          <div class="rbx-tailor">
-            <h3>🎯 Tailor to a job</h3>
-            <p>Paste a job description — the AI matches your resume's keywords and skills against it, then you can generate a tailored copy.</p>
-            <textarea id="rbx-jd" placeholder="Paste the job description here…"></textarea>
-            <button class="rbx-match" id="rbx-match">✨ Match &amp; analyse</button>
-            <div class="rbx-kw" id="rbx-kw" style="display:none;"></div>
-            <button class="rbx-tailor-go" id="rbx-tailor-go" style="display:none;">Generate tailored resume →</button>
           </div>
         </div>
       </div>
 
       <div class="rbx-right">
-        <div class="rbx-stage">
+        <button type="button" class="rbx-grip" id="rbx-grip" role="separator"
+                aria-orientation="vertical" aria-label="Drag to resize the preview"
+                title="Drag to resize — double-click to reset"></button>
+        <div class="rbx-rhead">
+          <span class="rbx-rhead-title" id="rbx-rhead-title">CV Preview</span>
+          <span class="rbx-rhead-right">
+            <span class="rbx-ats hidden" id="rbx-ats" title="How well this CV matches the advert">
+              ATS <b id="rbx-ats-num">—</b>
+            </span>
+            <div class="rbx-docswitch hidden" id="rbx-docswitch" role="tablist" aria-label="What to show on the right">
+              <button type="button" role="tab" data-doc="preview" class="on">CV</button>
+              <button type="button" role="tab" data-doc="advert">Advert</button>
+              <button type="button" role="tab" data-doc="cv">CV text</button>
+            </div>
+            <button type="button" class="rbx-rhead-dl rbx-rhead-pen" id="rbx-rhead-edit"
+                    title="Click any line on the page to edit it" aria-label="Edit on the page" aria-pressed="true">✎</button>
+            <button type="button" class="rbx-rhead-dl" id="rbx-rhead-dl" title="Download PDF" aria-label="Download PDF">⤓</button>
+          </span>
+        </div>
+        <div class="rbx-example-bar hidden" id="rbx-example-bar">
+          <span class="rbx-example-bar-tag">Example</span>
+          <span class="rbx-example-bar-who" id="rbx-example-who"></span>
+          <span class="rbx-example-bar-acts">
+            <button type="button" id="rbx-example-use">Use as a starting point</button>
+            <button type="button" id="rbx-example-close">Back to my CV</button>
+          </span>
+        </div>
+        <div class="rbx-edit-tip hidden" id="rbx-edit-tip">
+          <span><b>Click any line</b> on the page to edit it</span>
+          <button type="button" id="rbx-edit-tip-x" aria-label="Got it">✕</button>
+        </div>
+        <div class="rbx-stage" id="rbx-stage">
           <div class="rbx-page rbx-page-pdf" id="rbx-page">${rbPreviewPlaceholder()}</div>
         </div>
+        <div class="rbx-doctext hidden" id="rbx-doctext"></div>
       </div>
     </div>
 
@@ -7710,8 +8572,7 @@ async function renderResumeBuilder(content) {
       <button role="tab" data-rtab="edit">Edit</button>
       <button role="tab" data-rtab="design">Design</button>
       <button role="tab" data-rtab="roles"><span class="rbx-tab-long">Best for role</span><span class="rbx-tab-short">Roles</span>${rbTabDot("roles")}</button>
-      <button role="tab" data-rtab="review"><span class="rbx-tab-long">AI Review</span><span class="rbx-tab-short">Review</span></button>
-      <button role="tab" data-rtab="tailor">Tailor${rbTabDot("tailor")}</button>
+      <button role="tab" data-rtab="tailor"><span class="rbx-tab-long">Analyse &amp; tailor</span><span class="rbx-tab-short">Tailor</span>${rbTabDot("tailor")}</button>
     </div>`;
 
   // Right zone: read-only state, so the two buttons beside it stay unambiguous.
@@ -7753,6 +8614,7 @@ async function renderResumeBuilder(content) {
 
   rbWire(templates);
   rbWatchThumbnails();
+  rbWirePageEdit();
   rbRenderPreview(true);
   rbRenderCompleteness();
   rbSwitchTab(rbState.tab);
@@ -7776,7 +8638,7 @@ function rbFitHeight() {
 // has to be drawn again to stay sharp. Debounced through rbRenderPreview(), so
 // dragging a window edge doesn't fire a render per pixel.
 window.addEventListener("resize", () => {
-  if (document.getElementById("rbx-page")) rbRenderPreview();
+  if (document.getElementById("rbx-page")) { rbRenderPreview(); rbFitPage(); }
 });
 
 function rbFitHeightSettled() {
@@ -8253,7 +9115,7 @@ function rbMiniPageHTML(templateId, values) {
   };
   const cls = rbTemplatePageClass(templateId, style).replace("rbx-page", "rbx-page rbx-thumb-page rbx-mini-page");
   const font = RB_FONT_CSS[values.font_family || t.font] || RB_FONT_CSS.helvetica;
-  const accent = values.accent_color || t.accent || "#6C5DD3";
+  const accent = values.accent_color || t.accent || "#0E9384";
   const hv = rbSizeScale(values.font_size, templateId);
   return `<div class="${cls}" style="--rb-accent:${esc(accent)};--hv-scale:${hv};font-family:${font}">` +
          `${rbTemplateInnerHTML(templateId, values, style)}</div>`;
@@ -8312,7 +9174,7 @@ function rbPhotoMarkup() {
 // "this is a two-column CV with a tinted sidebar". Only one of those is worth
 // looking at while the server works.
 function rbTemplateWireframe(t) {
-  const acc = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(t.accent || "") ? t.accent : "#6C5DD3";
+  const acc = /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(t.accent || "") ? t.accent : "#0E9384";
   const INK = "#7C8296", TXT = "#D2D6DF", FAINT = "#E7EAF1";
   const o = [];
   // Colours are blended to flat hex rather than left as fill-opacity. Opacity
@@ -8483,7 +9345,7 @@ function rbPreviewPlaceholder() {
 
 function rbTemplateCard(t) {
   const sel = t.id === RESUME_BUILDER_STATE.templateId;
-  const acc = t.accent || "#6C5DD3";
+  const acc = t.accent || "#0E9384";
   return `
     <div class="rbx-tmpl-cell ${sel ? "selected" : ""}" data-tmpl="${esc(t.id)}" title="${esc(t.description || "")}" style="--rb-accent:${esc(acc)}">
       <div class="rbx-tmpl-shot" data-thumb="${esc(t.id)}">${rbTemplateWireframe(t)}</div>
@@ -9197,6 +10059,9 @@ function rbResumeHTML(v, style) {
 // one render without the preview visibly lagging the cursor.
 const RB_PREVIEW_DEBOUNCE_MS = 110;
 const RB_SHARPEN_AFTER_MS = 400;       // idle gap before the crisp repaint
+// How long a redraw may take before it is worth saying so. Under this, the new
+// page simply appears; over it, the old one dims to explain the wait.
+const RB_PREVIEW_DIM_AFTER_MS = 450;
 let _rbPdfSeq = 0;                     // the render generation, to drop stale replies
 let _rbPdfTimer = null;
 let _rbSharpenTimer = null;
@@ -9204,6 +10069,7 @@ let _rbPdfAbort = null;                // in-flight request, cancelled when supe
 let _rbPdfBusy = false;                // thumbnails stay out of the way while true
 let _rbPdfLib = null;                  // the pdf.js module, imported once
 let _rbPdfLastKey = "";                // payload signature, to skip identical renders
+let _rbPdfLastWidth = 0;               // last width the panel really had, for hidden redraws
 // The last parsed document, kept alive against the payload it came from.
 // Re-rendering the same résumé at a different size — the sharpening pass, or a
 // panel resize — then costs one repaint instead of a round trip and a re-parse,
@@ -9222,6 +10088,16 @@ async function rbPdfLib() {
 }
 
 function rbPreviewPayload() {
+  // An example borrows the preview rather than getting a viewer of its own: it
+  // is the same document, at the same size, with the same page-fitting and the
+  // same multi-page handling, and none of that is worth writing twice. The
+  // person's own CV is untouched underneath — nothing here writes to
+  // EDITOR.values, so leaving the example puts them back exactly where they
+  // were, whatever they scrolled or clicked in the meantime.
+  const ex = rbState.exampleView;
+  if (ex) {
+    return { ...ex.data, template_id: ex.template_id, resume_name: ex.data.full_name };
+  }
   return { ...EDITOR.values, template_id: RESUME_BUILDER_STATE.templateId,
            resume_name: EDITOR.resumeName };
 }
@@ -9231,6 +10107,7 @@ function rbPreviewPayload() {
 // switching template, changing the size or the accent.
 function rbRenderPreview(now = false) {
   if (!document.getElementById("rbx-page")) return;
+  rbFitPage();
   // The template cards show the same document, so they go stale on the same
   // edits. They refresh on a longer delay and only where they can be seen.
   rbRefreshThumbnails();
@@ -9279,10 +10156,24 @@ async function rbRenderPdfPreview(sharp = false) {
   const host = document.getElementById("rbx-page");
   if (!host) return;
   const payload = rbPreviewPayload();
-  const cssWidth = Math.max(220, host.clientWidth);
+  // A hidden panel measures zero. The Advert and CV-text tabs hide the stage,
+  // and anything that redraws while one of those is open used to clamp to the
+  // 220px floor — an A4 page rendered at postage-stamp resolution and then
+  // stretched back to full width, which reads as a blurry ruin rather than a
+  // page. Remember the last width the panel actually had and draw at that.
+  const measured = host.clientWidth;
+  if (measured > 1) _rbPdfLastWidth = measured;
+  const cssWidth = Math.max(220, measured > 1 ? measured : (_rbPdfLastWidth || 820));
   const dataKey = rbRenderKey(payload);
   const key = dataKey + "|" + Math.round(cssWidth / 8) + "|" + (sharp ? "s" : "d");
-  if (key === _rbPdfLastKey) return;       // nothing changed that would redraw
+  // A key match means "same document, same size" — it does not mean that
+  // drawing is still on screen. Opening the builder rebuilds the whole panel,
+  // which puts the grey skeleton back into #rbx-page while this key still
+  // claimed the page was drawn: every visit to the builder after the first
+  // showed a skeleton and stayed there for ever, because the one thing that
+  // would have redrawn it had decided there was nothing to do. Skip the work
+  // only when the drawing the key describes is actually in front of somebody.
+  if (key === _rbPdfLastKey && host.querySelector(".rbx-pdf-page")) return;
   const seq = ++_rbPdfSeq;
   // Cancel the request the previous keystroke started. Without this a fast
   // typist leaves a queue of renders in flight, every one of them obsolete.
@@ -9291,12 +10182,21 @@ async function rbRenderPdfPreview(sharp = false) {
   _rbPdfAbort = ctrl;
   _rbPdfBusy = true;
   // Dimming the page is honest when there's a wait to explain and a lie when
-  // there isn't: a template whose bytes are already here draws in one frame,
-  // and flashing the old one grey first only makes an instant switch look slow.
+  // there isn't. Typing is the case where there isn't: a keystroke costs the
+  // server about ten milliseconds, so the page was being greyed out and lit
+  // again on every letter — measured while typing at an ordinary speed, the
+  // preview spent 2.6 of 6.6 seconds at 58% opacity under a "Rendering…" pill.
+  // Nobody needs to be told that a wait they cannot perceive is happening. The
+  // dim is therefore armed on a timer rather than applied up front, and only
+  // fires if the render really is still going when somebody would start to
+  // wonder.
   const warm = _rbBytesCache.has(dataKey) || (_rbPdfDocCache.key === dataKey && _rbPdfDocCache.doc);
+  let dimTimer = null;
   if (!warm) {
     rbThumbAbortInFlight();   // the customer is waiting on this, not on the cards
-    host.classList.add("is-rendering");
+    dimTimer = setTimeout(() => {
+      if (seq === _rbPdfSeq) host.classList.add("is-rendering");
+    }, RB_PREVIEW_DIM_AFTER_MS);
   }
   let doc = null;
   try {
@@ -9327,21 +10227,70 @@ async function rbRenderPdfPreview(sharp = false) {
     // keystroke is what made the panel feel heavy.
     const dpr = sharp ? Math.min(window.devicePixelRatio || 1, 2) : 1;
     const total = doc.numPages;
+    // Every string on the page that came from something somebody can edit,
+    // read once for the whole document rather than once per page.
+    const targets = rbEditTargets();
+    // A résumé of the same length redraws into the sheets already on screen
+    // rather than replacing them. Tearing the panel down and building it again
+    // was what made typing feel like the preview was reloading: on every
+    // letter the page was removed from the document and a new one inserted,
+    // which throws away the scroll position, the clickable text and any
+    // highlight on it, and gives the browser a fresh layout to do. Same number
+    // of pages means the same sheets can simply be painted over.
+    const sheets = [...host.querySelectorAll(".rbx-pdf-sheet")];
+    const inPlace = total > 0 && sheets.length === total && !host.querySelector(".rbx-pdf-error");
+    const editing = _rbEditOpen && _rbEditOpen.path;
+    const hot = _rbEditHot && _rbEditHot.dataset.edit;
     for (let n = 1; n <= total; n++) {
       const page = await doc.getPage(n);
       if (seq !== _rbPdfSeq) return;
       const base = page.getViewport({ scale: 1 });
       const vp = page.getViewport({ scale: (cssWidth / base.width) * dpr });
-      const canvas = document.createElement("canvas");
-      canvas.className = "rbx-pdf-page";
-      canvas.width = Math.floor(vp.width);
-      canvas.height = Math.floor(vp.height);
-      canvas.style.width = cssWidth + "px";
-      canvas.style.height = Math.floor(vp.height / dpr) + "px";
-      canvas.setAttribute("aria-label", `Page ${n} of ${total}`);
-      await page.render({ canvasContext: canvas.getContext("2d"), viewport: vp }).promise;
+      const w = Math.floor(vp.width), h = Math.floor(vp.height);
+      // Painted off screen and put on in one operation. Rendering straight into
+      // the visible canvas shows it part-drawn — the reason a redraw registered
+      // as a flicker rather than as the page simply being different.
+      const off = document.createElement("canvas");
+      off.width = w; off.height = h;
+      await page.render({ canvasContext: off.getContext("2d"), viewport: vp }).promise;
       if (seq !== _rbPdfSeq) return;
-      const parts = [canvas];
+
+      const reuse = inPlace ? sheets[n - 1] : null;
+      const sheet = reuse || document.createElement("div");
+      let canvas = reuse && reuse.querySelector("canvas.rbx-pdf-page");
+      if (!canvas) {
+        canvas = document.createElement("canvas");
+        canvas.className = "rbx-pdf-page";
+        // Displayed at whatever the column is, not at the width it happened to
+        // be rendered for. Pinning an inline pixel width made the canvas the
+        // page's min-content width, which pushed the grid column past the
+        // viewport on a phone and then kept it there — the layout could never
+        // shrink back below the last width it had rendered at.
+        canvas.style.width = "100%";
+        canvas.style.height = "auto";
+      }
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+      canvas.getContext("2d").drawImage(off, 0, 0);
+      canvas.setAttribute("aria-label", `Page ${n} of ${total}`);
+      if (!reuse) {
+        // The canvas goes inside a positioned wrapper so the clickable text can
+        // be laid over it: the wrapper is the sheet, the canvas is the picture.
+        sheet.className = "rbx-pdf-sheet";
+        sheet.append(canvas);
+      }
+      // Where each line on this page came from, worked out from the PDF's own
+      // text layer so it is right for whichever template drew it.
+      try {
+        const zones = await rbPageEditZones(page, targets);
+        if (seq !== _rbPdfSeq) return;
+        sheet.querySelector(".rbx-pdf-hits")?.remove();
+        if (zones.length) sheet.append(rbEditOverlay(zones));
+      } catch (_) {
+        // Editing on the page is a convenience; the preview is the point. If
+        // the text layer can't be read, the page still draws.
+      }
+      if (reuse) continue;
+      const parts = [sheet];
       if (total > 1) {
         const tag = document.createElement("div");
         tag.className = "rbx-pdf-pagenum";
@@ -9354,10 +10303,23 @@ async function rbRenderPdfPreview(sharp = false) {
       if (n === 1) {
         host.className = "rbx-page rbx-page-pdf";
         host.replaceChildren(...parts);
-        host.classList.remove("is-rendering");
       } else {
         host.append(...parts);
       }
+    }
+    host.classList.remove("is-rendering");
+    // The zones are new elements, so anything that was pointing at an old one —
+    // the open editor, the line under the pointer — is pointing at a node that
+    // is no longer in the document. Put both back on the line they were on.
+    if (editing) {
+      const again = rbHitsFor(editing);
+      again.forEach(x => x.classList.add("is-editing"));
+      if (_rbEditOpen && again.length) _rbEditOpen.anchor = again[0];
+    }
+    if (hot) {
+      const again = rbHitsFor(hot);
+      again.forEach(x => x.classList.add("is-hot"));
+      _rbEditHot = again[0] || null;
     }
     _rbPdfLastKey = key;
     // Typing has stopped and the draft is on screen: redraw it crisp.
@@ -9383,10 +10345,693 @@ async function rbRenderPdfPreview(sharp = false) {
     // current generation left it stuck on whenever a render was superseded —
     // and since the card queue waits on it, the whole template grid sat on
     // skeletons forever.
+    clearTimeout(dimTimer);
     _rbPdfBusy = false;
-    if (seq === _rbPdfSeq) host.classList.remove("is-rendering");
+    if (seq === _rbPdfSeq) {
+      host.classList.remove("is-rendering");
+      // Last line of defence. Every way out of the block above either paints a
+      // page or paints an error, but a future one might not, and the failure
+      // mode is the worst kind: a skeleton that looks like it is still loading
+      // and never resolves. If the newest render has finished and left the
+      // panel empty, drop the claim that it drew, so the next call redraws
+      // instead of being skipped.
+      if (!host.querySelector(".rbx-pdf-page") && !host.querySelector(".rbx-pdf-error")) {
+        _rbPdfLastKey = "";
+      }
+    }
     if (_rbThumbQueue.length) rbThumbPump();
+    rbSyncPageEditUi();
   }
+}
+
+// ===========================================================================
+// Click a line on the preview to edit it
+// ===========================================================================
+//
+// The preview is a PDF painted onto a canvas, so there is nothing in it to
+// click: no elements, no text, just pixels. What makes it editable is pdf.js's
+// text layer — every run of text on the page with the box it occupies — matched
+// back to the string it was rendered from in EDITOR.values.
+//
+// The match is on the words, not on coordinates, and that is the whole reason
+// this works across thirty-odd templates without knowing anything about any of
+// them. A design that prints
+//
+//     Operations Delivery Manager, Department for Work and Pensions (Aug 2025 - Present)
+//
+// out of a source line that reads
+//
+//     Operations Delivery Manager | Department for Work and Pensions | Newcastle, UK | Aug 2025 - Present
+//
+// still resolves the role, the employer and the dates to their own boxes,
+// because each of those strings is looked for inside the line rather than the
+// line being taken apart. Wrapped lines are followed across the break, and text
+// the résumé does not own — SUMMARY, EXPERIENCE, the rules and the bullet
+// glyphs — matches nothing and is left alone, which is right: those belong to
+// the template, not to the person.
+
+const RB_PAGE_EDIT_KEY = "momentum_rb_page_edit";
+let rbPageEditOn = (() => {
+  try { return localStorage.getItem(RB_PAGE_EDIT_KEY) !== "off"; } catch (_) { return true; }
+})();
+
+// What to call the thing being edited, in the editor's own header.
+const RB_EDIT_LABEL = {
+  full_name: "Name", title: "Job title", email: "Email", phone: "Phone",
+  location: "Location", linkedin: "LinkedIn", website: "Website",
+  summary: "Profile summary", skills: "Skills",
+  certifications: "Certifications", publications: "Publications",
+  experience: "Employment history", education: "Education", projects: "Projects",
+};
+const RB_EDIT_PART = {
+  title: "role", company: "employer", location: "location", dates: "dates",
+  degree: "qualification", institution: "institution", name: "project",
+  heading: "heading", meta: "meta", subheading: "subheading", text: "text",
+};
+
+// ---- 1. everything on the page that came from something editable ----------
+//
+// In document order, because that order is what settles the ambiguity when two
+// pieces of the résumé read the same. "Data Analyst" is both the job title at
+// the top and the role of the second entry; the only thing telling them apart
+// is which one the page reaches first.
+function rbEditTargets() {
+  const v = EDITOR.values || {};
+  const out = [];
+  const add = (path, text, label, hint) => {
+    const t = String(text == null ? "" : text).trim();
+    if (t.length < 2) return;             // too short to match anything safely
+    out.push({ path, text: t, label, hint: hint || "", norm: rbEditNorm(t).n });
+  };
+  const lines = (field) => String(v[field] || "").split("\n").forEach((line, i) =>
+    add(`l|${field}|${i}`, line.replace(/^\s*[-•*]\s*/, ""),
+        RB_EDIT_LABEL[field] || field, "line"));
+
+  add("v|full_name", v.full_name, RB_EDIT_LABEL.full_name);
+  add("v|title", v.title, RB_EDIT_LABEL.title);
+  ["location", "phone", "email", "linkedin", "website"].forEach(f =>
+    add(`v|${f}`, v[f], RB_EDIT_LABEL[f]));
+  lines("summary");
+
+  [["experience", ["title", "company", "location", "dates"]],
+   ["education", ["degree", "institution", "dates"]],
+   ["projects", ["name"]]].forEach(([field, parts]) => {
+    rbGetEntries(field).forEach((e, i) => {
+      parts.forEach(part => add(`e|${field}|${i}|${part}`, e[part],
+                                RB_EDIT_LABEL[field], RB_EDIT_PART[part]));
+      (e.bullets || []).forEach((b, bi) =>
+        add(`b|${field}|${i}|${bi}`, b, RB_EDIT_LABEL[field], "point"));
+    });
+  });
+  lines("skills");
+  lines("publications");
+  lines("certifications");
+
+  (v.custom_sections || []).forEach((cs, si) => {
+    const name = cs.title || "Your own section";
+    add(`ct|${si}`, cs.title, name, "heading");
+    (cs.items || []).forEach((it, ii) => {
+      ["heading", "meta", "subheading", "text"].forEach(part =>
+        add(`ci|${si}|${ii}|${part}`, it[part], name, RB_EDIT_PART[part]));
+      (it.bullets || []).forEach((b, bi) => add(`cb|${si}|${ii}|${bi}`, b, name, "point"));
+    });
+  });
+  out.forEach((t, i) => { t.order = i; t.used = false; });
+  return out;
+}
+
+// Compare on letters and digits only, keeping a map back to the original string
+// so a match can still be turned into a position on the page. Case,
+// punctuation, which kind of dash, and how much space all differ between what
+// somebody typed and what the renderer printed, and none of them should decide
+// whether a line can be edited.
+function rbEditNorm(src) {
+  const text = String(src == null ? "" : src);
+  let n = "";
+  const map = [];
+  let gap = true;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i].toLowerCase();
+    if ((ch >= "a" && ch <= "z") || (ch >= "0" && ch <= "9")) {
+      n += ch; map.push(i); gap = false;
+    } else if (!gap) {
+      n += " "; map.push(i); gap = true;
+    }
+  }
+  if (n.endsWith(" ")) { n = n.slice(0, -1); map.pop(); }
+  return { n, map };
+}
+
+// ---- 2. the text layer, grouped into lines --------------------------------
+function rbPageLines(content, viewport) {
+  const runs = (content.items || [])
+    .filter(it => (it.str || "").trim())
+    .map(it => {
+      // pdf.js hands back a PDF-space transform; the viewport turns it into the
+      // coordinates the page was drawn in, y running down the page.
+      const pt = viewport.convertToViewportPoint(it.transform[4], it.transform[5]);
+      return { str: it.str, x: pt[0], y: pt[1], w: it.width || 0,
+               h: Math.abs(it.height || 10) };
+    })
+    .sort((a, b) => (Math.abs(a.y - b.y) > 3 ? a.y - b.y : a.x - b.x));
+  const lines = [];
+  runs.forEach(r => {
+    const last = lines[lines.length - 1];
+    if (last && Math.abs(last.y - r.y) <= 3) {
+      last.runs.push(r); last.h = Math.max(last.h, r.h);
+    } else {
+      lines.push({ y: r.y, h: r.h, runs: [r] });
+    }
+  });
+  // One string per line, with every character remembering the run it sits in,
+  // so a match on part of a line still knows where on the page it is.
+  lines.forEach(line => {
+    let text = "";
+    const owner = [];
+    line.runs.forEach((r, ri) => {
+      if (text && !/\s$/.test(text)) { text += " "; owner.push({ ri, ci: 0 }); }
+      for (let ci = 0; ci < r.str.length; ci++) { text += r.str[ci]; owner.push({ ri, ci }); }
+    });
+    const parsed = rbEditNorm(text);
+    line.text = text; line.owner = owner; line.norm = parsed.n; line.map = parsed.map;
+  });
+  return lines;
+}
+
+// A run is a box and a string, so a character inside it is that box in
+// proportion. Glyph widths differ, so this is an approximation — good to a
+// character or so, which is all a hit zone and a highlight need to be.
+function rbRunX(run, ci) {
+  const frac = run.str.length ? Math.min(1, Math.max(0, ci / run.str.length)) : 0;
+  return run.x + run.w * frac;
+}
+
+function rbZoneBox(line, from, to) {
+  const a = line.owner[line.map[from]];
+  const b = line.owner[line.map[to - 1]];
+  if (!a || !b) return null;
+  const left = rbRunX(line.runs[a.ri], a.ci);
+  const right = rbRunX(line.runs[b.ri], b.ci + 1);
+  if (!(right > left)) return null;
+  // The words the box is actually over, carried along so that what a zone
+  // claims can be checked against what is printed under it rather than taken
+  // on trust. A design is free to print the same line twice — several do — so
+  // "this string has two boxes" is not itself a fault; "this box is over words
+  // the string does not contain" is.
+  return { x: left, y: line.y - line.h, w: right - left, h: line.h,
+           frag: line.norm.slice(from, to) };
+}
+
+// ---- 3. matching the page's lines to the résumé's strings -----------------
+async function rbPageEditZones(page, targets) {
+  if (!targets || !targets.length) return [];
+  const viewport = page.getViewport({ scale: 1 });
+  const lines = rbPageLines(await page.getTextContent(), viewport);
+  const zones = [];
+  let pending = null;      // a string still being printed, across a line break
+  let cursor = 0;          // how far down the résumé the page has read
+
+  // Of several strings that read the same, the right one is the one nearest to
+  // where the page has already got to. Anything already claimed loses to
+  // anything not, so two identical bullets get one box each rather than two.
+  const pick = (cands) => cands.slice().sort((p, q) =>
+    ((p.used ? 1 : 0) - (q.used ? 1 : 0))
+    || (Math.abs(p.order - cursor) - Math.abs(q.order - cursor)))[0];
+
+  const claim = (t, box) => {
+    if (!box) return false;
+    t.used = true;
+    cursor = t.order + 1;
+    zones.push({ path: t.path, label: t.label, hint: t.hint, frag: box.frag,
+                 x: box.x, y: box.y, w: box.w, h: box.h });
+    return true;
+  };
+
+  // The order of these is the whole correctness of the thing, and it is not the
+  // obvious order. Looking for the résumé's strings *inside* the line first
+  // seems natural and is wrong: "Data Analyst" is a job title and it is also
+  // two words in the middle of a summary, so the summary line gets claimed by
+  // the job title and the other ninety characters of it stop being clickable.
+  // The same trap turns the word "EXPERIENCE" — a heading the template drew,
+  // which the résumé does not own at all — into whichever line happens to
+  // contain the word. So: whatever explains the *whole* line wins first, and
+  // only a line nothing accounts for is taken apart into pieces.
+  lines.forEach(line => {
+    if (!line.norm) return;
+    const whole = () => rbZoneBox(line, 0, line.norm.length);
+
+    // 1. Still printing the line before this one.
+    if (pending) {
+      const rest = pending.rest.replace(/^\s+/, "");
+      if (rest && rest.indexOf(line.norm) === 0) {
+        claim(pending.t, whole());
+        pending = rest.length > line.norm.length
+          ? { t: pending.t, rest: rest.slice(line.norm.length) } : null;
+        return;
+      }
+      pending = null;
+    }
+    // 2. The line is exactly one of them — a bullet, a skills row, a heading
+    //    the person wrote themselves.
+    const exact = targets.filter(t => t.norm === line.norm);
+    if (exact.length) { claim(pick(exact), whole()); return; }
+
+    // 2b. Or it is, once the letter-spacing is taken out. Several designs set
+    //     the job title as D A T A  A N A L Y S T, which arrives here as
+    //     separate glyphs and matches nothing. Compared with the spaces
+    //     squeezed out it is the same string again. Only ever an exact
+    //     comparison: squeezing words together is precisely how "SQL" starts
+    //     matching the middle of unrelated words.
+    if (line.norm.includes(" ")) {
+      const flat = line.norm.replace(/ /g, "");
+      const spaced = targets.filter(t => t.norm.replace(/ /g, "") === flat);
+      if (spaced.length) { claim(pick(spaced), whole()); return; }
+    }
+
+    // 3. The line is the start of something longer, which wraps.
+    const starts = targets.filter(t => t.norm.length > line.norm.length
+      && line.norm.length >= 8 && t.norm.indexOf(line.norm) === 0);
+    if (starts.length) {
+      const t = pick(starts);
+      if (claim(t, whole())) pending = { t, rest: t.norm.slice(line.norm.length) };
+      return;
+    }
+    // 4. Or the end of one. Ending it is the test, not merely appearing in it:
+    //    "experience" appears in half the résumé and finishes almost none of it.
+    const ends = targets.filter(t => t.norm.length > line.norm.length
+      && line.norm.length >= 5 && t.norm.endsWith(line.norm));
+    if (ends.length) { claim(pick(ends), whole()); return; }
+
+    // 5. Nothing accounts for the line as a whole, so it is a row the template
+    //    assembled: "Role, Employer, Place (Dates)" out of four separate
+    //    strings. Each one that is in there gets its own box.
+    const bySpan = new Map();
+    targets.forEach(t => {
+      if (t.norm.length < 4) return;      // too generic to claim part of a line
+      const at = line.norm.indexOf(t.norm);
+      if (at < 0) return;
+      const span = at + ":" + (at + t.norm.length);
+      if (!bySpan.has(span)) bySpan.set(span, { a: at, b: at + t.norm.length, ts: [] });
+      bySpan.get(span).ts.push(t);
+    });
+    const taken = [];
+    // Longest first, and never two boxes over the same words: a role that also
+    // contains a shorter target should not have a second zone drawn inside it.
+    [...bySpan.values()].sort((p, q) => (q.b - q.a) - (p.b - p.a)).forEach(group => {
+      if (taken.some(([a, b]) => group.a < b && group.b > a)) return;
+      if (claim(pick(group.ts), rbZoneBox(line, group.a, group.b))) taken.push([group.a, group.b]);
+    });
+    // 5b. Nothing yet, which means the line is not one string and does not
+    //     contain one either — it is one string cut into columns. A third of
+    //     the designs set a skills row that way: the label goes in a narrow
+    //     column of its own, so
+    //
+    //         Programming Languages: Python, SQL, R
+    //
+    //     is printed as "Programming" beside "Python, SQL, R", with the word
+    //     "Languages" on the line underneath. No line of that is the row and no
+    //     line contains it, but each run of text is the start or the end of it.
+    if (!taken.length) {
+      // Which stretch of the line each run of text accounts for.
+      const frags = [];
+      for (let k = 0; k < line.norm.length; k++) {
+        const o = line.owner[line.map[k]];
+        if (!o) continue;
+        const last = frags[frags.length - 1];
+        if (last && last.ri === o.ri) last.b = k + 1; else frags.push({ ri: o.ri, a: k, b: k + 1 });
+      }
+      frags.forEach(f => {
+        while (f.a < f.b && line.norm[f.a] === " ") f.a++;
+        while (f.b > f.a && line.norm[f.b - 1] === " ") f.b--;
+        f.s = line.norm.slice(f.a, f.b);
+      });
+      const free = () => frags.filter(f => !taken.some(([a, b]) => f.a < b && f.b > a));
+      const here = [];       // strings this line has already been shown to hold
+      // A column of a row is a large part of the row: "Programming" is a third
+      // of "Programming Languages: Python, SQL, R". A word that merely happens
+      // to finish a long sentence is not — the word "Python" ends one of the
+      // bullets, and without this a stray "Python" chip somewhere else on the
+      // page would open that bullet for editing.
+      const enough = (f, t) => f.s.length >= t.norm.length * 0.3;
+
+      free().forEach(f => {
+        if (f.s.length < 5) return;
+        const head = targets.filter(t => t.norm.length > f.s.length
+          && f.s.length >= 6 && t.norm.indexOf(f.s) === 0 && enough(f, t));
+        if (head.length) {
+          const t = pick(head);
+          if (claim(t, rbZoneBox(line, f.a, f.b))) {
+            taken.push([f.a, f.b]); here.push(t);
+            pending = { t, rest: t.norm.slice(f.s.length) };
+          }
+          return;
+        }
+        const tail = targets.filter(t => t.norm.length > f.s.length
+          && t.norm.endsWith(f.s) && enough(f, t));
+        if (!tail.length) return;
+        const t = pick(tail);
+        if (claim(t, rbZoneBox(line, f.a, f.b))) { taken.push([f.a, f.b]); here.push(t); }
+      });
+
+      // 5c. Whatever is left over, and this is the loosest case: a design that
+      //     throws the labels away and prints the skills as chips, so the row
+      //     "Programming Languages: Python, SQL, R" arrives as separate words
+      //     with nothing joining them. A single word is far too weak to
+      //     attribute on its own — "Python" is in the summary, two bullets and
+      //     a project as well — so words are only read this way when one string
+      //     accounts for several of them at once, and each word then goes to
+      //     whichever string covers the most of them. Run over what is left
+      //     rather than only over an untouched line: one chip matching the end
+      //     of the second skills row must not leave the first row unreachable.
+      const rest = free().filter(f => f.s.length >= 3);
+      if (rest.length >= 2) {
+        const holds = (t, f) => (" " + t.norm + " ").includes(" " + f.s + " ");
+        const score = new Map();
+        targets.forEach(t => {
+          const n = rest.filter(f => holds(t, f)).length;
+          if (n >= 2) score.set(t, n);
+        });
+        rest.forEach(f => {
+          // A single word is enough once the line has already been shown to
+          // belong to something: with "Microsoft Azure" resolved, the "AWS"
+          // chip beside it needs no further argument.
+          let cands = [...score.keys()].filter(t => holds(t, f));
+          if (!cands.length) cands = here.filter(t => holds(t, f));
+          if (!cands.length) return;
+          const best = Math.max(...cands.map(t => score.get(t) || 1));
+          if (claim(pick(cands.filter(t => (score.get(t) || 1) === best)), rbZoneBox(line, f.a, f.b))) {
+            taken.push([f.a, f.b]);
+          }
+        });
+      }
+      if (taken.length) return;
+    }
+
+    // 6. And if the row runs off the end of the line — "… (Nov 2021 -" — the
+    //    string it broke in the middle of picks up on the next line.
+    const after = taken.length ? Math.max(...taken.map(([, b]) => b)) : 0;
+    const tail = line.norm.slice(after).replace(/^\s+/, "");
+    if (tail.length >= 5) {
+      const cont = targets.filter(t => t.norm.length > tail.length && t.norm.indexOf(tail) === 0);
+      if (cont.length) {
+        const t = pick(cont);
+        if (claim(t, rbZoneBox(line, line.norm.length - tail.length, line.norm.length))) {
+          pending = { t, rest: t.norm.slice(tail.length) };
+        }
+      }
+    }
+  });
+
+  // As percentages of the page, so the zones ride the fit-to-width zoom, the
+  // split drag and every screen size without being measured a second time.
+  const W = viewport.width, H = viewport.height;
+  return zones.filter(z => z.w > 0 && z.h > 0).map(z => ({
+    path: z.path, label: z.label, hint: z.hint, frag: z.frag,
+    left: (z.x / W) * 100, top: ((z.y - z.h * 0.25) / H) * 100,
+    width: (z.w / W) * 100, height: ((z.h * 1.55) / H) * 100,
+  }));
+}
+
+// ---- 4. the zones, on the page -------------------------------------------
+function rbEditOverlay(zones) {
+  const box = document.createElement("div");
+  box.className = "rbx-pdf-hits";
+  box.innerHTML = zones.map(z => `
+    <button type="button" class="rbx-hit" data-edit="${esc(z.path)}" tabindex="-1"
+      data-frag="${esc(z.frag || "")}"
+      title="Edit ${esc(z.hint ? `${z.label} — ${z.hint}` : z.label)}"
+      style="left:${z.left.toFixed(3)}%;top:${z.top.toFixed(3)}%;width:${z.width.toFixed(3)}%;height:${z.height.toFixed(3)}%"></button>`).join("");
+  return box;
+}
+
+// ---- 5. the editor -------------------------------------------------------
+let _rbEditOpen = null;       // { path, anchor, el, before }
+
+// A sentence longer than the column is printed on two lines, and gets a box on
+// each. They are one thing to edit, so they light up together and are placed
+// around together: highlighting only the half the pointer happens to be over
+// says the other half is something else, which is exactly the wrong thing to
+// say about the line you are about to rewrite.
+function rbHitsFor(path) {
+  if (!path) return [];
+  return [...document.querySelectorAll(".rbx-hit")].filter(h => h.dataset.edit === path);
+}
+
+// The whole of it, across however many lines it takes.
+function rbHitsRect(hits) {
+  const boxes = hits.map(h => h.getBoundingClientRect()).filter(b => b.width > 0);
+  if (!boxes.length) return null;
+  return {
+    left: Math.min(...boxes.map(b => b.left)),
+    right: Math.max(...boxes.map(b => b.right)),
+    top: Math.min(...boxes.map(b => b.top)),
+    bottom: Math.max(...boxes.map(b => b.bottom)),
+  };
+}
+
+function rbClosePageEdit(save) {
+  const open = _rbEditOpen;
+  if (!open) return;
+  _rbEditOpen = null;
+  const ta = open.el.querySelector(".rbx-pedit-ta");
+  const text = ta ? ta.value : null;
+  open.el.remove();
+  document.querySelectorAll(".rbx-hit.is-editing, .rbx-hit.is-hot")
+    .forEach(h => h.classList.remove("is-editing", "is-hot"));
+  if (save && text != null && text !== open.before) rbSavePageEdit(open.path, text);
+}
+
+function rbPlacePageEdit(el, anchor) {
+  const stage = document.getElementById("rbx-stage");
+  const s = stage ? stage.getBoundingClientRect()
+                  : { top: 0, bottom: window.innerHeight };
+  // Below the last line of it, not the first, so the editor never sits on top
+  // of the half of the sentence you are trying to read while you rewrite it.
+  const hits = rbHitsFor(anchor.dataset.edit);
+  const one = anchor.getBoundingClientRect();
+  const all = rbHitsRect(hits.length ? hits : [anchor]) || one;
+  // Unless the pieces are nowhere near each other — a line broken over a page
+  // boundary — in which case the one that was clicked is the honest anchor.
+  const a = (all.bottom - all.top) > window.innerHeight * 0.4 ? one : all;
+  // Scrolled out of the panel it belongs to: there is nothing left to point at,
+  // so the edit is committed rather than left hanging over the interface.
+  if (a.bottom < s.top - 4 || a.top > s.bottom + 4) { rbClosePageEdit(true); return; }
+  const w = Math.min(Math.max(300, (a.right - a.left) + 40), 420, window.innerWidth - 24);
+  el.style.width = w + "px";
+  const h = el.offsetHeight || 170;
+  const below = a.bottom + 8;
+  el.style.left = Math.min(Math.max(12, a.left - 10), Math.max(12, window.innerWidth - w - 12)) + "px";
+  el.style.top = (below + h < window.innerHeight - 12 ? below : Math.max(12, a.top - h - 8)) + "px";
+}
+
+function rbOpenPageEdit(anchor) {
+  const path = anchor.dataset.edit;
+  if (!path) return;
+  if (_rbEditOpen && _rbEditOpen.path === path) return;
+  rbClosePageEdit(true);
+  const t = rbEditTargets().find(x => x.path === path);
+  if (!t) return;
+  rbHitsFor(path).forEach(h => h.classList.add("is-editing"));
+  const el = document.createElement("div");
+  el.className = "rbx-pedit";
+  el.innerHTML = `
+    <div class="rbx-pedit-head">
+      <span class="rbx-pedit-what">${esc(t.label)}${t.hint ? ` <i>${esc(t.hint)}</i>` : ""}</span>
+      <button type="button" class="rbx-pedit-x" aria-label="Close">✕</button>
+    </div>
+    <textarea class="rbx-pedit-ta" rows="1" spellcheck="true"></textarea>
+    <div class="rbx-pedit-foot">
+      <span class="rbx-pedit-hint">Esc to cancel</span>
+      <span class="rbx-pedit-btns">
+        <button type="button" class="rbx-pedit-cancel">Cancel</button>
+        <button type="button" class="rbx-pedit-save">Save</button>
+      </span>
+    </div>`;
+  // Inside the builder, not on the body. The builder's palette is declared on
+  // .rbx, so a popover parented to the body resolves every one of those
+  // variables to its light-mode fallback and comes out white in dark mode —
+  // with the app's own dark rule for <textarea> still applying to the box
+  // inside it, which is how it ended up as pale grey text on white. It stays
+  // position:fixed either way; .rbx sets no transform, so nothing here becomes
+  // a containing block for it.
+  (document.querySelector(".rbx") || document.body).append(el);
+  const ta = el.querySelector(".rbx-pedit-ta");
+  ta.value = t.text;
+  _rbEditOpen = { path, anchor, el, before: t.text };
+  const grow = () => {
+    ta.style.height = "auto";
+    ta.style.height = Math.min(240, ta.scrollHeight + 2) + "px";
+  };
+  grow();
+  rbPlacePageEdit(el, anchor);
+  ta.focus();
+  ta.setSelectionRange(ta.value.length, ta.value.length);
+  ta.addEventListener("input", () => { grow(); rbPlacePageEdit(el, anchor); });
+  ta.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") { e.preventDefault(); e.stopPropagation(); rbClosePageEdit(false); return; }
+    if (e.key !== "Enter" || e.shiftKey) return;
+    // A one-line thing takes Enter as "done". Anything that can hold several
+    // lines keeps Enter for a new line and saves on the modifier instead.
+    const multi = /^(l\||b\||cb\||ci\|)/.test(path);
+    if (!multi || e.metaKey || e.ctrlKey) { e.preventDefault(); rbClosePageEdit(true); }
+  });
+  el.querySelector(".rbx-pedit-save").addEventListener("click", () => rbClosePageEdit(true));
+  el.querySelector(".rbx-pedit-cancel").addEventListener("click", () => rbClosePageEdit(false));
+  el.querySelector(".rbx-pedit-x").addEventListener("click", () => rbClosePageEdit(false));
+}
+
+// ---- 6. writing it back --------------------------------------------------
+//
+// Through the same helpers the form on the left uses, so a line changed on the
+// page and the same line changed in its box are one edit rather than two, and
+// the two surfaces can never disagree about what the résumé says.
+function rbSavePageEdit(path, raw) {
+  const p = String(path).split("|");
+  const text = String(raw == null ? "" : raw).replace(/\s+$/, "");
+  const bare = text.replace(/^\s*[-•*]\s*/, "").trim();
+  const kind = p[0];
+  if (kind === "v") {
+    rbSet(p[1], text.trim());
+  } else if (kind === "l") {
+    const field = p[1], i = +p[2];
+    const lines = String(EDITOR.values[field] || "").split("\n");
+    if (i < 0 || i >= lines.length) return;
+    const marker = (lines[i].match(/^\s*([-•*])\s*/) || [])[1];
+    lines[i] = bare ? (marker ? `${marker} ${bare}` : bare) : "";
+    // Emptying a line removes it; every other line is left exactly as it was.
+    EDITOR.values[field] = lines.filter((l, k) => k !== i || l.trim()).join("\n");
+  } else if (kind === "e") {
+    const e = rbGetEntries(p[1])[+p[2]];
+    if (!e) return;
+    e[p[3]] = text.trim();
+    rbCommitEntries(p[1]);
+  } else if (kind === "b") {
+    const e = rbGetEntries(p[1])[+p[2]];
+    if (!e || !e.bullets) return;
+    if (bare) e.bullets[+p[3]] = bare; else e.bullets.splice(+p[3], 1);
+    rbCommitEntries(p[1]);
+  } else if (kind === "ct") {
+    const cs = (EDITOR.values.custom_sections || [])[+p[1]];
+    if (!cs) return;
+    cs.title = text.trim();
+  } else if (kind === "ci" || kind === "cb") {
+    const it = (((EDITOR.values.custom_sections || [])[+p[1]] || {}).items || [])[+p[2]];
+    if (!it) return;
+    if (kind === "ci") { it[p[3]] = text.trim(); }
+    else if (it.bullets) { if (bare) it.bullets[+p[3]] = bare; else it.bullets.splice(+p[3], 1); }
+  } else {
+    return;
+  }
+  EDITOR.dirty = true;
+  rbRenderSections();
+  rbRenderPreview(true);
+  rbRenderCompleteness();
+  rbEditTipSeen();
+}
+
+// ---- 7. the mode ---------------------------------------------------------
+function rbSetPageEdit(on) {
+  rbPageEditOn = !!on;
+  try { localStorage.setItem(RB_PAGE_EDIT_KEY, on ? "on" : "off"); } catch (_) { /* private mode */ }
+  if (!on) rbClosePageEdit(false);
+  rbSyncPageEditUi();
+}
+
+function rbSyncPageEditUi() {
+  // Not while an example is on screen. Editing somebody else's worked example
+  // changes nothing that anybody keeps, so the zones would be a promise the
+  // panel cannot honour.
+  const on = rbPageEditOn && !rbState.exampleView;
+  document.querySelector(".rbx-right")?.classList.toggle("rbx-editable", on);
+  const btn = document.getElementById("rbx-rhead-edit");
+  if (btn) {
+    btn.classList.toggle("hidden", !!rbState.exampleView);
+    btn.setAttribute("aria-pressed", String(on));
+    btn.classList.toggle("on", on);
+    btn.title = rbPageEditOn
+      ? "Click any line on the page to edit it — click here to turn that off"
+      : "Turn on editing straight from the page";
+  }
+  document.getElementById("rbx-edit-tip")
+    ?.classList.toggle("hidden", !on || rbEditTipDone());
+  document.getElementById("rbx-example-bar")
+    ?.classList.toggle("hidden", !rbState.exampleView);
+}
+
+function rbEditTipDone() {
+  try { return localStorage.getItem("momentum_rb_edit_tip") === "seen"; } catch (_) { return false; }
+}
+function rbEditTipSeen() {
+  try { localStorage.setItem("momentum_rb_edit_tip", "seen"); } catch (_) { /* private mode */ }
+  document.getElementById("rbx-edit-tip")?.classList.add("hidden");
+}
+
+let _rbEditGlobalsWired = false;
+let _rbEditHot = null;         // the zone the pointer is in, so its siblings light up too
+
+function rbWirePageEdit() {
+  const stage = document.getElementById("rbx-stage");
+  if (!stage || stage.dataset.editWired) { rbSyncPageEditUi(); return; }
+  stage.dataset.editWired = "1";
+  // Delegated: the zones are rebuilt on every render.
+  stage.addEventListener("click", (e) => {
+    const hit = e.target.closest(".rbx-hit");
+    if (!hit || !rbPageEditOn) return;
+    e.preventDefault();
+    rbOpenPageEdit(hit);
+  });
+  // Hovering any part of a sentence lights up all of it. :hover alone would
+  // only light the box the pointer is inside, which on a line that wraps is
+  // half the sentence — and reads as if the other half belonged to something
+  // else. There is no selector for "every element whose attribute matches this
+  // one's", so it is done here.
+  stage.addEventListener("mouseover", (e) => {
+    if (!rbPageEditOn) return;
+    const hit = e.target.closest(".rbx-hit");
+    if (!hit || hit === _rbEditHot) return;
+    document.querySelectorAll(".rbx-hit.is-hot").forEach(h => h.classList.remove("is-hot"));
+    _rbEditHot = hit;
+    rbHitsFor(hit.dataset.edit).forEach(h => h.classList.add("is-hot"));
+  });
+  stage.addEventListener("mouseleave", () => {
+    _rbEditHot = null;
+    document.querySelectorAll(".rbx-hit.is-hot").forEach(h => h.classList.remove("is-hot"));
+  });
+  stage.addEventListener("mouseout", (e) => {
+    if (e.relatedTarget && e.relatedTarget.closest && e.relatedTarget.closest(".rbx-hit")) return;
+    _rbEditHot = null;
+    document.querySelectorAll(".rbx-hit.is-hot").forEach(h => h.classList.remove("is-hot"));
+  });
+  // Following the page as it scrolls keeps the editor against the line it
+  // belongs to; leave the panel and it commits rather than floating free.
+  stage.addEventListener("scroll", () => {
+    if (_rbEditOpen) rbPlacePageEdit(_rbEditOpen.el, _rbEditOpen.anchor);
+  }, { passive: true });
+  document.getElementById("rbx-rhead-edit")?.addEventListener("click", () => {
+    rbSetPageEdit(!rbPageEditOn);
+    showToast(rbPageEditOn ? "Click any line on the page to edit it"
+                           : "Editing from the page is off", "info");
+  });
+  document.getElementById("rbx-edit-tip-x")?.addEventListener("click", rbEditTipSeen);
+  document.getElementById("rbx-example-use")?.addEventListener("click", rbUseExample);
+  document.getElementById("rbx-example-close")?.addEventListener("click", rbCloseExample);
+  // The stage is built afresh every time the builder is opened, so its
+  // listeners go with it. These two live on the document and the window, which
+  // do not, and adding them per visit would stack up a set per visit.
+  if (!_rbEditGlobalsWired) {
+    _rbEditGlobalsWired = true;
+    // Clicking away keeps the typing. Abandoning it is what Esc is for, and
+    // losing a sentence to a stray click is the worse of the two mistakes.
+    document.addEventListener("mousedown", (e) => {
+      if (!_rbEditOpen) return;
+      if (e.target.closest(".rbx-pedit") || e.target.closest(".rbx-hit")) return;
+      rbClosePageEdit(true);
+    });
+    window.addEventListener("resize", () => {
+      if (_rbEditOpen) rbPlacePageEdit(_rbEditOpen.el, _rbEditOpen.anchor);
+    });
+  }
+  rbSyncPageEditUi();
 }
 
 // Every entry row across every template: role on the left, employer and dates on
@@ -9532,12 +11177,24 @@ function rbSwitchTab(name) {
     b.classList.toggle("active", b.dataset.rtab === name);
     if (b.dataset.rtab === name) b.querySelector(".rbx-tabdot")?.remove();
   });
-  ["edit", "design", "roles", "review", "tailor"].forEach(t => {
+  ["edit", "design", "roles", "tailor"].forEach(t => {
     const p = document.getElementById("rbx-pane-" + t);
     if (p) p.style.display = t === name ? "block" : "none";
   });
   // The role picker's data is only worth fetching once the tab is opened.
   if (name === "roles") rbLoadRoles();
+  // Coming back to Tailor with a description already pasted should show the
+  // proposal for the résumé as it is now, not the one from before you edited.
+  if (name === "tailor") {
+    rbLoadPrompts();
+    rbAdAutoFold();
+    rbTlStep(RB_TAILOR.step || "tailor");
+    if ((document.getElementById("rbx-jd")?.value || "").trim().length >= 20) {
+      rbRunAnalyse();
+      rbRunTailor();
+    }
+  }
+  rbRenderDocView();
 }
 
 // ---- "Best for role": job -> recommended templates -------------------------
@@ -9550,7 +11207,10 @@ async function rbLoadRoles() {
   if (!body || rbState.roles) { rbRenderRoles(); return; }
   body.innerHTML = `<div class="rbx-roles-loading">Loading recommendations…</div>`;
   try {
-    const res = await get(`/api/resume-builder/role-templates`);
+    const [res] = await Promise.all([
+      get(`/api/resume-builder/role-templates`),
+      rbLoadExampleRoles(),
+    ]);
     rbState.roles = (res && res.fields) || [];
   } catch {
     rbState.roles = [];
@@ -9598,6 +11258,10 @@ function rbRenderRoles() {
   body.querySelectorAll("[data-role]").forEach(b => b.addEventListener("click", () => {
     rbState.roleId = b.dataset.role;
     rbRenderRoles();
+    // The picks render underneath sixty-odd chips, which on most screens is off
+    // the bottom of the panel: choosing a role appeared to do nothing at all.
+    document.getElementById("rbx-role-picks")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }));
   rbRenderRolePicks();
 }
@@ -9621,15 +11285,173 @@ function rbRenderRolePicks() {
         <p class="rbx-role-why">${esc(p.why)}</p>
       </div>`;
   }).join("");
+  const roleId = found.role.id;
+  const hasEx = !RB_EXAMPLES.roles || RB_EXAMPLES.roles.has(roleId);
   host.innerHTML = `
     <div class="rbx-role-picks-head">
       <h4>${esc(found.role.label)}</h4>
       <span>${found.role.picks.length} templates that fit — click one to apply it</span>
     </div>
-    <div class="rbx-role-pick-grid">${cards}</div>`;
+    <div class="rbx-role-pick-grid">${cards}</div>
+    ${hasEx ? rbExampleCards(roleId) : ""}`;
   rbBindTemplateCells(host, templates);
   rbWatchThumbnails();
+  host.querySelectorAll("[data-example]").forEach(b =>
+    b.addEventListener("click", () => rbOpenExample(b.dataset.example)));
+  // Asked for only when a role is actually opened, and only once per role.
+  if (hasEx && !RB_EXAMPLES.byRole[roleId]) {
+    rbLoadExamples(roleId).then(() => {
+      if (rbState.roleId === roleId) rbRenderRolePicks();
+    });
+  }
 }
+// ---- worked examples ------------------------------------------------------
+//
+// Picking the right template still leaves the harder question unanswered: what
+// goes in it. Each role carries three written examples — an early-career one, a
+// mid-level one and a senior one — because what changes between those three is
+// most of what somebody is actually trying to work out.
+//
+// They are invented people, deliberately (see backend/app/resume_examples.py).
+// Fetched per role rather than shipped with the picker: the whole set is about
+// half a megabyte and almost nobody opens more than one role's worth.
+const RB_EXAMPLES = { roles: null, byRole: {}, loading: {} };
+
+async function rbLoadExampleRoles() {
+  if (RB_EXAMPLES.roles) return RB_EXAMPLES.roles;
+  try {
+    const res = await get(`/api/resume-builder/role-examples`);
+    RB_EXAMPLES.roles = new Set((res && res.roles) || []);
+  } catch {
+    RB_EXAMPLES.roles = new Set();      // the picker still recommends templates
+  }
+  return RB_EXAMPLES.roles;
+}
+
+async function rbLoadExamples(roleId) {
+  if (RB_EXAMPLES.byRole[roleId]) return RB_EXAMPLES.byRole[roleId];
+  if (RB_EXAMPLES.loading[roleId]) return RB_EXAMPLES.loading[roleId];
+  RB_EXAMPLES.loading[roleId] = (async () => {
+    try {
+      const res = await get(`/api/resume-builder/role-examples/${encodeURIComponent(roleId)}`);
+      RB_EXAMPLES.byRole[roleId] = (res && res.examples) || [];
+    } catch {
+      RB_EXAMPLES.byRole[roleId] = [];
+    }
+    delete RB_EXAMPLES.loading[roleId];
+    return RB_EXAMPLES.byRole[roleId];
+  })();
+  return RB_EXAMPLES.loading[roleId];
+}
+
+function rbExampleCards(roleId) {
+  const list = RB_EXAMPLES.byRole[roleId];
+  if (!list) return `<div class="rbx-ex-loading">Loading examples…</div>`;
+  if (!list.length) return "";
+  return `
+    <div class="rbx-ex">
+      <div class="rbx-ex-head">
+        <h4>What a strong one looks like</h4>
+        <span>Three written examples — read one, or start from it. Invented people, not real CVs.</span>
+      </div>
+      <div class="rbx-ex-grid">
+        ${list.map(ex => `
+          <button type="button" class="rbx-ex-card ${rbState.exampleView && rbState.exampleView.id === ex.id ? "on" : ""}"
+                  data-example="${esc(ex.id)}">
+            <span class="rbx-ex-level">${esc(ex.level_label)}</span>
+            <span class="rbx-ex-name">${esc(ex.data.full_name)}</span>
+            <span class="rbx-ex-headline">${esc(ex.headline)}</span>
+            <span class="rbx-ex-why">${esc(ex.why)}</span>
+            <span class="rbx-ex-tpl">Shown in ${esc(ex.template_name)}</span>
+          </button>`).join("")}
+      </div>
+    </div>`;
+}
+
+function rbFindExample(id) {
+  for (const list of Object.values(RB_EXAMPLES.byRole)) {
+    const hit = (list || []).find(x => x.id === id);
+    if (hit) return hit;
+  }
+  return null;
+}
+
+function rbOpenExample(id) {
+  const ex = rbFindExample(id);
+  if (!ex) return;
+  rbState.exampleView = ex;
+  const who = document.getElementById("rbx-example-who");
+  if (who) {
+    who.textContent = `${ex.data.full_name} — ${ex.headline.toLowerCase()}`;
+    who.title = ex.why;
+  }
+  rbClosePageEdit(false);
+  rbRenderDocView();
+  rbRenderPreview(true);
+  rbSyncPageEditUi();
+  rbRenderRolePicks();
+}
+
+function rbCloseExample() {
+  if (!rbState.exampleView) return;
+  rbState.exampleView = null;
+  rbRenderDocView();
+  rbRenderPreview(true);
+  rbSyncPageEditUi();
+  rbRenderRolePicks();
+}
+
+// Their own CV is replaced, so this asks first whenever there is anything to
+// lose. The example's contact block is dropped on the way in: nobody wants to
+// send an application carrying an invented person's email address, and the
+// most likely way that happens is by never noticing it was there.
+async function rbUseExample() {
+  const ex = rbState.exampleView;
+  if (!ex) return;
+  const mine = EDITOR.values || {};
+  const hasWork = ["summary", "experience", "education", "skills", "projects"]
+    .some(f => String(mine[f] || "").trim().length > 12);
+  if (hasWork) {
+    const ok = await showConfirmModal({
+      title: "Start from this example?",
+      message: `This replaces what is in the builder now with ${ex.data.full_name}'s example, `
+             + `for you to write over. Your own text will be gone.`,
+      confirmLabel: "Replace and start from it",
+      danger: true,
+    });
+    if (!ok) return;
+  }
+  const keep = ["full_name", "title", "email", "phone", "location", "linkedin", "website"];
+  const next = { ...ex.data };
+  keep.forEach(f => { next[f] = mine[f] || ""; });
+  next.custom_sections = Array.isArray(mine.custom_sections) ? mine.custom_sections : [];
+  EDITOR.values = next;
+  EDITOR.dirty = true;
+  RESUME_BUILDER_STATE.templateId = ex.template_id;
+  rbState.accent = ex.data.accent_color || rbState.accent;
+  rbState.entries = null;         // re-parse the entries from the new text
+  rbState.exampleView = null;
+  rbSwitchTab("edit");
+  rbRenderSections();
+  // Tick the template the example was written for, wherever it appears — the
+  // Design grid and the role picker both show the same cards.
+  document.querySelectorAll(".rbx-tmpl-cell").forEach(x => {
+    const on = x.dataset.tmpl === ex.template_id;
+    x.classList.toggle("selected", on);
+    const check = x.querySelector(".rbx-tmpl-check");
+    if (!on && check) check.remove();
+    const nm = x.querySelector(".rbx-tmpl-name");
+    if (on && nm && !nm.querySelector(".rbx-tmpl-check")) {
+      nm.insertAdjacentHTML("beforeend", ' <span class="rbx-tmpl-check">✓</span>');
+    }
+  });
+  rbRenderDocView();
+  rbRenderPreview(true);
+  rbRenderCompleteness();
+  rbSyncPageEditUi();
+  showToast("Started from the example — your contact details were kept", "success");
+}
+
 function rbToggleSection(id) {
   const el = document.getElementById(id);
   const willOpen = !el.classList.contains("open");
@@ -10034,24 +11856,1090 @@ function rbWireReview() {
 }
 
 // ---- tailor ----
-function rbRunTailor() {
-  const jd = (document.getElementById("rbx-jd").value || "").toLowerCase();
-  if (jd.trim().length < 20) { showToast("Paste a fuller job description first", "warning"); return; }
-  const resumeText = [EDITOR.values.skills, EDITOR.values.summary, EDITOR.values.experience, EDITOR.values.projects].join(" ").toLowerCase();
-  // crude keyword extraction: notable words in the JD, 4+ chars, not stopwords
-  const stop = new Set("with your team role work will have that this from they them what when have been which about into your you our are for and the a an to of in on as at or be is".split(" "));
-  const freq = {};
-  (jd.match(/[a-z][a-z+.#/]{3,}/g) || []).forEach(w => { if (!stop.has(w)) freq[w] = (freq[w] || 0) + 1; });
-  const top = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 12).map(e => e[0]);
-  const kwEl = document.getElementById("rbx-kw");
-  kwEl.style.display = "flex";
-  kwEl.innerHTML = top.map(k => {
-    const hit = resumeText.includes(k);
-    return `<span class="rbx-kwtag ${hit ? "match" : "miss"}">${esc(k)} ${hit ? "✓" : "✗"}</span>`;
+// ============================================================================
+// TAILOR TO A JOB
+// ============================================================================
+// What this used to be: a keyword counter. It tokenised the job ad in the
+// browser, printed ✓/✗ chips, and offered — only if the résumé had already
+// been saved — a button that generated a separate copy in the library and
+// navigated away. Nothing on screen changed, there was no way to take one
+// suggestion and refuse another, and on an unsaved résumé the button never
+// appeared at all, which is why it read as broken.
+//
+// What it is now: the server proposes changes section by section at one of
+// three strengths (see backend/app/ai/tailor_levels.py), and each one is
+// applied here, into the fields, with the preview redrawing immediately. The
+// résumé on screen is the one being tailored — saved or not — and nothing is
+// committed until Save, exactly like any other edit.
+const RB_TAILOR = {
+  level: "regular",
+  jd: "",
+  prompt: "",          // the person's own instruction, in their words
+  prompts: [],         // the ones they saved
+  promptsLoaded: false,
+  data: null,          // the last proposal from the server
+  applied: {},         // field -> the text it had before we applied anything
+  edits: {},           // field -> the person's own edit of a proposal
+  editing: new Set(),  // fields whose edit box is open (survives a re-render)
+  loading: false,
+  lastKey: "",         // dedupes identical (description, instruction, strength) requests
+  step: "tailor",
+  analysis: null,      // the keyword/requirement read
+  lastAnalyseKey: "",
+  lastAdd: null,       // what the last "add keywords" run actually did
+  picked: new Set(),   // missing keywords the person ticked
+  targets: new Set(["skills"]),
+  docView: "preview",  // what the right-hand pane is showing
+};
+
+function rbTailorEls() {
+  return {
+    jd: document.getElementById("rbx-jd"),
+    prompt: document.getElementById("rbx-prompt"),
+    out: document.getElementById("rbx-tl-out"),
+    levels: document.getElementById("rbx-tl-levels"),
+    match: document.getElementById("rbx-match"),
+  };
+}
+
+async function rbRunTailor(force = false) {
+  const els = rbTailorEls();
+  if (!els.jd || !els.out) return;
+  const jd = (els.jd.value || "").trim();
+  RB_TAILOR.jd = jd;
+  if (jd.length < 20) {
+    if (force) showToast("Paste a fuller job description first", "warning");
+    RB_TAILOR.data = null;
+    rbRenderTailor();          // the "paste the advert" panel, not a blank box
+    return;
+  }
+  RB_TAILOR.prompt = (els.prompt?.value || "").trim();
+  // The proposal is a function of the description, the instruction, the
+  // strength AND the résumé's current contents — applying one section
+  // legitimately changes what the others should say, so the values go in too.
+  const key = `${RB_TAILOR.level}::${RB_TAILOR.prompt}::${jd}::${JSON.stringify(rbTailorValues())}`;
+  if (!force && key === RB_TAILOR.lastKey) return;
+  RB_TAILOR.lastKey = key;
+
+  RB_TAILOR.loading = true;
+  rbRenderTailor();
+  try {
+    RB_TAILOR.data = await post(`/api/resume-builder/tailor-preview`, {
+      job_description: jd, level: RB_TAILOR.level, values: rbTailorValues(),
+      prompt: RB_TAILOR.prompt,
+    });
+  } catch (err) {
+    RB_TAILOR.data = null;
+    els.out.innerHTML = `<p class="rbx-tl-empty">${esc(apiErrorMessage(err, "Couldn't analyse that job description."))}</p>`;
+    RB_TAILOR.loading = false;
+    return;
+  }
+  RB_TAILOR.loading = false;
+  rbRenderTailor();
+  rbRenderStepCounts();
+}
+
+// Only the fields tailoring is allowed to touch, plus the ones it reads for
+// evidence. Sending the whole editor state would put the photo in a POST body.
+function rbTailorValues() {
+  const v = EDITOR.values || {};
+  const keep = ["job_title", "summary", "skills", "experience", "projects",
+                "education", "certifications", "publications"];
+  return Object.fromEntries(keep.map(k => [k, v[k] || ""]).filter(([, val]) => val));
+}
+
+// ---------------------------------------------------------------------------
+// The split between the work and the preview
+// ---------------------------------------------------------------------------
+// A default is a guess about somebody else's screen. This one favours the pane
+// you act in — the preview is a reference, and a reference does not need more
+// room than the sheet it shows — and then gets out of the way: drag the edge,
+// double-click to put it back, and the choice is remembered per browser.
+
+const RBX_SPLIT_KEY = "momentum_rbx_split";
+const RBX_SPLIT_MIN = 300;
+
+function rbSplitMax() {
+  const layout = document.querySelector(".rbx-layout");
+  // The work surface keeps at least 420px whatever happens, so dragging can
+  // never leave you tailoring through a letterbox.
+  return layout ? Math.max(RBX_SPLIT_MIN, layout.clientWidth - 420) : 760;
+}
+
+function rbApplySplit(px) {
+  const layout = document.querySelector(".rbx-layout");
+  if (!layout) return;
+  if (px == null) {
+    layout.style.removeProperty("--rbx-split");
+  } else {
+    layout.style.setProperty("--rbx-split",
+      Math.round(Math.min(rbSplitMax(), Math.max(RBX_SPLIT_MIN, px))) + "px");
+  }
+  rbFitPage();
+}
+
+function rbRestoreSplit() {
+  const saved = Number(localStorage.getItem(RBX_SPLIT_KEY));
+  if (saved && saved >= RBX_SPLIT_MIN) rbApplySplit(saved);
+  else rbApplySplit(null);
+}
+
+function rbBindSplit() {
+  const grip = document.getElementById("rbx-grip");
+  const right = document.querySelector(".rbx-right");
+  if (!grip || !right || grip._bound) return;
+  grip._bound = true;
+
+  let startX = 0, startW = 0;
+  const move = (e) => {
+    // Dragging left widens the preview, because the handle is on its left edge.
+    rbApplySplit(startW + (startX - e.clientX));
+  };
+  const end = () => {
+    document.removeEventListener("pointermove", move);
+    document.removeEventListener("pointerup", end);
+    document.body.classList.remove("is-splitting");
+    grip.classList.remove("is-dragging");
+    const w = getComputedStyle(document.querySelector(".rbx-layout")).getPropertyValue("--rbx-split");
+    if (w.trim()) localStorage.setItem(RBX_SPLIT_KEY, String(parseInt(w, 10)));
+    rbRenderPreview(true);
+  };
+  grip.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    startX = e.clientX;
+    startW = right.getBoundingClientRect().width;
+    document.body.classList.add("is-splitting");
+    grip.classList.add("is-dragging");
+    document.addEventListener("pointermove", move);
+    document.addEventListener("pointerup", end);
+  });
+  grip.addEventListener("dblclick", () => {
+    localStorage.removeItem(RBX_SPLIT_KEY);
+    rbApplySplit(null);
+    rbRenderPreview(true);
+    showToast("Preview width reset", "info");
+  });
+  // Keyboard: the handle is focusable, so it has to be usable from there too.
+  grip.addEventListener("keydown", (e) => {
+    const step = e.shiftKey ? 60 : 20;
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    e.preventDefault();
+    const now = right.getBoundingClientRect().width;
+    rbApplySplit(now + (e.key === "ArrowLeft" ? step : -step));
+    localStorage.setItem(RBX_SPLIT_KEY,
+      String(Math.round(right.getBoundingClientRect().width)));
+    rbRenderPreview(true);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// The advert bar
+// ---------------------------------------------------------------------------
+// A 200px textarea is right exactly once: the first time. After that the
+// advert is settled and the box is just the thing between you and the work,
+// on every visit, at the top of a pane that scrolls. So it folds into a line
+// that says what is in it, and unfolds on click.
+
+function rbAdSummary() {
+  const jd = (document.getElementById("rbx-jd")?.value || "").trim();
+  const words = jd.split(/\s+/).filter(Boolean).length;
+  if (!words) return { words: 0, title: "Job advert", sub: "Paste the full job description below" };
+  // The first substantial line is nearly always the role, and when it isn't,
+  // showing it verbatim is still more use than a word count on its own.
+  const line = jd.split("\n").map(l => l.trim()).find(l => l.length > 8) || "";
+  const title = line.length > 62 ? line.slice(0, 60).trimEnd() + "…" : line;
+  return {
+    words, title: title || "The job advert",
+    sub: words < 25 ? `${words} words — paste a bit more` : `${words} words`,
+  };
+}
+
+// "Upload JD" reads the file here rather than sending it anywhere: a .txt is
+// text already, and pdf.js is loaded for the preview, so a PDF advert can be
+// read out in the browser. Anything else says so plainly instead of failing.
+async function rbAdUpload(file) {
+  if (!file) return;
+  const name = (file.name || "").toLowerCase();
+  const box = document.getElementById("rbx-jd");
+  if (!box) return;
+  const put = (text) => {
+    box.value = (text || "").replace(/\s*\n\s*\n\s*\n+/g, "\n\n").trim().slice(0, 5000);
+    box.dispatchEvent(new Event("input", { bubbles: true }));
+    rbRunAnalyse(true); rbRunTailor(true); rbRenderDocView();
+  };
+  try {
+    if (/\.(txt|md|csv|text)$/.test(name) || (file.type || "").startsWith("text/")) {
+      put(await file.text());
+    } else if (name.endsWith(".pdf") || file.type === "application/pdf") {
+      const lib = await rbPdfLib();
+      const doc = await lib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+      const pages = [];
+      for (let n = 1; n <= Math.min(doc.numPages, 8); n++) {
+        const content = await (await doc.getPage(n)).getTextContent();
+        pages.push(content.items.map(i => i.str).join(" "));
+      }
+      doc.destroy();
+      put(pages.join("\n\n"));
+      showToast("Advert read from the PDF", "success");
+    } else {
+      showToast("I can read .txt and .pdf here — for anything else, paste the text", "warning");
+      return;
+    }
+    rbAdOpen(true);
+  } catch (err) {
+    showToast("Couldn't read that file — paste the text instead", "error");
+  }
+}
+
+function rbAdClear() {
+  const box = document.getElementById("rbx-jd");
+  if (!box) return;
+  box.value = "";
+  box.dispatchEvent(new Event("input", { bubbles: true }));
+  RB_TAILOR.analysis = null;
+  RB_TAILOR.data = null;
+  RB_TAILOR.lastKey = "";
+  RB_TAILOR.lastAnalyseKey = "";
+  rbAdOpen(true);
+  rbRunAnalyse(); rbRunTailor(); rbRenderTailor(); rbRenderDocView();
+}
+
+function rbAdRender() {
+  const wrap = document.getElementById("rbx-ad");
+  if (!wrap) return;
+  const { words, title, sub } = rbAdSummary();
+  const t = document.getElementById("rbx-ad-title");
+  const sb = document.getElementById("rbx-tl-jd-count");
+  const hint = document.getElementById("rbx-ad-edit-hint");
+  // Open, the textarea is right there — repeating its first line above it says
+  // nothing. Folded, that line is the only thing identifying what is in it.
+  const open = wrap.classList.contains("is-open");
+  if (t) t.textContent = open ? "Job advert" : title;
+  if (sb) sb.textContent = open && !words ? "Paste the full job description below" : sub;
+  wrap.classList.toggle("is-filled", words > 0);
+  wrap.classList.toggle("is-thin", words > 0 && words < 25);
+  if (hint) hint.textContent = wrap.classList.contains("is-open") ? "Close" : "Edit";
+  const chars = document.getElementById("rbx-ad-chars");
+  if (chars) {
+    const n = (document.getElementById("rbx-jd")?.value || "").length;
+    chars.textContent = `${n} / 5000`;
+    chars.classList.toggle("is-full", n >= 4900);
+  }
+  const clear = document.getElementById("rbx-ad-clear");
+  if (clear) clear.disabled = !words;
+}
+
+function rbAdOpen(open) {
+  const wrap = document.getElementById("rbx-ad");
+  if (!wrap) return;
+  wrap.classList.toggle("is-open", open);
+  document.getElementById("rbx-ad-bar")?.setAttribute("aria-expanded", String(open));
+  rbAdRender();
+  if (open) {
+    const box = document.getElementById("rbx-jd");
+    box?.focus();
+    box?.setSelectionRange(box.value.length, box.value.length);
+  }
+}
+
+// Folded once there is enough to work with, open while there isn't — so the
+// first visit shows the box and every later one shows the work.
+function rbAdAutoFold() {
+  const words = rbAdSummary().words;
+  rbAdOpen(words < 25);
+}
+
+// ---------------------------------------------------------------------------
+// Saved tailoring instructions
+// ---------------------------------------------------------------------------
+// "Keep every bullet, lead with Azure and dbt, UK spelling" is the same
+// sentence for every advert in one job hunt. Typed once, named, and applied by
+// pressing the name. Sorted by how often each is used, so the one being
+// reached for lands first without anyone maintaining an order.
+
+async function rbLoadPrompts(force = false) {
+  if (RB_TAILOR.promptsLoaded && !force) return;
+  try {
+    RB_TAILOR.prompts = await get(`/api/resume-builder/tailor-prompts`);
+    RB_TAILOR.promptsLoaded = true;
+  } catch {
+    RB_TAILOR.prompts = [];       // never blocks tailoring; the box still works
+  }
+  rbRenderSavedPrompts();
+}
+
+function rbRenderSavedPrompts() {
+  const wrap = document.getElementById("rbx-tl-saved");
+  if (!wrap) return;
+  const list = RB_TAILOR.prompts || [];
+  const current = (document.getElementById("rbx-prompt")?.value || "").trim();
+  wrap.innerHTML = `
+    ${list.length ? `<span class="rbx-tl-saved-label">Saved</span>` : ""}
+    ${list.map(p => `
+      <span class="rbx-tl-pchip ${p.body.trim() === current && current ? "on" : ""}"
+            data-prompt-use="${p.id}" role="button" tabindex="0"
+            title="${esc(p.body)}">
+        ${esc(p.name)}
+        <button type="button" class="rbx-tl-pchip-x" data-prompt-del="${p.id}"
+                aria-label="Delete ${esc(p.name)}">×</button>
+      </span>`).join("")}
+    <button type="button" class="rbx-tl-psave" id="rbx-tl-psave">
+      ${list.length ? "＋ Save this one" : "＋ Save this instruction"}
+    </button>`;
+}
+
+function rbOpenSaveBar() {
+  const body = (document.getElementById("rbx-prompt")?.value || "").trim();
+  if (!body) {
+    showToast("Write the instruction first, then save it", "warning");
+    document.getElementById("rbx-prompt")?.focus();
+    return;
+  }
+  const bar = document.getElementById("rbx-tl-savebar");
+  const name = document.getElementById("rbx-tl-pname");
+  bar?.classList.remove("hidden");
+  // A sensible default name beats an empty box: the first few words of the
+  // instruction are what the person would have typed anyway.
+  if (name && !name.value) name.value = body.split(/[.,\n]/)[0].slice(0, 40);
+  name?.focus();
+  name?.select();
+}
+
+function rbCloseSaveBar() {
+  document.getElementById("rbx-tl-savebar")?.classList.add("hidden");
+  const name = document.getElementById("rbx-tl-pname");
+  if (name) name.value = "";
+}
+
+async function rbSavePrompt() {
+  const name = (document.getElementById("rbx-tl-pname")?.value || "").trim();
+  const body = (document.getElementById("rbx-prompt")?.value || "").trim();
+  if (!name) { showToast("Give it a name so you can find it again", "warning"); return; }
+  if (!body) { showToast("There's nothing to save yet", "warning"); return; }
+  const btn = document.getElementById("rbx-tl-pconfirm");
+  const restore = btn ? setButtonBusy(btn, "Saving…") : null;
+  try {
+    await post(`/api/resume-builder/tailor-prompts`, { name, body });
+    await rbLoadPrompts(true);
+    rbCloseSaveBar();
+    showToast(`Saved as “${name}” — press it to reuse it`, "success");
+  } catch (err) {
+    showToast(apiErrorMessage(err, "Couldn't save that instruction"), "error");
+  } finally {
+    restore?.();
+  }
+}
+
+function rbUsePrompt(id) {
+  const found = (RB_TAILOR.prompts || []).find(p => String(p.id) === String(id));
+  const box = document.getElementById("rbx-prompt");
+  if (!found || !box) return;
+  // Pressing the chip a second time clears it, so a saved instruction can be
+  // taken off again without hunting for the text to delete.
+  const already = box.value.trim() === found.body.trim();
+  box.value = already ? "" : found.body;
+  rbRenderSavedPrompts();
+  rbRunTailor(true);
+  if (!already) {
+    showToast(`Tailoring with “${found.name}”`, "info");
+    post(`/api/resume-builder/tailor-prompts/${found.id}/used`, {}).catch(() => {});
+  }
+}
+
+async function rbDeletePrompt(id) {
+  const found = (RB_TAILOR.prompts || []).find(p => String(p.id) === String(id));
+  if (!found) return;
+  if (!await showConfirmModal({
+    title: "Delete this instruction?",
+    message: `“${found.name}” will be removed. Your CV and the text in the box are untouched.`,
+    confirmLabel: "Delete", danger: true,
+  })) return;
+  try {
+    await del(`/api/resume-builder/tailor-prompts/${found.id}`);
+    await rbLoadPrompts(true);
+    showToast("Deleted", "info");
+  } catch (err) {
+    showToast(apiErrorMessage(err, "Couldn't delete that"), "error");
+  }
+}
+
+// What the server made of the instruction, printed under the box. An
+// instruction that was misread is then a thing you can see and reword, rather
+// than something you find out about by diffing two versions of your own CV.
+function rbRenderPromptRead() {
+  const el = document.getElementById("rbx-tl-read");
+  if (!el) return;
+  const d = RB_TAILOR.data;
+  const typed = (document.getElementById("rbx-prompt")?.value || "").trim();
+  if (!typed) {
+    el.innerHTML = `<p class="rbx-tl-read-none">No instruction — so nothing is removed, only reordered${
+      RB_TAILOR.level === "regular" ? "" : " and reworded"}.</p>`;
+    return;
+  }
+  if (!d || d.prompt !== typed) {
+    el.innerHTML = `<p class="rbx-tl-read-none">Reading your instruction…</p>`;
+    return;
+  }
+  const notes = d.prompt_notes || [];
+  el.innerHTML = `
+    <div class="rbx-tl-read-box">
+      <b>Read as</b>
+      ${notes.length
+        ? `<ul>${notes.map(n => `<li>${esc(n)}</li>`).join("")}</ul>`
+        : `<p class="rbx-tl-read-none">Nothing to act on mechanically — it's passed to the model as written when it rewrites prose.</p>`}
+      ${d.prompt_extra && notes.length
+        ? `<p class="rbx-tl-read-extra">The rest goes to the model as written.</p>` : ""}
+    </div>`;
+}
+
+// ---------------------------------------------------------------------------
+// Analyse & tailor: steps, the keyword read, and the document switcher
+// ---------------------------------------------------------------------------
+// Review and Tailor used to be two tabs that each asked for the same job
+// advert and then answered half the question — one scored the CV, the other
+// reordered it, and neither told you which of the advert's words your CV was
+// missing. They are one tab now, with four steps over a single pasted advert.
+
+const RB_TL_STEPS = ["tailor", "review"];
+// The three old tabs are blocks of the first section now; anything that still
+// asks for one — a "see the changes" link in the analysis, a bookmark, a test
+// — lands on the section and scrolls to the block it meant.
+const RB_TL_BLOCKS = { analyse: "rbx-blk-analyse", keywords: "rbx-blk-keywords", changes: "rbx-blk-changes" };
+
+function rbTlStep(name) {
+  const block = RB_TL_BLOCKS[name];
+  if (block) name = "tailor";
+  if (!RB_TL_STEPS.includes(name)) return;
+  RB_TAILOR.step = name;
+  document.querySelectorAll("#rbx-tl-steps button").forEach(b =>
+    b.classList.toggle("on", b.dataset.step === name));
+  RB_TL_STEPS.forEach(t => {
+    const el = document.getElementById("rbx-step-" + t);
+    // "" rather than "block": the section is a flex column in the stylesheet,
+    // and an inline display would win over it.
+    if (el) el.style.display = t === name ? "" : "none";
+  });
+  rbAdAutoFold();
+  if (name === "tailor") { rbRunAnalyse(); rbLoadPrompts(); rbRunTailor(); }
+  if (block) {
+    // After layout, or it scrolls to where the block was before this section
+    // was made visible.
+    requestAnimationFrame(() =>
+      document.getElementById(block)?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  }
+  if (name === "review") {
+    const note = document.getElementById("rbx-review-jdnote");
+    const jd = (document.getElementById("rbx-jd")?.value || "").trim();
+    const mirror = document.getElementById("rbx-review-jd");
+    if (mirror) mirror.value = jd;
+    if (note) {
+      note.textContent = jd.length >= 20
+        ? "Scored against the advert you pasted above."
+        : "Paste an advert above to also score keyword and skills match against that role.";
+    }
+  }
+}
+
+// ---- the analysis (score, summary, requirements) ----
+async function rbRunAnalyse(force = false) {
+  const out = document.getElementById("rbx-tl-analyse");
+  const kw = document.getElementById("rbx-tl-keywords");
+  if (!out) return;
+  const jd = (document.getElementById("rbx-jd")?.value || "").trim();
+  if (jd.length < 20) {
+    out.innerHTML = `<p class="rbx-tl-empty">Paste the job advert above and this fills in — the match, what it asks for, and which of its words your CV already uses.</p>`;
+    if (kw) kw.innerHTML = `<p class="rbx-tl-empty">The advert's own vocabulary lands here, split into what your CV already says and what it doesn't.</p>`;
+    RB_TAILOR.analysis = null;
+    rbRenderScoreStrip();
+    rbRenderStepCounts();
+    return;
+  }
+  const key = `${jd}::${JSON.stringify(rbTailorValues())}`;
+  if (!force && key === RB_TAILOR.lastAnalyseKey && RB_TAILOR.analysis) return;
+  RB_TAILOR.lastAnalyseKey = key;
+
+  out.innerHTML = `<div class="rbx-tl-loading"><span class="rbx-tl-spin"></span>Reading the advert against your CV…</div>`;
+  try {
+    RB_TAILOR.analysis = await post(`/api/resume-builder/tailor-analyse`,
+      { job_description: jd, values: rbTailorValues() });
+  } catch (err) {
+    RB_TAILOR.analysis = null;
+    out.innerHTML = `<p class="rbx-tl-empty">${esc(apiErrorMessage(err, "Couldn't analyse that advert."))}</p>`;
+    return;
+  }
+  rbRenderScoreStrip();
+  rbRenderDocView();
+  rbRenderAnalyse();
+  rbRenderKeywords();
+  rbRenderStepCounts();
+  rbRenderDocView();
+}
+
+function rbRenderStepCounts() {
+  const a = RB_TAILOR.analysis;
+  const kwEl = document.getElementById("rbx-tl-step-kw");
+  const chEl = document.getElementById("rbx-tl-step-ch");
+  if (kwEl) kwEl.textContent = a && a.absent_count ? a.absent_count : "";
+  if (chEl) chEl.textContent = (RB_TAILOR.data?.sections || []).length || "";
+}
+
+// A gauge rather than a bar, because this is the number the whole pane is
+// about and the reference design people recognise puts it on a dial.
+function rbGauge(score) {
+  const pct = Math.max(0, Math.min(100, Math.round(score || 0)));
+  const R = 54, CX = 68, CY = 68;
+  const a = Math.PI * (1 - pct / 100);
+  const x = CX + R * Math.cos(a), y = CY - R * Math.sin(a);
+  const arc = (to) => {
+    const t = Math.PI * (1 - to / 100);
+    return `M ${CX - R} ${CY} A ${R} ${R} 0 0 1 ${CX + R * Math.cos(t)} ${CY - R * Math.sin(t)}`;
+  };
+  return `
+    <div class="rbx-gauge">
+      <svg viewBox="0 0 136 80" width="136" height="80" aria-hidden="true">
+        <path d="${arc(100)}" class="rbx-gauge-bg" />
+        <path d="${arc(pct)}" class="rbx-gauge-fg" />
+        <circle cx="${x}" cy="${y}" r="6" class="rbx-gauge-dot" />
+      </svg>
+      <div class="rbx-gauge-num"><b>${pct}</b><span>%</span></div>
+      <div class="rbx-gauge-cap">Your match score</div>
+    </div>`;
+}
+
+// The headline read, in the three pieces people actually ask for: the number,
+// what it means in words, and the vocabulary on each side of the gap. It sits
+// above the tabs because it is true of both of them.
+const RB_VERDICTS = [
+  [80, "Strong match", "This advert is describing work you have done."],
+  [65, "Good match", "You're on the right track."],
+  [45, "Partial match", "Worth applying, worth tailoring first."],
+  [0, "Early days", "Cover more of its words honestly, or aim at a nearer role."],
+];
+
+function rbRenderScoreStrip() {
+  const host = document.getElementById("rbx-sc");
+  if (!host) return;
+  const a = RB_TAILOR.analysis;
+  if (!a) { host.innerHTML = ""; host.classList.remove("is-on"); return; }
+  host.classList.add("is-on");
+
+  const score = Math.max(0, Math.min(100, Math.round(a.score || 0)));
+  const [, word, line] = RB_VERDICTS.find(([floor]) => score >= floor);
+  const present = (a.keywords || []).filter(k => k.in_cv).slice(0, 6);
+  const absent = (a.keywords || []).filter(k => !k.in_cv).slice(0, 5);
+  const R = 26, C = 2 * Math.PI * R;
+
+  host.innerHTML = `
+    <div class="rbx-sc-cell rbx-sc-score">
+      <div class="rbx-sc-ring">
+        <svg width="66" height="66" viewBox="0 0 66 66" aria-hidden="true">
+          <circle class="rbx-sc-ring-bg" cx="33" cy="33" r="${R}"></circle>
+          <circle class="rbx-sc-ring-fg" cx="33" cy="33" r="${R}"
+                  stroke-dasharray="${C.toFixed(1)}"
+                  stroke-dashoffset="${(C * (1 - score / 100)).toFixed(1)}"
+                  transform="rotate(-90 33 33)"></circle>
+        </svg>
+        <span class="rbx-sc-ring-num">${score}%</span>
+      </div>
+      <div class="rbx-sc-verdict">
+        <b>${word}</b>
+        <span>${line}</span>
+      </div>
+    </div>
+    <div class="rbx-sc-cell">
+      <div class="rbx-sc-cap">Top matching skills</div>
+      ${present.length
+        ? `<div class="rbx-chips">${present.map(k => `<span class="rbx-chip is-have">${esc(k.term)}</span>`).join("")}</div>`
+        : `<p class="rbx-sc-none">None of this advert's terms appear in your CV yet.</p>`}
+    </div>
+    <div class="rbx-sc-cell">
+      <div class="rbx-sc-cap">Missing keywords</div>
+      ${absent.length
+        ? `<div class="rbx-chips">${absent.map(k => `<span class="rbx-chip is-missing">${esc(k.term)}</span>`).join("")}</div>`
+        : `<p class="rbx-sc-none">Your CV already uses every term it leans on.</p>`}
+    </div>`;
+}
+
+function rbRenderAnalyse() {
+  const out = document.getElementById("rbx-tl-analyse");
+  const a = RB_TAILOR.analysis;
+  if (!out || !a) return;
+  // Plenty of adverts are written as prose, with no bullet points to read as
+  // requirements. Rather than an empty card, the advert's own leading terms
+  // stand in — same question, same two columns, same honesty about the gap.
+  let reqs = a.requirements || [];
+  let fromWords = false;
+  if (!reqs.length) {
+    fromWords = true;
+    reqs = (a.keywords || []).slice(0, 8).map(k => ({
+      text: k.term,
+      met: !!k.in_cv,
+      evidence: (k.where || []).join(", "),
+    }));
+  }
+  const met = reqs.filter(r => r.met);
+  const unmet = reqs.filter(r => !r.met);
+
+  // Two columns that answer each other: what the advert asks for, and what in
+  // your CV answers it. A requirement with nothing beside it is the gap, and
+  // seeing it in the same row as the ones that are covered is the point.
+  const rows = [...met, ...unmet].slice(0, 8);
+
+  // One grid, not two lists: as two independent columns the rows drifted out
+  // of line the moment one wrapped, so an unmet ask sat next to another ask's
+  // evidence — which reads as the opposite of what it says.
+  const shortEvidence = (where) => {
+    const parts = String(where || "").split(/,\s*/).filter(Boolean);
+    if (!parts.length) return "Covered";
+    const head = parts.slice(0, 2).join(", ");
+    return "Your " + head + (parts.length > 2 ? ` +${parts.length - 2}` : "");
+  };
+
+  out.innerHTML = `
+    <div class="rbx-an-box">
+      <div class="rbx-an-cols-head">
+        <span>${fromWords ? "What the advert asks for" : "Key asks from the job"}</span>
+        <span>What your CV shows</span>
+      </div>
+      <ul class="rbx-an-rows">
+        ${rows.map(r => `
+          <li class="${r.met ? "is-met" : ""}">
+            <span class="rbx-an-cell">
+              <i class="rbx-an-tick" aria-hidden="true">${r.met ? "✓" : "○"}</i>${esc(r.text)}
+            </span>
+            <span class="rbx-an-cell ${r.met ? "" : "is-gap"}">
+              <i class="rbx-an-tick" aria-hidden="true">${r.met ? "✓" : "–"}</i>${
+                r.met ? esc(shortEvidence(r.evidence)) : "Not mentioned yet"}
+            </span>
+          </li>`).join("") || `<li><span class="rbx-an-cell">Paste an advert and its asks appear here.</span></li>`}
+      </ul>
+    </div>
+
+    <div class="rbx-an-stats">
+      <div><b>${a.present_count}</b><span>of its words you use</span></div>
+      <div><b>${a.absent_count}</b><span>you don't</span></div>
+      <div><b>${met.length}/${reqs.length}</b><span>asks evidenced</span></div>
+    </div>
+
+    <details class="rbx-an-reqs">
+      <summary><span>The written read</span></summary>
+      <p>${esc(a.summary || "")}</p>
+      <span class="rbx-an-mode">${a.summary_mode === "llm"
+        ? "Written by your configured AI model."
+        : "No AI model configured — this read is rule-based. Add an API key or a local model in the AI Model tab for a written one."}</span>
+    </details>`;
+}
+
+// ---- keywords: used, not used, and adding the true ones ----
+function rbRenderKeywords() {
+  const out = document.getElementById("rbx-tl-keywords");
+  const a = RB_TAILOR.analysis;
+  if (!out) return;
+  if (!a) { out.innerHTML = `<p class="rbx-tl-empty">Paste the advert above first.</p>`; return; }
+
+  // Capped high, and the cap is stated: a silent truncation makes the heading
+  // badge disagree with the chips under it, which reads as a bug in the count.
+  const CAP = 24;
+  const allPresent = (a.keywords || []).filter(k => k.in_cv);
+  const allAbsent = (a.keywords || []).filter(k => !k.in_cv);
+  const present = allPresent.slice(0, CAP);
+  const absent = allAbsent.slice(0, CAP);
+  const more = (all, shown) => all.length > shown.length
+    ? `<span class="rbx-chip is-more">+${all.length - shown.length} more</span>` : "";
+  const picked = RB_TAILOR.picked || new Set();
+
+  out.innerHTML = `
+    <div class="rbx-kwcol">
+      <div class="rbx-kwcol-head"><b>Strong matches</b><span>${present.length}</span></div>
+      ${present.length
+        ? `<div class="rbx-chips">${present.map(k =>
+            `<span class="rbx-chip is-have" title="Found in your ${esc((k.where || []).join(", "))}">${esc(k.term)}</span>`).join("")}${more(allPresent, present)}</div>`
+        : `<p class="rbx-tl-empty">None of this advert's terms appear in your CV yet.</p>`}
+    </div>
+
+    <div class="rbx-kwcol">
+      <div class="rbx-kwcol-head"><b>Recommended to add</b><span>${absent.length}</span></div>
+      ${absent.length
+        ? `<div class="rbx-chips">${absent.map(k =>
+            `<button type="button" class="rbx-chip is-add rbx-kwpick ${picked.has(k.term) ? "on" : ""}" data-kw="${esc(k.term)}">
+               <span class="rbx-chip-ico" aria-hidden="true"></span>${esc(k.term)}</button>`).join("")}${more(allAbsent, absent)}</div>
+           <p class="rbx-an-hint">Tick only the ones that are genuinely true of you. Nothing is added on your behalf, and a keyword you cannot back up in an interview costs more than the filter it passes.</p>`
+        : `<p class="rbx-tl-empty">Your CV already uses every term this advert leans on.</p>`}
+    </div>
+
+    <div class="rbx-kwadd ${picked.size ? "" : "is-idle"}">
+      <div class="rbx-kwadd-head"><b>${picked.size || "No"} keyword${picked.size === 1 ? "" : "s"} selected</b></div>
+      <div class="rbx-kwadd-targets">
+        <span>Add to:</span>
+        ${[["skills", "Skills"], ["summary", "Summary"], ["experience", "Experience"], ["projects", "Projects"]].map(([k, label]) =>
+          `<label><input type="checkbox" data-kwtarget="${k}" ${RB_TAILOR.targets.has(k) ? "checked" : ""}> ${label}</label>`).join("")}
+      </div>
+      <button type="button" class="rbx-tl-btn" id="rbx-kw-apply" ${picked.size ? "" : "disabled"}>Add to my CV</button>
+      <div id="rbx-kw-result">${rbKeywordResultHtml(RB_TAILOR.lastAdd)}</div>
+    </div>`;
+}
+
+function rbKeywordResultHtml(res) {
+  if (!res) return "";
+  return `
+    ${(res.sections || []).map(sec => `<p class="rbx-kw-done"><b>${esc(sec.label)}</b> ${esc(sec.note)}</p>`).join("")}
+    ${(res.not_placed || []).length ? `<p class="rbx-tl-empty">Not added: ${res.not_placed.map(esc).join(", ")} — nothing in your CV honestly describes them.</p>` : ""}
+    ${(res.skipped || []).map(sk => `<p class="rbx-tl-empty"><b>${esc(sk.section)}:</b> ${esc(sk.why)}</p>`).join("")}`;
+}
+
+function rbSyncKeywordFooter() {
+  const n = (RB_TAILOR.picked || new Set()).size;
+  const wrap = document.querySelector(".rbx-kwadd");
+  const head = document.querySelector(".rbx-kwadd-head b");
+  const btn = document.getElementById("rbx-kw-apply");
+  if (wrap) wrap.classList.toggle("is-idle", !n);
+  if (head) head.textContent = `${n || "No"} keyword${n === 1 ? "" : "s"} selected`;
+  if (btn) btn.disabled = !n;
+}
+
+async function rbApplyKeywords() {
+  const btn = document.getElementById("rbx-kw-apply");
+  const result = document.getElementById("rbx-kw-result");
+  const picked = Array.from(RB_TAILOR.picked || []);
+  const targets = Array.from(RB_TAILOR.targets || []);
+  if (!picked.length || !btn) return;
+  const restore = setButtonBusy(btn, "Adding…");
+  btn.disabled = true;
+  let res;
+  try {
+    res = await post(`/api/resume-builder/tailor-keywords`, {
+      job_description: (document.getElementById("rbx-jd")?.value || "").trim(),
+      values: rbTailorValues(), keywords: picked, targets,
+    });
+  } catch (err) {
+    restore(); btn.disabled = false;
+    result.innerHTML = `<p class="rbx-tl-empty">${esc(apiErrorMessage(err, "Couldn't add those keywords."))}</p>`;
+    return;
+  }
+  restore(); btn.disabled = false;
+
+  (res.sections || []).forEach(sec => {
+    if (!Object.prototype.hasOwnProperty.call(RB_TAILOR.applied, sec.field)) {
+      RB_TAILOR.applied[sec.field] = EDITOR.values[sec.field] || "";
+    }
+    rbWriteTailoredField(sec.field, sec.after);
+  });
+
+  // Kept in state, not just in the DOM: adding keywords triggers a fresh read
+  // (the gap is smaller now), which re-renders this panel — and the report of
+  // what just happened went with it.
+  RB_TAILOR.lastAdd = res;
+  result.innerHTML = rbKeywordResultHtml(res);
+
+  if ((res.sections || []).length) {
+    RB_TAILOR.picked = new Set();
+    showToast(`Added ${res.added.length} keyword${res.added.length === 1 ? "" : "s"} — the preview has changed`, "success");
+    rbRunAnalyse(true);       // the gap is smaller now; say so
+    rbRunTailor(true);
+  }
+}
+
+// ---- right pane: preview, advert, or CV, with the shared terms highlighted ----
+function rbHighlight(text, terms) {
+  if (!text) return "";
+  const found = (terms || []).filter(Boolean).sort((a, b) => b.length - a.length);
+  if (!found.length) return esc(text);
+  const pattern = new RegExp(`(${found.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "gi");
+  // Escaped first, then wrapped: the text is a job advert from the internet.
+  return esc(text).replace(pattern, m => `<mark>${m}</mark>`);
+}
+
+// The preview is an A4 page, and an A4 page has proportions. Letting it
+// reflow into whatever width the column happens to be turns the preview into
+// a different document from the one that prints — so the sheet keeps its real
+// width and is scaled down to fit instead, like holding the page further away.
+function rbFitPage() {
+  const stage = document.getElementById("rbx-stage");
+  if (!stage) return;
+  const styles = getComputedStyle(stage);
+  const room = stage.clientWidth
+    - parseFloat(styles.paddingLeft || 0) - parseFloat(styles.paddingRight || 0);
+  // A hidden stage has no width, and 0 width scaled the sheet to the floor —
+  // which is what happened switching to "Advert" and back: the fit was taken
+  // while the preview was still display:none, so it came back at 20% and
+  // stayed there. Nothing is measured that isn't on screen; the last good
+  // value stands until it can be.
+  if (room <= 1) return;
+  // Below the two-column breakpoint the page goes back to filling the width:
+  // on a phone a scaled-down A4 is unreadable, and reflowed is the right call.
+  // No floor beyond a sanity one: whatever the column is, the whole sheet has
+  // to be inside it.
+  const fit = window.innerWidth <= 900 ? 1 : Math.min(1, Math.max(0.2, room / 820));
+  stage.style.setProperty("--rb-fit", String(Math.round(fit * 1000) / 1000));
+}
+
+function rbRenderDocView() {
+  const sw = document.getElementById("rbx-docswitch");
+  const stage = document.getElementById("rbx-stage");
+  const doc = document.getElementById("rbx-doctext");
+  if (!sw || !stage || !doc) return;
+  const onTailor = rbState.tab === "tailor";
+  sw.classList.toggle("hidden", !onTailor);
+  const mode = onTailor ? (RB_TAILOR.docView || "preview") : "preview";
+  sw.querySelectorAll("button").forEach(b => b.classList.toggle("on", b.dataset.doc === mode));
+  stage.classList.toggle("hidden", mode !== "preview");
+  doc.classList.toggle("hidden", mode === "preview");
+  const title = document.getElementById("rbx-rhead-title");
+  if (title) {
+    title.textContent = rbState.exampleView
+      ? `Example — ${rbState.exampleView.data.full_name}`
+      : ({ preview: "CV Preview", advert: "Job advert", cv: "Your CV text" }[mode] || "CV Preview");
+  }
+  const ats = document.getElementById("rbx-ats");
+  const atsNum = document.getElementById("rbx-ats-num");
+  const score = RB_TAILOR.analysis && Math.round(RB_TAILOR.analysis.score || 0);
+  if (ats) ats.classList.toggle("hidden", !(onTailor && score));
+  if (atsNum && score) atsNum.textContent = score + "%";
+  // Measured only once the stage is back on screen, and again after layout
+  // has settled — the class change above does not resize anything until the
+  // browser has laid it out.
+  if (mode === "preview") {
+    rbFitPage();
+    // The stage was hidden a moment ago, so anything drawn while Advert or CV
+    // text was open was drawn against a remembered width rather than a measured
+    // one. Now that it can be measured, redraw — this costs nothing when the
+    // page on screen already matches, because the render skips an identical key.
+    requestAnimationFrame(() => { rbFitPage(); rbRenderPreview(true); });
+    return;
+  }
+
+  const a = RB_TAILOR.analysis;
+  const terms = (a?.keywords || []).map(k => k.term);
+  if (mode === "advert") {
+    const jd = (document.getElementById("rbx-jd")?.value || "").trim();
+    doc.innerHTML = jd
+      ? `<div class="rbx-doctext-body">${rbHighlight(jd, terms)}</div>`
+      : `<p class="rbx-tl-empty">Paste the advert to read it here with its keywords marked.</p>`;
+  } else {
+    const v = EDITOR.values || {};
+    const inCv = (a?.keywords || []).filter(k => k.in_cv).map(k => k.term);
+    doc.innerHTML = `<div class="rbx-doctext-body">${
+      [["summary", "Summary"], ["skills", "Skills"], ["experience", "Experience"],
+       ["projects", "Projects"], ["education", "Education"]]
+        .filter(([k]) => (v[k] || "").trim())
+        .map(([k, label]) => `<h4>${label}</h4>${rbHighlight(v[k], inCv)}`).join("")}</div>`;
+  }
+}
+
+const RB_TL_ICONS = {
+  summary: "📝", skills: "🛠️", experience: "💼", projects: "🚀",
+};
+// What each field is called in a sentence, for "…put projects out of scope".
+const RB_TL_FIELD_NAMES = {
+  summary: "the summary", skills: "skills",
+  experience: "employment history", projects: "projects",
+};
+// Where each one is edited by hand, for the link out of a proposal card.
+const RB_TL_SECTION_IDS = {
+  summary: "sec-profile", skills: "sec-skills",
+  experience: "sec-experience", projects: "sec-projects",
+};
+
+function rbRenderTailor() {
+  const els = rbTailorEls();
+  if (!els.out) return;
+
+  rbAdRender();
+  rbRenderPromptRead();
+
+  if (RB_TAILOR.loading) {
+    els.out.innerHTML = `<div class="rbx-tl-loading"><span class="rbx-tl-spin"></span>Working out what would change…</div>`;
+    return;
+  }
+  const d = RB_TAILOR.data;
+  if (!d) {
+    // The panel used to be blank here, which reads as broken rather than as
+    // waiting for something.
+    els.out.innerHTML = `
+      <div class="rbx-tl-blank">
+        <b>Nothing to compare yet</b>
+        <p>Paste the advert in box 1 above. Every change is then shown here before
+           and after, one section at a time — you take the ones you want, edit any
+           of them first, and nothing touches your CV until you press Apply.</p>
+      </div>`;
+    return;
+  }
+
+  const m = d.match || {};
+  const now = Math.max(0, Math.min(100, Math.round(m.score || 0)));
+  const projected = Math.max(0, Math.min(100, Math.round(m.projected ?? now)));
+  const gain = projected - now;
+  const matched = (m.matched || []).slice(0, 10);
+  const missing = (m.missing || []).slice(0, 8);
+  const sections = d.sections || [];
+  const appliedCount = Object.keys(RB_TAILOR.applied).length;
+
+  // The score strip at the top of the pane already carries the number and the
+  // words on each side of it; repeating all of that here made the same card
+  // twice. What is *not* said up there is what these particular changes would
+  // do to it, so that is all this row says.
+  const meter = `
+    <div class="rbx-tl-proj-row">
+      <span class="rbx-tl-proj-now">${now}%</span>
+      ${gain > 0
+        ? `<span class="rbx-tl-proj-arrow" aria-hidden="true">→</span>
+           <span class="rbx-tl-proj-next">${projected}%</span>
+           <span class="rbx-tl-proj-cap">if you apply everything below</span>`
+        : `<span class="rbx-tl-proj-cap">match — these changes hold it steady rather than lifting it</span>`}
+    </div>`;
+  const missingBlock = "";
+
+  // Every proposal is editable before it is taken. A suggestion you can only
+  // accept or refuse whole is a suggestion you refuse: the wording is nearly
+  // right about as often as it is wrong, and retyping it in the Edit tab
+  // afterwards means losing the before-and-after you were reading it against.
+  const cards = sections.map((sec, i) => {
+    const isApplied = Object.prototype.hasOwnProperty.call(RB_TAILOR.applied, sec.field);
+    const secGain = (sec.score_after ?? 0) - (sec.score_before ?? 0);
+    const isEditing = RB_TAILOR.editing.has(sec.field);
+    const mine = RB_TAILOR.edits[sec.field];
+    const edited = mine != null && mine !== sec.after;
+    const text = mine != null ? mine : (sec.after || "");
+    return `
+      <article class="rbx-tl-card ${isApplied ? "is-applied" : ""} ${isEditing ? "is-editing" : ""}">
+        <header>
+          <span class="rbx-tl-card-icon">${RB_TL_ICONS[sec.key] || "✦"}</span>
+          <span class="rbx-tl-card-title">
+            <b>${esc(sec.label)}</b>
+            ${secGain > 0 ? `<span class="rbx-tl-card-gain">+${secGain}% match</span>` : ""}
+            ${sec.cost ? `<span class="rbx-tl-card-cost">−${sec.cost}% match</span>` : ""}
+            ${edited ? `<span class="rbx-tl-card-mine">your wording</span>` : ""}
+          </span>
+          <span class="rbx-tl-card-acts">
+            <button type="button" class="rbx-tl-btn rbx-tl-btn-ghost" data-tl-edit="${esc(sec.field)}"
+                    aria-expanded="${isEditing}">${isEditing ? "Close editor" : "Edit"}</button>
+            ${isApplied
+              ? `<button type="button" class="rbx-tl-btn rbx-tl-btn-ghost" data-tl-undo="${esc(sec.field)}">Undo</button>`
+              : `<button type="button" class="rbx-tl-btn" data-tl-apply="${i}">Apply</button>`}
+          </span>
+        </header>
+        <p class="rbx-tl-note">${esc(sec.note || "")}</p>
+        ${isEditing ? `
+          <div class="rbx-tl-edit">
+            <label for="rbx-tl-ta-${i}">Your version — applied exactly as you write it, word for word.</label>
+            <textarea id="rbx-tl-ta-${i}" class="rbx-tl-edit-ta" data-tl-ta="${esc(sec.field)}"
+                      spellcheck="true" rows="10">${esc(text)}</textarea>
+            <div class="rbx-tl-edit-acts">
+              <button type="button" class="rbx-tl-btn" data-tl-usemine="${i}">Apply my version</button>
+              <button type="button" class="rbx-tl-btn rbx-tl-btn-ghost" data-tl-reset="${esc(sec.field)}">Back to the proposal</button>
+              <span class="rbx-tl-edit-hint">Entries are separated by a line containing only <code>---</code>; bullets start with <code>-&nbsp;</code>.</span>
+            </div>
+          </div>` : ""}
+        <details class="rbx-tl-diff">
+          <summary><span>Before and after</span></summary>
+          <div class="rbx-tl-diff-grid">
+            <div class="rbx-tl-diff-pane">
+              <span class="rbx-tl-diff-label">Now</span>
+              <pre>${esc(sec.before || "")}</pre>
+            </div>
+            <div class="rbx-tl-diff-pane is-after">
+              <span class="rbx-tl-diff-label">${edited ? "Your version" : "Proposed"}</span>
+              <pre>${esc(text)}</pre>
+            </div>
+          </div>
+        </details>
+      </article>`;
   }).join("");
-  const matched = top.filter(k => resumeText.includes(k)).length;
-  showToast(`Matched ${matched}/${top.length} key terms`, matched >= top.length / 2 ? "success" : "warning");
-  document.getElementById("rbx-tailor-go").style.display = state.builderResumeId ? "block" : "none";
+
+  els.out.innerHTML = `
+    ${meter}
+    ${missingBlock}
+    ${sections.length ? `
+      <div class="rbx-tl-bar-actions">
+        <span class="rbx-tl-count">${sections.length} suggested change${sections.length > 1 ? "s" : ""}</span>
+        <button type="button" class="rbx-tl-btn" id="rbx-tl-applyall">Apply all</button>
+        ${appliedCount ? `<button type="button" class="rbx-tl-btn rbx-tl-btn-ghost" id="rbx-tl-undoall">Undo all (${appliedCount})</button>` : ""}
+      </div>
+      <div class="rbx-tl-cards">${cards}</div>`
+    : `<div class="rbx-tl-blank">
+         <b>Nothing worth changing at this strength</b>
+         <p>Your CV already leads with what this job asks for${
+           (d.prompt_held_back || []).length ? `, and your instruction put ${
+             listPhrase((d.prompt_held_back || []).map(f => RB_TL_FIELD_NAMES[f] || f))} out of scope` : ""
+         }. Try Medium or Aggressive above for a firmer rewrite, or add the missing words from the Keywords step.</p>
+       </div>`}
+    <p class="rbx-tl-disclaimer">${esc(d.disclaimer || "")}</p>`;
+}
+
+// Applying is a normal edit: the field is written, the entry cache dropped so
+// the editor re-parses, and the preview redrawn at once. Undo puts back the
+// exact text that was there before, which is why it is captured first.
+function rbApplyTailorSection(index, useEdit = false) {
+  const sec = ((RB_TAILOR.data || {}).sections || [])[index];
+  if (!sec) return;
+  // The person's own version if they opened the editor, otherwise the
+  // proposal. Their text is applied verbatim — no reformatting, no second
+  // opinion; if they wrote it, it is what goes in.
+  const box = document.querySelector(`[data-tl-ta="${CSS.escape(sec.field)}"]`);
+  const mine = useEdit && box ? box.value : RB_TAILOR.edits[sec.field];
+  const text = (useEdit || mine != null) && mine != null ? mine : sec.after;
+  if (useEdit && box) RB_TAILOR.edits[sec.field] = box.value;
+  if (!(text || "").trim()) { showToast("That section would be empty — nothing applied", "warning"); return; }
+  if (!Object.prototype.hasOwnProperty.call(RB_TAILOR.applied, sec.field)) {
+    RB_TAILOR.applied[sec.field] = EDITOR.values[sec.field] || "";
+  }
+  rbWriteTailoredField(sec.field, text);
+  RB_TAILOR.editing.delete(sec.field);
+  showToast(`${sec.label} updated — the preview has changed`, "success");
+  // Re-ask with the new contents: what the other sections should say may
+  // legitimately have changed now that this one has.
+  rbRunTailor(true);
+}
+
+// Opening and closing the editor keeps whatever was typed, because a
+// re-render arrives every time the proposal is refreshed and losing an edit
+// to one is indistinguishable from the app throwing it away.
+function rbToggleTailorEdit(field) {
+  const box = document.querySelector(`[data-tl-ta="${CSS.escape(field)}"]`);
+  if (box) RB_TAILOR.edits[field] = box.value;
+  RB_TAILOR.editing.has(field) ? RB_TAILOR.editing.delete(field) : RB_TAILOR.editing.add(field);
+  rbRenderTailor();
+  if (RB_TAILOR.editing.has(field)) {
+    const ta = document.querySelector(`[data-tl-ta="${CSS.escape(field)}"]`);
+    ta?.focus();
+    ta?.setSelectionRange(ta.value.length, ta.value.length);
+  }
+}
+
+function rbResetTailorEdit(field) {
+  delete RB_TAILOR.edits[field];
+  rbRenderTailor();
+}
+
+function rbUndoTailorSection(field) {
+  if (!Object.prototype.hasOwnProperty.call(RB_TAILOR.applied, field)) return;
+  delete RB_TAILOR.edits[field];
+  rbWriteTailoredField(field, RB_TAILOR.applied[field]);
+  delete RB_TAILOR.applied[field];
+  showToast("Reverted", "info");
+  rbRunTailor(true);
+}
+
+function rbWriteTailoredField(field, text) {
+  EDITOR.values[field] = text;
+  EDITOR.dirty = true;
+  // experience/projects are edited as structured entries; the cache would
+  // otherwise overwrite this text on the next keystroke.
+  if (rbState.entries) delete rbState.entries[field];
+  rbRenderSections();
+  rbRenderPreview(true);
+  rbRenderCompleteness();
+}
+
+function rbSetTailorLevel(level) {
+  RB_TAILOR.level = level;
+  const els = rbTailorEls();
+  els.levels?.querySelectorAll("button").forEach(b => {
+    const on = b.dataset.level === level;
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-checked", on ? "true" : "false");
+  });
+  rbRunTailor(true);
 }
 
 // ---- AI popover (real /ai-assist) ----
@@ -10121,10 +13009,17 @@ function rbRenderSections() {
   const el = document.querySelector(".rbx-sections");
   if (el) el.innerHTML = RB_SECTIONS.map(s => rbSectionHtml(s)).join("");
 }
-function rbSetAccent(hex, root) {
+// The colour belongs to the résumé, not to the app around it.
+//
+// It used to be written onto the builder's root element, which meant every
+// button, tab, chip and heading in the interface took the colour of whatever
+// template was selected: pick one with a near-black accent and the whole tool
+// turned grey, buttons included, and looked broken rather than themed. The
+// preview is rendered server-side from `accent_color`, and the template
+// thumbnails set the variable on themselves, so nothing needs it up here.
+function rbSetAccent(hex, root) {          // eslint-disable-line no-unused-vars
   rbState.accent = hex;
   EDITOR.values.accent_color = hex;
-  (root || document.querySelector(".rbx"))?.style.setProperty("--rb-accent", hex);
   rbRenderPreview();
 }
 function rbSyncName(root) {
@@ -10239,7 +13134,6 @@ function rbBindTemplateCells(scope, templates) {
       // If the customer hasn't picked their own colour, adopt the template's accent.
       if (t && t.accent && !EDITOR.values.accent_color) {
         rbState.accent = t.accent;
-        root.style.setProperty("--rb-accent", t.accent);
         const custom = document.getElementById("rbx-color-custom"); if (custom) custom.value = t.accent;
       }
       rbRenderPreview(true);   // a template switch redraws at once, not after the typing pause
@@ -10417,27 +13311,161 @@ function rbWire(templates) {
     rbRenderRoles();
   });
   // review + tailor
+  rbBindSplit();
+  rbRestoreSplit();
   document.getElementById("rbx-rescan").addEventListener("click", rbRunReview);
-  document.getElementById("rbx-match").addEventListener("click", rbRunTailor);
-  document.getElementById("rbx-tailor-go").addEventListener("click", async () => {
-    const jd = document.getElementById("rbx-jd").value.trim();
-    if (!state.builderResumeId) { showToast("Save the resume first, then tailor it", "warning"); return; }
-    try {
-      const t = await post(`/api/resume-builder/tailor-for-job`, { resume_id: state.builderResumeId, job_description: jd });
-      showToast("Tailored copy saved to your library", "success");
-      EDITOR.loadedFor = null; EDITOR.resumeName = ""; state.builderResumeId = t.id;
-      state.resumesView = "library"; render();
-    } catch (err) { showToast(apiErrorMessage(err, "Couldn't tailor the resume"), "error"); }
+  document.getElementById("rbx-match").addEventListener("click", () => { rbRunAnalyse(true); rbRunTailor(true); });
+  // Live: the proposal follows the description as it is pasted or edited. The
+  // pause is long enough that typing a sentence is one request, not thirty.
+  const jdBox = document.getElementById("rbx-jd");
+  const onJd = () => { rbRunAnalyse(); rbRunTailor(); rbRenderDocView(); };
+  jdBox.addEventListener("input", () => {
+    clearTimeout(jdBox._tlTimer);
+    jdBox._tlTimer = setTimeout(onJd, 800);
+  });
+  jdBox.addEventListener("paste", () => setTimeout(onJd, 150));
+  jdBox.addEventListener("input", rbAdRender);
+  document.getElementById("rbx-ad-bar").addEventListener("click", () => {
+    rbAdOpen(!document.getElementById("rbx-ad").classList.contains("is-open"));
+  });
+  document.getElementById("rbx-ad-clear").addEventListener("click", (e) => {
+    e.stopPropagation();
+    rbAdClear();
+  });
+  document.getElementById("rbx-ad-file").addEventListener("change", (e) => {
+    rbAdUpload(e.target.files && e.target.files[0]);
+    e.target.value = "";     // so re-picking the same file still fires
+  });
+  document.getElementById("rbx-ad-done").addEventListener("click", (e) => {
+    e.stopPropagation();
+    rbRunAnalyse(); rbRunTailor(); rbRenderDocView();
+    rbAdOpen(false);
+  });
+  // The instruction box behaves the same way: type it, and the proposal
+  // follows a beat later. No "run" button to find.
+  const promptBox = document.getElementById("rbx-prompt");
+  promptBox.addEventListener("input", () => {
+    clearTimeout(promptBox._tlTimer);
+    promptBox._tlTimer = setTimeout(() => { rbRenderSavedPrompts(); rbRunTailor(); }, 700);
+  });
+  document.getElementById("rbx-tl-saved").addEventListener("click", (e) => {
+    const kill = e.target.closest("[data-prompt-del]");
+    if (kill) { e.stopPropagation(); rbDeletePrompt(kill.dataset.promptDel); return; }
+    const use = e.target.closest("[data-prompt-use]");
+    if (use) { rbUsePrompt(use.dataset.promptUse); return; }
+    if (e.target.closest("#rbx-tl-psave")) rbOpenSaveBar();
+  });
+  document.getElementById("rbx-tl-saved").addEventListener("keydown", (e) => {
+    const use = e.target.closest("[data-prompt-use]");
+    if (use && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); rbUsePrompt(use.dataset.promptUse); }
+  });
+  document.getElementById("rbx-tl-pconfirm").addEventListener("click", rbSavePrompt);
+  document.getElementById("rbx-tl-pcancel").addEventListener("click", rbCloseSaveBar);
+  document.getElementById("rbx-tl-pname").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); rbSavePrompt(); }
+    if (e.key === "Escape") rbCloseSaveBar();
+  });
+  document.getElementById("rbx-tl-levels").addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-level]");
+    if (btn) rbSetTailorLevel(btn.dataset.level);
+  });
+  // A hairline under the pinned steps, but only once something has scrolled
+  // beneath them — a permanent line reads as a border on nothing.
+  const leftPane = document.querySelector(".rbx-left");
+  const stepsBar = document.querySelector(".rbx-tl-stepsbar");
+  if (leftPane && stepsBar) {
+    leftPane.addEventListener("scroll", () => {
+      stepsBar.classList.toggle("is-stuck",
+        stepsBar.getBoundingClientRect().top - leftPane.getBoundingClientRect().top <= 1);
+    }, { passive: true });
+  }
+  document.getElementById("rbx-tl-steps").addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-step]");
+    if (btn) rbTlStep(btn.dataset.step);
+  });
+  // Delegated: the analysis and keyword panels are re-rendered on every read.
+  document.getElementById("rbx-tl-analyse").addEventListener("click", (e) => {
+    const go = e.target.closest("[data-step-go]");
+    if (go) rbTlStep(go.dataset.stepGo);
+  });
+  document.getElementById("rbx-tl-keywords").addEventListener("click", (e) => {
+    const chip = e.target.closest("[data-kw]");
+    if (chip) {
+      // Toggled in place. Re-rendering the panel on every tick detaches the
+      // chip the pointer is on, so a quick second click landed on a node that
+      // no longer existed and silently did nothing.
+      const term = chip.dataset.kw;
+      const on = RB_TAILOR.picked.has(term);
+      on ? RB_TAILOR.picked.delete(term) : RB_TAILOR.picked.add(term);
+      chip.classList.toggle("on", !on);
+      rbSyncKeywordFooter();
+      return;
+    }
+    if (e.target.closest("#rbx-kw-apply")) { rbApplyKeywords(); return; }
+  });
+  document.getElementById("rbx-tl-keywords").addEventListener("change", (e) => {
+    const box = e.target.closest("[data-kwtarget]");
+    if (!box) return;
+    const key = box.dataset.kwtarget;
+    box.checked ? RB_TAILOR.targets.add(key) : RB_TAILOR.targets.delete(key);
+  });
+  document.getElementById("rbx-tl-out").addEventListener("input", (e) => {
+    const ta = e.target.closest("[data-tl-ta]");
+    if (ta) RB_TAILOR.edits[ta.dataset.tlTa] = ta.value;
+  });
+  document.getElementById("rbx-docswitch").addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-doc]");
+    if (!btn) return;
+    RB_TAILOR.docView = btn.dataset.doc;
+    rbRenderDocView();
+  });
+  // Delegated, because the cards are re-rendered on every proposal.
+  document.getElementById("rbx-tl-out").addEventListener("click", (e) => {
+    const apply = e.target.closest("[data-tl-apply]");
+    if (apply) { rbApplyTailorSection(Number(apply.dataset.tlApply)); return; }
+    const mine = e.target.closest("[data-tl-usemine]");
+    if (mine) { rbApplyTailorSection(Number(mine.dataset.tlUsemine), true); return; }
+    const edit = e.target.closest("[data-tl-edit]");
+    if (edit) { rbToggleTailorEdit(edit.dataset.tlEdit); return; }
+    const reset = e.target.closest("[data-tl-reset]");
+    if (reset) { rbResetTailorEdit(reset.dataset.tlReset); return; }
+    const undo = e.target.closest("[data-tl-undo]");
+    if (undo) { rbUndoTailorSection(undo.dataset.tlUndo); return; }
+    if (e.target.closest("#rbx-tl-applyall")) {
+      const sections = ((RB_TAILOR.data || {}).sections || []);
+      sections.forEach(sec => {
+        if (!Object.prototype.hasOwnProperty.call(RB_TAILOR.applied, sec.field)) {
+          RB_TAILOR.applied[sec.field] = EDITOR.values[sec.field] || "";
+        }
+        // An edit already made to one of these wins over the proposal it
+        // replaced — "apply all" should not quietly undo somebody's typing.
+        const mine = RB_TAILOR.edits[sec.field];
+        rbWriteTailoredField(sec.field, mine != null && mine.trim() ? mine : sec.after);
+      });
+      RB_TAILOR.editing.clear();
+      if (sections.length) showToast(`Applied ${sections.length} change${sections.length > 1 ? "s" : ""} — check the preview`, "success");
+      rbRunTailor(true);
+      return;
+    }
+    if (e.target.closest("#rbx-tl-undoall")) {
+      Object.keys(RB_TAILOR.applied).forEach(field => {
+        rbWriteTailoredField(field, RB_TAILOR.applied[field]);
+        delete RB_TAILOR.applied[field];
+      });
+      showToast("All tailoring reverted", "info");
+      rbRunTailor(true);
+    }
   });
   // top actions
   document.getElementById("rbx-save").addEventListener("click", rbSaveFromBuilder);
   document.getElementById("rbx-download").addEventListener("click", () => rbDownload());
+  document.getElementById("rbx-rhead-dl")?.addEventListener("click", () => rbDownload());
 }
 
 async function rbSaveFromBuilder() {
   const btn = document.getElementById("rbx-save");
   if (!(EDITOR.values.full_name || "").trim()) { rbOpenSection("sec-details"); showToast("Add your name under Personal details", "warning"); return; }
-  const original = btn.textContent; btn.disabled = true; btn.textContent = "Saving…";
+  const restore = setButtonBusy(btn, "Saving…"); btn.disabled = true;
   try {
     const payload = { ...EDITOR.values, template_id: RESUME_BUILDER_STATE.templateId, resume_name: EDITOR.resumeName };
     if (state.builderResumeId) await put(`/api/resume-builder/${state.builderResumeId}`, payload);
@@ -10447,7 +13475,7 @@ async function rbSaveFromBuilder() {
     state.resumesView = "library"; scrollPageTo(0); render();
   } catch (err) {
     showToast(apiErrorMessage(err, "Couldn't save the resume"), "error");
-  } finally { btn.disabled = false; btn.textContent = original; }
+  } finally { btn.disabled = false; restore(); }
 }
 
 // PDF only. A .docx built from the résumé's plain text discarded the template
@@ -10756,8 +13784,8 @@ async function saveEditorResume() {
     showToast("Full name is required — it's under Contact", "error");
     return;
   }
-  const original = btn.textContent;
-  btn.disabled = true; btn.textContent = "Saving…";
+  const restore = setButtonBusy(btn, "Saving…");
+  btn.disabled = true;
   try {
     const payload = { ...EDITOR.values, template_id: RESUME_BUILDER_STATE.templateId, resume_name: EDITOR.resumeName };
     if (state.builderResumeId) await put(`/api/resume-builder/${state.builderResumeId}`, payload);
@@ -10774,7 +13802,7 @@ async function saveEditorResume() {
   } catch (err) {
     showToast(apiErrorMessage(err, "Couldn't save the resume"), "error");
   } finally {
-    btn.disabled = false; btn.textContent = original;
+    btn.disabled = false; restore();
   }
 }
 
@@ -10955,8 +13983,9 @@ const googleCheckInterval = setInterval(() => {
 
 
 async function downloadExport(btn, endpoint, filename) {
-  const originalText = btn.textContent;
-  btn.textContent = "Preparing export...";
+  // The user-menu entries that land here carry an icon; see setButtonBusy for
+  // why swapping textContent used to delete it permanently.
+  const restoreLabel = setButtonBusy(btn, "Preparing export…");
   btn.disabled = true;
   try {
     const token = auth.getToken();
@@ -10975,7 +14004,7 @@ async function downloadExport(btn, endpoint, filename) {
   } catch (err) {
     showToast("Export failed — please try again.", "error");
   } finally {
-    btn.textContent = originalText;
+    restoreLabel();
     btn.disabled = false;
   }
 }
@@ -11191,7 +14220,7 @@ function renderSubjectsPanel(allBlocks, compact = false, twoCol = false) {
   // more of them rather than hiding most of the user's subjects.
   if (compact) entries = entries.slice(0, twoCol ? 10 : 5);
   if (!entries.length) return `<p class="text-sm text-gray-400 text-center py-10 px-4">No study subjects yet — add a study block to start tracking progress.</p>`;
-  const dotColor = i => ["var(--lp-amber)", "var(--lp-green)", "#4C6FE7", "#E2604F"][subjectColorIndex(entries[i][0])];
+  const dotColor = i => ["var(--lp-amber)", "var(--lp-green)", "#14B8A6", "#E2604F"][subjectColorIndex(entries[i][0])];
   const rows = entries.map(([subject, s], i) => {
     const pct = s.total ? Math.round((s.done / s.total) * 100) : 0;
     return `
@@ -11205,76 +14234,6 @@ function renderSubjectsPanel(allBlocks, compact = false, twoCol = false) {
       </div>`;
   }).join("");
   return twoCol ? `<div class="subjects-grid-2col">${rows}</div>` : rows;
-}
-
-// "The Ledger" — GitHub-style consistency heatmap themed in amber, for
-// completed study sessions specifically (each filled square = a day with
-// at least one completed session). Lives on the Dashboard, not the Study
-// Plan page. Structurally the same idea as renderApplicationHeatmap but
-// keyed on `date` + `completed` rather than `date_applied`.
-function renderStudyLedgerHeatmap(blocks, scrollId = "study-ledger-scroll") {
-  const accentHex = "#E4A335";
-  const [r, g, b] = hexToRgb(accentHex);
-  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
-  const emptyCellColor = isDark ? "rgba(255,255,255,0.07)" : "rgba(23,26,31,0.06)";
-  const WEEKS = 53;
-  const CELL = 11, GAP = 3;
-  const days = WEEKS * 7;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const start = new Date(today);
-  start.setDate(start.getDate() - (days - 1) - today.getDay());
-
-  const countByDate = {};
-  blocks.forEach(b => {
-    if (!b.completed || !b.date) return;
-    countByDate[b.date] = (countByDate[b.date] || 0) + 1;
-  });
-  const maxCount = Math.max(1, ...Object.values(countByDate), 0);
-
-  const weeks = [];
-  for (let w = 0; w < WEEKS; w++) {
-    const col = [];
-    for (let d = 0; d < 7; d++) {
-      const date = new Date(start);
-      date.setDate(date.getDate() + w * 7 + d);
-      const iso = toISO(date);
-      const count = countByDate[iso] || 0;
-      const inFuture = date > today;
-      const opacity = count === 0 ? 0 : Math.max(0.18, count / maxCount);
-      col.push({ iso, count, opacity, inFuture });
-    }
-    weeks.push(col);
-  }
-  const monthLabels = [];
-  let lastMonth = null;
-  weeks.forEach((col, w) => {
-    const d = new Date(col[0].iso);
-    const m = d.toLocaleDateString(undefined, { month: "short" });
-    if (m !== lastMonth) { monthLabels.push({ w, label: m }); lastMonth = m; }
-  });
-  const totalSessions = Object.values(countByDate).reduce((a, b2) => a + b2, 0);
-  const gridWidth = WEEKS * (CELL + GAP);
-
-  return `
-    <div id="${scrollId}" style="overflow-x:auto; padding-bottom:2px;">
-      <div class="text-xs text-gray-400 mb-2">${totalSessions} completed session${totalSessions === 1 ? "" : "s"} in the last year — every filled square is a day you studied at least once.</div>
-      <div style="display:grid; grid-template-columns:repeat(${WEEKS},${CELL}px); gap:10px ${GAP}px; margin-bottom:4px; font-size:9px; color:var(--lp-ink-faint,#93968E); font-family:var(--lp-mono,monospace); min-width:${gridWidth}px;">
-        ${weeks.map((_, w) => { const found = monthLabels.find(m => m.w === w); return `<div>${found ? found.label : ""}</div>`; }).join("")}
-      </div>
-      <div style="display:grid; grid-template-columns:repeat(${WEEKS},${CELL}px); grid-auto-flow:column; grid-template-rows:repeat(7,${CELL}px); gap:${GAP}px; min-width:${gridWidth}px;">
-        ${weeks.flat().map(cell => `
-          <div title="${cell.iso}: ${cell.count} completed session${cell.count === 1 ? "" : "s"}"
-               style="width:${CELL}px; height:${CELL}px; border-radius:3px; background:${cell.inFuture ? "transparent" : (cell.count === 0 ? emptyCellColor : `rgba(${r},${g},${b},${cell.opacity})`)};"></div>
-        `).join("")}
-      </div>
-      <div class="flex items-center gap-2 mt-2 text-[9px] text-gray-400">
-        <span>Less</span>
-        ${[0, 0.25, 0.5, 0.75, 1].map(o => `<div style="width:11px; height:11px; border-radius:3px; background:${o === 0 ? emptyCellColor : `rgba(${r},${g},${b},${o})`};"></div>`).join("")}
-        <span>More</span>
-      </div>
-    </div>
-  `;
 }
 
 function renderStudyControls(controls) {
@@ -11340,8 +14299,7 @@ function openAddStudyBlockModal(DAYS, todayISO) {
 // that's slipped and proposes an actual free slot), and a real spaced-
 // repetition review queue (subjects ranked by days since last studied).
 // Deliberately no charts/graphs on this page — those live on the
-// Dashboard instead (see renderStudyLedgerHeatmap / the Planned vs Actual
-// chart, both used in renderDashboard).
+// Dashboard instead (see the Planned vs Actual chart in renderDashboard).
 // ============================================================================
 async function renderStudy(content) {
   const weekStart = weekStartOf(state.day);
@@ -11686,8 +14644,8 @@ async function renderAdmin(content) {
   // ============================================================
   function renderAdminInsights() {
     const totalContent = stats.total_habits + stats.total_tasks + stats.total_jobs + stats.total_resumes + stats.total_study_blocks;
-    const roleColors = ["#3D5AFE", "#6366F1"];
-    const jobColors = { applied: "#9CA3AF", oa_test: "#3B82F6", phone_screen: "#6366F1", interview: "#F59E0B", offer: "#10B981", rejected: "#EF4444", ghosted: "#9CA3AF", withdrawn: "#9CA3AF" };
+    const roleColors = ["#0E9384", "#0E9384"];
+    const jobColors = { applied: "#9CA3AF", oa_test: "#3B82F6", phone_screen: "#0E9384", interview: "#F59E0B", offer: "#10B981", rejected: "#EF4444", ghosted: "#9CA3AF", withdrawn: "#9CA3AF" };
     const jobEntries = Object.entries(stats.job_status_counts || {});
 
     const tab = document.getElementById("admin-tab-content");
@@ -11720,11 +14678,11 @@ async function renderAdmin(content) {
           <div class="p-5 space-y-4">
             <div>
               <div class="flex justify-between text-sm mb-1"><span>Habits</span><span class="font-bold">${stats.avg_habits_per_user}</span></div>
-              <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, stats.avg_habits_per_user * 8)}%; background:#3D5AFE"></div></div>
+              <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, stats.avg_habits_per_user * 8)}%; background:#0E9384"></div></div>
             </div>
             <div>
               <div class="flex justify-between text-sm mb-1"><span>Tasks</span><span class="font-bold">${stats.avg_tasks_per_user}</span></div>
-              <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, stats.avg_tasks_per_user * 1.5)}%; background:#6366F1"></div></div>
+              <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, stats.avg_tasks_per_user * 1.5)}%; background:#0E9384"></div></div>
             </div>
             <div>
               <div class="flex justify-between text-sm mb-1"><span>Job Applications</span><span class="font-bold">${stats.avg_jobs_per_user}</span></div>
@@ -11955,7 +14913,7 @@ function resetChatWidgetState() {
 
 function spawnSparkleBurst() {
   const toggle = document.getElementById("chat-toggle");
-  const colors = ["#3D5AFE", "#F5C518", "#6366F1", "#F43F5E"];
+  const colors = ["#0E9384", "#F5C518", "#0E9384", "#F43F5E"];
   for (let i = 0; i < 6; i++) {
     const dot = document.createElement("span");
     const angle = (Math.PI * 2 * i) / 6 + Math.random() * 0.4;
@@ -12185,11 +15143,13 @@ async function runGlobalSearch(term) {
         state.day = fromISO(el.dataset.searchDate);
         state.page = "day";
         state.trackerLastPage = "day";
+  state.trackerLastDateView = "day";
       } else if (kind === "job") {
         state.page = "jobs";
       } else if (kind === "habit") {
         state.page = "week";
         state.trackerLastPage = "week";
+  state.trackerLastDateView = "week";
       } else if (kind === "resume") {
         state.page = "resumes";
       } else if (kind === "study") {
@@ -12198,6 +15158,7 @@ async function runGlobalSearch(term) {
         state.weekStart = fromISO(el.dataset.searchWeek);
         state.page = "week";
         state.trackerLastPage = "week";
+  state.trackerLastDateView = "week";
       }
       renderNav();
       scrollPageTo(0);
@@ -12210,38 +15171,149 @@ async function runGlobalSearch(term) {
 // BACKEND CONNECTIVITY CHECK — the most common deploy issue is the frontend
 // being served from a different host than the backend, with no
 // MOMENTUM_API_BASE set to point at it. Rather than let every request fail
-// with a cryptic network error, actively check once on load and show a
-// clear, actionable banner if the backend can't be reached at all.
+// with a cryptic network error, actively check on load and show a clear,
+// actionable banner if the backend can't be reached at all.
+//
+// This used to be one fire-and-forget fetch at boot, and nothing anywhere in
+// the app could ever take the banner back down again. That made it lie
+// constantly in development: `uvicorn --reload` drops the port for a second
+// or two on every save, a cold start can spend longer than the timeout
+// importing, and a page load landing in either window painted a permanent red
+// banner over an app that was working perfectly. So the check is now
+// self-healing:
+//   • it retries with backoff before accusing anything, because one refused
+//     connection while the backend is still starting is normal, not a
+//     misconfiguration;
+//   • ANY response from the API takes the banner down immediately — an actual
+//     answer from the backend outranks whatever the probe last saw;
+//   • it keeps probing quietly while the banner is up, and re-probes when the
+//     tab regains focus or the network comes back, so it clears itself;
+//   • and it can be dismissed by hand.
 // ============================================================================
-async function checkBackendConnection() {
-  const banner = document.getElementById("backend-status-banner");
+const BACKEND_PROBE_TIMEOUT_MS = 6000;
+const BACKEND_PROBE_ATTEMPTS   = 4;      // ~3.5s of grace (0.5s + 1s + 2s) before accusing
+const BACKEND_RECHECK_MS       = 15000;  // while the banner is up, keep trying
+
+// State hangs off window rather than module-level `let`s so that
+// noteBackendReachable() is safe to call from api(), which is defined much
+// higher up the file than this block (a `let` there would be in its temporal
+// dead zone). Function declarations hoist; `let` does not.
+function backendConn() {
+  return window.__momentumBackendConn ||
+    (window.__momentumBackendConn = { dismissed: false, recheckTimer: null, probe: null });
+}
+
+function backendBannerEl() { return document.getElementById("backend-status-banner"); }
+
+function backendBannerVisible() {
+  const banner = backendBannerEl();
+  return !!banner && !banner.classList.contains("hidden");
+}
+
+function hideBackendBanner() {
+  backendBannerEl()?.classList.add("hidden");
+}
+
+// Called from api() on every response that actually came back from the server.
+// A response — even a 404 or a 500 — proves the backend is reachable, which is
+// the only thing this banner claims. A real recovery also re-arms a dismissed
+// banner, so a later outage can still be reported.
+function noteBackendReachable() {
+  const c = backendConn();
+  if (c.recheckTimer) { clearTimeout(c.recheckTimer); c.recheckTimer = null; }
+  c.dismissed = false;
+  hideBackendBanner();
+}
+
+function showBackendBanner() {
+  const c = backendConn();
+  if (c.dismissed) return;
+  const banner = backendBannerEl();
+  if (!banner) return;
+  // A browser fetch() failure is ambiguous by design (the browser deliberately
+  // hides the exact reason for cross-origin failures), so rather than guess
+  // which one it is, list every likely cause.
+  const code = (t) => `<code class="bg-white/20 px-1.5 py-0.5 rounded">${esc(t)}</code>`;
+  banner.innerHTML = `
+    <div class="text-left max-w-2xl">
+      <p class="font-semibold mb-1">⚠️ Can't reach the backend at ${code(API_BASE)}</p>
+      <ul class="text-xs space-y-0.5 list-disc list-inside text-white/90">
+        <li>Is the backend actually running? (check the terminal it's started in)</li>
+        <li>If it is restarting after a code change, this clears itself in a few seconds.</li>
+        <li>If using dev tunnels/Codespaces: is that port's tunnel forwarded and set to <b>Public</b>, not just visible to you?</li>
+        <li>Does ${code("window.MOMENTUM_API_BASE")} in ${code("frontend/env.js")} exactly match the backend's URL, with no typo and no trailing slash?</li>
+        <li>Does the backend's ${code("FRONTEND_ORIGINS")} (in the root ${code(".env")}) include this page's origin: ${code(window.location.origin)}?</li>
+      </ul>
+    </div>
+    <div class="flex items-center gap-2 shrink-0 self-start">
+      <button type="button" data-backend-retry
+        class="rounded bg-white/20 hover:bg-white/30 px-2 py-1 text-xs font-semibold">Retry</button>
+      <button type="button" data-backend-dismiss aria-label="Dismiss"
+        class="rounded px-2 py-1 text-xs text-white/80 hover:text-white hover:bg-white/20">✕</button>
+    </div>`;
+  banner.querySelector("[data-backend-retry]")?.addEventListener("click", () => {
+    hideBackendBanner();
+    checkBackendConnection();
+  });
+  banner.querySelector("[data-backend-dismiss]")?.addEventListener("click", () => {
+    backendConn().dismissed = true;
+    hideBackendBanner();
+  });
+  banner.classList.remove("hidden");
+}
+
+// One probe. Resolves true/false and never throws.
+async function probeBackendOnce() {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), BACKEND_PROBE_TIMEOUT_MS);
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 6000);
-    const res = await fetch(`${API_BASE}/api/health`, { signal: controller.signal });
-    clearTimeout(timeout);
-    if (!res.ok) throw new Error(`status ${res.status}`);
-    banner.classList.add("hidden");
-    return true;
+    const res = await fetch(`${API_BASE}/api/health`, { signal: controller.signal, cache: "no-store" });
+    return res.ok;
   } catch (e) {
-    // A browser fetch() failure here is ambiguous by design (the browser
-    // deliberately hides the exact reason for cross-origin failures), so
-    // rather than guess which one it is, list every likely cause.
-    const code = (t) => `<code class="bg-white/20 px-1.5 py-0.5 rounded">${t}</code>`;
-    banner.innerHTML = `
-      <div class="text-left max-w-2xl">
-        <p class="font-semibold mb-1">⚠️ Can't reach the backend at ${code(API_BASE)}</p>
-        <ul class="text-xs space-y-0.5 list-disc list-inside text-white/90">
-          <li>Is the backend actually running? (check the terminal it's started in)</li>
-          <li>If using dev tunnels/Codespaces: is that port's tunnel forwarded and set to <b>Public</b>, not just visible to you?</li>
-          <li>Does ${code("window.MOMENTUM_API_BASE")} in ${code("frontend/env.js")} exactly match the backend's URL, with no typo and no trailing slash?</li>
-          <li>Does the backend's ${code("FRONTEND_ORIGINS")} (in the root ${code(".env")}) include this page's origin: ${code(window.location.origin)}?</li>
-        </ul>
-      </div>`;
-    banner.classList.remove("hidden");
     return false;
+  } finally {
+    clearTimeout(timeout);
   }
 }
+
+// Probes until it gets an answer or runs out of attempts. Concurrent callers
+// (the boot call, the recheck timer, a tab regaining focus) share one run
+// rather than stacking up parallel probes.
+async function checkBackendConnection() {
+  const c = backendConn();
+  if (c.probe) return c.probe;
+  c.probe = (async () => {
+    for (let attempt = 0; attempt < BACKEND_PROBE_ATTEMPTS; attempt++) {
+      if (await probeBackendOnce()) {
+        noteBackendReachable();
+        return true;
+      }
+      if (attempt < BACKEND_PROBE_ATTEMPTS - 1) {
+        await new Promise(r => setTimeout(r, 500 * Math.pow(2, attempt)));
+      }
+    }
+    showBackendBanner();
+    // Keep trying quietly, so the banner clears itself once the backend comes
+    // back instead of sitting there until someone thinks to refresh.
+    if (!c.recheckTimer) {
+      c.recheckTimer = setTimeout(() => {
+        c.recheckTimer = null;
+        checkBackendConnection();
+      }, BACKEND_RECHECK_MS);
+    }
+    return false;
+  })().finally(() => { c.probe = null; });
+  return c.probe;
+}
+
+// Coming back to the tab, or getting the network back, is the moment a stale
+// banner is most obviously wrong — so re-probe then. Only when the banner is
+// actually up: an app that is working fine has no reason to ping /api/health
+// on every tab switch.
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && backendBannerVisible()) checkBackendConnection();
+});
+window.addEventListener("online", () => { if (backendBannerVisible()) checkBackendConnection(); });
 
 // ---------- boot ----------
 // pdf.js is imported on demand so it isn't on the boot path, but "on demand"
@@ -12256,7 +15328,7 @@ function rbWarmPdfLib() {
 }
 
 (async function boot() {
-  checkBackendConnection(); // don't block boot on this — just surface the warning if it fails
+  checkBackendConnection(); // retries in the background; never blocks boot
   rbWarmPdfLib();
   if (auth.getToken()) {
     try {
@@ -12306,7 +15378,7 @@ function rbWarmPdfLib() {
   const styled = getComputedStyle(probe).borderRadius.startsWith("999");
   probe.remove();
   const tag = styled ? "%cMomentum build " + build : "%cMomentum build " + build + " — STYLESHEET IS STALE";
-  console.info(tag, "color:#6C5DD3;font-weight:700");
+  console.info(tag, "color:#0E9384;font-weight:700");
   if (!styled) {
     console.warn(
       "[Momentum] styles.css is missing or out of date: the page is running current HTML/JS with an old stylesheet.\n" +
@@ -12398,27 +15470,24 @@ async function renderTelegram(content) {
 function tgRenderUnconfigured(content) {
   content.innerHTML = `
     <div class="tg-wrap">
-      <div class="tg-card tg-hero">
-        <div class="tg-hero-icon">✈️</div>
-        <div>
-          <h3>Telegram isn't set up on this server</h3>
-          <p class="tg-muted">Every morning the bot can send your habits, tasks and study
-             blocks as one tappable card. Ticking something there writes to the same
-             account you're looking at now.</p>
-        </div>
-      </div>
       <div class="tg-card">
-        <h3>To switch it on</h3>
+        <div class="tg-hero">
+          <div class="tg-hero-icon">✈️</div>
+          <div>
+            <h3>Telegram isn't set up on this server</h3>
+            <p class="tg-muted">A tappable card every morning with today's habits, tasks and
+               study blocks. Ticking one writes straight to this account.</p>
+          </div>
+        </div>
         <ol class="tg-steps">
           <li>Message <a href="https://t.me/BotFather" target="_blank" rel="noopener">@BotFather</a>
-              on Telegram and send <code>/newbot</code>.</li>
-          <li>Copy the token it gives you into <code>.env</code> in the project root:
+              and send <code>/newbot</code>.</li>
+          <li>Put the token in <code>.env</code>:
               <div class="tg-code">TELEGRAM_BOT_TOKEN=123456789:AA…</div></li>
-          <li>Restart the backend. Look for
-              <code>telegram: enabled — starting poller and scheduler</code> in the log.</li>
+          <li>Restart the backend — the log says <code>telegram: enabled</code>.</li>
         </ol>
-        <p class="tg-hint">Run <code>python backend/telegram_doctor.py</code> if it doesn't
-           come up — it checks the token against Telegram and says which part is wrong.</p>
+        <p class="tg-hint">Not coming up? <code>python backend/telegram_doctor.py</code> checks
+           the token against Telegram and says which part is wrong.</p>
       </div>
     </div>`;
 }
@@ -12427,19 +15496,16 @@ function tgRenderUnconfigured(content) {
 function tgRenderConnect(content, s) {
   content.innerHTML = `
     <div class="tg-wrap">
-      <div class="tg-card tg-hero">
-        <div class="tg-hero-icon">✈️</div>
-        <div>
-          <h3>Connect Telegram</h3>
-          <p class="tg-muted">One message each morning with today's habits, tasks and study
-             blocks — as checkboxes you can tap. Ticking one saves straight to this account.</p>
-        </div>
-      </div>
-
       <div class="tg-card">
-        <h3>Link this account to a chat</h3>
-        <p class="tg-muted">You'll get a single-use code that proves the chat is yours.
-           It expires in a few minutes.</p>
+        <div class="tg-hero">
+          <div class="tg-hero-icon">✈️</div>
+          <div>
+            <h3>Connect Telegram</h3>
+            <p class="tg-muted">One message each morning — today's habits, tasks and study
+               blocks as checkboxes you can tap. You'll get a single-use code that expires
+               in a few minutes.</p>
+          </div>
+        </div>
         <div class="tg-actions">
           <button class="tg-btn tg-btn-primary" id="tg-get-code">Connect Telegram</button>
           ${s.bot_username ? `<span class="tg-hint">Bot: <b>@${esc(s.bot_username)}</b></span>` : ""}
@@ -12523,9 +15589,11 @@ function tgRenderLinked(content, s) {
         </div>
       </div>
 
+      <!-- Schedule and switches were two cards with a paragraph each; they are
+           one decision — when it arrives and what it does — so they are one
+           card, and the explanations sit on the controls they belong to. -->
       <div class="tg-card">
-        <h3>When it arrives</h3>
-        <p class="tg-muted">A fresh card is sent at this time every day, in the timezone below.</p>
+        <h3>Schedule</h3>
         <div class="tg-grid">
           <label class="tg-field"><span>New card every day at</span>
             <input type="time" id="tg-daily" value="${esc(s.daily_time || "07:30")}">
@@ -12534,28 +15602,22 @@ function tgRenderLinked(content, s) {
                 `<button type="button" class="tg-preset ${p === (s.daily_time || "07:30") ? "on" : ""}" data-time="${p}">${p === "00:00" ? "midnight" : p}</button>`).join("")}
             </span></label>
           <label class="tg-field"><span>Day closes at</span>
-            <input type="time" id="tg-evening" value="${esc(s.evening_time || "00:00")}"></label>
-          <label class="tg-field tg-field-wide"><span>Timezone</span>
+            <input type="time" id="tg-evening" value="${esc(s.evening_time || "00:00")}">
+            <span class="tg-hint">00:00 closes the day that just ended.</span></label>
+          <label class="tg-field tg-field-wide"><span>Timezone — every time above is read in it</span>
             <select id="tg-tz">
               ${zones.map(z => `<option value="${esc(z)}" ${z === s.timezone ? "selected" : ""}>${esc(z)}</option>`).join("")}
             </select></label>
         </div>
-        <p class="tg-hint">Times are in the timezone above, not the server's — so 07:30
-           means 07:30 where you are.</p>
-
-        <p class="tg-hint">Midnight closes out the day that just ended, not the one starting —
-           set 00:00 and the recap covers today.</p>
-
         <div class="tg-toggles">
           <label class="tg-toggle"><input type="checkbox" id="tg-close-done" ${s.close_when_done ? "checked" : ""}>
-            <span><b>Close as soon as everything's ticked</b> — don't wait for the clock if the
-              day is already finished.</span></label>
+            <span>Close as soon as everything's ticked</span></label>
           <label class="tg-toggle"><input type="checkbox" id="tg-send-evening" ${s.send_evening ? "checked" : ""}>
-            <span><b>Send a recap when the day closes</b> — a summary, and the card stops being tappable.</span></label>
+            <span>Send a recap when the day closes</span></label>
           <label class="tg-toggle"><input type="checkbox" id="tg-carry" ${s.carry_over_tasks ? "checked" : ""}>
-            <span><b>Carry unfinished tasks forward</b> — anything left undone moves to tomorrow.</span></label>
+            <span>Carry unfinished tasks to tomorrow</span></label>
           <label class="tg-toggle"><input type="checkbox" id="tg-paused" ${s.paused ? "checked" : ""}>
-            <span><b>Pause</b> — stop sending without disconnecting.</span></label>
+            <span>Pause — stop sending, stay connected</span></label>
         </div>
 
         <div class="tg-actions">
@@ -12564,17 +15626,15 @@ function tgRenderLinked(content, s) {
         </div>
       </div>
 
-      <div class="tg-card">
-        <h3>Preview</h3>
-        <p class="tg-muted">What today's card says right now.</p>
+      <details class="tg-card tg-fold">
+        <summary>Preview <i>— what today's card says right now</i></summary>
         <div class="tg-preview" id="tg-preview">Loading…</div>
-      </div>
+      </details>
 
-      <div class="tg-card tg-danger">
-        <h3>Disconnect</h3>
-        <p class="tg-muted">Stops all messages and unlinks the chat. Your habits, tasks and
-           logged study minutes stay exactly as they are — only the connection goes.</p>
-        <button class="tg-btn tg-btn-danger" id="tg-unlink">Disconnect Telegram</button>
+      <div class="tg-footrow">
+        <span>Disconnecting stops the messages and unlinks the chat. Your habits, tasks and
+              study minutes stay exactly as they are.</span>
+        <button class="tg-btn tg-btn-danger" id="tg-unlink">Disconnect</button>
       </div>
     </div>`;
 
@@ -12698,22 +15758,54 @@ function jhAgo(iso) {
   return `${Math.floor(days / 30)}mo ago`;
 }
 
+// How fresh the local copy of every board is.
+//
+// Worth a line on screen because searching no longer talks to the boards: it
+// reads a cache the daily sweep fills. Without this, "no new jobs" and
+// "nothing has been fetched since Tuesday" look identical, and the second one
+// is a broken feature wearing the first one's clothes.
+function jhFreshness(sweep) {
+  if (!sweep) return "";
+  const when = sweep.finished_at ? jhAgo(sweep.finished_at) : "not yet";
+  const cold = !sweep.finished_at || (sweep.open_postings || 0) === 0;
+  return `
+    <div class="jh-card jh-fresh ${cold ? "is-cold" : ""}">
+      <span><b>${(sweep.open_postings || 0).toLocaleString()}</b> open postings cached
+        from <b>${(sweep.boards_ok || 0).toLocaleString()}</b> company boards</span>
+      <span>Last refreshed <b>${esc(when)}</b></span>
+      <span>Next sweep <b>${esc(sweep.next_run_utc || "12:00")} UTC</b>, daily</span>
+      <span class="jh-muted">Postings drop off after ${sweep.retention_days || 7} days.
+        ${sweep.postings_closed ? `${sweep.postings_closed} were taken down at the last sweep.` : ""}</span>
+      <button class="jh-btn jh-btn-sm" id="jh-sweep-now">Refresh now</button>
+    </div>`;
+}
+
 async function renderJobHunt(content) {
   content.innerHTML = `<div class="jh-wrap"><div class="jh-card"><p class="jh-muted">Loading…</p></div></div>`;
-  let search, hits, boards, referrals;
-  try {
-    [search, hits, boards, referrals] = await Promise.all([
-      get("/api/job-hunt/search", { noCache: true }),
-      get("/api/job-hunt/hits", { noCache: true }),
-      get("/api/job-hunt/boards", { noCache: true }),
-      get("/api/job-hunt/referrals", { noCache: true }),
-    ]);
-  } catch (err) {
-    content.innerHTML = `<div class="jh-wrap"><div class="jh-card">
-      <h3>Couldn't load Job Hunt</h3><p class="jh-muted">${esc(apiErrorMessage(err, "The backend didn't answer."))}</p>
-    </div></div>`;
-    return;
-  }
+  // allSettled, not all: these are six independent endpoints, and one of them
+  // 404ing — which is exactly what happens when the backend hasn't been
+  // restarted after an update — used to blank the entire tab and take the AI
+  // settings down with it. Each panel now degrades on its own.
+  const [search_, hits_, boards_, referrals_, profile_, ai_, sweep_] = await Promise.allSettled([
+    get("/api/job-hunt/search", { noCache: true }),
+    get("/api/job-hunt/hits", { noCache: true }),
+    get("/api/job-hunt/boards", { noCache: true }),
+    get("/api/job-hunt/referrals", { noCache: true }),
+    get("/api/job-hunt/profile", { noCache: true }),
+    get("/api/llm/settings", { noCache: true }),
+    get("/api/job-hunt/sweep", { noCache: true }),
+  ]);
+  const val = (r, fallback) => (r.status === "fulfilled" ? r.value : fallback);
+  const search = val(search_, { since_days: 30, notify_telegram: true, auto_daily: true });
+  const hits = val(hits_, []);
+  const boards = val(boards_, []);
+  const referrals = val(referrals_, []);
+  const profile = val(profile_, {});
+  const aiCfg = val(ai_, { configured: false, provider: "openai", length: "medium", temperature: "0.7" });
+  const sweep = val(sweep_, null);
+
+  const failed = [search_, hits_, boards_, referrals_, profile_, ai_].filter(r => r.status === "rejected");
+  const stale = failed.some(r => String(r.reason?.status) === "404");
 
   const isNew = (h) => h.status === "new";
   const newCount = hits.filter(isNew).length;
@@ -12721,6 +15813,10 @@ async function renderJobHunt(content) {
 
   content.innerHTML = `
     <div class="jh-wrap">
+      ${stale ? `<div class="jh-card jh-aistate bad">
+        Some of this tab's endpoints aren't there yet — restart the backend to pick up
+        the new routes, then reload.</div>` : ""}
+      ${jhFreshness(sweep)}
       <div class="jh-card jh-setup">
         <div class="jh-setup-head">
           <div>
@@ -12773,6 +15869,8 @@ async function renderJobHunt(content) {
         <button class="jh-tab on" data-jh-tab="results">Results ${newCount ? `<span class="jh-badge">${newCount} new</span>` : ""}</button>
         <button class="jh-tab" data-jh-tab="saved">Saved ${saved.length ? `(${saved.length})` : ""}</button>
         <button class="jh-tab" data-jh-tab="referrals">Referral contacts ${referrals.length ? `(${referrals.length})` : ""}</button>
+        <button class="jh-tab" data-jh-tab="profile">Application profile</button>
+        <button class="jh-tab" data-jh-tab="ai">AI model${aiCfg.configured ? "" : ` <span class="jh-badge">set up</span>`}</button>
         <button class="jh-tab" data-jh-tab="companies">Companies (${boards.length})</button>
       </div>
 
@@ -12783,6 +15881,8 @@ async function renderJobHunt(content) {
     results: () => jhResultsPanel(hits.filter(h => h.status !== "saved")),
     saved: () => jhResultsPanel(saved),
     referrals: () => jhReferralsPanel(referrals),
+    profile: () => jhProfilePanel(profile),
+    ai: () => jhAiPanel(aiCfg),
     companies: () => jhCompaniesPanel(boards),
   };
   const showPanel = (key) => {
@@ -12812,6 +15912,24 @@ async function renderJobHunt(content) {
     notify_telegram: document.getElementById("jh-notify").checked,
   });
 
+  // "Refresh now" starts a sweep and returns straight away. The sweep itself
+  // takes minutes across a registry this size, so there is nothing useful to
+  // await — the page is told it started, and the next reload shows the result.
+  const sweepBtn = document.getElementById("jh-sweep-now");
+  if (sweepBtn) sweepBtn.addEventListener("click", async () => {
+    sweepBtn.disabled = true;
+    sweepBtn.textContent = "Refreshing…";
+    try {
+      await post("/api/job-hunt/sweep", {});
+      showToast("Refreshing every company board. This takes a few minutes — "
+                + "reload the tab shortly to see it.", "info");
+    } catch (err) {
+      showToast(apiErrorMessage(err, "Couldn't start the refresh"), "error");
+      sweepBtn.disabled = false;
+      sweepBtn.textContent = "Refresh now";
+    }
+  });
+
   document.getElementById("jh-save").addEventListener("click", async (e) => {
     e.currentTarget.disabled = true;
     try {
@@ -12836,7 +15954,7 @@ async function renderJobHunt(content) {
         ? `${r.new} new — ${r.matched} matches across ${r.boards_ok} companies`
         : `No new postings — ${r.matched} matches, all seen before`,
         r.new ? "success" : "info");
-      renderJobHunt(content);
+      jhRefresh(content);
     } catch (err) {
       showToast(apiErrorMessage(err, "The search failed"), "error");
       btn.disabled = false;
@@ -12873,6 +15991,10 @@ function jhResultsPanel(hits) {
         ${h.description ? `<p class="jh-snip">${esc(h.description.slice(0, 180))}…</p>` : ""}
       </div>
       <div class="jh-hit-actions">
+        ${h.url ? `<a class="jh-btn jh-btn-sm jh-btn-open" href="${esc(h.url)}"
+             target="_blank" rel="noopener">Open posting</a>`
+                : `<span class="jh-btn jh-btn-sm jh-btn-open is-off"
+             title="This board published no link for the posting">No link</span>`}
         <button class="jh-btn jh-btn-sm" data-jh-act="track" data-id="${h.id}">Track</button>
         <button class="jh-btn jh-btn-sm" data-jh-act="${h.status === "saved" ? "unsave" : "save"}" data-id="${h.id}">
           ${h.status === "saved" ? "Unsave" : "Save"}</button>
@@ -12931,7 +16053,7 @@ function jhCompaniesPanel(boards) {
 }
 
 function jhBindPanel(content, key) {
-  const panel = document.getElementById("jh-panel");
+  const panel = document.getElementById("jh-panel") || content;
 
   panel.querySelectorAll("[data-jh-act]").forEach(btn => {
     btn.addEventListener("click", async () => {
@@ -12948,7 +16070,7 @@ function jhBindPanel(content, key) {
         }
         if (act === "rc-del")    await del(`/api/job-hunt/referrals/${id}`);
         if (act === "board-del") await del(`/api/job-hunt/boards/${id}`);
-        renderJobHunt(content);
+        jhRefresh(content);
       } catch (err) {
         showToast(apiErrorMessage(err, "That didn't work"), "error");
         btn.disabled = false;
@@ -12968,8 +16090,115 @@ function jhBindPanel(content, key) {
           contact: document.getElementById("jh-rc-contact").value.trim(),
         });
         showToast("Contact added", "success");
-        renderJobHunt(content);
+        jhRefresh(content);
       } catch (err) { showToast(apiErrorMessage(err, "Couldn't add that contact"), "error"); }
+    });
+  }
+
+  if (key === "profile") {
+    document.getElementById("jp-save")?.addEventListener("click", async (e) => {
+      e.currentTarget.disabled = true;
+      try {
+        await put("/api/job-hunt/profile", jhCollectProfile());
+        showToast("Profile saved", "success");
+      } catch (err) { showToast(apiErrorMessage(err, "Couldn't save the profile"), "error"); }
+      finally { e.currentTarget.disabled = false; }
+    });
+  }
+
+  if (key === "ai") {
+    document.getElementById("ai-provider")?.addEventListener("change", (e) => {
+      const p = AI_PROVIDERS.find(x => x.id === e.target.value);
+      if (!p) return;
+      jhRenderProviderHelp(p);
+      const model = document.getElementById("ai-model");
+      const base = document.getElementById("ai-base");
+      if (model) {
+        model.placeholder = p.model || "press Fetch models";
+        // `gpt-4o-mini` left in the box after switching to DeepSeek produces a
+        // 404 that reads like the key is broken. Clearing is the kinder answer.
+        model.value = "";
+      }
+      if (base) { base.placeholder = p.base || "https://…"; base.value = ""; }
+      document.getElementById("ai-model-list").innerHTML = "";
+    });
+
+    // Same check the backend does, run as you paste. Groq (gsk_) and xAI
+    // (xai-) are one letter apart in name and nothing alike in key format, so
+    // the mix-up is common and worth catching before a confusing 401.
+    const KEY_PREFIXES = [["sk-ant-", "anthropic"], ["sk-or-v1-", "openrouter"],
+      ["gsk_", "groq"], ["xai-", "xai"], ["pplx-", "perplexity"],
+      ["AIza", "gemini"], ["fw_", "fireworks"], ["csk-", "cerebras"]];
+    document.getElementById("ai-key")?.addEventListener("input", (e) => {
+      const key = e.target.value.trim();
+      const chosen = document.getElementById("ai-provider").value;
+      const guess = (KEY_PREFIXES.find(([p]) => key.startsWith(p)) || [])[1];
+      const warn = document.getElementById("ai-key-warn");
+      if (!warn) return;
+      if (guess && guess !== chosen) {
+        const label = (AI_PROVIDERS.find(p => p.id === guess) || {}).label || guess;
+        warn.textContent = `⚠ That looks like a ${label} key — switch the provider above.`;
+        warn.style.display = "block";
+      } else {
+        warn.style.display = "none";
+      }
+    });
+
+    document.getElementById("ai-fetch-models")?.addEventListener("click", async (e) => {
+      const btn = e.currentTarget;
+      const hint = document.getElementById("ai-model-hint");
+      btn.disabled = true;
+      hint.textContent = "Asking the provider…";
+      try {
+        // Save first: the endpoint reads the stored key, and the one on screen
+        // is the one the person means.
+        await put("/api/llm/settings", jhCollectAi());
+        const r = await post("/api/llm/models", {});
+        if (!r.ok) throw new Error(r.error || "Couldn't list models");
+        const list = document.getElementById("ai-model-list");
+        list.innerHTML = r.models.map(m => `<option value="${esc(m)}"></option>`).join("");
+        hint.textContent = r.models.length
+          ? `${r.models.length} models available — click the box to pick one.`
+          : "The provider returned no chat models.";
+        const model = document.getElementById("ai-model");
+        if (model && !model.value && r.models.length) model.value = r.models[0];
+      } catch (err) {
+        hint.textContent = apiErrorMessage(err, "Couldn't fetch the model list");
+      } finally { btn.disabled = false; }
+    });
+
+    const save = async () => put("/api/llm/settings", jhCollectAi());
+
+    document.getElementById("ai-save")?.addEventListener("click", async (e) => {
+      e.currentTarget.disabled = true;
+      try { await save(); showToast("AI settings saved", "success"); jhRefresh(content); }
+      catch (err) { showToast(apiErrorMessage(err, "Couldn't save"), "error"); }
+      finally { e.currentTarget.disabled = false; }
+    });
+
+    // Save then test, in that order: testing what is on screen rather than what
+    // was last saved is the only version of this button that isn't confusing.
+    document.getElementById("ai-test")?.addEventListener("click", async (e) => {
+      const btn = e.currentTarget;
+      const out = document.getElementById("ai-test-result");
+      btn.disabled = true;
+      out.textContent = "Testing…";
+      try {
+        await save();
+        const r = await post("/api/llm/test", {});
+        out.textContent = r.ok
+          ? `✓ Working — ${r.model || "model"} replied.`
+          : `✗ ${r.error}`;
+        out.style.color = r.ok ? "#1FAE6B" : "#DC2626";
+        // The provider's own explanation is often two sentences and contains
+        // the actual fix ("enable billing", "wait a moment"). Truncating it to
+        // one line beside a button is how the useful half gets lost.
+        out.classList.toggle("jh-testresult-block", !r.ok);
+        if (r.ok) showToast("Model connected — tailoring and cover letters will use it now", "success");
+      } catch (err) {
+        out.textContent = apiErrorMessage(err, "Test failed");
+        out.style.color = "#DC2626";
+      } finally { btn.disabled = false; }
     });
   }
 
@@ -12983,7 +16212,7 @@ function jhBindPanel(content, key) {
           url, name: document.getElementById("jh-board-name").value.trim() || null,
         });
         showToast(`Added ${b.name} (${b.provider})`, "success");
-        renderJobHunt(content);
+        jhRefresh(content);
       } catch (err) {
         // The backend's 422 explains which platforms are supported, which is
         // the useful thing to show rather than a generic failure.
@@ -12992,4 +16221,343 @@ function jhBindPanel(content, key) {
       }
     });
   }
+}
+
+// The answers every application asks for, typed once. Read by the Chrome
+// extension to fill a live form — see extension/autofill.js, which fills and
+// then stops, leaving the submit button to a person.
+//
+// Deliberately absent: gender, ethnicity, disability, veteran status. On a real
+// application those are voluntary EEO self-identification, legally separated
+// from the hiring decision, and special-category data under UK GDPR. They are
+// also the last thing anyone should have answered on their behalf.
+function jhProfilePanel(p) {
+  const yn = (id, label, value, help) => `
+    <label class="jh-field"><span>${label}</span>
+      <select id="${id}">
+        <option value="" ${value == null ? "selected" : ""}>Not answered</option>
+        <option value="yes" ${value === true ? "selected" : ""}>Yes</option>
+        <option value="no" ${value === false ? "selected" : ""}>No</option>
+      </select>
+      ${help ? `<span class="jh-fhint">${help}</span>` : ""}</label>`;
+  const f = (id, label, value, ph = "") => `
+    <label class="jh-field"><span>${label}</span>
+      <input id="${id}" value="${esc(value ?? "")}" placeholder="${esc(ph)}"></label>`;
+
+  return `
+    <div class="jh-card">
+      <h3>Application profile</h3>
+      <p class="jh-muted">Typed once, used everywhere. With the Chrome extension installed,
+         open any application form and press <b>Fill this application</b> — it fills what it
+         can, outlines those fields in blue, and flags in amber anything required that it
+         couldn't answer. You check it and press submit yourself.</p>
+
+      <div class="jh-sec">Contact</div>
+      <div class="jh-grid">
+        ${f("jp-full_name", "Full name", p.full_name)}
+        ${f("jp-email", "Email", p.email)}
+        ${f("jp-phone", "Phone", p.phone, "+44 7700 900123")}
+        ${f("jp-city", "City", p.city, "London")}
+        ${f("jp-country", "Country", p.country, "United Kingdom")}
+        ${f("jp-linkedin", "LinkedIn", p.linkedin)}
+        ${f("jp-github", "GitHub", p.github)}
+        ${f("jp-website", "Website / portfolio", p.website)}
+      </div>
+
+      <div class="jh-sec">Work eligibility</div>
+      <p class="jh-muted">The questions that decide whether an application is even
+         considered — and the ones asked in opposite directions on different forms, which
+         is why both are stored rather than one being inferred from the other.</p>
+      <div class="jh-grid">
+        ${f("jp-work_auth_country", "Authorised to work in", p.work_auth_country, "United Kingdom")}
+        ${f("jp-visa_status", "Visa / immigration status", p.visa_status, "Skilled Worker · Citizen · Graduate")}
+        ${yn("jp-right_to_work", "Right to work without sponsorship?", p.right_to_work,
+             `Answers "are you legally authorised to work here?"`)}
+        ${yn("jp-needs_sponsorship", "Will you need sponsorship?", p.needs_sponsorship,
+             `Answers "will you now or in future require sponsorship?"`)}
+      </div>
+
+      <div class="jh-sec">Availability &amp; expectations</div>
+      <div class="jh-grid">
+        ${f("jp-notice_period", "Notice period", p.notice_period, "1 month")}
+        ${f("jp-salary_expectation", "Salary expectation", p.salary_expectation, "70,000")}
+        ${f("jp-salary_currency", "Currency symbol", p.salary_currency, "£")}
+        ${yn("jp-willing_to_relocate", "Willing to relocate?", p.willing_to_relocate)}
+        ${f("jp-preferred_locations", "Preferred locations", p.preferred_locations, "London, Remote")}
+        <label class="jh-field"><span>Remote preference</span>
+          <select id="jp-remote_preference">
+            ${["", "remote", "hybrid", "onsite", "any"].map(v =>
+              `<option value="${v}" ${v === (p.remote_preference || "") ? "selected" : ""}>${v || "Not answered"}</option>`).join("")}
+          </select></label>
+      </div>
+
+      <div class="jh-sec">Experience</div>
+      <div class="jh-grid">
+        ${f("jp-current_title", "Current title", p.current_title)}
+        ${f("jp-current_company", "Current company", p.current_company)}
+        ${f("jp-years_experience", "Years of experience", p.years_experience, "5")}
+        ${f("jp-how_did_you_hear", "How did you hear about us?", p.how_did_you_hear, "Company website")}
+      </div>
+
+      <div class="jh-actions">
+        <button class="jh-btn jh-btn-primary" id="jp-save">Save profile</button>
+        <span class="jh-hint">Stored only in your own database. Nothing is sent anywhere
+          until you press submit on a form yourself.</span>
+      </div>
+    </div>`;
+}
+
+function jhCollectProfile() {
+  const val = (id) => document.getElementById(id)?.value.trim() ?? "";
+  // "" means "not answered" for the tri-state selects, and must stay null
+  // rather than becoming false — an unanswered sponsorship question is not
+  // the same as answering "no" to it.
+  const tri = (id) => {
+    const v = document.getElementById(id)?.value;
+    return v === "yes" ? true : v === "no" ? false : null;
+  };
+  const years = val("jp-years_experience");
+  return {
+    full_name: val("jp-full_name"), email: val("jp-email"), phone: val("jp-phone"),
+    city: val("jp-city"), country: val("jp-country"), linkedin: val("jp-linkedin"),
+    github: val("jp-github"), website: val("jp-website"),
+    work_auth_country: val("jp-work_auth_country"), visa_status: val("jp-visa_status"),
+    right_to_work: tri("jp-right_to_work"), needs_sponsorship: tri("jp-needs_sponsorship"),
+    notice_period: val("jp-notice_period"), salary_expectation: val("jp-salary_expectation"),
+    salary_currency: val("jp-salary_currency"), willing_to_relocate: tri("jp-willing_to_relocate"),
+    preferred_locations: val("jp-preferred_locations"),
+    remote_preference: val("jp-remote_preference"),
+    current_title: val("jp-current_title"), current_company: val("jp-current_company"),
+    years_experience: years === "" ? null : Number(years),
+    how_did_you_hear: val("jp-how_did_you_hear"),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// AI model settings
+// ---------------------------------------------------------------------------
+// Everything that writes — tailored résumés, cover letters, ATS suggestions,
+// the assistant — ran through a local GGUF model that most installs don't have,
+// so it all quietly fell back to filled-in templates. One key here switches all
+// of them to a real model at once.
+//
+// The key is never rendered back into the page: reads return a hint like
+// sk-…7f2a, which is enough to tell two keys apart and useless to anyone
+// looking over your shoulder.
+
+// Fetched from /api/llm/providers rather than duplicated here: adding a
+// provider should be one edit in app/ai/remote.py, not two that drift.
+let AI_PROVIDERS = [];
+
+async function loadAiProviders() {
+  if (AI_PROVIDERS.length) return AI_PROVIDERS;
+  try {
+    AI_PROVIDERS = await get("/api/llm/providers");
+  } catch (_) {
+    // The panel is still usable typing a base URL by hand if the list fails.
+    AI_PROVIDERS = [{ id: "openai", label: "OpenAI", base: "", model: "", keys: "", note: "" }];
+  }
+  return AI_PROVIDERS;
+}
+
+// What each provider costs, grouped so the free ones are not buried among the
+// billed ones. Checked August 2026 and kept in one place — app/ai/remote.py —
+// because free tiers are the most volatile thing on this page.
+const JH_COST_GROUPS = [
+  ["free",    "Free tier — no card needed"],
+  ["credits", "Free credits to start, then billed"],
+  ["paid",    "Paid from the first call"],
+  ["",        "Other"],
+];
+
+function jhProviderOptions(selected) {
+  return JH_COST_GROUPS.map(([tier, label]) => {
+    const rows = AI_PROVIDERS.filter(p => (p.cost || "") === tier);
+    if (!rows.length) return "";
+    return `<optgroup label="${esc(label)}">${rows.map(p =>
+      `<option value="${esc(p.id)}" ${p.id === selected ? "selected" : ""}>${esc(p.label)}</option>`
+    ).join("")}</optgroup>`;
+  }).join("");
+}
+
+function jhProviderHint(p) {
+  if (!p) return "";
+  const badge = p.cost_label
+    ? `<b class="jh-cost jh-cost-${esc(p.cost || "none")}">${esc(p.cost_label)}</b> `
+    : "";
+  return `${badge}${esc(p.note || "")}`;
+}
+
+// Where the key comes from, as a button rather than an address to retype.
+// Every one of these opens the provider's own key page — the place the key is
+// created, not their pricing or their docs.
+function jhKeyLink(p) {
+  const host = document.getElementById("ai-keylink");
+  if (!host) return "";
+  if (!p || !p.keys_url) return "";
+  return `
+    <a class="jh-keylink" href="${esc(p.keys_url)}" target="_blank" rel="noopener noreferrer">
+      <span aria-hidden="true">↗</span> Get a key from ${esc(p.keys)}
+    </a>`;
+}
+
+function jhRenderProviderHelp(p) {
+  const hint = document.getElementById("ai-provider-help");
+  if (hint) hint.innerHTML = jhProviderHint(p);
+  const link = document.getElementById("ai-keylink");
+  if (link) link.innerHTML = jhKeyLink(p);
+}
+
+function jhAiPanel(cfg) {
+  const provider = cfg.provider || "openai";
+  const active = AI_PROVIDERS.find(p => p.id === provider) || AI_PROVIDERS[0] || {};
+  return `
+    <div class="jh-card">
+      <h3>AI model</h3>
+      <p class="jh-muted">Tailoring, cover letters and the assistant run through this.
+         Without a key they fall back to templates.</p>
+
+      ${cfg.configured ? `
+        <div class="jh-aistate ${cfg.last_error ? "bad" : "good"}">
+          ${cfg.last_error
+            ? `⚠ Last attempt failed: ${esc(cfg.last_error)}`
+            : `✓ Connected${cfg.key_hint ? ` with key <code>${esc(cfg.key_hint)}</code>` : ""}${
+                cfg.last_ok_at ? ` · tested ${jhAgo(cfg.last_ok_at)}` : ""}`}
+        </div>` : `
+        <div class="jh-aistate">No model configured yet — everything AI is running in template mode.</div>`}
+
+      <div class="jh-grid">
+        <label class="jh-field"><span>Provider</span>
+          <select id="ai-provider">
+            ${jhProviderOptions(provider)}
+          </select>
+          <span class="jh-fhint" id="ai-provider-help">${jhProviderHint(active)}</span>
+          <span id="ai-keylink">${active.keys_url ? `
+            <a class="jh-keylink" href="${esc(active.keys_url)}" target="_blank" rel="noopener noreferrer">
+              <span aria-hidden="true">↗</span> Get a key from ${esc(active.keys)}
+            </a>` : ""}</span></label>
+        <label class="jh-field"><span>API key</span>
+          <input id="ai-key" type="password" autocomplete="off"
+                 placeholder="${cfg.key_hint ? `Saved: ${esc(cfg.key_hint)} — type to replace` : "paste your key"}">
+          <span class="jh-fhint">Encrypted, and only ever sent to your provider.</span>
+          <span class="jh-keywarn" id="ai-key-warn" style="display:none"></span></label>
+        <label class="jh-field"><span>Model</span>
+          <div class="jh-modelrow">
+            <input id="ai-model" list="ai-model-list" value="${esc(cfg.model || "")}"
+                   placeholder="${esc(active.model || "press Fetch models")}">
+            <button type="button" class="jh-btn jh-btn-sm" id="ai-fetch-models">Fetch models</button>
+          </div>
+          <datalist id="ai-model-list"></datalist>
+          <span class="jh-fhint" id="ai-model-hint">Blank uses the provider's default.</span></label>
+        <label class="jh-field"><span>Base URL</span>
+          <input id="ai-base" value="${esc(cfg.base_url || "")}" placeholder="${esc(active.base || "https://…")}">
+          <span class="jh-fhint">Only for a self-hosted endpoint.</span></label>
+      </div>
+
+      <details class="jh-howto">
+        <summary>How to add a key — three minutes, once</summary>
+        <ol>
+          <li><b>Pick a provider above.</b> If you would rather not pay anything, take one
+              from <i>Free tier — no card needed</i>. Groq is the usual first choice: fast,
+              and the key takes about a minute.</li>
+          <li><b>Press “Get a key”</b> beside the provider. It opens that provider's own key
+              page. Sign in, create a key, and copy it — most show it once and never again.</li>
+          <li><b>Paste it into API key</b> here, leave Model and Base URL blank unless you
+              have a reason, and press <b>Save &amp; test connection</b>. A green line means
+              it worked; a red one quotes what the provider said.</li>
+        </ol>
+        <p><b>If the test fails.</b> A <code>401</code> means the key is wrong or was pasted
+           with a space — copy it again. A <code>404</code> on the model means the name has
+           moved on: clear the Model box and press <b>Fetch models</b> for the live list. A
+           <code>429</code> means you are over the free tier's rate limit — wait a minute, or
+           pick another free provider.</p>
+        <p><b>Nothing to install, nothing shared.</b> The key is encrypted before it is
+           stored, never shown again, and only ever sent to the provider you chose. Delete it
+           any time with <b>Remove key</b>, and everything falls back to template mode rather
+           than breaking.</p>
+      </details>
+
+      <!-- Folded: four controls with sensible defaults that most people never
+           touch. Open, they were half the height of the page. -->
+      <details class="jh-fold">
+        <summary>How it should write <i>— tone, length, house rules</i></summary>
+        <div class="jh-grid">
+        <label class="jh-field"><span>Tone</span>
+          <select id="ai-tone">
+            ${["", "professional", "warm and personable", "direct and concise", "confident",
+               "understated", "academic"].map(v =>
+              `<option value="${v}" ${v === (cfg.tone || "") ? "selected" : ""}>${v || "Default"}</option>`).join("")}
+          </select></label>
+        <label class="jh-field"><span>Length</span>
+          <select id="ai-length">
+            ${["short", "medium", "long"].map(v =>
+              `<option value="${v}" ${v === (cfg.length || "medium") ? "selected" : ""}>${v}</option>`).join("")}
+          </select></label>
+        <label class="jh-field"><span>Creativity</span>
+          <select id="ai-temp">
+            ${[["0.2","Factual"],["0.5","Balanced"],["0.7","Standard"],["0.9","Creative"]].map(([v,l]) =>
+              `<option value="${v}" ${v === (cfg.temperature || "0.7") ? "selected" : ""}>${l} (${v})</option>`).join("")}
+          </select></label>
+        <label class="jh-field jh-field-wide"><span>Custom instructions</span>
+          <input id="ai-instructions" value="${esc(cfg.instructions || "")}"
+                 placeholder="e.g. British spelling, no buzzwords, never claim skills not on my CV">
+          <span class="jh-fhint">Wins over the presets when they disagree.</span></label>
+        </div>
+      </details>
+
+      <div class="jh-actions">
+        <button class="jh-btn jh-btn-primary" id="ai-save">Save</button>
+        <button class="jh-btn" id="ai-test">Save &amp; test connection</button>
+        <span class="jh-hint" id="ai-test-result"></span>
+      </div>
+    </div>`;
+}
+
+function jhCollectAi() {
+  const v = (id) => document.getElementById(id)?.value ?? "";
+  const body = {
+    provider: v("ai-provider"), model: v("ai-model").trim(), base_url: v("ai-base").trim(),
+    tone: v("ai-tone"), length: v("ai-length"), temperature: v("ai-temp"),
+    instructions: v("ai-instructions").trim(),
+  };
+  // An untouched key field means "leave it alone" — sending "" would wipe a
+  // working key every time somebody edited the tone.
+  const key = v("ai-key").trim();
+  if (key) body.api_key = key;
+  return body;
+}
+
+// Both the Job Hunt tab and the standalone AI Model page render the same
+// panels, so "reload after saving" has to mean whichever page you're on. A
+// single renderJobHunt() call here would have thrown you back to Job Hunt every
+// time you saved an API key from the AI page.
+function jhRefresh(content) {
+  return state.page === "ai" ? renderAiSettings(content) : renderJobHunt(content);
+}
+
+// The AI model settings, as their own page under Tools. It began life as a
+// sub-tab of Job Hunt, which was wrong: this is the switch that decides whether
+// tailoring, cover letters, ATS scoring and the assistant do real work, and
+// nothing about it is specific to job searching.
+async function renderAiSettings(content) {
+  content.innerHTML = `<div class="jh-wrap"><div class="jh-card"><p class="jh-muted">Loading…</p></div></div>`;
+  let cfg;
+  try {
+    await loadAiProviders();
+    cfg = await get("/api/llm/settings", { noCache: true });
+  } catch (err) {
+    const missing = String(err?.status) === "404";
+    content.innerHTML = `<div class="jh-wrap"><div class="jh-card">
+      <h3>Couldn't load AI settings</h3>
+      <p class="jh-muted">${missing
+        ? "The backend doesn't have this route yet — restart it and reload the page."
+        : esc(apiErrorMessage(err, "The backend didn't answer."))}</p>
+    </div></div>`;
+    return;
+  }
+  content.innerHTML = `<div class="jh-wrap" id="jh-panel">${jhAiPanel(cfg)}</div>`;
+  jhBindPanel(content, "ai");
+  // The key link and the local-setup steps are built by the same function the
+  // provider dropdown calls, so the first paint and every change agree.
+  jhRenderProviderHelp(AI_PROVIDERS.find(p => p.id === (cfg.provider || "openai")));
 }

@@ -20,6 +20,7 @@ Both the chat assistant and the "AI-enhanced" ATS scorer share this module,
 so the same local-first, zero-external-calls policy applies to both.
 """
 import json
+import logging
 import os
 
 from ..env import env_bool, env_int, env_str
@@ -45,6 +46,8 @@ N_GPU_LAYERS = env_int("MOMENTUM_LLM_GPU_LAYERS", 0)
 from .llm import fence, complete_json
 
 from ..cache import TTL_AI, get_json, make_key, set_json
+
+log = logging.getLogger("momentum.ai")
 
 _lock = threading.Lock()
 _llm = None
@@ -98,12 +101,69 @@ def _try_load():
             _load_error = f"Found a model file but couldn't load it: {e}"
 
 
+# ---------------------------------------------------------------------------
+# Which model is actually answering
+# ---------------------------------------------------------------------------
+# Everything below was written against a llama_cpp handle: call it with a
+# prompt, get {"choices": [{"text": ...}]} back. A hosted provider answers a
+# different shape, so rather than rewrite nine functions, _RemoteLLM presents
+# the same interface. The call sites now ask _current_llm() which model to use
+# and are otherwise untouched — a hosted key and a local GGUF are
+# interchangeable from here down.
+
+class _RemoteLLM:
+    """llama_cpp's calling convention, backed by a hosted provider."""
+
+    def __init__(self, remote_mod, cfg):
+        self._remote = remote_mod
+        self._cfg = cfg
+
+    def __call__(self, prompt, max_tokens=512, temperature=0.7, stop=None, **_ignored):
+        text = self._remote.chat(
+            "You are an expert career writer. Follow the instruction exactly and "
+            "return only the requested text, with no preamble or commentary.",
+            prompt, self._cfg, max_tokens=max_tokens, temperature=temperature)
+        # `stop` has no equivalent in a chat API, so the sequences are trimmed
+        # afterwards. Without this, a model that helpfully echoes the section
+        # header back would leak it into the résumé.
+        for token in (stop or []):
+            idx = text.find(token)
+            if idx > 0:
+                text = text[:idx]
+        return {"choices": [{"text": text.strip()}]}
+
+    def create_chat_completion(self, messages, max_tokens=512, temperature=0.7, **_ignored):
+        system = " ".join(m["content"] for m in messages if m.get("role") == "system")
+        user = "\n".join(m["content"] for m in messages if m.get("role") != "system")
+        text = self._remote.chat(system or "You are a helpful assistant.", user,
+                                 self._cfg, max_tokens=max_tokens, temperature=temperature)
+        return {"choices": [{"message": {"content": text}}]}
+
+
+def _current_llm():
+    """The user's hosted model if they configured one, else the local GGUF.
+
+    Checked per call rather than cached, because the configuration belongs to
+    whoever is making the request — caching it in a module global would serve
+    one person's model to the next.
+    """
+    try:
+        from . import remote
+        cfg = remote.current()
+        if cfg is not None:
+            return _RemoteLLM(remote, cfg)
+    except Exception:
+        pass
+    _try_load()
+    return _llm
+
+
 def assistant_status() -> dict:
     """The assistant is always 'available' — it just runs in 'lite' mode
     (built-in, no model needed) until a local GGUF model is provided, at
     which point it upgrades to 'llm' mode automatically."""
     _try_load()
-    if _llm is not None:
+    if _current_llm() is not None:
         return {"available": True, "mode": "llm", "model_path": _resolved_model_path}
     return {"available": True, "mode": "lite", "model_hint": _load_error, "models_dir": MODELS_DIR}
 
@@ -171,7 +231,7 @@ def generate_reply(user_message: str, history: list = None, context_note: str = 
                     max_tokens: int = 350, temperature: float = 0.7) -> dict:
     """Runs local inference (or the lite fallback) and returns {reply, mode}."""
     _try_load()
-    if _llm is None:
+    if _current_llm() is None:
         return {"reply": _lite_reply(user_message, context_note or ""), "mode": "lite"}
 
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
@@ -200,7 +260,7 @@ def generate_reply(user_message: str, history: list = None, context_note: str = 
                 prompt += f"{turn.get('role', 'user').capitalize()}: {turn.get('content', '')}\n"
             prompt += f"User: {user_message}\nAssistant:"
             with _lock:  # llama_cpp contexts are not safe for concurrent calls
-                result = _llm(prompt, max_tokens=max_tokens, temperature=temperature, stop=["User:", "\nUser"])
+                result = _current_llm()(prompt, max_tokens=max_tokens, temperature=temperature, stop=["User:", "\nUser"])
             reply = result["choices"][0]["text"].strip()
             return {"reply": reply or "I couldn't generate a response for that — try rephrasing.", "mode": "llm"}
         except Exception:
@@ -277,7 +337,7 @@ def _analyze_resume_match(resume_text: str, job_description: str, rule_based: di
     soft = rule_based.get("matched_soft_skills") or []
     score = rule_based.get("score", 0)
 
-    if _llm is not None:
+    if _current_llm() is not None:
         prompt = (
             f"{SYSTEM_PROMPT}\n\nYou are an experienced technical recruiter assessing how well a resume "
             f"matches a job description. Rule-based match score: {score}/100. Matched keywords: "
@@ -289,7 +349,7 @@ def _analyze_resume_match(resume_text: str, job_description: str, rule_based: di
         )
         try:
             with _lock:  # llama_cpp contexts are not safe for concurrent calls
-                result = _llm(prompt, max_tokens=320, temperature=0.6, stop=["\n\n"])
+                result = _current_llm()(prompt, max_tokens=320, temperature=0.6, stop=["\n\n"])
             text = _dehyphenate(result["choices"][0]["text"].strip())
             if text:
                 return {"summary": text, "mode": "llm"}
@@ -625,7 +685,7 @@ def generate_cover_letter(resume_text: str, job_description: str, applicant_name
     _try_load()
     rule_based = rule_based or {}
 
-    if _llm is not None:
+    if _current_llm() is not None:
         company_phrase = f" at {company_name}" if company_name else ""
         prompt = (
             f"You are an excellent professional cover letter writer. Write a warm, specific, "
@@ -640,7 +700,7 @@ def generate_cover_letter(resume_text: str, job_description: str, applicant_name
         )
         try:
             with _lock:  # llama_cpp contexts are not safe for concurrent calls
-                result = _llm(prompt, max_tokens=2000, temperature=0.9, stop=["JOB DESCRIPTION:", "RESUME:"])
+                result = _current_llm()(prompt, max_tokens=2000, temperature=0.9, stop=["JOB DESCRIPTION:", "RESUME:"])
             text = result["choices"][0]["text"].strip()
             if text and _word_count(text) >= 400:  # sanity floor before trusting the generation
                 if _word_count(text) < 700:
@@ -774,6 +834,18 @@ def _tailor_resume_for_job(builder_data: dict, job_description: str, rule_based:
     what someone actually did, only how the truthful summary/skills are
     framed and ordered. Real local-LLM rewriting if a model is configured,
     a grounded reordering/emphasis pass otherwise."""
+    # With a model available, tailor section by section — summary written
+    # against the person's real history, each role's bullets rewritten on their
+    # own, headers and dates never sent for rewriting. The single-pass path
+    # below stays for the no-model case, where it does a grounded reorder.
+    if _current_llm() is not None:
+        try:
+            from .resume_tailor import tailor_sections
+            return {"data": tailor_sections(builder_data, job_description, rule_based),
+                    "mode": "llm"}
+        except Exception:
+            log.exception("section tailoring failed; falling back to the simple pass")
+
     _try_load()
     data = dict(builder_data)  # shallow copy, don't mutate the caller's dict
     matched = rule_based.get("matched_hard_skills") or rule_based.get("matched_keywords") or []
@@ -799,7 +871,7 @@ def _tailor_resume_for_job(builder_data: dict, job_description: str, rule_based:
 
     # ---- summary rewrite ----
     original_summary = data.get("summary", "") or ""
-    if _llm is not None:
+    if _current_llm() is not None:
         prompt = (
             f"{SYSTEM_PROMPT}\n\nRewrite this resume's professional summary to better emphasize the "
             f"skills and experience most relevant to the job description below. {RESUME_TAILOR_STYLE_RULES}"
@@ -809,7 +881,7 @@ def _tailor_resume_for_job(builder_data: dict, job_description: str, rule_based:
         )
         try:
             with _lock:  # llama_cpp contexts are not safe for concurrent calls
-                result = _llm(prompt, max_tokens=220, temperature=0.6, stop=["JOB DESCRIPTION:", "ORIGINAL SUMMARY:"])
+                result = _current_llm()(prompt, max_tokens=220, temperature=0.6, stop=["JOB DESCRIPTION:", "ORIGINAL SUMMARY:"])
             new_summary = _dehyphenate(result["choices"][0]["text"].strip())
             if new_summary and len(new_summary.split()) >= 8:
                 data["summary"] = new_summary
@@ -917,7 +989,7 @@ def extract_job_posting(raw_text: str, title: str = "", url: str = "", hint_role
     _try_load()
     raw_text = (raw_text or "")[:6000]
 
-    if _llm is not None:
+    if _current_llm() is not None:
         # Everything here comes from an arbitrary web page the user happened
         # to be viewing — page text, title and URL are all attacker
         # controllable, so all three are fenced. This is the single most
@@ -1052,7 +1124,7 @@ def generate_job_document(doc_type: str, company: str = "", role: str = "",
         return {"text": "", "mode": "lite", "title": doc_type}
     label, description = spec
     _try_load()
-    if _llm is not None:
+    if _current_llm() is not None:
         co = f" at {company}" if company else ""
         prompt = (
             f"Write {description}. This is for {applicant_name or 'the applicant'} applying to the "
@@ -1066,7 +1138,7 @@ def generate_job_document(doc_type: str, company: str = "", role: str = "",
             prompt += f"EXTRA CONTEXT FROM THE APPLICANT:\n{notes[:500]}\n\n"
         prompt += f"{label.upper()}:\n"
         try:
-            result = _llm(prompt, max_tokens=700, temperature=0.8, stop=["JOB DESCRIPTION:", "EXTRA CONTEXT:"])
+            result = _current_llm()(prompt, max_tokens=700, temperature=0.8, stop=["JOB DESCRIPTION:", "EXTRA CONTEXT:"])
             text = result["choices"][0]["text"].strip()
             if text and len(text.split()) >= 25:
                 return {"text": _dehyphenate(text) if "_dehyphenate" in globals() else text, "mode": "llm", "title": label}
@@ -1540,7 +1612,7 @@ def _parse_resume_document(raw_text: str) -> dict:
             "summary", "skills", "experience", "education", "projects",
             "certifications", "publications")}, "mode": "lite"}
 
-    if _llm is not None:
+    if _current_llm() is not None:
         # The uploaded file's extracted text is the user's own resume, not
         # third-party content, but it still passes through fence() as a
         # matter of course — a resume is just as capable of containing a

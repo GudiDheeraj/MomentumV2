@@ -21,6 +21,7 @@ import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
 from .. import models
@@ -33,6 +34,13 @@ MAX_WORKERS = 8
 # Nobody reads 2,000 postings. This bounds a single run's memory and the size
 # of the response the tab has to render.
 MAX_HITS_PER_RUN = 400
+# How many cached rows the role prefilter may hand to the Python matcher. A
+# broad search across two thousand boards can touch tens of thousands of
+# postings, and the answer is capped at MAX_HITS_PER_RUN anyway.
+MAX_CANDIDATES = 8000
+# Boards read live before the first sweep has populated the cache. Enough to
+# fill a screen in a few seconds; the sweep supplies the rest.
+COLDSTART_BOARDS = 120
 
 
 def _split(value: str | None) -> list[str]:
@@ -103,6 +111,12 @@ def _fingerprint(job: dict) -> str:
     bump `updated_at` on every edit and a fingerprint that moved with it would
     report the same job as new every morning.
     """
+    # A row read back from the cache already carries the identity it was
+    # stored under. Recomputing it here would produce the hash form for a
+    # posting stored under its provider id, and the two would never line up
+    # again — which is exactly the join sweep.reconcile_hits depends on.
+    if job.get("_fingerprint"):
+        return str(job["_fingerprint"])[:120]
     if job.get("external_id"):
         return f"{job.get('provider')}:{job.get('external_id')}"[:120]
     raw = f"{job.get('company','')}|{job.get('title','')}|{job.get('location','')}".lower()
@@ -149,24 +163,119 @@ def _fetch_one(board_row: dict) -> tuple[dict, list[dict] | None, BoardError | N
         return board_row, None, BoardError(f"unexpected: {type(e).__name__}: {e}")
 
 
+def _row_to_job(p) -> dict:
+    """A cached posting in the shape the matcher and the persist step expect."""
+    return {
+        "company": p.company, "provider": p.provider,
+        "external_id": None, "title": p.title, "url": p.url,
+        "location": p.location, "department": p.department,
+        "employment_type": p.employment_type, "remote": p.remote,
+        "posted_at": p.posted_at, "description": p.description,
+        "_fingerprint": p.fingerprint,
+    }
+
+
+def _cached_candidates(db: Session, roles: list[str], cutoff) -> list[dict]:
+    """Postings from the local cache that could match, narrowed in SQL first.
+
+    The role terms become a LIKE against `search_text`, which is written at
+    sweep time precisely so this is an index scan rather than pulling several
+    hundred thousand rows into Python to filter them there. Everything the
+    matcher does beyond that (locations, exclusions, remote) still happens in
+    Python, because those rules are not expressible as one index.
+    """
+    q = db.query(models.JobPosting).filter(models.JobPosting.closed_at.is_(None))
+
+    if cutoff is not None:
+        # An undated posting is kept, same rule as `matches`: several providers
+        # publish no date at all and dropping them would hide whole companies.
+        q = q.filter(or_(models.JobPosting.posted_at.is_(None),
+                         models.JobPosting.posted_at >= cutoff))
+
+    if roles:
+        clauses = [models.JobPosting.search_text.like(f"%{r}%") for r in roles]
+        q = q.filter(or_(*clauses))
+
+    # Newest first. NULL sorts lowest in both SQLite and Postgres under DESC,
+    # which puts undated postings at the end, where they belong.
+    q = q.order_by(models.JobPosting.posted_at.desc())
+    return [_row_to_job(p) for p in q.limit(MAX_CANDIDATES).all()]
+
+
+def cache_size(db: Session) -> int:
+    return db.query(models.JobPosting).filter(
+        models.JobPosting.closed_at.is_(None)).count()
+
+
 def run_search(db: Session, user_id: int, search: models.JobSearch,
                limit_boards: int | None = None) -> dict:
     """Executes the search and records the results. Returns a summary.
 
-    The database session is used before and after the network work, never
-    during: the fetches happen on worker threads, and a Session is not
-    thread-safe.
-    """
-    boards = registry.boards_for_user(db, user_id)
-    if limit_boards:
-        boards = boards[:limit_boards]
-    board_rows = [{"id": b.id, "name": b.name, "provider": b.provider, "token": b.token}
-                  for b in boards]
+    Reads the local posting cache rather than the boards themselves. The sweep
+    (see sweep.py) is what talks to the network, once a day, for everybody at
+    once. That is the only way two thousand boards and a button press can
+    coexist: a search that fetched them live would take minutes and would send
+    two thousand requests per press.
 
+    The one exception is a cold start. Before the first sweep has finished the
+    cache is empty, and answering "no jobs" would read as a broken feature
+    rather than as an empty cache, so a bounded live search runs instead.
+    """
     roles = _split(search.roles)
     locations = expand_locations(_split(search.locations))
     exclude = _split(search.exclude)
     cutoff = (datetime.utcnow() - timedelta(days=search.since_days)) if search.since_days else None
+
+    if cache_size(db) == 0:
+        return _run_search_live(db, user_id, search, roles, locations, exclude,
+                                cutoff, limit_boards)
+
+    candidates = _cached_candidates(db, roles, cutoff)
+    found = [j for j in candidates
+             if matches(j, roles, locations, exclude, bool(search.remote_only), cutoff)]
+
+    found.sort(key=lambda j: j.get("posted_at") or datetime.min, reverse=True)
+    found = found[:MAX_HITS_PER_RUN]
+
+    new_count = _persist(db, user_id, found)
+
+    search.last_run_at = datetime.utcnow()
+    search.last_run_new = new_count
+    db.commit()
+
+    last_sweep = db.query(models.BoardSweep).filter(
+        models.BoardSweep.finished_at.isnot(None)
+    ).order_by(models.BoardSweep.started_at.desc()).first()
+
+    return {
+        "source": "cache",
+        "boards_searched": last_sweep.boards_total if last_sweep else 0,
+        "boards_ok": last_sweep.boards_ok if last_sweep else 0,
+        "boards_failed": last_sweep.boards_failed if last_sweep else 0,
+        "cached_postings": len(candidates),
+        "matched": len(found),
+        "new": new_count,
+        "ran_at": search.last_run_at,
+        "cache_updated_at": last_sweep.finished_at if last_sweep else None,
+    }
+
+
+def _run_search_live(db: Session, user_id: int, search: models.JobSearch,
+                     roles, locations, exclude, cutoff,
+                     limit_boards: int | None = None) -> dict:
+    """The original behaviour: fetch boards over the network, right now.
+
+    Kept for the cold start, and bounded by COLDSTART_BOARDS so that on a
+    two thousand board registry it answers in seconds with a sample rather than
+    in minutes with everything. The scheduled sweep fills in the rest.
+    """
+    boards = registry.boards_for_user(db, user_id)
+    if limit_boards:
+        boards = boards[:limit_boards]
+    elif len(boards) > COLDSTART_BOARDS:
+        boards = boards[:COLDSTART_BOARDS]
+    board_rows = [{"id": b.id, "name": b.name, "provider": b.provider, "token": b.token}
+                  for b in boards]
 
     found: list[dict] = []
     ok_boards = failed_boards = 0
@@ -192,7 +301,7 @@ def run_search(db: Session, user_id: int, search: models.JobSearch,
     for board_id, err in failures:
         registry.record_failure(db, board_id, str(err), err.permanent)
 
-    # Newest first, undated last — an undated posting is usually an old one.
+    # Newest first, undated last: an undated posting is usually an old one.
     found.sort(key=lambda j: j.get("posted_at") or datetime.min, reverse=True)
     found = found[:MAX_HITS_PER_RUN]
 
@@ -203,6 +312,7 @@ def run_search(db: Session, user_id: int, search: models.JobSearch,
     db.commit()
 
     return {
+        "source": "live",
         "boards_searched": len(board_rows),
         "boards_ok": ok_boards,
         "boards_failed": failed_boards,
