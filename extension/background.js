@@ -144,7 +144,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         // The profile is fetched here rather than in the content script: the
         // token lives in extension storage, and a page-injected script that
         // could read it would be handing every site on the web a way to ask.
-        const profile = await apiFetch("/api/job-hunt/profile");
+        const profile = await apiFetch("/api/application-profile");
         const result = await autofillActiveTab(profile);
         sendResponse({ ok: true, ...result });
         return;

@@ -20,7 +20,7 @@ from fastapi.staticfiles import StaticFiles
 
 from . import models
 from .database import engine
-from .routers import habits, tasks, summary, weekly_notes, resumes, jobs, auth, admin, study, export, ats, resume_builder, chat, search, cover_letter, extension, boards, profile, review, docs, jobhunt, llm_settings, sponsors as sponsors_router, telegram as telegram_router, portfolios, portfolio_designs
+from .routers import habits, tasks, summary, weekly_notes, resumes, jobs, auth, admin, study, export, ats, resume_builder, chat, search, cover_letter, extension, boards, profile, review, docs, application_profile, llm_settings, sponsors as sponsors_router, telegram as telegram_router, portfolios, portfolio_designs
 
 
 def _run_lightweight_migrations():
@@ -120,31 +120,11 @@ def _run_lightweight_migrations():
                 print(f"[migration] {table}.{col_name} backfill skipped: {e}")
 
 
-def _seed_job_boards():
-    """Load the bundled company list into the shared job-board registry.
-
-    Idempotent — it skips anything already present — so it can run on every
-    startup, and a board that retired itself stays retired.
-    """
-    try:
-        from .database import SessionLocal
-        from .jobhunt.registry import seed_shared_registry
-        db = SessionLocal()
-        try:
-            seed_shared_registry(db)
-        finally:
-            db.close()
-    except Exception as e:
-        # A registry that failed to seed is a much smaller problem than a
-        # backend that won't boot.
-        print(f"[jobhunt] seed skipped: {e}")
-
-
 # ---------------------------------------------------------------------------
 # One-time database preparation.
 #
-# create_all(), the column migrations and the board seed used to be three bare
-# module-level statements. That put them at IMPORT time, where an exception is
+# create_all() and the column migrations used to be bare module-level
+# statements. That put them at IMPORT time, where an exception is
 # not an error the server reports — it is the server failing to exist. uvicorn
 # prints "Error loading ASGI app" and the process exits, and because
 # start-backend.bat ended with `goto :eof`, the console window closed and took
@@ -178,7 +158,6 @@ def _prepare_database(attempts: int = 4) -> None:
             time.sleep(wait)
 
     _run_lightweight_migrations()
-    _seed_job_boards()
 
 
 _prepare_database()
@@ -353,7 +332,7 @@ app.include_router(admin.router)
 app.include_router(extension.router)
 app.include_router(sponsors_router.router)
 app.include_router(study.timer_router)
-app.include_router(jobhunt.router)
+app.include_router(application_profile.router)
 app.include_router(llm_settings.router)
 app.include_router(telegram_router.router)
 
@@ -398,7 +377,6 @@ if not logging.getLogger().handlers:
         format="%(levelname)s:    %(name)s — %(message)s",
     )
 logging.getLogger("momentum.telegram").setLevel(logging.INFO)
-logging.getLogger("momentum.jobhunt").setLevel(logging.INFO)
 
 
 @app.on_event("startup")
@@ -491,27 +469,6 @@ async def _sponsor_register_worker(stop: asyncio.Event):
 async def _start_sponsor_worker():
     _telegram_tasks.append(asyncio.create_task(
         _sponsor_register_worker(_telegram_stop), name="sponsor-register-sync"))
-
-
-# ---------------------------------------------------------------------------
-# Job board sweep.
-#
-# Its own task rather than a step inside the Telegram scheduler, because that
-# loop only runs when a bot token is configured and the posting cache has to
-# stay current either way: the Job Hunt tab reads the cache whether or not
-# anybody set up Telegram. It shares the same stop event, so shutdown cancels
-# it alongside everything else.
-# ---------------------------------------------------------------------------
-@app.on_event("startup")
-async def _start_jobhunt_sweep_worker():
-    from .jobhunt import scheduler as jobhunt_scheduler
-
-    if not jobhunt_scheduler.is_enabled():
-        logging.getLogger("momentum.jobhunt").info(
-            "jobhunt: sweep OFF (JOBHUNT_SWEEP_ENABLED is false in .env)")
-        return
-    _telegram_tasks.append(asyncio.create_task(
-        jobhunt_scheduler.run_scheduler(_telegram_stop), name="jobhunt-sweep"))
 
 
 @app.on_event("shutdown")

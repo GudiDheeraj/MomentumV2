@@ -126,9 +126,8 @@ const ALWAYS_CLEAR = ["/api/summary", "/api/search", "/api/export", "/api/admin"
 // moving board changes the board's counts, saving in the builder changes the
 // resume list, and so on. Anything not named here only clears itself.
 const WRITE_ALSO_CLEARS = {
-  "/api/jobs":           ["/api/boards", "/api/job-hunt"],
+  "/api/jobs":           ["/api/boards"],
   "/api/boards":         ["/api/jobs"],
-  "/api/job-hunt":       ["/api/jobs", "/api/boards"],
   "/api/resumes":        ["/api/resume-builder", "/api/docs"],
   "/api/resume-builder": ["/api/resumes", "/api/docs"],
   "/api/docs":           ["/api/resumes"],
@@ -2544,7 +2543,7 @@ const NAV = [
   { id: "jobs", label: "Job Applications", icon: "💼", group: "Main" },
   { id: "resumes", label: "Resumes", icon: "📄", group: "Main" },
   { id: "portfolio", label: "Portfolio", icon: "🌐", group: "Main" },
-  { id: "jobhunt", label: "Job Hunt", icon: "🔎", group: "Main" },
+  { id: "appprofile", label: "Application Profile", icon: "🪪", group: "Tools" },
   { id: "telegram", label: "Telegram", icon: "✈️", group: "Tools" },
   { id: "ai", label: "AI Model", icon: "🤖", group: "Tools" },
   // The assistant is deliberately NOT here: it's the floating bubble in the
@@ -2570,7 +2569,7 @@ const NAV_ICONS = {
   tracker:   `<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/><path d="m9 15.5 2 2 4-4"/>`,
   jobs:      `<rect x="2.5" y="7" width="19" height="13" rx="2"/><path d="M8.5 7V5.5A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5V7M2.5 12.5h19"/>`,
   resumes:   `<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>`,
-  jobhunt:   `<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>`,
+  appprofile: `<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M5.6 16.4a3.8 3.8 0 0 1 6.8 0M14.5 9.5h4.5M14.5 13h4.5"/>`,
   portfolio: `<rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M3 9h18M6.2 6.7h.01M9 6.7h.01"/><path d="M7 12.5h6M7 16h4"/>`,
   telegram:  `<path d="M21.5 3.5 2.8 10.4c-.9.3-.9 1.6.05 1.9l4.6 1.4 1.8 5.3c.3.9 1.5 1 2 .2l2.4-3.4 4.6 3.4c.7.5 1.7.1 1.9-.7l3-13.4c.2-.9-.7-1.7-1.65-1.6Z"/><path d="m8.4 13.7 9.6-7-7 8.6"/>`,
   ai:        `<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9.5 14h.01M14.5 14h.01M9 17.5h6M2 12v3M22 12v3"/>`,
@@ -3489,7 +3488,7 @@ async function render() {
     else if (state.page === "portfolio") { title.textContent = "Portfolio"; await renderPortfolioPage(content); }
     else if (state.page === "study") { renderStudyControls(controls); await renderStudy(content); }
     else if (state.page === "documents") { title.textContent = "Documents"; await renderDocuments(content); }
-    else if (state.page === "jobhunt") { title.textContent = "Job Hunt"; await jhRefresh(content); }
+    else if (state.page === "appprofile") { title.textContent = "Application Profile"; await renderApplicationProfile(content); }
     else if (state.page === "ai") { title.textContent = "AI Model"; await renderAiSettings(content); }
     else if (state.page === "telegram") { title.textContent = "Telegram"; await renderTelegram(content); }
     else if (state.page === "profile") { title.textContent = "Profile"; await renderProfile(content); }
@@ -15733,21 +15732,11 @@ async function tgLoadPreview() {
 }
 
 // ============================================================================
-// JOB HUNT — searching company job boards directly
+// APPLICATION PROFILE & AI MODEL
 // ============================================================================
-// Not a scraper. Greenhouse, Lever, Ashby, Workable, SmartRecruiters and
-// Recruitee each publish an open JSON endpoint so companies can render their
-// own careers page; this reads those. See backend/app/jobhunt/providers.py for
-// why that beats scraping LinkedIn.
-//
-// The tab is deliberately read-mostly: /run is the only slow call, everything
-// else renders what the last run stored.
-
-const JH_SINCE_PRESETS = [
-  { days: 3, label: "3 days" }, { days: 7, label: "a week" },
-  { days: 14, label: "2 weeks" }, { days: 30, label: "a month" },
-  { days: 90, label: "3 months" },
-];
+// Both pages share the `jh-` panel styles and the small helpers below. The
+// prefix is a leftover from the Job Hunt tab these panels used to live in;
+// the styles outlived it.
 
 function jhAgo(iso) {
   if (!iso) return "";
@@ -15758,348 +15747,12 @@ function jhAgo(iso) {
   return `${Math.floor(days / 30)}mo ago`;
 }
 
-// How fresh the local copy of every board is.
-//
-// Worth a line on screen because searching no longer talks to the boards: it
-// reads a cache the daily sweep fills. Without this, "no new jobs" and
-// "nothing has been fetched since Tuesday" look identical, and the second one
-// is a broken feature wearing the first one's clothes.
-function jhFreshness(sweep) {
-  if (!sweep) return "";
-  const when = sweep.finished_at ? jhAgo(sweep.finished_at) : "not yet";
-  const cold = !sweep.finished_at || (sweep.open_postings || 0) === 0;
-  return `
-    <div class="jh-card jh-fresh ${cold ? "is-cold" : ""}">
-      <span><b>${(sweep.open_postings || 0).toLocaleString()}</b> open postings cached
-        from <b>${(sweep.boards_ok || 0).toLocaleString()}</b> company boards</span>
-      <span>Last refreshed <b>${esc(when)}</b></span>
-      <span>Next sweep <b>${esc(sweep.next_run_utc || "12:00")} UTC</b>, daily</span>
-      <span class="jh-muted">Postings drop off after ${sweep.retention_days || 7} days.
-        ${sweep.postings_closed ? `${sweep.postings_closed} were taken down at the last sweep.` : ""}</span>
-      <button class="jh-btn jh-btn-sm" id="jh-sweep-now">Refresh now</button>
-    </div>`;
-}
-
-async function renderJobHunt(content) {
-  content.innerHTML = `<div class="jh-wrap"><div class="jh-card"><p class="jh-muted">Loading…</p></div></div>`;
-  // allSettled, not all: these are six independent endpoints, and one of them
-  // 404ing — which is exactly what happens when the backend hasn't been
-  // restarted after an update — used to blank the entire tab and take the AI
-  // settings down with it. Each panel now degrades on its own.
-  const [search_, hits_, boards_, referrals_, profile_, ai_, sweep_] = await Promise.allSettled([
-    get("/api/job-hunt/search", { noCache: true }),
-    get("/api/job-hunt/hits", { noCache: true }),
-    get("/api/job-hunt/boards", { noCache: true }),
-    get("/api/job-hunt/referrals", { noCache: true }),
-    get("/api/job-hunt/profile", { noCache: true }),
-    get("/api/llm/settings", { noCache: true }),
-    get("/api/job-hunt/sweep", { noCache: true }),
-  ]);
-  const val = (r, fallback) => (r.status === "fulfilled" ? r.value : fallback);
-  const search = val(search_, { since_days: 30, notify_telegram: true, auto_daily: true });
-  const hits = val(hits_, []);
-  const boards = val(boards_, []);
-  const referrals = val(referrals_, []);
-  const profile = val(profile_, {});
-  const aiCfg = val(ai_, { configured: false, provider: "openai", length: "medium", temperature: "0.7" });
-  const sweep = val(sweep_, null);
-
-  const failed = [search_, hits_, boards_, referrals_, profile_, ai_].filter(r => r.status === "rejected");
-  const stale = failed.some(r => String(r.reason?.status) === "404");
-
-  const isNew = (h) => h.status === "new";
-  const newCount = hits.filter(isNew).length;
-  const saved = hits.filter(h => h.status === "saved");
-
-  content.innerHTML = `
-    <div class="jh-wrap">
-      ${stale ? `<div class="jh-card jh-aistate bad">
-        Some of this tab's endpoints aren't there yet — restart the backend to pick up
-        the new routes, then reload.</div>` : ""}
-      ${jhFreshness(sweep)}
-      <div class="jh-card jh-setup">
-        <div class="jh-setup-head">
-          <div>
-            <h3>What are you looking for?</h3>
-            <p class="jh-muted">Searched across <b>${boards.length}</b> company job boards —
-               Greenhouse, Lever, Ashby, Workable, SmartRecruiters and Recruitee.
-               These are the companies' own listings, not a job aggregator.</p>
-          </div>
-          <button class="jh-btn jh-btn-primary" id="jh-run">Search now</button>
-        </div>
-
-        <div class="jh-grid">
-          <label class="jh-field jh-field-wide"><span>Role — any of these words in the title</span>
-            <input id="jh-roles" value="${esc(search.roles || "")}"
-                   placeholder="data engineer, analytics engineer, python"></label>
-          <label class="jh-field"><span>Country or city — blank means anywhere</span>
-            <input id="jh-locations" value="${esc(search.locations || "")}"
-                   placeholder="UK, Ireland, Berlin"></label>
-          <label class="jh-field"><span>Exclude titles containing</span>
-            <input id="jh-exclude" value="${esc(search.exclude || "")}"
-                   placeholder="intern, senior, manager"></label>
-        </div>
-
-        <div class="jh-since">
-          <span class="jh-since-lbl">Posted within</span>
-          ${JH_SINCE_PRESETS.map(p => `
-            <button type="button" class="jh-chip ${p.days === search.since_days ? "on" : ""}"
-                    data-since="${p.days}">${p.label}</button>`).join("")}
-          <span class="jh-hint">Older listings are usually filled.</span>
-        </div>
-
-        <div class="jh-toggles">
-          <label class="jh-toggle"><input type="checkbox" id="jh-remote" ${search.remote_only ? "checked" : ""}>
-            <span>Remote only</span></label>
-          <label class="jh-toggle"><input type="checkbox" id="jh-auto" ${search.auto_daily ? "checked" : ""}>
-            <span>Search every day automatically</span></label>
-          <label class="jh-toggle"><input type="checkbox" id="jh-notify" ${search.notify_telegram ? "checked" : ""}>
-            <span>Send new matches to Telegram</span></label>
-        </div>
-
-        <div class="jh-actions">
-          <button class="jh-btn" id="jh-save">Save search</button>
-          <span class="jh-hint" id="jh-status">${search.last_run_at
-            ? `Last searched ${jhAgo(search.last_run_at)} · ${search.last_run_new} new`
-            : "Not searched yet."}</span>
-        </div>
-      </div>
-
-      <div class="jh-tabs">
-        <button class="jh-tab on" data-jh-tab="results">Results ${newCount ? `<span class="jh-badge">${newCount} new</span>` : ""}</button>
-        <button class="jh-tab" data-jh-tab="saved">Saved ${saved.length ? `(${saved.length})` : ""}</button>
-        <button class="jh-tab" data-jh-tab="referrals">Referral contacts ${referrals.length ? `(${referrals.length})` : ""}</button>
-        <button class="jh-tab" data-jh-tab="profile">Application profile</button>
-        <button class="jh-tab" data-jh-tab="ai">AI model${aiCfg.configured ? "" : ` <span class="jh-badge">set up</span>`}</button>
-        <button class="jh-tab" data-jh-tab="companies">Companies (${boards.length})</button>
-      </div>
-
-      <div id="jh-panel"></div>
-    </div>`;
-
-  const panels = {
-    results: () => jhResultsPanel(hits.filter(h => h.status !== "saved")),
-    saved: () => jhResultsPanel(saved),
-    referrals: () => jhReferralsPanel(referrals),
-    profile: () => jhProfilePanel(profile),
-    ai: () => jhAiPanel(aiCfg),
-    companies: () => jhCompaniesPanel(boards),
-  };
-  const showPanel = (key) => {
-    document.getElementById("jh-panel").innerHTML = panels[key]();
-    content.querySelectorAll(".jh-tab").forEach(b => b.classList.toggle("on", b.dataset.jhTab === key));
-    jhBindPanel(content, key);
-  };
-  showPanel("results");
-  content.querySelectorAll(".jh-tab").forEach(btn =>
-    btn.addEventListener("click", () => showPanel(btn.dataset.jhTab)));
-
-  // ---- setup wiring ----
-  let sinceDays = search.since_days;
-  content.querySelectorAll(".jh-chip").forEach(chip => chip.addEventListener("click", () => {
-    sinceDays = Number(chip.dataset.since);
-    content.querySelectorAll(".jh-chip").forEach(c => c.classList.remove("on"));
-    chip.classList.add("on");
-  }));
-
-  const collect = () => ({
-    roles: document.getElementById("jh-roles").value,
-    locations: document.getElementById("jh-locations").value,
-    exclude: document.getElementById("jh-exclude").value,
-    since_days: sinceDays,
-    remote_only: document.getElementById("jh-remote").checked,
-    auto_daily: document.getElementById("jh-auto").checked,
-    notify_telegram: document.getElementById("jh-notify").checked,
-  });
-
-  // "Refresh now" starts a sweep and returns straight away. The sweep itself
-  // takes minutes across a registry this size, so there is nothing useful to
-  // await — the page is told it started, and the next reload shows the result.
-  const sweepBtn = document.getElementById("jh-sweep-now");
-  if (sweepBtn) sweepBtn.addEventListener("click", async () => {
-    sweepBtn.disabled = true;
-    sweepBtn.textContent = "Refreshing…";
-    try {
-      await post("/api/job-hunt/sweep", {});
-      showToast("Refreshing every company board. This takes a few minutes — "
-                + "reload the tab shortly to see it.", "info");
-    } catch (err) {
-      showToast(apiErrorMessage(err, "Couldn't start the refresh"), "error");
-      sweepBtn.disabled = false;
-      sweepBtn.textContent = "Refresh now";
-    }
-  });
-
-  document.getElementById("jh-save").addEventListener("click", async (e) => {
-    e.currentTarget.disabled = true;
-    try {
-      await put("/api/job-hunt/search", collect());
-      showToast("Search saved", "success");
-    } catch (err) { showToast(apiErrorMessage(err, "Couldn't save"), "error"); }
-    finally { e.currentTarget.disabled = false; }
-  });
-
-  document.getElementById("jh-run").addEventListener("click", async (e) => {
-    const btn = e.currentTarget;
-    const body = collect();
-    if (!body.roles.trim()) { showToast("Type a role to search for first", "warning"); return; }
-    btn.disabled = true;
-    btn.textContent = "Searching…";
-    // Saving first means the run uses what's on screen, not what was last
-    // saved — otherwise editing a field and pressing Search does the old search.
-    try {
-      await put("/api/job-hunt/search", body);
-      const r = await post("/api/job-hunt/run", {});
-      showToast(r.new
-        ? `${r.new} new — ${r.matched} matches across ${r.boards_ok} companies`
-        : `No new postings — ${r.matched} matches, all seen before`,
-        r.new ? "success" : "info");
-      jhRefresh(content);
-    } catch (err) {
-      showToast(apiErrorMessage(err, "The search failed"), "error");
-      btn.disabled = false;
-      btn.textContent = "Search now";
-    }
-  });
-}
-
-function jhResultsPanel(hits) {
-  if (!hits.length) {
-    return `<div class="jh-card jh-empty">
-      <p class="jh-muted">Nothing here yet. Set a role above and press <b>Search now</b> —
-         the first run takes a few seconds while it reads every company board.</p></div>`;
-  }
-  return `<div class="jh-results">${hits.map(h => `
-    <div class="jh-hit ${h.status === "new" ? "is-new" : ""}" data-hit="${h.id}">
-      <div class="jh-hit-main">
-        <div class="jh-hit-top">
-          ${h.status === "new" ? `<span class="jh-new">NEW</span>` : ""}
-          <span class="jh-co">${esc(h.company)}</span>
-          ${h.posted_at ? `<span class="jh-when">${jhAgo(h.posted_at)}</span>` : ""}
-        </div>
-        <a class="jh-title" href="${esc(h.url || "#")}" target="_blank" rel="noopener">${esc(h.title)}</a>
-        <div class="jh-meta">
-          ${h.location ? `<span>📍 ${esc(h.location)}</span>` : ""}
-          ${h.department ? `<span>🏷 ${esc(h.department)}</span>` : ""}
-          ${h.employment_type ? `<span>⏳ ${esc(h.employment_type)}</span>` : ""}
-          ${h.remote ? `<span class="jh-remote">Remote</span>` : ""}
-        </div>
-        ${(h.referrals || []).length ? `
-          <div class="jh-referral">🤝 You know
-            ${h.referrals.map(r => `<b>${esc(r.name)}</b>${r.role ? ` (${esc(r.role)})` : ""}`).join(", ")}
-            here${h.referrals[0].contact ? ` · ${esc(h.referrals[0].contact)}` : ""}</div>` : ""}
-        ${h.description ? `<p class="jh-snip">${esc(h.description.slice(0, 180))}…</p>` : ""}
-      </div>
-      <div class="jh-hit-actions">
-        ${h.url ? `<a class="jh-btn jh-btn-sm jh-btn-open" href="${esc(h.url)}"
-             target="_blank" rel="noopener">Open posting</a>`
-                : `<span class="jh-btn jh-btn-sm jh-btn-open is-off"
-             title="This board published no link for the posting">No link</span>`}
-        <button class="jh-btn jh-btn-sm" data-jh-act="track" data-id="${h.id}">Track</button>
-        <button class="jh-btn jh-btn-sm" data-jh-act="${h.status === "saved" ? "unsave" : "save"}" data-id="${h.id}">
-          ${h.status === "saved" ? "Unsave" : "Save"}</button>
-        <button class="jh-btn jh-btn-sm jh-btn-quiet" data-jh-act="dismiss" data-id="${h.id}">Hide</button>
-      </div>
-    </div>`).join("")}</div>`;
-}
-
-function jhReferralsPanel(referrals) {
-  return `
-    <div class="jh-card">
-      <h3>People who could refer you</h3>
-      <p class="jh-muted">A posting at a company you know somebody at is a different
-         proposition to a cold application, so those results get flagged — in the
-         list here and in the Telegram alert. Match on company name.</p>
-      <div class="jh-grid">
-        <label class="jh-field"><span>Company</span><input id="jh-rc-company" placeholder="Stripe"></label>
-        <label class="jh-field"><span>Name</span><input id="jh-rc-name" placeholder="Alex Chen"></label>
-        <label class="jh-field"><span>Their role</span><input id="jh-rc-role" placeholder="Engineering Manager"></label>
-        <label class="jh-field"><span>Email or LinkedIn</span><input id="jh-rc-contact" placeholder="alex@stripe.com"></label>
-      </div>
-      <div class="jh-actions"><button class="jh-btn jh-btn-primary" id="jh-rc-add">Add contact</button></div>
-      ${referrals.length ? `<div class="jh-contacts">${referrals.map(r => `
-        <div class="jh-contact">
-          <div><b>${esc(r.name)}</b>${r.role ? ` · ${esc(r.role)}` : ""}
-            <div class="jh-muted">${esc(r.company)}${r.contact ? ` · ${esc(r.contact)}` : ""}</div></div>
-          <button class="jh-btn jh-btn-sm jh-btn-quiet" data-jh-act="rc-del" data-id="${r.id}">Remove</button>
-        </div>`).join("")}</div>` : `<p class="jh-hint">No contacts yet.</p>`}
-    </div>`;
-}
-
-function jhCompaniesPanel(boards) {
-  const byProvider = {};
-  boards.forEach(b => { (byProvider[b.provider] ||= []).push(b); });
-  return `
-    <div class="jh-card">
-      <h3>Companies searched</h3>
-      <p class="jh-muted">Paste any careers page URL and the platform and company id are
-         worked out from it. A board that stops answering is retired automatically after
-         three failed runs, so the list doesn't rot.</p>
-      <div class="jh-addrow">
-        <input id="jh-board-url" placeholder="https://boards.greenhouse.io/company  ·  https://jobs.lever.co/company">
-        <input id="jh-board-name" placeholder="Display name (optional)">
-        <button class="jh-btn jh-btn-primary" id="jh-board-add">Add</button>
-      </div>
-      ${Object.entries(byProvider).map(([provider, list]) => `
-        <div class="jh-provider">
-          <div class="jh-provider-head">${esc(provider)} <span>${list.length}</span></div>
-          <div class="jh-chips">${list.map(b => `
-            <span class="jh-company" title="${esc(b.token)}${b.last_error ? " · " + esc(b.last_error) : ""}">
-              ${esc(b.name)}${b.job_count ? `<i>${b.job_count}</i>` : ""}
-              <button data-jh-act="board-del" data-id="${b.id}" title="Stop searching this one">×</button>
-            </span>`).join("")}</div>
-        </div>`).join("")}
-    </div>`;
-}
-
 function jhBindPanel(content, key) {
-  const panel = document.getElementById("jh-panel") || content;
-
-  panel.querySelectorAll("[data-jh-act]").forEach(btn => {
-    btn.addEventListener("click", async () => {
-      const id = btn.dataset.id;
-      const act = btn.dataset.jhAct;
-      btn.disabled = true;
-      try {
-        if (act === "save")    await patch(`/api/job-hunt/hits/${id}`, { status: "saved" });
-        if (act === "unsave")  await patch(`/api/job-hunt/hits/${id}`, { status: "new" });
-        if (act === "dismiss") await patch(`/api/job-hunt/hits/${id}`, { status: "dismissed" });
-        if (act === "track") {
-          await post(`/api/job-hunt/hits/${id}/track`, {});
-          showToast("Added to Job Applications", "success");
-        }
-        if (act === "rc-del")    await del(`/api/job-hunt/referrals/${id}`);
-        if (act === "board-del") await del(`/api/job-hunt/boards/${id}`);
-        jhRefresh(content);
-      } catch (err) {
-        showToast(apiErrorMessage(err, "That didn't work"), "error");
-        btn.disabled = false;
-      }
-    });
-  });
-
-  if (key === "referrals") {
-    document.getElementById("jh-rc-add")?.addEventListener("click", async () => {
-      const company = document.getElementById("jh-rc-company").value.trim();
-      const name = document.getElementById("jh-rc-name").value.trim();
-      if (!company || !name) { showToast("Company and name are both needed", "warning"); return; }
-      try {
-        await post("/api/job-hunt/referrals", {
-          company, name,
-          role: document.getElementById("jh-rc-role").value.trim(),
-          contact: document.getElementById("jh-rc-contact").value.trim(),
-        });
-        showToast("Contact added", "success");
-        jhRefresh(content);
-      } catch (err) { showToast(apiErrorMessage(err, "Couldn't add that contact"), "error"); }
-    });
-  }
-
   if (key === "profile") {
     document.getElementById("jp-save")?.addEventListener("click", async (e) => {
       e.currentTarget.disabled = true;
       try {
-        await put("/api/job-hunt/profile", jhCollectProfile());
+        await put("/api/application-profile", jhCollectProfile());
         showToast("Profile saved", "success");
       } catch (err) { showToast(apiErrorMessage(err, "Couldn't save the profile"), "error"); }
       finally { e.currentTarget.disabled = false; }
@@ -16202,25 +15855,6 @@ function jhBindPanel(content, key) {
     });
   }
 
-  if (key === "companies") {
-    document.getElementById("jh-board-add")?.addEventListener("click", async (e) => {
-      const url = document.getElementById("jh-board-url").value.trim();
-      if (!url) { showToast("Paste a careers page URL", "warning"); return; }
-      e.currentTarget.disabled = true;
-      try {
-        const b = await post("/api/job-hunt/boards", {
-          url, name: document.getElementById("jh-board-name").value.trim() || null,
-        });
-        showToast(`Added ${b.name} (${b.provider})`, "success");
-        jhRefresh(content);
-      } catch (err) {
-        // The backend's 422 explains which platforms are supported, which is
-        // the useful thing to show rather than a generic failure.
-        showToast(apiErrorMessage(err, "Couldn't add that company"), "error");
-        e.currentTarget.disabled = false;
-      }
-    });
-  }
 }
 
 // The answers every application asks for, typed once. Read by the Chrome
@@ -16331,6 +15965,29 @@ function jhCollectProfile() {
     years_experience: years === "" ? null : Number(years),
     how_did_you_hear: val("jp-how_did_you_hear"),
   };
+}
+
+// The Application Profile, as its own page under Tools. It used to be a sub-tab
+// of Job Hunt. When that feature went, this stayed: it is the data the Chrome
+// extension fills live forms with, and it has nothing to do with searching
+// boards.
+async function renderApplicationProfile(content) {
+  content.innerHTML = `<div class="jh-wrap"><div class="jh-card"><p class="jh-muted">Loading…</p></div></div>`;
+  let profile;
+  try {
+    profile = await get("/api/application-profile", { noCache: true });
+  } catch (err) {
+    const missing = String(err?.status) === "404";
+    content.innerHTML = `<div class="jh-wrap"><div class="jh-card">
+      <h3>Couldn't load your application profile</h3>
+      <p class="jh-muted">${missing
+        ? "The backend doesn't have this route yet — restart it and reload the page."
+        : esc(apiErrorMessage(err, "The backend didn't answer."))}</p>
+    </div></div>`;
+    return;
+  }
+  content.innerHTML = `<div class="jh-wrap" id="jh-panel">${jhProfilePanel(profile)}</div>`;
+  jhBindPanel(content, "profile");
 }
 
 // ---------------------------------------------------------------------------
@@ -16527,12 +16184,12 @@ function jhCollectAi() {
   return body;
 }
 
-// Both the Job Hunt tab and the standalone AI Model page render the same
-// panels, so "reload after saving" has to mean whichever page you're on. A
-// single renderJobHunt() call here would have thrown you back to Job Hunt every
-// time you saved an API key from the AI page.
+// Saving from a panel reloads whichever page that panel is on. The two pages
+// share jhBindPanel, so this has to dispatch rather than hard-code one of them.
 function jhRefresh(content) {
-  return state.page === "ai" ? renderAiSettings(content) : renderJobHunt(content);
+  return state.page === "appprofile"
+    ? renderApplicationProfile(content)
+    : renderAiSettings(content);
 }
 
 // The AI model settings, as their own page under Tools. It began life as a

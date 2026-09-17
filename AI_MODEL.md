@@ -8,7 +8,7 @@ looked broken: it wasn't erroring, it was producing a template.
 
 ## Setting one up
 
-**Job Hunt → AI model.** Pick a provider, paste a key, press **Save & test
+**Tools → AI Model.** Pick a provider, paste a key, press **Save & test
 connection**. A green tick means every AI feature is now using it.
 
 Eighteen providers are built in. Most of the industry adopted OpenAI's request

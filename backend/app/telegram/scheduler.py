@@ -144,51 +144,6 @@ async def _tick_timers() -> None:
             log.debug("timer refresh failed for chat %s", card["chat_id"], exc_info=True)
 
 
-def _job_hunt_due() -> dict:
-    """user_id -> their local date, for everyone whose daily job search is due.
-
-    Due means: their morning card time has passed today, and the search hasn't
-    run for today's local date yet. Piggybacking on the morning time keeps new
-    openings arriving with the rest of the day's list instead of at random.
-    """
-    from ..database import SessionLocal
-    from ..jobhunt.daily import _due_searches
-
-    db = SessionLocal()
-    try:
-        links = {l.user_id: l for l in db.query(models.TelegramLink).filter(
-            models.TelegramLink.paused == False  # noqa: E712
-        ).all()}
-    finally:
-        db.close()
-
-    out: dict = {}
-    for user_id, link in links.items():
-        now = service.now_local(link)
-        if _minutes_since(now, link.daily_time or "08:00") is None:
-            continue
-        out[user_id] = now.date()
-    if not out:
-        return {}
-    # Filter to the ones that actually still owe a run, in one query.
-    due_ids = set()
-    for user_id, local_today in out.items():
-        due_ids.update(uid for uid in _due_searches(local_today) if uid == user_id)
-    return {uid: out[uid] for uid in due_ids}
-
-
-async def _tick_job_hunt() -> None:
-    try:
-        due = await asyncio.to_thread(_job_hunt_due)
-    except Exception:
-        log.exception("telegram: job-hunt due check failed")
-        return
-    if not due:
-        return
-    from ..jobhunt import daily as job_hunt_daily
-    await job_hunt_daily.tick(due)
-
-
 async def _run_job(job: dict) -> None:
     try:
         if job["kind"] == "morning":
@@ -216,9 +171,6 @@ async def run_scheduler(stop_event: asyncio.Event) -> None:
                 await _run_job(job)
                 if stop_event.is_set():
                     break
-            # After the cards, not before: the morning list is time-sensitive
-            # and a job sweep can take half a minute of network waiting.
-            await _tick_job_hunt()
         except asyncio.CancelledError:
             raise
         except Exception:

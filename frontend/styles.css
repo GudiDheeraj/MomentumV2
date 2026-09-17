@@ -6296,7 +6296,7 @@ body.tour-open { overflow: hidden; }
 .jh-aistate code { font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 11px; }
 
 /* ==========================================================================
-   DARK THEME — Job Hunt, AI model, Telegram
+   DARK THEME — Application Profile, AI model, Telegram
    ==========================================================================
    All three pages are built entirely on --card / --border / --text / --soft /
    --text-soft / --faint. Those six were only ever given dark values inside
@@ -8528,20 +8528,5 @@ button.rbx-kwpick.on::after { content: " ✓"; }
 #rbx-example-use:hover { filter: brightness(1.06); }
 
 
-/* Job Hunt: how fresh the cached copy of every board is.
-   Its own strip rather than a line inside the setup card, because it answers a
-   different question: not "what am I searching for" but "when did this last
-   look at the world". */
-.jh-fresh {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px 18px;
-  font-size: 13px;
-  padding: 10px 14px;
-}
-.jh-fresh > span { white-space: nowrap; }
-.jh-fresh .jh-btn { margin-left: auto; }
-.jh-fresh.is-cold { border-left: 3px solid var(--warning, #d98324); }
 .jh-btn-open { text-decoration: none; display: inline-flex; align-items: center; }
 .jh-btn-open.is-off { opacity: .45; cursor: default; }
