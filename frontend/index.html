@@ -20,7 +20,7 @@
 <!-- Build stamp: printed to the console at startup so it is possible to tell
      at a glance whether the browser is running the current files.
      Written by frontend/tools/stamp.js — do not edit by hand. -->
-<meta name="app-build" content="5cd1af42">
+<meta name="app-build" content="abd9559c">
 <!-- Prebuilt Tailwind, replacing <script src="https://cdn.tailwindcss.com">.
      The CDN build is ~400KB of JavaScript that compiles CSS in the browser by
      scanning the DOM on every page load — the Tailwind docs say plainly that
@@ -55,7 +55,7 @@
        node frontend/tools/stamp.js --check   fails if a stamp is stale
 
      Do not edit these tokens by hand. -->
-<link rel="stylesheet" href="styles.css?v=923456a5" />
+<link rel="stylesheet" href="styles.css?v=1ea66b0c" />
 <!-- Portfolio tab. Its own stylesheet rather than several hundred more lines
      inside styles.css, so it can be reviewed, cached and reverted on its own. -->
 <link rel="stylesheet" href="portfolio.css?v=053f907c" />
@@ -78,6 +78,9 @@
      now lives in tailwind.config.js and is baked into tailwind.css. -->
 </head>
 <body class="bg-pagebg bg-mesh font-sans text-navy antialiased">
+<!-- First tab stop. Without it the keyboard path into the page ran through
+     the whole sidebar and landed on the chat bubble. -->
+<a class="skip-link" href="#page-content">Skip to main content</a>
   <div id="backend-status-banner" class="hidden fixed top-0 inset-x-0 z-[100] bg-red-600 text-white text-sm px-4 py-3 flex items-center justify-center gap-2"></div>
   <!-- Auth screen: full marketing/landing page with an embedded login card -->
   <div id="auth-screen" class="min-h-screen bg-pagebg">
@@ -631,7 +634,7 @@
     <div id="sidebar-backdrop" class="hidden fixed inset-0 bg-black/40 z-30 lg:hidden"></div>
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar-glass w-72 sm:w-60 text-white flex flex-col shrink-0 fixed lg:sticky lg:top-0 inset-y-0 lg:inset-y-auto left-0 lg:h-screen z-40 -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-out">
+    <aside id="sidebar" aria-label="Main navigation" class="sidebar-glass w-72 sm:w-60 text-white flex flex-col shrink-0 fixed lg:sticky lg:top-0 inset-y-0 lg:inset-y-auto left-0 lg:h-screen z-40 -translate-x-full lg:translate-x-0 transition-transform duration-200 ease-out">
       <button id="sidebar-collapse-toggle" class="sidebar-collapse-btn hidden lg:flex" title="Collapse sidebar" aria-label="Collapse sidebar">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
       </button>
@@ -640,7 +643,7 @@
           <h1 id="sidebar-brand" class="text-lg font-extrabold tracking-tight whitespace-nowrap cursor-pointer select-none" title="Open sidebar / go to Dashboard"><img class="mm-mark" src="assets/momentum-mark.png" alt="" aria-hidden="true"><span class="sidebar-label">Momentum</span></h1>
           <p class="text-xs text-white/50 mt-1 sidebar-label whitespace-nowrap">Goals &amp; Job Tracker</p>
         </div>
-        <button id="sidebar-close" class="lg:hidden text-white/60 hover:text-white text-xl leading-none sidebar-label">✕</button>
+        <button id="sidebar-close" aria-label="Close menu" class="lg:hidden text-white/60 hover:text-white text-xl leading-none sidebar-label">✕</button>
       </div>
       <nav id="nav" class="flex-1 px-3 py-4 space-y-1 text-sm overflow-y-auto overflow-x-hidden"></nav>
       <div class="sidebar-footer px-4 py-3 border-t border-white/10 space-y-3">
@@ -729,7 +732,7 @@
              pane tabs; empty, it simply absorbs the slack the way the old
              justify-between gap did. -->
         <div class="flex items-center gap-3 min-w-0 hdr-zone hdr-zone-left">
-          <button id="sidebar-open" class="lg:hidden text-navy text-2xl leading-none shrink-0">☰</button>
+          <button id="sidebar-open" aria-label="Open menu" class="lg:hidden text-navy text-2xl leading-none shrink-0">☰</button>
           <h2 id="page-title" class="text-lg sm:text-xl font-bold truncate"></h2>
           <div id="view-tabs-slot"></div>
         </div>
@@ -744,7 +747,7 @@
           <div id="header-controls" class="flex items-center gap-2 flex-wrap"></div>
         </div>
       </header>
-      <div id="page-content" class="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto"></div>
+      <div id="page-content" tabindex="-1" class="p-4 sm:p-6 lg:p-8 max-w-[1400px] mx-auto"></div>
     </main>
   </div>
 
@@ -766,7 +769,7 @@
 
   <!-- Chrome Extension side panel -->
   <div id="ext-panel-backdrop" class="ext-panel-backdrop hidden"></div>
-  <aside id="ext-panel" class="ext-panel" aria-hidden="true">
+  <aside id="ext-panel" class="ext-panel" aria-hidden="true" inert>
     <div class="ext-panel-head">
       <h2>🧩 Chrome Extension</h2>
       <button id="ext-panel-close" class="ext-panel-close" aria-label="Close">✕</button>
@@ -835,7 +838,7 @@
   <script src="portfolio-blocks.js?v=3b7af750"></script>
   <script src="portfolio-designer.js?v=8a70ca9c"></script>
   <script src="portfolio.js?v=f54ce23d"></script>
-  <script src="app.js?v=fb2a9f3c"></script>
+  <script src="app.js?v=af15e7c9"></script>
   <script>
     // Landing-page-only decorations (scoped to lp- classes, so this is a
     // harmless no-op once the user is logged in and #marketing-landing

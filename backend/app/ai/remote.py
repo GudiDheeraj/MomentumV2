@@ -40,6 +40,7 @@ is appended to every system prompt.
 
 from __future__ import annotations
 
+import contextvars
 import json
 import logging
 import urllib.error
@@ -461,8 +462,25 @@ def _style_suffix(cfg: LLMConfig) -> str:
     return (" " + " ".join(b for b in bits if b)) if bits else ""
 
 
+# Why the last chat() on this request stopped: "length" when it ran out of
+# max_tokens, "stop" when it finished, "" when the provider didn't say. A
+# ContextVar rather than a return value so the dozens of existing callers that
+# expect a plain string are untouched; a caller that cares (the CV editor, which
+# must never show a half finished JSON answer) reads it straight after the call.
+_LAST_FINISH: contextvars.ContextVar = contextvars.ContextVar("llm_last_finish", default="")
+
+
+def last_finish_reason() -> str:
+    return _LAST_FINISH.get()
+
+
+def _note_finish(raw) -> None:
+    r = str(raw or "").lower()
+    _LAST_FINISH.set("length" if r in ("length", "max_tokens", "max_output_tokens") else r)
+
+
 def chat(system: str, user: str, cfg: LLMConfig, *, max_tokens: int = 800,
-         temperature: float | None = None) -> str:
+         temperature: float | None = None, json_mode: bool = False) -> str:
     """One turn against the configured provider. Raises LLMError on failure —
     the caller in llm.py converts that to None so the old fallback path still
     works exactly as before."""
@@ -473,18 +491,29 @@ def chat(system: str, user: str, cfg: LLMConfig, *, max_tokens: int = 800,
     base = (cfg.base_url or DEFAULT_BASES.get(provider, "")).rstrip("/")
 
     kind = api_kind(provider)
+    _LAST_FINISH.set("")
 
     if kind == "openai":
-        data = _post(f"{base}/chat/completions", {
+        payload = {
             "model": model,
             "messages": [{"role": "system", "content": system},
                          {"role": "user", "content": user}],
             "max_tokens": max_tokens,
             "temperature": temp,
-        }, {"Authorization": f"Bearer {cfg.api_key}"})
+        }
+        # Opt-in, so no existing caller changes behaviour. OpenAI-compatible
+        # providers (Groq, OpenAI, OpenRouter, Mistral…) accept this and it
+        # makes a small model far more likely to return parseable JSON. Some
+        # compatible servers reject the field; the caller that asked for it is
+        # expected to retry without.
+        if json_mode:
+            payload["response_format"] = {"type": "json_object"}
+        data = _post(f"{base}/chat/completions", payload,
+                     {"Authorization": f"Bearer {cfg.api_key}"})
         choices = data.get("choices") or []
         if not choices:
             raise LLMError("The provider returned no choices.")
+        _note_finish(choices[0].get("finish_reason"))
         return (choices[0].get("message", {}).get("content") or "").strip()
 
     if kind == "anthropic":
@@ -496,6 +525,7 @@ def chat(system: str, user: str, cfg: LLMConfig, *, max_tokens: int = 800,
             "temperature": temp,
         }, {"x-api-key": cfg.api_key, "anthropic-version": "2023-06-01"})
         parts = data.get("content") or []
+        _note_finish(data.get("stop_reason"))
         return "".join(p.get("text", "") for p in parts if isinstance(p, dict)).strip()
 
     if kind == "gemini":
@@ -512,6 +542,7 @@ def chat(system: str, user: str, cfg: LLMConfig, *, max_tokens: int = 800,
         if not cands:
             raise LLMError("The model returned nothing — it may have blocked the prompt.")
         parts = (cands[0].get("content") or {}).get("parts") or []
+        _note_finish(cands[0].get("finishReason"))
         return "".join(p.get("text", "") for p in parts).strip()
 
     if kind == "ollama":
@@ -522,6 +553,7 @@ def chat(system: str, user: str, cfg: LLMConfig, *, max_tokens: int = 800,
             "stream": False,
             "options": {"temperature": temp, "num_predict": max_tokens},
         }, {})
+        _note_finish(data.get("done_reason"))
         return ((data.get("message") or {}).get("content") or "").strip()
 
     raise LLMError(f"Unknown provider '{cfg.provider}'.")

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Momentum Tracker \u2014 Job Application Assistant",
-  "version": "1.2.0",
-  "description": "Capture the job posting you're looking at into Momentum Tracker, see which employers hold a UK visa sponsor licence without opening the posting, auto-generate a tailored resume + cover letter, and fill application forms from your saved profile.",
+  "name": "Momentum Tracker — Job Application Assistant",
+  "version": "1.3.0",
+  "description": "Capture jobs, check visa sponsors, tailor your CV, fill forms, and edit your CV with your own ChatGPT, Claude, Grok or Gemini.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
@@ -38,6 +38,7 @@
         "https://*/*"
       ],
       "js": [
+        "ai-bridge-app.js",
         "content.js",
         "autofill.js",
         "sponsor-badges.js"

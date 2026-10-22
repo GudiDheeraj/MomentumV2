@@ -1,0 +1,49 @@
+{
+  // Run > Run Task, or Ctrl+Shift+B for "Momentum: run app" (both at once).
+  // Each task gets its own terminal panel so the API log and the static
+  // server log stay readable side by side.
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Momentum: run app",
+      "dependsOn": ["Momentum: backend (API)", "Momentum: frontend (web)"],
+      "dependsOrder": "parallel",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Momentum: backend (API)",
+      "type": "shell",
+      "command": "${workspaceFolder}\\start-backend.bat",
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "presentation": { "panel": "dedicated", "group": "momentum", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Momentum: frontend (web)",
+      "type": "shell",
+      "command": "${workspaceFolder}\\start-frontend.bat",
+      "options": { "cwd": "${workspaceFolder}" },
+      "isBackground": true,
+      "presentation": { "panel": "dedicated", "group": "momentum", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Momentum: test portfolio templates",
+      "type": "shell",
+      "command": "node frontend\\tests\\test_portfolio_templates.js",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "panel": "dedicated", "clear": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Momentum: check asset stamps",
+      "type": "shell",
+      "command": "node frontend\\tools\\stamp.js --check",
+      "options": { "cwd": "${workspaceFolder}" },
+      "presentation": { "panel": "dedicated", "clear": true },
+      "problemMatcher": []
+    }
+  ]
+}

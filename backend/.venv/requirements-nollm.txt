@@ -1,0 +1,38 @@
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+python-dotenv==1.0.1
+sqlalchemy==2.0.30
+pydantic==2.7.4
+python-multipart==0.0.9
+python-dateutil==2.9.0.post0
+passlib[bcrypt]==1.7.4
+bcrypt==4.0.1
+python-jose[cryptography]==3.3.0
+email-validator==2.2.0
+google-auth==2.29.0
+pypdf==4.2.0
+python-docx==1.1.2
+reportlab==4.2.0
+# Already present as a reportlab dependency, but the avatar downscale in
+# routers/profile.py imports it directly — so it's declared rather than assumed.
+Pillow>=10.0.0
+
+# The Telegram integration schedules per-user reminders in each person's own
+# IANA timezone via the standard library's zoneinfo. Linux and macOS ship a
+# system tz database; Windows does not, so zoneinfo finds nothing and every
+# lookup falls back to UTC. This package is that database as a wheel.
+# No other new dependency: the Bot API is called with urllib.
+tzdata>=2024.1
+
+# Local AI assistant (Momentum Assistant) — runs a pretrained Llama-family
+# GGUF model directly in-process via llama.cpp bindings. No external API
+# calls. This can take a while to build from source on some platforms; if
+# you don't need the chat assistant, it's safe to comment this line out —
+# the rest of the app works fine without it (the assistant just reports
+# itself as "not configured").
+
+# Optional — the cache layer in app/cache.py uses Redis when REDIS_URL is set
+# and falls back to a bounded in-process cache when it isn't, so this is not
+# required to run the app. Install it (and set REDIS_URL) when you want the
+# cache shared across restarts or across more than one backend replica.
+redis==5.0.7

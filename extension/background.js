@@ -138,6 +138,8 @@ chrome.storage.onChanged.addListener((changes, area) => {
 });
 
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  // The AI bridge has its own listener below.
+  if (msg && String(msg.type || "").startsWith("MOMENTUM_AI_")) return false;
   (async () => {
     try {
       if (msg.type === "MOMENTUM_AUTOFILL_FORM") {
@@ -299,4 +301,200 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     }
   })();
   return true; // async response
+});
+
+// ---------------------------------------------------------------------------
+// AI bridge: the person's own ChatGPT, Claude, Grok or Gemini, driven for them
+// ---------------------------------------------------------------------------
+// The Momentum app can't show those sites inside itself (they refuse to be
+// framed) and free accounts have no API. The extension can do what the person
+// would: open the site in its own window, type the request, wait, and read the
+// reply. The reply goes back to the one Momentum tab that asked, and nowhere
+// else.
+//
+// Jobs are kept in session storage because a service worker can be stopped
+// while a long answer is being written; the site's report wakes it back up.
+
+const AI_SITES = {
+  chatgpt: { name: "ChatGPT", home: "https://chatgpt.com/", host: /(^|\.)chatgpt\.com$|(^|\.)chat\.openai\.com$/ },
+  claude:  { name: "Claude",  home: "https://claude.ai/new", host: /(^|\.)claude\.ai$/ },
+  grok:    { name: "Grok",    home: "https://grok.com/", host: /(^|\.)grok\.com$/ },
+  gemini:  { name: "Gemini",  home: "https://gemini.google.com/app", host: /(^|\.)gemini\.google\.com$/ },
+};
+
+function aiHostOf(url) { try { return new URL(url).hostname; } catch { return ""; } }
+
+async function aiSenderAllowed(sender) {
+  const host = aiHostOf(sender?.url || sender?.origin || "");
+  if (!host || !sender?.tab?.id) return false;
+  if (host === "localhost" || host === "127.0.0.1" || host === "[::1]") return true;
+  const { apiBase, appOrigins } = await chrome.storage.local.get(["apiBase", "appOrigins"]);
+  if (apiBase && aiHostOf(apiBase) === host) return true;
+  if (aiHostOf(BUILT_IN_DEFAULT) === host) return true;
+  let origin = "";
+  try { origin = new URL(sender.url).origin; } catch {}
+  return Array.isArray(appOrigins) && appOrigins.includes(origin);
+}
+
+async function aiJobs() { return (await chrome.storage.session.get("aiJobs")).aiJobs || {}; }
+async function aiSaveJob(job) {
+  const jobs = await aiJobs();
+  // Keep the last few only; each carries a CV.
+  const ids = Object.keys(jobs);
+  if (ids.length > 8) delete jobs[ids[0]];
+  jobs[job.id] = job;
+  await chrome.storage.session.set({ aiJobs: jobs });
+}
+
+async function aiTellApp(job, stage, extra = {}) {
+  try {
+    await chrome.tabs.sendMessage(job.appTabId, { type: "MOMENTUM_AI_EVENT", id: job.id, stage,
+      provider: job.provider, ...extra });
+  } catch { /* the Momentum tab was closed */ }
+}
+
+// Done when the tab has finished loading a page on the AI's own site. Checking
+// the host matters when the window is reused: straight after being pointed at
+// Grok, the tab still reports the ChatGPT page it had as "complete".
+function aiWaitForLoad(tabId, site, timeoutMs = 45000) {
+  return new Promise((resolve) => {
+    let done = false;
+    const ready = (t) => t && t.status === "complete" && site.host.test(aiHostOf(t.url || ""));
+    const finish = (ok) => { if (!done) { done = true; chrome.tabs.onUpdated.removeListener(onUpd); resolve(ok); } };
+    const onUpd = (id, _info, tab) => { if (id === tabId && ready(tab)) finish(true); };
+    chrome.tabs.onUpdated.addListener(onUpd);
+    setTimeout(() => chrome.tabs.get(tabId).then((t) => { if (ready(t)) finish(true); }).catch(() => finish(false)), 700);
+    setTimeout(() => finish(false), timeoutMs);
+  });
+}
+
+// One small window for all four, reused between requests, so the person can
+// see what's happening and sign in if they need to, without it taking over
+// their browser. Its tab is navigated to a fresh chat each time.
+async function aiOpenWindow(site) {
+  const { aiWindow } = await chrome.storage.session.get("aiWindow");
+  if (aiWindow?.tabId) {
+    try {
+      const tab = await chrome.tabs.get(aiWindow.tabId);
+      await chrome.tabs.update(tab.id, { url: site.home, active: true });
+      await chrome.windows.update(tab.windowId, { focused: true, drawAttention: false });
+      return tab;
+    } catch { /* closed since */ }
+  }
+  const opts = { url: site.home, type: "popup", width: 540, height: 760, focused: true };
+  try {
+    // Against the right hand edge of the browser the person is using, so the
+    // Momentum tab stays visible beside it.
+    const cur = await chrome.windows.getLastFocused();
+    if (Number.isFinite(cur.left) && Number.isFinite(cur.width)) {
+      opts.left = Math.max(cur.left, cur.left + cur.width - 560);
+      opts.top = (cur.top || 0) + 60;
+      opts.height = Math.min(760, Math.max(420, (cur.height || 800) - 80));
+    }
+  } catch {}
+  let win;
+  try {
+    win = await chrome.windows.create(opts);
+  } catch {
+    // Odd monitor layouts can make those bounds invalid; let Chrome place it.
+    delete opts.left; delete opts.top;
+    win = await chrome.windows.create(opts);
+  }
+  const tab = win.tabs && win.tabs[0];
+  await chrome.storage.session.set({ aiWindow: { windowId: win.id, tabId: tab.id } });
+  return tab;
+}
+
+async function aiAsk(msg, sender) {
+  const site = AI_SITES[msg.provider];
+  if (!site) throw new Error("Unknown AI.");
+  if (!msg.text) throw new Error("Nothing to send.");
+  const job = { id: msg.id, provider: msg.provider, appTabId: sender.tab.id,
+                appWindowId: sender.tab.windowId, aiTabId: null, at: Date.now() };
+  await aiSaveJob(job);
+  await aiTellApp(job, "opening");
+  const tab = await aiOpenWindow(site);
+  job.aiTabId = tab.id;
+  await aiSaveJob(job);
+  await aiWaitForLoad(tab.id, site);
+  // Redirects (sign in, a new chat URL) can land on another host.
+  const now = await chrome.tabs.get(tab.id);
+  const host = aiHostOf(now.url || "");
+  if (!site.host.test(host)) {
+    await aiTellApp(job, "error", { code: "login",
+      error: `${site.name} sent you to a sign in page. Sign in in the AI window, then press Ask again.` });
+    return;
+  }
+  await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["ai-bridge-site.js"] });
+  let started = false;
+  for (let i = 0; i < 6 && !started; i++) {
+    try {
+      await chrome.tabs.sendMessage(tab.id, { type: "MOMENTUM_AI_RUN", id: job.id, provider: job.provider, text: msg.text });
+      started = true;
+    } catch {
+      await new Promise((r) => setTimeout(r, 500));
+      try { await chrome.scripting.executeScript({ target: { tabId: tab.id }, files: ["ai-bridge-site.js"] }); } catch {}
+    }
+  }
+  if (!started) await aiTellApp(job, "error", { error: `Couldn't reach the ${site.name} page. Try Ask again.` });
+}
+
+async function aiSiteEvent(msg, sender) {
+  const jobs = await aiJobs();
+  const job = jobs[msg.id];
+  // Only the tab this job opened may answer for it.
+  if (!job || !sender?.tab || sender.tab.id !== job.aiTabId) return;
+  const site = AI_SITES[job.provider];
+  if (!site || !site.host.test(aiHostOf(sender.tab.url || ""))) return;
+  await aiTellApp(job, msg.stage, { text: msg.text, error: msg.error, code: msg.code });
+  if (msg.stage === "done") {
+    // Back to Momentum, where the answer is waiting to be checked.
+    try {
+      await chrome.windows.update(job.appWindowId, { focused: true });
+      await chrome.tabs.update(job.appTabId, { active: true });
+    } catch {}
+  }
+}
+
+async function aiFocus() {
+  const { aiWindow } = await chrome.storage.session.get("aiWindow");
+  if (!aiWindow?.tabId) throw new Error("The AI window isn't open.");
+  const tab = await chrome.tabs.get(aiWindow.tabId);
+  await chrome.windows.update(tab.windowId, { focused: true });
+}
+
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (!msg || !String(msg.type || "").startsWith("MOMENTUM_AI_")) return false;
+  (async () => {
+    try {
+      if (msg.type === "MOMENTUM_AI_SITE_EVENT") {
+        await aiSiteEvent(msg, sender);
+        sendResponse({ ok: true });
+        return;
+      }
+      if (!(await aiSenderAllowed(sender))) {
+        sendResponse({ ok: false, error: "Not allowed from this page." });
+        return;
+      }
+      if (msg.type === "MOMENTUM_AI_ASK") {
+        sendResponse({ ok: true });
+        try { await aiAsk(msg, sender); }
+        catch (e) { await aiTellApp({ id: msg.id, appTabId: sender.tab.id, provider: msg.provider }, "error", { error: e.message || String(e) }); }
+        return;
+      }
+      if (msg.type === "MOMENTUM_AI_HELLO") {
+        sendResponse({ ok: true });
+        return;
+      }
+      if (msg.type === "MOMENTUM_AI_FOCUS") {
+        await aiFocus();
+        sendResponse({ ok: true });
+        return;
+      }
+      sendResponse({ ok: false, error: "Unknown request." });
+    } catch (e) {
+      sendResponse({ ok: false, error: e.message || String(e) });
+    }
+  })();
+  return true;
 });

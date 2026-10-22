@@ -534,6 +534,20 @@ const state = {
   builderResumeId: null,    // set when the builder is editing an existing resume
   portfolioView: "library", // "library" | "builder" — sub-tab of the Portfolio page
   portfolioId: null,        // set when the portfolio builder is editing a saved site
+  // ---- Community ----
+  communityView: "feed",    // "feed" | "post" | "user"
+  communityPostId: null,    // permalink target when communityView === "post"
+  communityUserId: null,    // whose page, when communityView === "user"
+  communityTopic: null,     // topic slug, or null for the front page
+  // Sort survives a reload, because "I read New" is a habit rather than a
+  // per-visit decision — same reasoning as the scope toggle above.
+  communitySort: (() => {
+    const saved = localStorage.getItem("momentum_community_sort");
+    return ["hot", "new", "top"].includes(saved) ? saved : "hot";
+  })(),
+  communityWindow: "all",   // time window, only meaningful under Top
+  communityCommentSort: "top",
+  communityMe: null,        // cached /api/community/me — my name, photo and counts
 };
 
 function destroyChart(id) {
@@ -2543,6 +2557,7 @@ const NAV = [
   { id: "jobs", label: "Job Applications", icon: "💼", group: "Main" },
   { id: "resumes", label: "Resumes", icon: "📄", group: "Main" },
   { id: "portfolio", label: "Portfolio", icon: "🌐", group: "Main" },
+  { id: "community", label: "Community", icon: "🗣️", group: "Main" },
   { id: "appprofile", label: "Application Profile", icon: "🪪", group: "Tools" },
   { id: "telegram", label: "Telegram", icon: "✈️", group: "Tools" },
   { id: "ai", label: "AI Model", icon: "🤖", group: "Tools" },
@@ -2570,6 +2585,7 @@ const NAV_ICONS = {
   jobs:      `<rect x="2.5" y="7" width="19" height="13" rx="2"/><path d="M8.5 7V5.5A1.5 1.5 0 0 1 10 4h4a1.5 1.5 0 0 1 1.5 1.5V7M2.5 12.5h19"/>`,
   resumes:   `<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>`,
   appprofile: `<rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.2"/><path d="M5.6 16.4a3.8 3.8 0 0 1 6.8 0M14.5 9.5h4.5M14.5 13h4.5"/>`,
+  community: `<path d="M8 13.5H5.5A2.5 2.5 0 0 1 3 11V6.5A2.5 2.5 0 0 1 5.5 4h8A2.5 2.5 0 0 1 16 6.5V8"/><path d="M10.5 8h8a2.5 2.5 0 0 1 2.5 2.5V15a2.5 2.5 0 0 1-2.5 2.5H17V21l-3.6-3.5h-2.9A2.5 2.5 0 0 1 8 15v-4.5A2.5 2.5 0 0 1 10.5 8Z"/>`,
   portfolio: `<rect x="3" y="4.5" width="18" height="15" rx="2"/><path d="M3 9h18M6.2 6.7h.01M9 6.7h.01"/><path d="M7 12.5h6M7 16h4"/>`,
   telegram:  `<path d="M21.5 3.5 2.8 10.4c-.9.3-.9 1.6.05 1.9l4.6 1.4 1.8 5.3c.3.9 1.5 1 2 .2l2.4-3.4 4.6 3.4c.7.5 1.7.1 1.9-.7l3-13.4c.2-.9-.7-1.7-1.65-1.6Z"/><path d="m8.4 13.7 9.6-7-7 8.6"/>`,
   ai:        `<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9.5 14h.01M14.5 14h.01M9 17.5h6M2 12v3M22 12v3"/>`,
@@ -2687,10 +2703,13 @@ function paintAvatar(el, user, profile) {
   }
   el.style.backgroundImage = "";
   el.textContent = name ? name.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join("") : "";
-  const palette = ["#0E9384", "#7C5CFC", "#3C9D7B", "#E4A335", "#E5734A", "#2C9CDB"];
+  // Darkened so white initials clear 4.5:1 on every one of them. The originals
+  // ranged from 2.19:1 (the amber) to 4.38:1, so which colour your name hashed
+  // to decided whether your own initials were legible.
+  const palette = ["#0C8578", "#795AF6", "#328367", "#9B6E24", "#B75C3B", "#237CAF"];
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
-  el.style.background = name ? palette[hash % palette.length] : "#0E9384";
+  el.style.background = name ? palette[hash % palette.length] : "#0C8578";
 }
 
 // ---------------------------------------------------------------------------
@@ -3408,6 +3427,10 @@ async function render() {
   const mySeq = ++_renderSeq;
   const scrollY = pageScrollY();
   const title = document.getElementById("page-title");
+  // An empty <h2> is still a heading to a screen reader, announced with no
+  // name, on every page that supplies its own header instead. Hiding it when
+  // it has nothing to say keeps the heading outline honest.
+  const _syncTitle = () => title.toggleAttribute("hidden", !title.textContent.trim());
   const tabsSlot = document.getElementById("view-tabs-slot");
   const controls = document.getElementById("header-controls");
   const content = document.getElementById("page-content");
@@ -3438,7 +3461,8 @@ async function render() {
 
   const wantsWide = state.page === "dashboard"
     || (state.page === "resumes" && state.resumesView === "builder")
-    || state.page === "portfolio";
+    || state.page === "portfolio"
+    || state.page === "community";
   content.classList.toggle("page-content--wide", wantsWide);
   content.classList.toggle("page-content--flush",
     (state.page === "resumes" && state.resumesView === "builder")
@@ -3492,9 +3516,12 @@ async function render() {
     else if (state.page === "ai") { title.textContent = "AI Model"; await renderAiSettings(content); }
     else if (state.page === "telegram") { title.textContent = "Telegram"; await renderTelegram(content); }
     else if (state.page === "profile") { title.textContent = "Profile"; await renderProfile(content); }
+    else if (state.page === "community") { title.textContent = ""; await renderCommunity(content); }
     else if (state.page === "admin") { title.textContent = "Admin Dashboard"; await renderAdmin(content); }
+    _syncTitle();
   } catch (err) {
     console.error(err);
+    _syncTitle();
     // Don't blame the backend for a bug in the page — and, just as important,
     // don't absolve it for a connection failure. The trap here is that fetch()
     // reports a dead server as `TypeError: Failed to fetch`, so a naive
@@ -4026,7 +4053,7 @@ function renderDayControls(controls) {
   controls.innerHTML = dateNav({
     prevId: "day-prev", nextId: "day-next", todayId: "day-today", todayLabel: "Today",
     isCurrent: toISO(state.day) === toISO(new Date()),
-    body: `<input type="date" id="day-picker" class="date-nav-picker" value="${toISO(state.day)}" />`,
+    body: `<input type="date" id="day-picker" aria-label="Jump to date" class="date-nav-picker" value="${toISO(state.day)}" />`,
   });
   controls.querySelector("#day-prev").onclick = () => { state.day = addDays(state.day, -1); render(); };
   controls.querySelector("#day-next").onclick = () => { state.day = addDays(state.day, 1); render(); };
@@ -4633,8 +4660,8 @@ function renderMonthControls(controls) {
     prevId: "month-prev", nextId: "month-next", todayId: "month-today", todayLabel: "This month",
     isCurrent: state.monthMonth === now.getMonth() + 1 && state.monthYear === now.getFullYear(),
     body: `
-      <select id="month-select" class="date-nav-select">${MONTH_NAMES.map((m, i) => `<option value="${i + 1}" ${i + 1 === state.monthMonth ? "selected" : ""}>${m}</option>`).join("")}</select>
-      <select id="month-year-select" class="date-nav-select is-year">${years.map(y => `<option value="${y}" ${y === state.monthYear ? "selected" : ""}>${y}</option>`).join("")}</select>`,
+      <select id="month-select" aria-label="Month" class="date-nav-select">${MONTH_NAMES.map((m, i) => `<option value="${i + 1}" ${i + 1 === state.monthMonth ? "selected" : ""}>${m}</option>`).join("")}</select>
+      <select id="month-year-select" aria-label="Year" class="date-nav-select is-year">${years.map(y => `<option value="${y}" ${y === state.monthYear ? "selected" : ""}>${y}</option>`).join("")}</select>`,
   });
   controls.querySelector("#month-prev").onclick = () => { shiftMonth(-1); render(); };
   controls.querySelector("#month-next").onclick = () => { shiftMonth(1); render(); };
@@ -4909,7 +4936,10 @@ const KANBAN_ACCENTS = {
 // Deterministic company-initial avatar color, cycling through the same
 // palette as the landing page's kanban mockup — so a given company always
 // gets the same color, and the board has that same playful multi-color look.
-const COMPANY_AVATAR_COLORS = ["#0E9384", "#7C5CFC", "#FF6A3D", "#1FAE6B", "#E0A93E"];
+// Darkened so white initials clear 4.5:1 on every one. The originals ran from
+// 2.12:1 (the amber) to 4.38:1, which made legibility a lottery decided by how
+// the company name happened to hash.
+const COMPANY_AVATAR_COLORS = ["#0C8578", "#795AF6", "#C6522F", "#188753", "#936F28"];
 function companyAvatar(companyName, size) {
   const name = (companyName || "?").trim();
   const initials = name.split(/\s+/).map(w => w[0]).join("").slice(0, 2).toUpperCase() || "?";
@@ -4939,6 +4969,11 @@ function extensionPanelContent() {
       with one click. It scrapes the role, company, location, and description straight off
       the page, saves it here, and can auto-generate a tailored resume and cover letter for it.
     </p>
+    <p class="text-sm text-gray-600 mb-4">
+      It also connects the AI tab in the resume builder to your own ChatGPT, Claude, Grok or
+      Gemini account: your request is sent in a small window using your login, and the answer
+      comes straight back to Momentum for you to approve. No copying and pasting.
+    </p>
     <a class="btn btn-accent w-full justify-center mb-4" href="downloads/momentum-tracker-extension.zip" download>⬇️ Download Extension (.zip)</a>
     <h3 class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Installation steps</h3>
     <ol class="text-xs text-gray-500 leading-relaxed space-y-2 list-decimal pl-4">
@@ -4947,6 +4982,7 @@ function extensionPanelContent() {
       <li>Click <strong>Load unpacked</strong> and select the unzipped extension folder.</li>
       <li>Click the extension icon, open <strong>Settings</strong>, and set the backend URL to: <code>${API_BASE}</code></li>
       <li>Log in with your Momentum Tracker account, browse to a job posting, and click <strong>Capture This Job</strong>.</li>
+      <li>Already installed an older version? Press the reload icon on it in <code>chrome://extensions</code>, then refresh this page.</li>
     </ol>
   `;
 }
@@ -4958,12 +4994,17 @@ function openExtensionPanel() {
   backdrop.classList.remove("hidden");
   panel.classList.add("open");
   panel.setAttribute("aria-hidden", "false");
+  // aria-hidden alone only hides it from the accessibility tree — the buttons
+  // inside stayed in the tab order, so a keyboard user tabbed into a panel
+  // that was off-screen and invisible. inert removes it from both.
+  panel.removeAttribute("inert");
 }
 function closeExtensionPanel() {
   const panel = document.getElementById("ext-panel");
   const backdrop = document.getElementById("ext-panel-backdrop");
   panel.classList.remove("open");
   panel.setAttribute("aria-hidden", "true");
+  panel.setAttribute("inert", "");
   backdrop.classList.add("hidden");
 }
 document.getElementById("ext-panel-btn")?.addEventListener("click", () => { openExtensionPanel(); closeSidebar(); });
@@ -5028,7 +5069,7 @@ async function renderJobs(content) {
       <span class="jobs-header-sep"></span>
       <div class="jobs-filter-row">
         <input type="text" id="job-filter" class="jobs-filter-input" placeholder="Filter by company, skill, or tag..." />
-        <select id="job-tag-filter" class="jobs-filter-select"><option value="">All tags</option></select>
+        <select id="job-tag-filter" aria-label="Filter by tag" class="jobs-filter-select"><option value="">All tags</option></select>
       </div>
     </div>`;
 
@@ -5452,7 +5493,7 @@ async function renderJobs(content) {
                           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
                           ${j.date_applied}
                         </span>
-                        <button class="text-[10px] text-gray-400 hover:text-navy" data-view-cover="${j.id}" title="Cover letter" onclick="event.stopPropagation()">✍️</button>
+                        <button class="jobcard-icon-btn" data-view-cover="${j.id}" title="Cover letter" aria-label="Cover letter for ${esc(j.company_name || "this role")}" onclick="event.stopPropagation()">✍️</button>
                       </div>
                     </div>
                   `).join("")}
@@ -8493,6 +8534,38 @@ async function renderResumeBuilder(content) {
 
           </div>
         </div>
+
+        <!-- AI edit: describe a change, see exactly what it would do, decide. -->
+        <div class="rbx-pane" id="rbx-pane-aiedit" style="display:none;">
+          <div class="rbx-ai">
+            <div class="rbx-ai-head">
+              <div class="rbx-ai-head-txt">
+                <h2>Edit your CV by describing the change</h2>
+                <p>Ask for what you want in your own words. Nothing on your CV changes until you say so.</p>
+              </div>
+              <span class="rbx-ai-model" id="rbx-ai-model"></span>
+            </div>
+            <div class="rbx-ai-source" id="rbx-ai-source" role="radiogroup" aria-label="Which AI answers">
+              <span class="rbx-ai-source-label" id="rbx-ai-source-label">Answer with</span>
+              <button type="button" role="radio" data-ai-src="builtin">Built in model</button>
+              <button type="button" role="radio" data-ai-src="chatgpt">ChatGPT</button>
+              <button type="button" role="radio" data-ai-src="claude">Claude</button>
+              <button type="button" role="radio" data-ai-src="grok">Grok</button>
+              <button type="button" role="radio" data-ai-src="gemini">Gemini</button>
+            </div>
+            <div class="rbx-ai-thread" id="rbx-ai-thread" aria-live="polite"></div>
+            <div class="rbx-ai-composer">
+              <textarea id="rbx-ai-input" rows="2" maxlength="2000"
+                placeholder="e.g. Tighten my summary to two sentences and lead with financial crime analytics"
+                aria-label="Describe the change you want"></textarea>
+              <div class="rbx-ai-composer-row">
+                <span class="rbx-ai-hint" id="rbx-ai-hint">Enter to send · Shift+Enter for a new line</span>
+                <button type="button" class="btn btn-accent rbx-ai-send" id="rbx-ai-send">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <div class="rbx-right">
@@ -8572,6 +8645,7 @@ async function renderResumeBuilder(content) {
       <button role="tab" data-rtab="design">Design</button>
       <button role="tab" data-rtab="roles"><span class="rbx-tab-long">Best for role</span><span class="rbx-tab-short">Roles</span>${rbTabDot("roles")}</button>
       <button role="tab" data-rtab="tailor"><span class="rbx-tab-long">Analyse &amp; tailor</span><span class="rbx-tab-short">Tailor</span>${rbTabDot("tailor")}</button>
+      <button role="tab" data-rtab="aiedit"><span class="rbx-tab-long">AI edit</span><span class="rbx-tab-short">AI</span>${rbTabDot("aiedit")}</button>
     </div>`;
 
   // Right zone: read-only state, so the two buttons beside it stay unambiguous.
@@ -11176,12 +11250,15 @@ function rbSwitchTab(name) {
     b.classList.toggle("active", b.dataset.rtab === name);
     if (b.dataset.rtab === name) b.querySelector(".rbx-tabdot")?.remove();
   });
-  ["edit", "design", "roles", "tailor"].forEach(t => {
+  ["edit", "design", "roles", "tailor", "aiedit"].forEach(t => {
     const p = document.getElementById("rbx-pane-" + t);
     if (p) p.style.display = t === name ? "block" : "none";
   });
   // The role picker's data is only worth fetching once the tab is opened.
   if (name === "roles") rbLoadRoles();
+  // Ask once whether a model is connected, so the tab can say so before
+  // someone writes a paragraph and only then gets told it cannot run.
+  if (name === "aiedit") rbAiInit();
   // Coming back to Tailor with a description already pasted should show the
   // proposal for the résumé as it is now, not the one from before you edited.
   if (name === "tailor") {
@@ -13222,6 +13299,7 @@ function rbWire(templates) {
   const root = document.querySelector(".rbx");
   // tabs
   document.querySelectorAll("#rbx-tabbar button").forEach(b => b.addEventListener("click", () => rbSwitchTab(b.dataset.rtab)));
+  rbAiWire();
   // doc title
   const titleInput = document.getElementById("rbx-title");
   titleInput.addEventListener("input", () => { EDITOR.resumeName = titleInput.value; titleInput.style.width = rbTitleInputWidth(titleInput.value) + "px"; });
@@ -16217,4 +16295,1844 @@ async function renderAiSettings(content) {
   // The key link and the local-setup steps are built by the same function the
   // provider dropdown calls, so the first paint and every change agree.
   jhRenderProviderHelp(AI_PROVIDERS.find(p => p.id === (cfg.provider || "openai")));
+}
+
+// ============================================================================
+// Community
+// ============================================================================
+// The one public surface in an otherwise private app. Everything else here
+// answers "how am I doing"; this answers "what is everyone else doing", and
+// the shape borrowed from Reddit — vote gutter on the left, title as the
+// link, threaded replies indented under a rail — is borrowed because it is the
+// layout people already know how to read.
+//
+// Identity is the account: the same name and photo the rest of the app uses.
+// There is nothing to claim and no gate, so a new account can post the moment
+// it signs in.
+
+const COMMUNITY_SORTS = [
+  { id: "hot", label: "Hot", icon: "🔥" },
+  { id: "new", label: "New", icon: "✨" },
+  { id: "top", label: "Top", icon: "🏆" },
+];
+
+const COMMUNITY_WINDOWS = [
+  { id: "day", label: "Today" },
+  { id: "week", label: "This week" },
+  { id: "month", label: "This month" },
+  { id: "year", label: "This year" },
+  { id: "all", label: "All time" },
+];
+
+const COMMUNITY_MAX_IMAGES = 4;
+
+// A colour per person, derived from their name, so the same account is the
+// same colour everywhere. Only used behind an initial when there is no photo.
+function communityAvatarColor(name) {
+  const palette = ["#0E9384", "#7C5CFC", "#FF6A3D", "#1FAE6B", "#E4A335",
+                   "#E2604F", "#14B8A6", "#6366f1", "#ec4899", "#0ea5e9"];
+  let h = 0;
+  for (let i = 0; i < (name || "").length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return palette[h % palette.length];
+}
+
+function communityAvatar(author, size = 28) {
+  const name = (author && author.name) || "?";
+  const initial = name.trim().charAt(0).toUpperCase() || "?";
+  if (author && author.avatar_url) {
+    return `<img class="cm-avatar cm-avatar--img" src="${esc(apiUrl(author.avatar_url))}"
+      alt="" loading="lazy" style="width:${size}px;height:${size}px">`;
+  }
+  return `<span class="cm-avatar" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.45)}px;background:${communityAvatarColor(name)}">${esc(initial)}</span>`;
+}
+
+// Scores are abbreviated past a thousand so the gutter stays one width. A
+// four-digit number in there reflows every card beside it.
+function communityScore(n) {
+  const v = Number(n) || 0;
+  const abs = Math.abs(v);
+  if (abs < 1000) return String(v);
+  if (abs < 1000000) return `${(v / 1000).toFixed(abs < 10000 ? 1 : 0)}k`;
+  return `${(v / 1000000).toFixed(1)}m`;
+}
+
+// Post and comment bodies are plain text. This renders them as such — escaped
+// first, then paragraph breaks restored and bare URLs linked — so a post can
+// never inject markup into the page that shows it to everybody. The order
+// matters: escaping after linkifying would escape the anchors just built.
+function communityBody(text) {
+  if (!text) return "";
+  const safe = esc(text);
+  const linked = safe.replace(
+    /(https?:\/\/[^\s<]+)/g,
+    (m) => `<a href="${m}" target="_blank" rel="noopener noreferrer nofollow">${m}</a>`);
+  return linked
+    .split(/\n{2,}/)
+    .map(p => `<p>${p.replace(/\n/g, "<br>")}</p>`)
+    .join("");
+}
+
+function communityHost(url) {
+  try { return new URL(url).hostname.replace(/^www\./, ""); } catch { return null; }
+}
+
+// ---------------------------------------------------------------------------
+// Attachments
+// ---------------------------------------------------------------------------
+// Width and height come back with the upload so the grid can reserve the right
+// space before anything loads. Without them a thread jumps around as pictures
+// arrive, which is at its worst exactly when the connection is slowest.
+function communityFileSize(bytes) {
+  const n = Number(bytes) || 0;
+  if (!n) return "";
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${Math.round(n / 1024)} KB`;
+  return `${(n / (1024 * 1024)).toFixed(n < 10 * 1024 * 1024 ? 1 : 0)} MB`;
+}
+
+function communityPdfIcon() {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/>
+    <path d="M14 3v5h5"/><path d="M8.5 17.5v-4h1.4a1.3 1.3 0 0 1 0 2.6H8.5M13 17.5v-4h1a2 2 0 0 1 0 4h-1"/>
+  </svg>`;
+}
+
+// A picture and a document want different shapes on the page: one is looked
+// at, the other is opened. Splitting them here means a post with a screenshot
+// and a CV renders as a picture plus a file row, rather than one of them being
+// forced into the other's layout.
+function communityAttachments(list, { compact = false } = {}) {
+  if (!list || !list.length) return "";
+  const images = list.filter(a => a.kind !== "pdf");
+  const docs = list.filter(a => a.kind === "pdf");
+
+  let out = "";
+  if (images.length) {
+    const cls = images.length === 1 ? "is-single" : images.length === 2 ? "is-two" : "is-grid";
+    out += `<div class="cm-images ${cls} ${compact ? "cm-images--sm" : ""}">
+      ${images.map((a, i) => {
+        const ratio = (a.width && a.height) ? (a.height / a.width) : null;
+        const label = a.name ? `View image: ${a.name}` : `View image ${i + 1} of ${images.length}`;
+        return `<button type="button" class="cm-image" aria-label="${esc(label)}" data-cm-lightbox="${esc(apiUrl(a.url))}" data-cm-stop
+          ${ratio ? `style="--cm-ratio:${ratio.toFixed(4)}"` : ""}>
+          <img src="${esc(apiUrl(a.url))}" alt="${esc(a.name || "")}" loading="lazy"
+            ${a.width ? `width="${a.width}"` : ""} ${a.height ? `height="${a.height}"` : ""}>
+        </button>`;
+      }).join("")}
+    </div>`;
+  }
+
+  if (docs.length) {
+    out += `<div class="cm-files">
+      ${docs.map(a => {
+        const name = a.name || "document.pdf";
+        const size = communityFileSize(a.size);
+        // `download` asks for the original filename rather than the uuid the
+        // server stores it under. Uploads are served with
+        // Content-Disposition: attachment, so this saves rather than opening
+        // a viewer — see the note in main.py about why that header is there.
+        // download_url serves the file under its real name. The `download`
+        // attribute alone is not enough: browsers ignore it cross-origin, and
+        // the API is a different origin from the page in most setups, so the
+        // filename has to come from the server's own header.
+        return `<a class="cm-file" href="${esc(apiUrl(a.download_url || a.url))}" download="${esc(name)}"
+           data-cm-stop rel="noopener">
+          <span class="cm-file-icon">${communityPdfIcon()}</span>
+          <span class="cm-file-meta">
+            <span class="cm-file-name">${esc(name)}</span>
+            <span class="cm-file-sub">PDF${size ? ` · ${size}` : ""} · downloads</span>
+          </span>
+          <svg class="cm-file-dl" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg>
+        </a>`;
+      }).join("")}
+    </div>`;
+  }
+  return out;
+}
+
+function communityWireLightbox(scope) {
+  scope.querySelectorAll("[data-cm-lightbox]").forEach(el => {
+    if (el.dataset.cmLbWired) return;
+    el.dataset.cmLbWired = "1";
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const url = el.dataset.cmLightbox;
+      const root = document.getElementById("modal-root");
+      // The inner .modal-box is not decoration: _activateModal looks for that
+      // class and returns early without it, so a lightbox built as a bare
+      // backdrop silently got no Escape key, no focus trap and no focus
+      // restore — the three things every other dialog here has. It is styled
+      // back to nothing in CSS; the class is there for the behaviour.
+      root.innerHTML = `<div class="modal-backdrop cm-lightbox" data-modal-backdrop>
+        <div class="modal-box cm-lightbox-box">
+          <img src="${esc(url)}" alt="">
+          <button type="button" class="cm-lightbox-close" aria-label="Close image">✕</button>
+        </div>
+      </div>`;
+      root.classList.remove("hidden");
+      root.querySelector("[data-modal-backdrop]").addEventListener("click", (ev) => {
+        // Clicking away from the picture closes it, which is what people
+        // expect from a lightbox and saves aiming at a small ✕.
+        if (ev.target === ev.currentTarget) closeModal();
+      });
+      root.querySelector(".cm-lightbox-close").addEventListener("click", closeModal);
+      _activateModal(root, closeModal);
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// The image picker shared by the composer, the comment box and inline replies
+// ---------------------------------------------------------------------------
+// Uploads happen on selection rather than on submit, so the person sees the
+// picture land (or sees it rejected) while they are still writing, instead of
+// discovering at submit time that their screenshot was too big.
+const COMMUNITY_PICKER_HINT = "Images or PDF · up to 4";
+
+function communityImagePicker(id) {
+  return `
+    <div class="cm-picker" data-cm-picker="${id}">
+      <input type="file" accept="image/png,image/jpeg,image/gif,image/webp,application/pdf,.pdf"
+             multiple hidden data-cm-file>
+      <button type="button" class="cm-attach-btn" data-cm-attach>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <path d="M21 11.5 12.5 20a5 5 0 0 1-7-7l8-8a3.4 3.4 0 0 1 4.8 4.8l-8 8a1.8 1.8 0 0 1-2.5-2.5l7.4-7.4"/>
+        </svg>
+        Attach
+      </button>
+      <span class="cm-picker-hint" data-cm-hint>${COMMUNITY_PICKER_HINT}</span>
+      <div class="cm-picker-list" data-cm-thumbs></div>
+    </div>`;
+}
+
+// Returns a controller: .ids() for what to submit, .reset() to clear.
+function communityWirePicker(scope, id) {
+  const box = scope.querySelector(`[data-cm-picker="${id}"]`);
+  if (!box) return { ids: () => [], reset: () => {} };
+  const input = box.querySelector("[data-cm-file]");
+  const thumbs = box.querySelector("[data-cm-thumbs]");
+  const hint = box.querySelector("[data-cm-hint]");
+  const btn = box.querySelector("[data-cm-attach]");
+  let items = [];   // { id, url, name }
+
+  const paint = () => {
+    thumbs.innerHTML = items.map(it => it.kind === "pdf"
+      ? `<span class="cm-thumb cm-thumb--doc" title="${esc(it.name || "PDF")}">
+           <span class="cm-thumb-doc-icon">${communityPdfIcon()}</span>
+           <span class="cm-thumb-doc-name">${esc(it.name || "document.pdf")}</span>
+           <button type="button" class="cm-thumb-x" data-cm-drop="${it.id}" aria-label="Remove attachment">✕</button>
+         </span>`
+      : `<span class="cm-thumb">
+           <img src="${esc(apiUrl(it.url))}" alt="${esc(it.name || "")}">
+           <button type="button" class="cm-thumb-x" data-cm-drop="${it.id}" aria-label="Remove attachment">✕</button>
+         </span>`).join("");
+    thumbs.querySelectorAll("[data-cm-drop]").forEach(x => {
+      x.addEventListener("click", () => {
+        // Dropped from the draft only. The uploaded row stays unbound on the
+        // server and is simply never shown, which is cheaper and safer than
+        // deleting files from under a request that may still be in flight.
+        items = items.filter(i => String(i.id) !== x.dataset.cmDrop);
+        paint();
+      });
+    });
+    btn.disabled = items.length >= COMMUNITY_MAX_IMAGES;
+    hint.textContent = items.length
+      ? `${items.length} of ${COMMUNITY_MAX_IMAGES} attached`
+      : COMMUNITY_PICKER_HINT;
+    hint.className = "cm-picker-hint";
+  };
+
+  btn.addEventListener("click", () => input.click());
+
+  input.addEventListener("change", async () => {
+    const files = Array.from(input.files || []).slice(0, COMMUNITY_MAX_IMAGES - items.length);
+    input.value = "";   // so picking the same file twice still fires a change
+    if (!files.length) return;
+    hint.textContent = `Uploading ${files.length} file${files.length === 1 ? "" : "s"}…`;
+    hint.className = "cm-picker-hint is-busy";
+    btn.disabled = true;
+    for (const f of files) {
+      const fd = new FormData();
+      fd.append("file", f);
+      try {
+        const a = await api("/api/community/uploads", { method: "POST", body: fd });
+        items.push({ id: a.id, url: a.url, name: a.name, kind: a.kind, size: a.size });
+      } catch (err) {
+        hint.textContent = apiErrorMessage(err, `Couldn't upload ${f.name}`);
+        hint.className = "cm-picker-hint is-bad";
+        btn.disabled = items.length >= COMMUNITY_MAX_IMAGES;
+        paintOnError();
+        return;
+      }
+    }
+    paint();
+  });
+
+  function paintOnError() {
+    // Rebuilt without the remove buttons, so a failed upload does not wipe the
+    // files already staged in the draft.
+    thumbs.innerHTML = items.map(it => it.kind === "pdf"
+      ? `<span class="cm-thumb cm-thumb--doc"><span class="cm-thumb-doc-icon">${communityPdfIcon()}</span>
+           <span class="cm-thumb-doc-name">${esc(it.name || "document.pdf")}</span></span>`
+      : `<span class="cm-thumb"><img src="${esc(apiUrl(it.url))}" alt=""></span>`).join("");
+  }
+
+  paint();
+  return {
+    ids: () => items.map(i => i.id),
+    reset: () => { items = []; paint(); },
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Page entry
+// ---------------------------------------------------------------------------
+let _communityTopics = null;
+
+async function communityLoadTopics(force = false) {
+  if (_communityTopics && !force) return _communityTopics;
+  _communityTopics = await api("/api/community/topics");
+  return _communityTopics;
+}
+
+// Which account state.communityMe describes.
+//
+// Signing out and back in as someone else does NOT reload this page — nothing
+// in this app calls location.reload(), it just re-renders — so every
+// module-level variable survives an account switch. Tagging the cache with an
+// owner is what stops one account's details being shown to the next, rather
+// than remembering to clear it at each of the places a session can change.
+let _communityMeUserId = null;
+
+function communityCachedMe() {
+  const u = auth.getUser();
+  if (!u || _communityMeUserId !== u.id) return null;
+  return state.communityMe;
+}
+
+function communitySetMe(me) {
+  const u = auth.getUser();
+  _communityMeUserId = u ? u.id : null;
+  state.communityMe = me;
+}
+
+async function renderCommunity(root) {
+  // Kicked off together rather than awaited in sequence: the sidebar and the
+  // feed have nothing to say to each other, and serialising them adds a whole
+  // round trip to the first paint for no reason.
+  const [topics, me] = await Promise.all([
+    communityLoadTopics(true),
+    communityCachedMe() ? Promise.resolve(communityCachedMe())
+                        : api("/api/community/me").catch(() => null),
+  ]);
+  if (me) communitySetMe(me);
+
+  if (state.communityView === "post" && state.communityPostId) {
+    return renderCommunityPostPage(root, topics);
+  }
+  if (state.communityView === "user" && state.communityUserId) {
+    return renderCommunityUserPage(root, topics);
+  }
+  return renderCommunityFeed(root, topics);
+}
+
+function communityGoto(view, opts = {}) {
+  state.communityView = view;
+  state.communityPostId = opts.postId ?? null;
+  state.communityUserId = opts.userId ?? null;
+  if ("topic" in opts) state.communityTopic = opts.topic;
+  scrollPageTo(0);
+  render();
+}
+
+// ---------------------------------------------------------------------------
+// Sidebar
+// ---------------------------------------------------------------------------
+function communitySidebar(topics, activeSlug) {
+  const me = communityCachedMe();
+  const author = me && me.me;
+
+  const identity = author
+    ? `<div class="cm-side-card cm-me-card">
+         <div class="cm-me-head">
+           ${communityAvatar(author, 40)}
+           <div class="cm-me-id">
+             <button type="button" class="cm-me-handle" data-cm-user="${author.id}">${esc(author.name)}</button>
+             ${author.headline ? `<p class="cm-me-bio">${esc(author.headline)}</p>` : ""}
+           </div>
+         </div>
+         <div class="cm-me-stats">
+           <div><strong>${communityScore(me.karma)}</strong><span>karma</span></div>
+           <div><strong>${me.post_count ?? 0}</strong><span>posts</span></div>
+           <div><strong>${me.comment_count ?? 0}</strong><span>comments</span></div>
+         </div>
+       </div>`
+    : "";
+
+  const total = topics.reduce((a, t) => a + (t.post_count || 0), 0);
+
+  return `
+    <aside class="cm-side" aria-label="Community rooms and profile">
+      ${identity}
+      <div class="cm-side-card">
+        <p class="cm-side-title">Rooms</p>
+        <button type="button" class="cm-topic ${!activeSlug ? "active" : ""}" data-cm-topic="">
+          <span class="cm-topic-icon" style="background:#0E9384">🏠</span>
+          <span class="cm-topic-name">All rooms</span>
+          <span class="cm-topic-count">${total}</span>
+        </button>
+        ${topics.map(t => `
+          <button type="button" class="cm-topic ${activeSlug === t.slug ? "active" : ""}" data-cm-topic="${esc(t.slug)}" title="${esc(t.description || "")}">
+            <span class="cm-topic-icon" style="background:${esc(t.color || "#64748b")}">${esc(t.icon || "•")}</span>
+            <span class="cm-topic-name">${esc(t.name)}</span>
+            <span class="cm-topic-count">${t.post_count || 0}</span>
+          </button>`).join("")}
+      </div>
+      <div class="cm-side-card cm-rules">
+        <p class="cm-side-title">House rules</p>
+        <ol>
+          <li>Everyone here posts under their own name. Write like it.</li>
+          <li>Rejections and bad days belong here. So do the wins.</li>
+          <li>No recruiter spam, no referral farming.</li>
+          <li>Advice only where it was asked for.</li>
+        </ol>
+      </div>
+    </aside>`;
+}
+
+function communityRoomStrip(topics, activeSlug) {
+  return `
+    <div class="cm-roomstrip">
+      <button type="button" class="cm-roomchip ${!activeSlug ? "active" : ""}" data-cm-topic="">All</button>
+      ${topics.map(t => `<button type="button" class="cm-roomchip ${activeSlug === t.slug ? "active" : ""}" data-cm-topic="${esc(t.slug)}">
+        <span class="cm-topic-dot" style="background:${esc(t.color || "#64748b")}"></span>${esc(t.name)}
+      </button>`).join("")}
+    </div>`;
+}
+
+function communityWireSidebar(root) {
+  // Scoped to the sidebar and the strip on purpose. A bare
+  // root.querySelectorAll("[data-cm-topic]") also matches the topic button on
+  // every post card, which communityWirePostCards wires as well — two
+  // listeners on one button means one click renders the page twice.
+  root.querySelectorAll(".cm-side, .cm-roomstrip").forEach(zone => {
+    zone.querySelectorAll("[data-cm-topic]").forEach(el => {
+      el.addEventListener("click", () => {
+        state.communityTopic = el.dataset.cmTopic || null;
+        communityGoto("feed");
+      });
+    });
+  });
+  root.querySelectorAll(".cm-side [data-cm-user]").forEach(el => {
+    el.addEventListener("click", () => communityGoto("user", { userId: Number(el.dataset.cmUser) }));
+  });
+}
+
+// ---------------------------------------------------------------------------
+// The vote gutter
+// ---------------------------------------------------------------------------
+// Optimistic: the arrow fills and the number moves before the request lands,
+// because a vote that waits for a server felt broken in testing. The response
+// carries the authoritative score, so a failed vote snaps back rather than
+// leaving a lie on screen.
+function communityVoteGutter(kind, id, score, myVote, compact = false) {
+  return `
+    <div class="cm-votes ${compact ? "cm-votes--compact" : ""}" data-cm-vote-box="${kind}:${id}" data-cm-raw="${Number(score) || 0}">
+      <button type="button" class="cm-vote cm-vote-up ${myVote === 1 ? "on" : ""}" data-cm-vote="1" aria-label="Upvote" aria-pressed="${myVote === 1}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4.5 20 14h-4.6v5.5H8.6V14H4L12 4.5Z"/></svg>
+      </button>
+      <span class="cm-score ${myVote === 1 ? "up" : myVote === -1 ? "down" : ""}" data-cm-score>${communityScore(score)}</span>
+      <button type="button" class="cm-vote cm-vote-down ${myVote === -1 ? "on" : ""}" data-cm-vote="-1" aria-label="Downvote" aria-pressed="${myVote === -1}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19.5 4 10h4.6V4.5h6.8V10H20l-8 9.5Z"/></svg>
+      </button>
+    </div>`;
+}
+
+function communityWireVotes(scope) {
+  scope.querySelectorAll("[data-cm-vote-box]").forEach(box => {
+    if (box.dataset.cmWired) return;
+    box.dataset.cmWired = "1";
+    const [kind, id] = box.dataset.cmVoteBox.split(":");
+    box.querySelectorAll("[data-cm-vote]").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        e.stopPropagation();   // the whole card is a link to the post
+        const pressed = Number(btn.dataset.cmVote);
+        const scoreEl = box.querySelector("[data-cm-score]");
+        const up = box.querySelector(".cm-vote-up");
+        const down = box.querySelector(".cm-vote-down");
+        const current = up.classList.contains("on") ? 1 : down.classList.contains("on") ? -1 : 0;
+        // Same toggle rule the server applies: pressing the arrow you already
+        // chose clears it. Computed here too so the optimistic paint agrees
+        // with what comes back.
+        const next = pressed === current ? 0 : pressed;
+
+        const before = { score: scoreEl.textContent, up: up.classList.contains("on"), down: down.classList.contains("on") };
+        const rawBefore = Number(box.dataset.cmRaw);
+        const rawScore = Number.isNaN(rawBefore) ? null : rawBefore;
+
+        up.classList.toggle("on", next === 1);
+        down.classList.toggle("on", next === -1);
+        scoreEl.classList.toggle("up", next === 1);
+        scoreEl.classList.toggle("down", next === -1);
+        if (rawScore !== null) scoreEl.textContent = communityScore(rawScore + (next - current));
+
+        try {
+          const r = await api(`/api/community/vote/${kind}/${id}`, {
+            method: "POST", body: JSON.stringify({ value: pressed }),
+          });
+          box.dataset.cmRaw = String(r.score);
+          scoreEl.textContent = communityScore(r.score);
+          up.classList.toggle("on", r.my_vote === 1);
+          down.classList.toggle("on", r.my_vote === -1);
+          scoreEl.classList.toggle("up", r.my_vote === 1);
+          scoreEl.classList.toggle("down", r.my_vote === -1);
+        } catch (err) {
+          scoreEl.textContent = before.score;
+          up.classList.toggle("on", before.up);
+          down.classList.toggle("on", before.down);
+          scoreEl.classList.toggle("up", before.up);
+          scoreEl.classList.toggle("down", before.down);
+          showToast(apiErrorMessage(err, "Couldn't register that vote"), "error");
+        }
+      });
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Post card
+// ---------------------------------------------------------------------------
+function communityPostCard(p, { full = false } = {}) {
+  const host = p.link_url ? communityHost(p.link_url) : null;
+  const topic = p.topic;
+  const gone = p.deleted || p.removed_by_admin;
+
+  // A long body is clamped in the feed and shown whole on the permalink. The
+  // clamp is CSS, not a substring: truncating the text would cut mid-word and
+  // make the "read more" affordance a lie about what is there.
+  const bodyHTML = p.body
+    ? `<div class="cm-post-body ${full ? "" : "is-clamped"}">${communityBody(p.body)}</div>`
+    : "";
+
+  const linkHTML = p.link_url
+    ? `<a class="cm-post-link" href="${esc(p.link_url)}" target="_blank" rel="noopener noreferrer nofollow" data-cm-stop>
+         <span class="cm-post-link-host">${esc(host || "link")}</span>
+         <span class="cm-post-link-url">${esc(p.link_url)}</span>
+         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M7 17 17 7M9 7h8v8"/></svg>
+       </a>`
+    : "";
+
+  return `
+    <article class="cm-post ${full ? "cm-post--full" : ""} ${gone ? "is-gone" : ""}" data-cm-post="${p.id}">
+      ${communityVoteGutter("post", p.id, p.score, p.my_vote)}
+      <div class="cm-post-main">
+        <div class="cm-post-meta">
+          ${topic ? `<button type="button" class="cm-post-topic" data-cm-topic="${esc(topic.slug)}" data-cm-stop>
+              <span class="cm-topic-dot" style="background:${esc(topic.color || "#64748b")}"></span>${esc(topic.icon || "")} ${esc(topic.name)}
+            </button><span class="cm-meta-dot">·</span>` : ""}
+          ${communityAvatar(p.author, 20)}
+          <button type="button" class="cm-post-author" data-cm-user="${p.author.id || ""}" data-cm-stop>${esc(p.author.name)}</button>
+          <span class="cm-meta-dot">·</span>
+          <span class="cm-post-time">${esc(timeAgo(p.created_at))}</span>
+          ${p.edited_at ? `<span class="cm-meta-dot">·</span><span class="cm-post-time">edited</span>` : ""}
+          ${p.removed_by_admin ? `<span class="cm-badge cm-badge--removed">Removed</span>` : ""}
+        </div>
+        <h3 class="cm-post-title">${esc(p.title)}</h3>
+        ${linkHTML}
+        ${bodyHTML}
+        ${communityAttachments(p.attachments)}
+        <div class="cm-post-actions">
+          <button type="button" class="cm-action" data-cm-open="${p.id}">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z"/></svg>
+            ${p.comment_count || 0} ${p.comment_count === 1 ? "comment" : "comments"}
+          </button>
+          <button type="button" class="cm-action" data-cm-share="${p.id}" data-cm-stop>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 15V3m0 0L8 7m4-4 4 4"/></svg>
+            Share
+          </button>
+          ${p.is_mine && !gone ? `<button type="button" class="cm-action" data-cm-edit="${p.id}" data-cm-stop>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m4 20 4-1 10-10-3-3L5 16l-1 4Z"/></svg>
+            Edit</button>` : ""}
+          ${p.can_delete ? `<button type="button" class="cm-action cm-action--danger" data-cm-delete="${p.id}" data-cm-mine="${p.is_mine ? 1 : 0}" data-cm-stop>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2m-7 0 1 13h8l1-13"/></svg>
+            ${p.is_mine ? "Delete" : "Remove"}</button>` : ""}
+        </div>
+      </div>
+    </article>`;
+}
+
+function communityWirePostCards(scope) {
+  communityWireVotes(scope);
+  communityWireLightbox(scope);
+
+  // One handler on the card, not five on the pieces inside it. The pieces that
+  // are themselves interactive carry data-cm-stop and bail out here, which is
+  // cheaper than stopping propagation in five separate listeners.
+  scope.querySelectorAll("[data-cm-post]").forEach(card => {
+    if (card.dataset.cmCardWired) return;
+    card.dataset.cmCardWired = "1";
+    const id = Number(card.dataset.cmPost);
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("[data-cm-stop]")) return;
+      if (e.target.closest(".cm-votes")) return;
+      if (e.target.closest("a")) return;
+      if (card.classList.contains("cm-post--full")) return;   // already there
+      if (window.getSelection && String(window.getSelection())) return; // selecting text
+      communityGoto("post", { postId: id });
+    });
+  });
+
+  scope.querySelectorAll("[data-cm-open]").forEach(el => {
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      communityGoto("post", { postId: Number(el.dataset.cmOpen) });
+    });
+  });
+
+  scope.querySelectorAll("[data-cm-topic]").forEach(el => {
+    if (el.closest(".cm-side") || el.closest(".cm-roomstrip")) return;
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      state.communityTopic = el.dataset.cmTopic || null;
+      communityGoto("feed");
+    });
+  });
+
+  scope.querySelectorAll("[data-cm-user]").forEach(el => {
+    if (el.closest(".cm-side")) return;
+    if (!el.dataset.cmUser) return;   // a deleted account has no page
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      communityGoto("user", { userId: Number(el.dataset.cmUser) });
+    });
+  });
+
+  scope.querySelectorAll("[data-cm-share]").forEach(el => {
+    el.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const url = `${window.location.origin}${window.location.pathname}#community/post/${el.dataset.cmShare}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        showToast("Link copied", "success");
+      } catch {
+        // Clipboard needs a secure context and a permission that plain-HTTP
+        // local development does not have, so failing here is normal rather
+        // than exceptional — show the link instead of an error.
+        showInfoModal({ title: "Link to this post", bodyHTML: `<input type="text" readonly value="${esc(url)}" onclick="this.select()" />` });
+      }
+    });
+  });
+
+  scope.querySelectorAll("[data-cm-delete]").forEach(el => {
+    el.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const mine = el.dataset.cmMine === "1";
+      const ok = await showConfirmModal({
+        title: mine ? "Delete this post?" : "Remove this post?",
+        message: mine
+          ? "The comments underneath stay, but your post will show as deleted. This can't be undone."
+          : "It will show as removed by a moderator. The author isn't told who did it.",
+        confirmLabel: mine ? "Delete" : "Remove",
+      });
+      if (!ok) return;
+      try {
+        await api(`/api/community/posts/${el.dataset.cmDelete}`, { method: "DELETE" });
+        invalidateApiCache("/api/community");
+        _communityTopics = null;
+        showToast(mine ? "Post deleted" : "Post removed", "success");
+        if (state.communityView === "post") communityGoto("feed");
+        else render();
+      } catch (err) {
+        showToast(apiErrorMessage(err, "Couldn't delete that"), "error");
+      }
+    });
+  });
+
+  scope.querySelectorAll("[data-cm-edit]").forEach(el => {
+    el.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      // Re-read the post rather than scraping the card: the rendered version
+      // has been escaped, linkified and clamped, and feeding that back into an
+      // editor would save the display form over the real text.
+      const id = Number(el.dataset.cmEdit);
+      try {
+        const data = await api(`/api/community/posts/${id}`);
+        communityComposer({ mode: "edit", post: data.post });
+      } catch (err) {
+        showToast(apiErrorMessage(err, "Couldn't open that post for editing"), "error");
+      }
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Feed
+// ---------------------------------------------------------------------------
+async function renderCommunityFeed(root, topics) {
+  const slug = state.communityTopic;
+  const topic = slug ? topics.find(t => t.slug === slug) : null;
+  const sort = state.communitySort;
+
+  const params = new URLSearchParams({ sort, limit: "25", offset: "0" });
+  if (slug) params.set("topic", slug);
+  if (sort === "top") params.set("window", state.communityWindow);
+
+  let data;
+  try {
+    data = await api(`/api/community/posts?${params}`);
+  } catch (err) {
+    root.innerHTML = `<div class="card p-6 text-center"><p class="font-semibold mb-1">Couldn't load the community</p><p class="text-sm text-gray-500">${esc(apiErrorMessage(err, "Try again in a moment"))}</p></div>`;
+    return;
+  }
+
+  const header = `
+    <div class="cm-header">
+      <div class="cm-header-id">
+        ${topic
+          ? `<span class="cm-header-icon" style="background:${esc(topic.color || "#0E9384")}">${esc(topic.icon || "•")}</span>
+             <div>
+               <h2 class="cm-header-title">${esc(topic.name)}</h2>
+               <p class="cm-header-sub">${esc(topic.description || "")}</p>
+             </div>`
+          : `<span class="cm-header-icon cm-header-icon--svg" style="background:#0E9384">${navIcon("community")}</span>
+             <div>
+               <h2 class="cm-header-title">Community</h2>
+               <p class="cm-header-sub">What everyone else is working through</p>
+             </div>`}
+      </div>
+      <button type="button" class="btn btn-accent cm-new-btn" data-cm-new>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        New post
+      </button>
+    </div>`;
+
+  const sortBar = `
+    <div class="cm-sortbar">
+      <div class="view-tabs cm-sorts">
+        ${COMMUNITY_SORTS.map(s => `<button type="button" class="view-tab ${s.id === sort ? "active" : ""}" data-cm-sort="${s.id}">${s.icon} ${s.label}</button>`).join("")}
+      </div>
+      ${sort === "top" ? `<select class="cm-window" data-cm-window aria-label="Time range">
+        ${COMMUNITY_WINDOWS.map(w => `<option value="${w.id}" ${w.id === state.communityWindow ? "selected" : ""}>${w.label}</option>`).join("")}
+      </select>` : ""}
+    </div>`;
+
+  const empty = `
+    <div class="cm-empty">
+      <span class="cm-empty-icon">${topic ? esc(topic.icon || "💬") : "💬"}</span>
+      <p class="cm-empty-title">Nothing here yet</p>
+      <p class="cm-empty-body">${topic ? `No one has posted in ${esc(topic.name)} yet. It may as well be you.` : "The first post is always the awkward one. Go on."}</p>
+      <button type="button" class="btn btn-accent mt-3" data-cm-new>Write the first post</button>
+    </div>`;
+
+  root.innerHTML = `
+    <div class="cm-layout">
+      <div class="cm-feed">
+        ${header}
+        ${sortBar}
+        ${communityRoomStrip(topics, slug)}
+        <div class="cm-list" data-cm-list>
+          ${data.posts.length ? data.posts.map(p => communityPostCard(p)).join("") : empty}
+        </div>
+        ${data.has_more ? `<button type="button" class="cm-more" data-cm-more>Load more</button>` : ""}
+      </div>
+      ${communitySidebar(topics, slug)}
+    </div>`;
+
+  communityWireSidebar(root);
+  communityWirePostCards(root);
+
+  root.querySelectorAll("[data-cm-sort]").forEach(el => {
+    el.addEventListener("click", () => {
+      state.communitySort = el.dataset.cmSort;
+      localStorage.setItem("momentum_community_sort", state.communitySort);
+      render();
+    });
+  });
+
+  const win = root.querySelector("[data-cm-window]");
+  if (win) win.addEventListener("change", () => {
+    state.communityWindow = win.value;
+    render();
+  });
+
+  root.querySelectorAll("[data-cm-new]").forEach(el => {
+    el.addEventListener("click", () => communityComposer({
+      mode: "create",
+      topicId: topic ? topic.id : null,
+    }));
+  });
+
+  // Paging appends rather than re-rendering: a re-render would throw away the
+  // scroll position, which on a feed is the one thing the reader was keeping.
+  const more = root.querySelector("[data-cm-more]");
+  if (more) {
+    let offset = data.posts.length;
+    more.addEventListener("click", async () => {
+      more.disabled = true;
+      more.textContent = "Loading…";
+      const p2 = new URLSearchParams({ sort, limit: "25", offset: String(offset) });
+      if (slug) p2.set("topic", slug);
+      if (sort === "top") p2.set("window", state.communityWindow);
+      try {
+        const next = await api(`/api/community/posts?${p2}`);
+        const list = root.querySelector("[data-cm-list]");
+        list.insertAdjacentHTML("beforeend", next.posts.map(p => communityPostCard(p)).join(""));
+        communityWirePostCards(list);
+        offset += next.posts.length;
+        if (next.has_more) { more.disabled = false; more.textContent = "Load more"; }
+        else more.remove();
+      } catch (err) {
+        more.disabled = false;
+        more.textContent = "Load more";
+        showToast(apiErrorMessage(err, "Couldn't load more"), "error");
+      }
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Composer
+// ---------------------------------------------------------------------------
+async function communityComposer({ mode = "create", post = null, topicId = null } = {}) {
+  const topics = await communityLoadTopics();
+  const editing = mode === "edit" && post;
+  const currentTopic = editing ? post.topic_id : topicId;
+  const me = communityCachedMe();
+
+  const root = document.getElementById("modal-root");
+  root.innerHTML = `
+    <div class="modal-backdrop" data-modal-backdrop>
+      <div class="modal-box p-5 cm-composer">
+        <h3 class="font-bold text-base mb-1">${editing ? "Edit your post" : "New post"}</h3>
+        ${me && me.me ? `<p class="cm-posting-as">${communityAvatar(me.me, 20)} Posting as <strong>${esc(me.me.name)}</strong></p>` : ""}
+        <form data-cm-form>
+          <label class="text-xs font-semibold text-gray-500 mb-1 block">Room</label>
+          <select data-cm-topic-select class="mb-3">
+            ${topics.map(t => `<option value="${t.id}" ${String(t.id) === String(currentTopic) ? "selected" : ""}>${esc(t.icon || "")} ${esc(t.name)}</option>`).join("")}
+          </select>
+
+          <label class="text-xs font-semibold text-gray-500 mb-1 block">Title</label>
+          <input type="text" data-cm-title maxlength="300" placeholder="Say it in one line" value="${esc(editing ? post.title : "")}" required />
+
+          <label class="text-xs font-semibold text-gray-500 mb-1 mt-3 block">Body <span class="font-normal text-gray-400">(optional)</span></label>
+          <textarea data-cm-body rows="6" maxlength="20000" placeholder="The rest of it…">${esc(editing ? (post.body || "") : "")}</textarea>
+
+          ${editing && post.attachments && post.attachments.length
+            ? `<p class="cm-existing-note">${post.attachments.length} attachment${post.attachments.length === 1 ? "" : "s"} already on this post. Adding more here won't remove them.</p>` : ""}
+          ${communityImagePicker("post")}
+
+          <label class="text-xs font-semibold text-gray-500 mb-1 mt-3 block">Link <span class="font-normal text-gray-400">(optional)</span></label>
+          <input type="url" data-cm-link maxlength="600" placeholder="https://" value="${esc(editing ? (post.link_url || "") : "")}" />
+
+          <div class="flex justify-end gap-2 mt-4">
+            <button type="button" class="btn btn-ghost" data-cm-cancel>Cancel</button>
+            <button type="submit" class="btn btn-accent" data-cm-submit>${editing ? "Save changes" : "Post"}</button>
+          </div>
+        </form>
+      </div>
+    </div>`;
+  root.classList.remove("hidden");
+
+  const picker = communityWirePicker(root, "post");
+
+  root.querySelector("[data-cm-cancel]").addEventListener("click", closeModal);
+  root.querySelector("[data-modal-backdrop]").addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) closeModal();
+  });
+
+  root.querySelector("[data-cm-form]").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const btn = root.querySelector("[data-cm-submit]");
+    const payload = {
+      title: root.querySelector("[data-cm-title]").value.trim(),
+      body: root.querySelector("[data-cm-body]").value.trim() || null,
+      link_url: root.querySelector("[data-cm-link]").value.trim() || null,
+      topic_id: Number(root.querySelector("[data-cm-topic-select]").value) || null,
+      attachment_ids: picker.ids(),
+    };
+    if (!payload.title) { showToast("A post needs a title", "warning"); return; }
+
+    btn.disabled = true;
+    btn.textContent = editing ? "Saving…" : "Posting…";
+    try {
+      if (editing) {
+        await api(`/api/community/posts/${post.id}`, { method: "PATCH", body: JSON.stringify(payload) });
+        showToast("Post updated", "success");
+        closeModal();
+        invalidateApiCache("/api/community");
+        render();
+      } else {
+        const created = await api("/api/community/posts", { method: "POST", body: JSON.stringify(payload) });
+        showToast("Posted", "success");
+        closeModal();
+        invalidateApiCache("/api/community");
+        _communityTopics = null;   // the room's post count just moved
+        communitySetMe(null);      // and so did my post count
+        communityGoto("post", { postId: created.id });
+      }
+    } catch (err) {
+      btn.disabled = false;
+      btn.textContent = editing ? "Save changes" : "Post";
+      showToast(apiErrorMessage(err, "Couldn't save that post"), "error");
+    }
+  });
+
+  _activateModal(root, closeModal);
+}
+
+// ---------------------------------------------------------------------------
+// Post permalink + comment thread
+// ---------------------------------------------------------------------------
+const COMMENT_SORTS = [
+  { id: "top", label: "Top" },
+  { id: "new", label: "New" },
+  { id: "old", label: "Oldest" },
+];
+
+// Depth is capped for layout, not for data. Past this the indent rail would
+// squeeze the text column to nothing on a phone, so deeper replies sit at the
+// cap and stay readable; the tree itself is unchanged.
+const COMMENT_MAX_INDENT = 6;
+
+function communityCommentNode(c, depth = 0) {
+  const flat = depth > COMMENT_MAX_INDENT;
+  const gone = c.deleted;
+  return `
+    <div class="cm-comment ${gone ? "is-gone" : ""} ${flat ? "cm-comment--flat" : ""}" data-cm-comment="${c.id}">
+      <div class="cm-comment-rail" data-cm-collapse title="Collapse thread"></div>
+      <div class="cm-comment-main">
+        <div class="cm-comment-meta">
+          ${communityAvatar(c.author, 20)}
+          ${gone || !c.author.id
+            ? `<span class="cm-comment-author is-gone">${esc(c.author.name)}</span>`
+            : `<button type="button" class="cm-comment-author" data-cm-user="${c.author.id}">${esc(c.author.name)}</button>`}
+          ${!gone && c.author.headline ? `<span class="cm-author-headline">${esc(c.author.headline)}</span>` : ""}
+          <span class="cm-meta-dot">·</span>
+          <span class="cm-comment-time">${esc(timeAgo(c.created_at))}</span>
+          ${c.edited_at ? `<span class="cm-meta-dot">·</span><span class="cm-comment-time">edited</span>` : ""}
+        </div>
+        ${c.body ? `<div class="cm-comment-body">${gone ? esc(c.body) : communityBody(c.body)}</div>` : `<div class="cm-comment-body"></div>`}
+        ${communityAttachments(c.attachments, { compact: true })}
+        <div class="cm-comment-actions">
+          ${gone ? "" : communityVoteGutter("comment", c.id, c.score, c.my_vote, true)}
+          ${gone ? "" : `<button type="button" class="cm-action cm-action--sm" data-cm-reply="${c.id}">Reply</button>`}
+          ${c.is_mine && !gone ? `<button type="button" class="cm-action cm-action--sm" data-cm-cedit="${c.id}">Edit</button>` : ""}
+          ${c.can_delete ? `<button type="button" class="cm-action cm-action--sm cm-action--danger" data-cm-cdelete="${c.id}" data-cm-mine="${c.is_mine ? 1 : 0}">${c.is_mine ? "Delete" : "Remove"}</button>` : ""}
+        </div>
+        <div class="cm-reply-slot" data-cm-reply-slot="${c.id}"></div>
+      </div>
+      ${c.replies && c.replies.length
+        ? `<div class="cm-replies">${c.replies.map(r => communityCommentNode(r, depth + 1)).join("")}</div>`
+        : ""}
+    </div>`;
+}
+
+async function renderCommunityPostPage(root, topics) {
+  let data;
+  try {
+    data = await api(`/api/community/posts/${state.communityPostId}?sort=${state.communityCommentSort}`);
+  } catch (err) {
+    root.innerHTML = `<div class="card p-6 text-center">
+      <p class="font-semibold mb-1">That post isn't here</p>
+      <p class="text-sm text-gray-500 mb-4">${esc(apiErrorMessage(err, "It may have been deleted"))}</p>
+      <button type="button" class="btn btn-accent" data-cm-back>Back to the feed</button></div>`;
+    const back = root.querySelector("[data-cm-back]");
+    if (back) back.addEventListener("click", () => communityGoto("feed"));
+    return;
+  }
+
+  const p = data.post;
+  const canReply = !p.deleted && !p.removed_by_admin;
+  const me = communityCachedMe();
+
+  root.innerHTML = `
+    <div class="cm-layout">
+      <div class="cm-feed">
+        <button type="button" class="cm-back" data-cm-back>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
+          ${p.topic ? esc(p.topic.name) : "Community"}
+        </button>
+
+        ${communityPostCard(p, { full: true })}
+
+        ${canReply ? `
+        <div class="cm-card cm-replybox">
+          <p class="cm-replybox-label">${me && me.me ? `${communityAvatar(me.me, 20)} Commenting as <strong>${esc(me.me.name)}</strong>` : "Add a comment"}</p>
+          <textarea data-cm-newcomment rows="3" placeholder="What do you think?"></textarea>
+          ${communityImagePicker("comment")}
+          <div class="flex justify-end mt-2">
+            <button type="button" class="btn btn-accent" data-cm-postcomment>Comment</button>
+          </div>
+        </div>` : ""}
+
+        <div class="cm-thread-head">
+          <span class="cm-thread-count">${p.comment_count || 0} ${p.comment_count === 1 ? "comment" : "comments"}</span>
+          <div class="view-tabs cm-sorts cm-sorts--sm">
+            ${COMMENT_SORTS.map(s => `<button type="button" class="view-tab ${s.id === state.communityCommentSort ? "active" : ""}" data-cm-csort="${s.id}">${s.label}</button>`).join("")}
+          </div>
+        </div>
+
+        <div class="cm-thread" data-cm-thread>
+          ${data.comments.length
+            ? data.comments.map(c => communityCommentNode(c, 0)).join("")
+            : `<div class="cm-empty cm-empty--sm"><p class="cm-empty-body">No comments yet. Say the first thing.</p></div>`}
+        </div>
+      </div>
+      ${communitySidebar(topics, p.topic ? p.topic.slug : null)}
+    </div>`;
+
+  communityWireSidebar(root);
+  communityWirePostCards(root);
+  communityWireThread(root);
+
+  root.querySelectorAll("[data-cm-back]").forEach(el =>
+    el.addEventListener("click", () => communityGoto("feed")));
+
+  root.querySelectorAll("[data-cm-csort]").forEach(el =>
+    el.addEventListener("click", () => {
+      state.communityCommentSort = el.dataset.cmCsort;
+      render();
+    }));
+
+  const newBox = root.querySelector("[data-cm-newcomment]");
+  const postBtn = root.querySelector("[data-cm-postcomment]");
+  if (postBtn) {
+    const picker = communityWirePicker(root.querySelector(".cm-replybox"), "comment");
+    const submit = async () => {
+      const body = newBox.value.trim();
+      const images = picker.ids();
+      if (!body && !images.length) { showToast("Write something, or attach a file", "warning"); return; }
+      postBtn.disabled = true;
+      postBtn.textContent = "Posting…";
+      try {
+        await api(`/api/community/posts/${p.id}/comments`, {
+          method: "POST",
+          body: JSON.stringify({ body, parent_id: null, attachment_ids: images }),
+        });
+        newBox.value = "";
+        picker.reset();
+        invalidateApiCache("/api/community");
+        communitySetMe(null);   // my comment count moved
+        render();
+      } catch (err) {
+        postBtn.disabled = false;
+        postBtn.textContent = "Comment";
+        showToast(apiErrorMessage(err, "Couldn't post that comment"), "error");
+      }
+    };
+    postBtn.addEventListener("click", submit);
+    // Ctrl/Cmd+Enter submits. Plain Enter has to stay a newline — a comment
+    // box is prose, and people press Enter mid-thought.
+    newBox.addEventListener("keydown", (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); submit(); }
+    });
+  }
+}
+
+function communityWireThread(root) {
+  const thread = root.querySelector("[data-cm-thread]");
+  if (!thread) return;
+  communityWireVotes(thread);
+  communityWireLightbox(thread);
+
+  thread.querySelectorAll("[data-cm-user]").forEach(el =>
+    el.addEventListener("click", () => communityGoto("user", { userId: Number(el.dataset.cmUser) })));
+
+  // Clicking the rail beside a comment folds it and everything under it —
+  // the one gesture that makes a long argument navigable.
+  thread.querySelectorAll("[data-cm-collapse]").forEach(rail => {
+    rail.addEventListener("click", () => {
+      rail.closest("[data-cm-comment]").classList.toggle("is-collapsed");
+    });
+  });
+
+  thread.querySelectorAll("[data-cm-reply]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.cmReply;
+      const slot = thread.querySelector(`[data-cm-reply-slot="${id}"]`);
+      if (slot.dataset.open === "1") { slot.innerHTML = ""; slot.dataset.open = "0"; return; }
+      slot.dataset.open = "1";
+      slot.innerHTML = `
+        <div class="cm-inline-reply">
+          <textarea rows="3" placeholder="Reply…" data-cm-reply-text></textarea>
+          ${communityImagePicker("reply-" + id)}
+          <div class="flex justify-end gap-2 mt-2">
+            <button type="button" class="btn btn-ghost btn-sm" data-cm-reply-cancel>Cancel</button>
+            <button type="button" class="btn btn-accent btn-sm" data-cm-reply-send>Reply</button>
+          </div>
+        </div>`;
+      const ta = slot.querySelector("[data-cm-reply-text]");
+      const picker = communityWirePicker(slot, "reply-" + id);
+      ta.focus();
+      slot.querySelector("[data-cm-reply-cancel]").addEventListener("click", () => {
+        slot.innerHTML = ""; slot.dataset.open = "0";
+      });
+      const send = slot.querySelector("[data-cm-reply-send]");
+      const submit = async () => {
+        const body = ta.value.trim();
+        const images = picker.ids();
+        if (!body && !images.length) return;
+        send.disabled = true;
+        send.textContent = "Sending…";
+        try {
+          await api(`/api/community/posts/${state.communityPostId}/comments`, {
+            method: "POST",
+            body: JSON.stringify({ body, parent_id: Number(id), attachment_ids: images }),
+          });
+          invalidateApiCache("/api/community");
+          communitySetMe(null);
+          render();
+        } catch (err) {
+          send.disabled = false;
+          send.textContent = "Reply";
+          showToast(apiErrorMessage(err, "Couldn't post that reply"), "error");
+        }
+      };
+      send.addEventListener("click", submit);
+      ta.addEventListener("keydown", (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === "Enter") { e.preventDefault(); submit(); }
+      });
+    });
+  });
+
+  thread.querySelectorAll("[data-cm-cedit]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const node = btn.closest("[data-cm-comment]");
+      const bodyEl = node.querySelector(".cm-comment-body");
+      if (bodyEl.dataset.editing === "1") return;
+      const original = bodyEl.innerText;
+      bodyEl.dataset.editing = "1";
+      bodyEl.innerHTML = `
+        <textarea rows="4" class="cm-edit-text" data-cm-edit-text></textarea>
+        <div class="flex justify-end gap-2 mt-2">
+          <button type="button" class="btn btn-ghost btn-sm" data-cm-edit-cancel>Cancel</button>
+          <button type="button" class="btn btn-accent btn-sm" data-cm-edit-save>Save</button>
+        </div>`;
+      const ta = bodyEl.querySelector("[data-cm-edit-text]");
+      ta.value = original;
+      ta.focus();
+      bodyEl.querySelector("[data-cm-edit-cancel]").addEventListener("click", () => {
+        bodyEl.dataset.editing = "0";
+        bodyEl.innerHTML = communityBody(original);
+      });
+      bodyEl.querySelector("[data-cm-edit-save]").addEventListener("click", async () => {
+        try {
+          await api(`/api/community/comments/${btn.dataset.cmCedit}`, {
+            method: "PATCH", body: JSON.stringify({ body: ta.value.trim() }),
+          });
+          invalidateApiCache("/api/community");
+          render();
+        } catch (err) {
+          showToast(apiErrorMessage(err, "Couldn't save that edit"), "error");
+        }
+      });
+    });
+  });
+
+  thread.querySelectorAll("[data-cm-cdelete]").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      const mine = btn.dataset.cmMine === "1";
+      const ok = await showConfirmModal({
+        title: mine ? "Delete this comment?" : "Remove this comment?",
+        message: mine
+          ? "Replies underneath it stay put. Yours will show as deleted."
+          : "It will show as removed by a moderator.",
+        confirmLabel: mine ? "Delete" : "Remove",
+      });
+      if (!ok) return;
+      try {
+        await api(`/api/community/comments/${btn.dataset.cmCdelete}`, { method: "DELETE" });
+        invalidateApiCache("/api/community");
+        render();
+      } catch (err) {
+        showToast(apiErrorMessage(err, "Couldn't delete that"), "error");
+      }
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// A person's page
+// ---------------------------------------------------------------------------
+async function renderCommunityUserPage(root, topics) {
+  let data;
+  try {
+    data = await api(`/api/community/users/${state.communityUserId}`);
+  } catch (err) {
+    root.innerHTML = `<div class="card p-6 text-center">
+      <p class="font-semibold mb-1">No one here by that name</p>
+      <p class="text-sm text-gray-500 mb-4">${esc(apiErrorMessage(err, "That account doesn't exist"))}</p>
+      <button type="button" class="btn btn-accent" data-cm-back>Back to the feed</button></div>`;
+    const back = root.querySelector("[data-cm-back]");
+    if (back) back.addEventListener("click", () => communityGoto("feed"));
+    return;
+  }
+
+  const a = data.author;
+  root.innerHTML = `
+    <div class="cm-layout">
+      <div class="cm-feed">
+        <button type="button" class="cm-back" data-cm-back>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg>
+          Community
+        </button>
+
+        <div class="cm-card cm-userhead">
+          ${communityAvatar(a, 56)}
+          <div class="cm-userhead-id">
+            <h2 class="cm-header-title">${esc(a.name)}</h2>
+            ${a.headline ? `<p class="cm-header-sub">${esc(a.headline)}</p>` : ""}
+            ${data.joined_at ? `<p class="cm-userhead-joined">Here since ${esc(new Date(data.joined_at + (String(data.joined_at).endsWith("Z") ? "" : "Z")).toLocaleDateString(undefined, { month: "long", year: "numeric" }))}</p>` : ""}
+          </div>
+          <div class="cm-me-stats cm-userhead-stats">
+            <div><strong>${communityScore(data.karma)}</strong><span>karma</span></div>
+            <div><strong>${data.post_count}</strong><span>posts</span></div>
+            <div><strong>${data.comment_count}</strong><span>comments</span></div>
+          </div>
+          ${data.is_me ? `<button type="button" class="btn btn-ghost cm-editbio" data-cm-editprofile>Edit profile</button>` : ""}
+        </div>
+
+        <div class="cm-list" data-cm-list>
+          ${data.posts.length
+            ? data.posts.map(p => communityPostCard(p)).join("")
+            : `<div class="cm-empty cm-empty--sm"><p class="cm-empty-body">Nothing posted yet.</p></div>`}
+        </div>
+      </div>
+      ${communitySidebar(topics, null)}
+    </div>`;
+
+  communityWireSidebar(root);
+  communityWirePostCards(root);
+  root.querySelectorAll("[data-cm-back]").forEach(el =>
+    el.addEventListener("click", () => communityGoto("feed")));
+
+  // Name, photo and headline all live on the account, so this sends people to
+  // the page that already edits them rather than growing a second editor here
+  // that could disagree with it.
+  const edit = root.querySelector("[data-cm-editprofile]");
+  if (edit) edit.addEventListener("click", () => navigate("profile"));
+}
+
+// ============================================================================
+// AI edit — change the CV by describing the change
+// ============================================================================
+// The shape of this is set by one decision: the model proposes, the person
+// decides. A reply arrives with a list of changes, each rendered as the
+// section's current text beside what it would become, and nothing touches
+// EDITOR.values until Apply is pressed. That is why there is no streaming and
+// no "it's already done, press undo" — on a document someone sends to
+// employers, seeing the change first is worth more than seeing it sooner.
+
+const RB_AI = {
+  ready: null,        // null = not asked yet, true/false once /status answers
+  model: "",
+  busy: false,
+  turns: [],          // { role, text, changes?, applied?, skipped?, ext? }
+  source: "",         // "builtin" or a key of RB_AI_EXT
+  guide: "",          // instructions for the person's own chatbot, from the server
+};
+
+// The person's own ChatGPT, Claude, Grok or Gemini account. These sites
+// refuse to be shown inside another page and free accounts have no API, so a
+// session can't live in here. What does work: open their site in a new tab
+// with the request already typed (or on the clipboard), and read the answer
+// back when they paste it. The server checks that answer exactly as it checks
+// the built in model's, so a pasted answer can't slip in invented roles.
+const RB_AI_EXT = {
+  chatgpt: { name: "ChatGPT", home: "https://chatgpt.com/",           q: "https://chatgpt.com/?q=" },
+  claude:  { name: "Claude",  home: "https://claude.ai/new",           q: "https://claude.ai/new?q=" },
+  grok:    { name: "Grok",    home: "https://grok.com/",               q: "https://grok.com/?q=" },
+  // Gemini has no documented way to prefill, so it gets the clipboard only.
+  gemini:  { name: "Gemini",  home: "https://gemini.google.com/app",   q: "" },
+};
+// Past this the URL risks being refused outright; the clipboard still works.
+const RB_AI_PREFILL_MAX = 7000;
+
+// With the Momentum Chrome extension installed (1.3 or later) none of the copy
+// and paste is needed: the extension opens the AI in a small window of its
+// own, types the request, waits for the answer and hands it back here. Its
+// content script announces itself on this page; everything goes through
+// window.postMessage on this origin only.
+const RB_AI_BRIDGE = { ready: false, version: "" };
+const RB_AI_BRIDGE_TAG = "__momentumAiBridge";
+
+function rbAiBridgePost(payload) {
+  window.postMessage({ [RB_AI_BRIDGE_TAG]: true, dir: "to-ext", ...payload }, location.origin);
+}
+
+window.addEventListener("message", (e) => {
+  if (e.source !== window || e.origin !== location.origin) return;
+  const m = e.data;
+  if (!m || m[RB_AI_BRIDGE_TAG] !== true || m.dir !== "to-app") return;
+  if (m.type === "hello") {
+    const was = RB_AI_BRIDGE.ready;
+    RB_AI_BRIDGE.ready = true; RB_AI_BRIDGE.version = m.version || "";
+    if (!was && document.getElementById("rbx-ai-thread")) { rbAiPaintSource(); rbAiRenderThread(); }
+    return;
+  }
+  if (m.type === "event") rbAiBridgeEvent(m);
+});
+if (document.documentElement.dataset.momentumAiBridge) RB_AI_BRIDGE.ready = true;
+rbAiBridgePost({ type: "hello" });
+
+const RB_AI_STAGES = [
+  ["opening", "Opening"],
+  ["typing", "Typing your request"],
+  ["waiting", "Waiting for the answer"],
+  ["checking", "Checking it against your CV"],
+];
+
+function rbAiBridgeEvent(m) {
+  const i = RB_AI.turns.findIndex(t => t.ext && t.ext.id && t.ext.id === m.id);
+  if (i < 0) return;
+  const e = RB_AI.turns[i].ext;
+  if (!e.auto || !e.waiting) return;
+  if (m.stage === "done") {
+    e.stage = "checking";
+    e.draft = m.text || "";
+    rbAiImport(i);
+    return;
+  }
+  if (m.stage === "error") {
+    e.auto = false;
+    e.opened = true;
+    e.err = m.error || "Something went wrong in the AI window.";
+    rbAiRenderThread();
+    return;
+  }
+  e.stage = m.stage === "loading" ? "opening" : m.stage;
+  rbAiRenderThread();
+}
+
+function rbAiLoadSource() {
+  let saved = "";
+  try { saved = localStorage.getItem("rbAiSource") || ""; } catch {}
+  if (saved === "builtin" || RB_AI_EXT[saved]) return saved;
+  return RB_AI.ready === false ? "chatgpt" : "builtin";
+}
+
+function rbAiSetSource(src) {
+  RB_AI.source = src;
+  try { localStorage.setItem("rbAiSource", src); } catch {}
+  rbAiPaintSource();
+  rbAiRenderThread();
+}
+
+function rbAiPaintSource() {
+  const wrap = document.getElementById("rbx-ai-source");
+  if (wrap) wrap.querySelectorAll("[data-ai-src]").forEach(b => {
+    const on = b.dataset.aiSrc === RB_AI.source;
+    b.setAttribute("aria-checked", on ? "true" : "false");
+    b.tabIndex = on ? 0 : -1;
+    b.classList.toggle("is-on", on);
+  });
+  const ext = RB_AI_EXT[RB_AI.source];
+  const model = document.getElementById("rbx-ai-model");
+  if (model) {
+    const txt = ext ? `your ${ext.name} account` : (RB_AI.model ? `via ${RB_AI.model}` : "");
+    model.textContent = txt;
+    model.title = ext ? `Answers come from your own ${ext.name}, in a new tab` : (RB_AI.model ? `Answers come from ${RB_AI.model}` : "");
+  }
+  const hint = document.getElementById("rbx-ai-hint");
+  if (hint) hint.textContent = ext
+    ? (RB_AI_BRIDGE.ready
+        ? `Sends to your ${ext.name} in a small window and brings the answer back`
+        : `Opens ${ext.name} in a new tab with your request ready`)
+    : "Enter to send · Shift+Enter for a new line";
+  rbAiSetComposerEnabled(!RB_AI.busy);
+}
+
+const RB_AI_SUGGESTIONS = [
+  "Tighten my summary to two sentences",
+  "Make my DWP bullets lead with the outcome, not the task",
+  "Rewrite my skills so the categories read consistently",
+  "Cut the whole CV down so it fits one page",
+];
+
+async function rbAiInit() {
+  const model = document.getElementById("rbx-ai-model");
+  if (RB_AI.ready === null) {
+    try {
+      const st = await api("/api/resume-builder/ai-edit/status");
+      RB_AI.ready = !!st.ready;
+      RB_AI.model = st.model || "";
+    } catch {
+      // A failed status check is not a failed feature — let them try.
+      RB_AI.ready = true; RB_AI.model = "";
+    }
+  }
+  if (!RB_AI.source) RB_AI.source = rbAiLoadSource();
+  rbAiPaintSource();
+  rbAiRenderThread();
+}
+
+function rbAiRenderThread() {
+  const thread = document.getElementById("rbx-ai-thread");
+  if (!thread) return;
+
+  if (RB_AI.ready === false && RB_AI.source === "builtin" && !RB_AI.turns.length) {
+    thread.innerHTML = `
+      <div class="rbx-ai-empty">
+        <span class="rbx-ai-empty-ico" aria-hidden="true">🔌</span>
+        <p class="rbx-ai-empty-title">No built in model connected</p>
+        <p class="rbx-ai-empty-body">Use your own free ChatGPT, Claude, Grok or Gemini account instead, or connect a model on the AI Model page.</p>
+        <div class="rbx-ai-chips">
+          ${Object.entries(RB_AI_EXT).map(([k, v]) => `<button type="button" class="rbx-ai-chip" data-ai-pick="${k}">Use my ${esc(v.name)}</button>`).join("")}
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm mt-3" id="rbx-ai-goto-model">Open AI Model settings</button>
+      </div>`;
+    const go = document.getElementById("rbx-ai-goto-model");
+    if (go) go.addEventListener("click", () => navigate("ai"));
+    thread.querySelectorAll("[data-ai-pick]").forEach(b =>
+      b.addEventListener("click", () => rbAiSetSource(b.dataset.aiPick)));
+    rbAiSetComposerEnabled(false);
+    return;
+  }
+
+  if (!RB_AI.turns.length) {
+    thread.innerHTML = `
+      <div class="rbx-ai-empty">
+        <span class="rbx-ai-empty-ico" aria-hidden="true">✦</span>
+        <p class="rbx-ai-empty-title">Tell me what to change</p>
+        <p class="rbx-ai-empty-body">${RB_AI_EXT[RB_AI.source]
+          ? `Type what you want and ${esc(RB_AI_EXT[RB_AI.source].name)} opens in a new tab with your CV and request ready. Paste its answer back here and you'll see the change before anything is applied.`
+          : "I can only work from what's already on your CV, so I won't invent employers, dates or numbers. Try one of these:"}</p>
+        <div class="rbx-ai-chips">
+          ${RB_AI_SUGGESTIONS.map(t => `<button type="button" class="rbx-ai-chip" data-ai-suggest="${esc(t)}">${esc(t)}</button>`).join("")}
+        </div>
+      </div>`;
+    thread.querySelectorAll("[data-ai-suggest]").forEach(b => b.addEventListener("click", () => {
+      const box = document.getElementById("rbx-ai-input");
+      box.value = b.dataset.aiSuggest;
+      box.focus();
+    }));
+    rbAiSetComposerEnabled(true);
+    return;
+  }
+
+  thread.innerHTML = RB_AI.turns.map((t, i) => t.role === "user"
+    ? `<div class="rbx-ai-msg rbx-ai-msg--me"><div class="rbx-ai-bubble">${esc(t.text)}</div></div>`
+    : t.ext && t.ext.waiting ? rbAiExtCard(t, i)
+    : `<div class="rbx-ai-msg">
+         ${t.ext ? `<span class="rbx-ai-from">From your ${esc(RB_AI_EXT[t.ext.src]?.name || "AI")}</span>` : ""}
+         <div class="rbx-ai-bubble rbx-ai-bubble--ai">
+           ${t.error ? `<p class="rbx-ai-err">${esc(t.text)}</p>` : `<p>${esc(t.text)}</p>`}
+           ${t.skipped && t.skipped.length ? `<p class="rbx-ai-skipped">Ignored a change to ${t.skipped.map(esc).join(", ")}. That field can't be edited here.</p>` : ""}
+         </div>
+         ${rbAiChangesCard(t, i)}
+       </div>`).join("");
+
+  thread.querySelectorAll("[data-ai-import]").forEach(b =>
+    b.addEventListener("click", () => rbAiImport(+b.dataset.aiImport)));
+  thread.querySelectorAll("[data-ai-focus]").forEach(b =>
+    b.addEventListener("click", () => rbAiBridgePost({ type: "focus" })));
+  thread.querySelectorAll("[data-ai-manual]").forEach(b =>
+    b.addEventListener("click", () => {
+      const t = RB_AI.turns[+b.dataset.aiManual];
+      if (!t || !t.ext) return;
+      t.ext.auto = false;
+      rbAiRenderThread();
+    }));
+  thread.querySelectorAll("[data-ai-getext]").forEach(b =>
+    b.addEventListener("click", () => { if (typeof openExtensionPanel === "function") openExtensionPanel(); }));
+  thread.querySelectorAll("[data-ai-copy]").forEach(b =>
+    b.addEventListener("click", () => rbAiCopyAgain(+b.dataset.aiCopy)));
+  thread.querySelectorAll("[data-ai-paste]").forEach(box =>
+    box.addEventListener("input", () => {
+      const t = RB_AI.turns[+box.dataset.aiPaste];
+      if (t && t.ext) t.ext.draft = box.value;
+    }));
+  thread.querySelectorAll("[data-ai-apply]").forEach(b =>
+    b.addEventListener("click", () => rbAiApply(+b.dataset.aiApply)));
+  thread.querySelectorAll("[data-ai-discard]").forEach(b =>
+    b.addEventListener("click", () => rbAiDiscard(+b.dataset.aiDiscard)));
+  thread.querySelectorAll("[data-ai-toggle]").forEach(b =>
+    b.addEventListener("click", () => {
+      const box = thread.querySelector(`[data-ai-diff="${b.dataset.aiToggle}"]`);
+      if (!box) return;
+      const open = box.classList.toggle("is-open");
+      b.textContent = open ? "Hide the current text" : "Compare with what's there now";
+    }));
+  thread.scrollTop = thread.scrollHeight;
+  rbAiSetComposerEnabled(!RB_AI.busy);
+}
+
+function rbAiChangesCard(turn, idx) {
+  if (!turn.changes || !turn.changes.length) return "";
+  const done = turn.applied;
+  return `
+    <div class="rbx-ai-changes ${done ? "is-applied" : ""}">
+      <div class="rbx-ai-changes-head">
+        <span class="rbx-ai-changes-n">${turn.changes.length} ${turn.changes.length === 1 ? "section" : "sections"}</span>
+        ${done ? `<span class="rbx-ai-applied-tag">Applied</span>` : ""}
+      </div>
+      ${turn.changes.map((c, ci) => `
+        <div class="rbx-ai-change">
+          <div class="rbx-ai-change-head">
+            <strong>${esc(c.label)}</strong>
+            ${c.why ? `<span class="rbx-ai-why">${esc(c.why)}</span>` : ""}
+          </div>
+          <pre class="rbx-ai-new">${esc(c.new)}</pre>
+          ${(c.old || "").trim() ? `
+            <button type="button" class="rbx-ai-diff-toggle" data-ai-toggle="${idx}-${ci}">Compare with what's there now</button>
+            <div class="rbx-ai-diff" data-ai-diff="${idx}-${ci}">
+              <p class="rbx-ai-diff-label">Currently</p>
+              <pre class="rbx-ai-old">${esc(c.old)}</pre>
+            </div>` : `<p class="rbx-ai-diff-label">This section is empty at the moment.</p>`}
+        </div>`).join("")}
+      ${done ? "" : `
+        <div class="rbx-ai-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-ai-discard="${idx}">Discard</button>
+          <button type="button" class="btn btn-accent btn-sm" data-ai-apply="${idx}">Apply ${turn.changes.length === 1 ? "this change" : "these changes"}</button>
+        </div>`}
+    </div>`;
+}
+
+function rbAiSetComposerEnabled(on) {
+  const box = document.getElementById("rbx-ai-input");
+  const send = document.getElementById("rbx-ai-send");
+  if (box) box.disabled = !on;
+  const ext = RB_AI_EXT[RB_AI.source];
+  if (send) { send.disabled = !on; send.textContent = on ? (ext ? `Ask ${ext.name}` : "Send") : "Thinking…"; }
+}
+
+// Only the fields the endpoint will consider. Sending the whole of
+// EDITOR.values would put the person's phone number and address into a model
+// prompt for no reason — the server refuses to edit them anyway.
+const RB_AI_FIELDS = ["title", "summary", "skills", "experience", "education",
+                      "projects", "publications", "certifications", "languages"];
+
+function rbAiCurrentFields() {
+  const out = {};
+  RB_AI_FIELDS.forEach(f => { out[f] = EDITOR.values[f] ?? ""; });
+  return out;
+}
+
+async function rbAiSend() {
+  const box = document.getElementById("rbx-ai-input");
+  if (!box) return;
+  const prompt = box.value.trim();
+  if (!prompt || RB_AI.busy) return;
+  if (RB_AI_EXT[RB_AI.source]) return rbAiSendExternal(prompt, box);
+
+  RB_AI.busy = true;
+  RB_AI.turns.push({ role: "user", text: prompt });
+  box.value = "";
+  rbAiRenderThread();
+
+  const thread = document.getElementById("rbx-ai-thread");
+  if (thread) {
+    thread.insertAdjacentHTML("beforeend",
+      `<div class="rbx-ai-msg" id="rbx-ai-pending"><div class="rbx-ai-bubble rbx-ai-bubble--ai rbx-ai-thinking">
+         <span></span><span></span><span></span></div></div>`);
+    thread.scrollTop = thread.scrollHeight;
+  }
+
+  try {
+    const res = await api("/api/resume-builder/ai-edit", {
+      method: "POST",
+      body: JSON.stringify({
+        prompt,
+        fields: rbAiCurrentFields(),
+        // Only the text of earlier turns — the proposals themselves would
+        // double the prompt for no benefit.
+        history: RB_AI.turns.slice(0, -1).slice(-6).map(t => ({
+          role: t.role === "user" ? "user" : "assistant",
+          content: t.text || "",
+        })),
+      }),
+    });
+    RB_AI.turns.push({
+      role: "assistant",
+      text: res.reply || "",
+      changes: res.changes || [],
+      skipped: res.skipped_fields || [],
+      applied: false,
+    });
+    if (res.model && res.model !== RB_AI.model) {
+      RB_AI.model = res.model;
+      const m = document.getElementById("rbx-ai-model");
+      if (m) m.textContent = `via ${res.model}`;
+    }
+  } catch (err) {
+    if (err && err.status === 503) {
+      RB_AI.ready = false;
+      RB_AI.turns.pop();   // the question was never really asked
+    } else {
+      RB_AI.turns.push({
+        role: "assistant", error: true,
+        text: apiErrorMessage(err, "That didn't go through. Try again."),
+      });
+    }
+  } finally {
+    RB_AI.busy = false;
+    document.getElementById("rbx-ai-pending")?.remove();
+    rbAiRenderThread();
+  }
+}
+
+// ---- your own ChatGPT / Claude / Grok / Gemini ------------------------------
+
+function rbAiExternalText(prompt) {
+  const cv = RB_AI_FIELDS.map(f => `### ${f}\n${(EDITOR.values[f] ?? "").trim() || "(empty)"}`).join("\n\n");
+  return `${RB_AI.guide}\n\n==== MY CV ====\n${cv}\n\n==== WHAT I WANT CHANGED ====\n${prompt}\n\n` +
+         "Reply with the JSON object in a ```json code block, following the rules above.";
+}
+
+async function rbAiCopy(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch {}
+  // Older browsers, or a page that lost focus: the textarea trick still works.
+  try {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.setAttribute("readonly", "");
+    ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    const ok = document.execCommand("copy");
+    ta.remove();
+    return ok;
+  } catch { return false; }
+}
+
+async function rbAiSendExternal(prompt, box) {
+  const ext = RB_AI_EXT[RB_AI.source];
+  const src = RB_AI.source;
+  if (!RB_AI.guide) {
+    try {
+      const g = await api("/api/resume-builder/ai-edit/external-guide");
+      RB_AI.guide = g.guide || "";
+    } catch (err) {
+      RB_AI.turns.push({ role: "user", text: prompt });
+      RB_AI.turns.push({ role: "assistant", error: true,
+        text: apiErrorMessage(err, "Couldn't prepare the request. Try again.") });
+      box.value = "";
+      rbAiRenderThread();
+      return;
+    }
+  }
+  const text = rbAiExternalText(prompt);
+
+  if (RB_AI_BRIDGE.ready) {
+    // One AI window, one request at a time: a newer request replaces the
+    // chat an older one was waiting on, so that one won't come back by itself.
+    RB_AI.turns.forEach(t => {
+      if (t.ext && t.ext.auto && t.ext.waiting) {
+        t.ext.auto = false;
+        t.ext.err = "You sent a newer request, so this one won't come back by itself. Paste its answer here if you still want it.";
+      }
+    });
+    const id = `ai${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
+    RB_AI.turns.push({ role: "user", text: prompt });
+    RB_AI.turns.push({ role: "assistant", text: "",
+      ext: { src, prompt, text, url: ext.home, id, auto: true, stage: "opening", waiting: true,
+             copied: false, prefilled: false, opened: true, draft: "", err: "" } });
+    box.value = "";
+    rbAiRenderThread();
+    rbAiBridgePost({ type: "ask", id, provider: src, text });
+    return;
+  }
+
+  // Copy first, while this page still has focus: once the new tab opens the
+  // clipboard write is refused.
+  const copied = await rbAiCopy(text);
+  const enc = encodeURIComponent(text);
+  const prefilled = !!ext.q && enc.length <= RB_AI_PREFILL_MAX;
+  const url = prefilled ? ext.q + enc : ext.home;
+  let opened = false;
+  try {
+    const w = window.open(url, "_blank");
+    if (w) { opened = true; try { w.opener = null; } catch {} }
+  } catch {}
+
+  RB_AI.turns.push({ role: "user", text: prompt });
+  RB_AI.turns.push({ role: "assistant", text: "",
+    ext: { src, prompt, text, url, copied, prefilled, opened, waiting: true, draft: "", err: "" } });
+  box.value = "";
+  rbAiRenderThread();
+  const paste = document.querySelector(`[data-ai-paste="${RB_AI.turns.length - 1}"]`);
+  if (paste && !opened) paste.focus({ preventScroll: true });
+}
+
+function rbAiExtCard(t, i) {
+  const e = t.ext;
+  const name = RB_AI_EXT[e.src]?.name || "your AI";
+  if (e.auto) {
+    const at = Math.max(0, RB_AI_STAGES.findIndex(([k]) => k === (e.busy ? "checking" : e.stage)));
+    return `
+    <div class="rbx-ai-msg">
+      <div class="rbx-ai-ext rbx-ai-ext--auto" aria-busy="true">
+        <p class="rbx-ai-ext-title">Working in your ${esc(name)} window</p>
+        <ol class="rbx-ai-stages">
+          ${RB_AI_STAGES.map(([k, label], si) => `
+            <li class="${si < at ? "is-done" : si === at ? "is-now" : ""}">
+              <span class="rbx-ai-stage-dot" aria-hidden="true"></span>
+              ${esc(k === "opening" ? `${label} ${name}` : label)}${si === at ? `<span class="rbx-ai-sr"> (in progress)</span>` : ""}
+            </li>`).join("")}
+        </ol>
+        <p class="rbx-ai-ext-note">If ${esc(name)} asks you to sign in, do that in its window, then press Ask ${esc(name)} again.</p>
+        <div class="rbx-ai-ext-links">
+          <button type="button" class="btn btn-ghost btn-sm" data-ai-focus="${i}">Show the ${esc(name)} window</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-ai-manual="${i}">Paste the answer myself</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  let how;
+  if (!e.opened) {
+    how = `Your browser blocked the new tab. Use <b>Open ${esc(name)}</b> below${e.copied ? "; your request is already copied, so paste it into the chat and send it" : ", then <b>Copy the request</b> and paste it into the chat"}.`;
+  } else if (e.prefilled) {
+    how = `${esc(name)} is open in a new tab with your request typed in. Send it there if it hasn't gone already.`;
+  } else if (e.copied) {
+    how = `${esc(name)} is open in a new tab and your request is copied. Paste it into the chat and send it.`;
+  } else {
+    how = `${esc(name)} is open in a new tab. Press <b>Copy the request</b>, paste it into the chat and send it.`;
+  }
+  const busy = e.busy;
+  return `
+    <div class="rbx-ai-msg">
+      <div class="rbx-ai-ext">
+        <p class="rbx-ai-ext-step"><span aria-hidden="true">1</span>${how}</p>
+        <div class="rbx-ai-ext-links">
+          <a class="btn btn-ghost btn-sm" href="${esc(e.url)}" target="_blank" rel="noopener noreferrer">Open ${esc(name)}</a>
+          <button type="button" class="btn btn-ghost btn-sm" data-ai-copy="${i}">${e.justCopied ? "Copied" : "Copy the request"}</button>
+        </div>
+        <p class="rbx-ai-ext-step"><span aria-hidden="true">2</span>When ${esc(name)} has answered, copy its whole reply (the copy button on its code box is easiest) and paste it here.</p>
+        <label class="rbx-ai-sr" for="rbx-ai-paste-${i}">Paste ${esc(name)}'s answer</label>
+        <textarea class="rbx-ai-ext-paste" id="rbx-ai-paste-${i}" data-ai-paste="${i}" rows="5"
+          placeholder="Paste ${esc(name)}'s answer here" ${busy ? "disabled" : ""}>${esc(e.draft || "")}</textarea>
+        ${e.err ? `<p class="rbx-ai-err" role="alert">${esc(e.err)}</p>` : ""}
+        <div class="rbx-ai-actions rbx-ai-ext-actions">
+          <button type="button" class="btn btn-accent btn-sm" data-ai-import="${i}" ${busy ? "disabled" : ""}>${busy ? "Checking…" : "Use this answer"}</button>
+        </div>
+        ${RB_AI_BRIDGE.ready ? "" : `
+        <p class="rbx-ai-ext-tip">Skip the copying: with the Momentum Chrome extension installed, ${esc(name)} answers straight into this chat.
+          <button type="button" class="rbx-ai-linkbtn" data-ai-getext>Get the extension</button></p>`}
+      </div>
+    </div>`;
+}
+
+async function rbAiCopyAgain(i) {
+  const t = RB_AI.turns[i];
+  if (!t || !t.ext) return;
+  const ok = await rbAiCopy(t.ext.text);
+  if (!ok) { showToast("Couldn't copy. Select the text in the new tab's box instead.", "error"); return; }
+  t.ext.copied = true; t.ext.justCopied = true;
+  rbAiRenderThread();
+  setTimeout(() => { t.ext.justCopied = false; if (document.getElementById("rbx-ai-thread")) rbAiRenderThread(); }, 1800);
+}
+
+async function rbAiImport(i) {
+  const t = RB_AI.turns[i];
+  if (!t || !t.ext || t.ext.busy) return;
+  const box = document.querySelector(`[data-ai-paste="${i}"]`);
+  const answer = (box ? box.value : t.ext.draft || "").trim();
+  t.ext.draft = answer;
+  if (!answer) { t.ext.err = "Paste the answer first."; rbAiRenderThread(); return; }
+  t.ext.busy = true; t.ext.err = "";
+  rbAiRenderThread();
+  try {
+    const res = await api("/api/resume-builder/ai-edit/import", {
+      method: "POST",
+      body: JSON.stringify({ prompt: t.ext.prompt, fields: rbAiCurrentFields(), answer, source: t.ext.src }),
+    });
+    t.ext.waiting = false;
+    t.text = res.reply || "";
+    t.changes = res.changes || [];
+    t.skipped = res.skipped_fields || [];
+    t.applied = false;
+  } catch (err) {
+    t.ext.auto = false;
+    t.ext.opened = true;
+    t.ext.err = apiErrorMessage(err, "That answer couldn't be read. Try pasting it again.");
+  } finally {
+    t.ext.busy = false;
+    rbAiRenderThread();
+  }
+}
+
+function rbAiApply(idx) {
+  const turn = RB_AI.turns[idx];
+  if (!turn || !turn.changes || turn.applied) return;
+
+  // One snapshot for the whole proposal, so Undo takes back the edit the
+  // person accepted rather than one section of it.
+  EDITOR.undoStack.push({ ...EDITOR.values });
+  if (EDITOR.undoStack.length > 25) EDITOR.undoStack.shift();
+  const undoBtn = document.getElementById("redit-undo");
+  if (undoBtn) undoBtn.disabled = false;
+
+  turn.changes.forEach(c => {
+    if (RB_AI_FIELDS.includes(c.field)) EDITOR.values[c.field] = c.new;
+  });
+
+  // Experience, education and projects are edited through a parsed structure
+  // (rbState.entries) that is built from the text ONCE and then cached. Writing
+  // the text without dropping that cache has two consequences, and the second
+  // is the dangerous one: the Edit tab keeps showing the old roles, and the
+  // next time any bullet is touched rbCommitEntries serialises the stale
+  // cache straight back over the change that was just accepted. Dropping it
+  // forces a re-parse from the text that is now authoritative.
+  rbState.entries = null;
+
+  turn.applied = true;
+  EDITOR.dirty = true;
+
+  const saved = document.getElementById("redit-saved");
+  if (saved) saved.textContent = "Unsaved changes";
+
+  // The Edit tab's inputs and the live preview both read EDITOR.values, so
+  // both have to be told it moved underneath them.
+  if (typeof rbRenderSections === "function") rbRenderSections();
+  if (typeof rbRenderPreview === "function") rbRenderPreview(true);
+
+  showToast(turn.changes.length === 1
+    ? `${turn.changes[0].label} updated. Press Undo in the Edit tab to take it back`
+    : `${turn.changes.length} sections updated. Press Undo in the Edit tab to take it back`, "success");
+  rbAiRenderThread();
+}
+
+function rbAiDiscard(idx) {
+  const turn = RB_AI.turns[idx];
+  if (!turn) return;
+  turn.changes = [];
+  turn.text = turn.text ? `${turn.text}\n\n(Discarded.)` : "Discarded.";
+  rbAiRenderThread();
+}
+
+function rbAiWire() {
+  const srcWrap = document.getElementById("rbx-ai-source");
+  if (srcWrap && !srcWrap.dataset.wired) {
+    srcWrap.dataset.wired = "1";
+    srcWrap.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-ai-src]");
+      if (b) rbAiSetSource(b.dataset.aiSrc);
+    });
+    srcWrap.addEventListener("keydown", (e) => {
+      if (!["ArrowRight", "ArrowLeft", "ArrowDown", "ArrowUp"].includes(e.key)) return;
+      const btns = [...srcWrap.querySelectorAll("[data-ai-src]")];
+      const at = btns.findIndex(b => b.dataset.aiSrc === RB_AI.source);
+      const step = (e.key === "ArrowRight" || e.key === "ArrowDown") ? 1 : -1;
+      const next = btns[(at + step + btns.length) % btns.length];
+      e.preventDefault();
+      rbAiSetSource(next.dataset.aiSrc);
+      next.focus();
+    });
+  }
+  const send = document.getElementById("rbx-ai-send");
+  const box = document.getElementById("rbx-ai-input");
+  if (send && !send.dataset.wired) {
+    send.dataset.wired = "1";
+    send.addEventListener("click", rbAiSend);
+  }
+  if (box && !box.dataset.wired) {
+    box.dataset.wired = "1";
+    // Enter sends, Shift+Enter is a newline. The opposite of the comment box
+    // in Community on purpose: this is an instruction, usually one line, and
+    // the composer says which it is.
+    box.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); rbAiSend(); }
+    });
+  }
 }

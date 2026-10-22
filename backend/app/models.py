@@ -609,3 +609,166 @@ class SponsorRegisterMeta(Base):
     synced_at = Column(DateTime, nullable=True)
     source_url = Column(String(600), nullable=True)
     org_count = Column(Integer, default=0)
+
+
+# ---------------------------------------------------------------------------
+# Community
+# ---------------------------------------------------------------------------
+# Everything below is deliberately NOT scoped to a user. The rest of this
+# schema answers "what is mine"; the community answers "what is everyone's",
+# so the rows are global and user_id records authorship rather than ownership.
+# That one difference is the whole feature, and it is also the thing most
+# likely to be broken by copying a query from another router, so every read
+# here should be reviewed against it.
+
+
+# Identity here is the account itself — name, photo and headline off the users
+# table — so there is no separate community profile any more. The handle model
+# that used to live here required everyone to invent a second name before they
+# could say anything, which turned out to be a toll gate in front of the one
+# feature whose whole point is that people use it.
+#
+# The old community_profiles table is left alone rather than dropped: nothing
+# reads or writes it now, create_all will not recreate it on a fresh database,
+# and dropping a table is not something a code change should do to data that is
+# already on disk.
+
+
+class CommunityTopic(Base):
+    """A subreddit-shaped bucket. Seeded, not user-created (for now)."""
+    __tablename__ = "community_topics"
+
+    id = Column(Integer, primary_key=True, index=True)
+    slug = Column(String(40), nullable=False, unique=True, index=True)
+    name = Column(String(80), nullable=False)
+    description = Column(String(300), nullable=True)
+    color = Column(String(20), nullable=True)
+    icon = Column(String(12), nullable=True)
+    sort_order = Column(Integer, default=0)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    posts = relationship("CommunityPost", back_populates="topic")
+
+
+class CommunityPost(Base):
+    __tablename__ = "community_posts"
+    # The feed is "this topic, newest first" and "everything, newest first",
+    # and both run on every page load, so the two orderings get real indexes
+    # rather than a table scan that only looks fine with fifty rows in it.
+    __table_args__ = (
+        Index("ix_community_posts_topic_created", "topic_id", "created_at"),
+        Index("ix_community_posts_created", "created_at"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    topic_id = Column(Integer, ForeignKey("community_topics.id"), nullable=True, index=True)
+    title = Column(String(300), nullable=False)
+    body = Column(Text, nullable=True)
+    link_url = Column(String(600), nullable=True)
+    # Denormalised counters. The alternative is COUNT(*) per post per feed
+    # render, which is one query per row on a list that exists to show twenty
+    # rows at a time. They are written inside the same transaction as the vote
+    # or comment that changes them, so they cannot drift apart from the rows
+    # they count.
+    score = Column(Integer, default=0, nullable=False)
+    comment_count = Column(Integer, default=0, nullable=False)
+    deleted = Column(Boolean, default=False, nullable=False)
+    # Set when an admin removed it, so a moderated post reads differently from
+    # one the author withdrew.
+    removed_by_admin = Column(Boolean, default=False, nullable=False)
+    edited_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+
+    author = relationship("User")
+    topic = relationship("CommunityTopic", back_populates="posts")
+    comments = relationship("CommunityComment", back_populates="post",
+                            cascade="all, delete-orphan")
+    votes = relationship("CommunityVote", cascade="all, delete-orphan",
+                         primaryjoin="and_(CommunityPost.id==foreign(CommunityVote.target_id), "
+                                     "CommunityVote.target_type=='post')")
+
+
+class CommunityComment(Base):
+    __tablename__ = "community_comments"
+    __table_args__ = (
+        Index("ix_community_comments_post_created", "post_id", "created_at"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    post_id = Column(Integer, ForeignKey("community_posts.id"), nullable=False, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    # Self-referential: a reply points at the comment it answers. The whole
+    # thread for a post is fetched in one query and assembled into a tree in
+    # Python, rather than recursing into the database once per level.
+    parent_id = Column(Integer, ForeignKey("community_comments.id"), nullable=True, index=True)
+    body = Column(Text, nullable=False)
+    score = Column(Integer, default=0, nullable=False)
+    # A deleted comment with replies underneath it cannot actually go away
+    # without orphaning them, so it is tombstoned instead and the body is
+    # withheld at serialisation time.
+    deleted = Column(Boolean, default=False, nullable=False)
+    removed_by_admin = Column(Boolean, default=False, nullable=False)
+    edited_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    post = relationship("CommunityPost", back_populates="comments")
+    author = relationship("User")
+
+
+class CommunityVote(Base):
+    """One row per person per thing voted on, for posts and comments alike.
+
+    target_type keeps both in one table because the read pattern is identical
+    ("which of these did I already vote on") and a single query can answer it
+    for a whole page. The unique constraint is what makes a vote idempotent:
+    clicking up twice is not two points, it is a point and then its removal.
+    """
+    __tablename__ = "community_votes"
+    __table_args__ = (
+        UniqueConstraint("user_id", "target_type", "target_id", name="uq_community_vote"),
+        Index("ix_community_votes_target", "target_type", "target_id"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    target_type = Column(String(10), nullable=False)   # "post" | "comment"
+    target_id = Column(Integer, nullable=False)
+    value = Column(Integer, nullable=False)            # +1 | -1
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class CommunityAttachment(Base):
+    """An image on a post or a comment.
+
+    Uploaded before the thing it belongs to exists — the composer shows a
+    thumbnail while you are still typing — so a row starts life bound to
+    neither, owned only by the person who uploaded it. Binding happens when the
+    post or comment is created, and only for rows that person owns and that
+    nothing has claimed yet; otherwise a guessed id would let one account staple
+    its picture to someone else's post.
+
+    An upload that is never submitted stays unbound and is simply never shown.
+    """
+    __tablename__ = "community_attachments"
+    __table_args__ = (
+        Index("ix_community_attachments_post", "post_id"),
+        Index("ix_community_attachments_comment", "comment_id"),
+    )
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
+    post_id = Column(Integer, ForeignKey("community_posts.id"), nullable=True)
+    comment_id = Column(Integer, ForeignKey("community_comments.id"), nullable=True)
+    # The name on disk, always a uuid plus an extension this server chose — the
+    # filename the browser sent is never used to build a path.
+    stored_file = Column(String(120), nullable=False)
+    # What the person called it. Display and alt text only.
+    original_name = Column(String(255), nullable=True)
+    content_type = Column(String(60), nullable=True)
+    byte_size = Column(Integer, nullable=True)
+    # Kept so the grid can reserve the right space before the image loads,
+    # which is what stops a thread from jumping as pictures arrive.
+    width = Column(Integer, nullable=True)
+    height = Column(Integer, nullable=True)
+    created_at = Column(DateTime, default=datetime.utcnow)

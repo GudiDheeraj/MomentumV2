@@ -352,6 +352,59 @@ class ResumeAiAssistRequest(BaseModel):
     skills: Optional[str] = None
 
 
+class ResumeAiEditMessage(BaseModel):
+    role: str          # "user" | "assistant"
+    content: str
+
+
+class ResumeAiEditImport(BaseModel):
+    """An answer the person got from their own ChatGPT, Claude, Grok or Gemini
+    account and pasted back. Same checks as the built in model's answer."""
+    prompt: str = ""
+    fields: dict = {}
+    answer: str
+    source: str = ""
+
+    @field_validator("answer")
+    @classmethod
+    def _answer_present(cls, v: str) -> str:
+        v = (v or "").strip()
+        if not v:
+            raise ValueError("Paste the answer first")
+        if len(v) > 60000:
+            raise ValueError("That's far longer than a CV edit. Paste just the AI's answer")
+        return v
+
+    @field_validator("prompt", "source")
+    @classmethod
+    def _short(cls, v: str) -> str:
+        return (v or "").strip()[:2000]
+
+
+class ResumeAiEditRequest(BaseModel):
+    """One turn of the AI Edit conversation.
+
+    The CV travels with the request rather than being read from the database:
+    the builder edits in the browser and only saves when the person chooses
+    to, so the server's copy is usually behind what is on screen. Sending the
+    live fields is what makes the AI edit what the person is actually looking
+    at.
+    """
+    prompt: str
+    fields: dict = {}
+    history: Optional[List[ResumeAiEditMessage]] = None
+
+    @field_validator("prompt")
+    @classmethod
+    def _prompt_present(cls, v: str) -> str:
+        v = (v or "").strip()
+        if not v:
+            raise ValueError("Say what you'd like changed")
+        if len(v) > 2000:
+            raise ValueError("That instruction is very long — try a shorter one")
+        return v
+
+
 class TailorAnalyseRequest(BaseModel):
     """The advert plus the résumé on screen — the keyword and requirement read."""
     job_description: str
@@ -986,3 +1039,81 @@ class PortfolioDesignOut(BaseModel):
     used_by: int = 0
     created_at: datetime
     updated_at: Optional[datetime] = None
+
+
+# ---------- Community ----------
+# The public shapes are hand-built in the router rather than read straight off
+# the ORM rows, because "what a post looks like" depends on who is asking:
+# my_vote and can_delete are per-viewer, and a deleted post has to render as a
+# tombstone rather than leak the body it used to hold. from_attributes would
+# quietly skip all of that — and, on the author, would hand back the whole
+# users row including the email.
+
+
+class CommunityPostCreate(BaseModel):
+    title: str
+    body: Optional[str] = None
+    link_url: Optional[str] = None
+    topic_id: Optional[int] = None
+    # Images are uploaded first and referenced by id here. Bounded in the
+    # schema as well as in the binding query, so an enormous list is rejected
+    # before it reaches the database rather than being silently truncated.
+    attachment_ids: Optional[List[int]] = None
+
+    @field_validator("title")
+    @classmethod
+    def _title_not_empty(cls, v: str) -> str:
+        v = (v or "").strip()
+        if not v:
+            raise ValueError("A post needs a title")
+        if len(v) > 300:
+            raise ValueError("Title is too long (300 characters max)")
+        return v
+
+    @field_validator("attachment_ids")
+    @classmethod
+    def _few_enough(cls, v):
+        if v and len(v) > 4:
+            raise ValueError("Up to 4 attachments per post")
+        return v
+
+
+class CommunityPostUpdate(BaseModel):
+    title: Optional[str] = None
+    body: Optional[str] = None
+    link_url: Optional[str] = None
+    topic_id: Optional[int] = None
+    attachment_ids: Optional[List[int]] = None
+
+
+class CommunityCommentCreate(BaseModel):
+    # Optional, not required: a comment may be a picture with nothing to add.
+    # The router rejects the case where both this and the images are empty.
+    body: Optional[str] = ""
+    parent_id: Optional[int] = None
+    attachment_ids: Optional[List[int]] = None
+
+    @field_validator("attachment_ids")
+    @classmethod
+    def _few_enough(cls, v):
+        if v and len(v) > 4:
+            raise ValueError("Up to 4 attachments per comment")
+        return v
+
+
+class CommunityCommentUpdate(BaseModel):
+    body: Optional[str] = ""
+
+
+class CommunityVoteIn(BaseModel):
+    # 1 up, -1 down, 0 to clear. 0 is a real value rather than a DELETE call
+    # because the UI's third state is "un-vote", and making it another value on
+    # the same endpoint keeps the toggle logic in one place on both sides.
+    value: int
+
+    @field_validator("value")
+    @classmethod
+    def _valid_value(cls, v: int) -> int:
+        if v not in (-1, 0, 1):
+            raise ValueError("Vote must be 1, -1 or 0")
+        return v

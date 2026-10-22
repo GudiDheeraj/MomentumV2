@@ -20,7 +20,7 @@ from fastapi.staticfiles import StaticFiles
 
 from . import models
 from .database import engine
-from .routers import habits, tasks, summary, weekly_notes, resumes, jobs, auth, admin, study, export, ats, resume_builder, chat, search, cover_letter, extension, boards, profile, review, docs, application_profile, llm_settings, sponsors as sponsors_router, telegram as telegram_router, portfolios, portfolio_designs
+from .routers import habits, tasks, summary, weekly_notes, resumes, jobs, auth, admin, study, export, ats, resume_builder, chat, search, cover_letter, extension, boards, profile, review, docs, application_profile, llm_settings, sponsors as sponsors_router, telegram as telegram_router, portfolios, portfolio_designs, community
 
 
 def _run_lightweight_migrations():
@@ -335,6 +335,7 @@ app.include_router(study.timer_router)
 app.include_router(application_profile.router)
 app.include_router(llm_settings.router)
 app.include_router(telegram_router.router)
+app.include_router(community.router)
 
 
 # ---------------------------------------------------------------------------
